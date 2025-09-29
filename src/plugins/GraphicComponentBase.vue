@@ -6,25 +6,29 @@
     @transformend="handleTransformEnd"
     @dragstart="handleDragStart"
     @dragend="handleDragEnd"
+    ref="groupRef"
   >
     <!-- 具体图形由子组件实现 -->
-
     <slot></slot>
 
     <!-- 选中状态 -->
-
-    <selection-overlay
-      v-if="selected && !element.locked"
-      :element="element"
-      @transform="handleSelectionTransform"
-    />
   </v-group>
+  <v-transformer
+    v-if="selected && !element.locked"
+    ref="transformerRef"
+    @transform="handleSelectionTransform"
+  ></v-transformer>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import type { IGraphicElement, Point2D } from '../types'
 import SelectionOverlay from '../core/SelectionOverlay.vue'
+
+// 转换器
+const transformerRef = ref()
+// 组
+const groupRef = ref()
 
 interface Props {
   element: IGraphicElement
@@ -52,7 +56,7 @@ const groupConfig = computed(() => ({
 }))
 
 const handleMouseDown = (event: any) => {
-  event.cancelBubble = true
+  // event.cancelBubble = true
   if (props.element.locked) return
   emit('select', props.element.id)
 }
@@ -80,4 +84,11 @@ const handleDragEnd = (event: any) => {
 const handleSelectionTransform = (transforms: any) => {
   emit('transform', props.element.id, transforms)
 }
+
+// 将转换器附件到组
+onMounted(() => {
+  console.log(transformerRef.value)
+  const transformerNode = transformerRef.value.getNode()
+  transformerNode.nodes([groupRef.value.getNode()])
+})
 </script>

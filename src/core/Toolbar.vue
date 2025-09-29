@@ -15,32 +15,32 @@
     </div>
 
     <!-- 工具选择 -->
-    <div class="toolbar-section">
+    <!-- <div class="toolbar-section">
       <ToolbarButton
         v-for="tool in drawingTools"
         :key="tool.name"
         :icon="tool.icon"
         :title="tool.title"
-        :active="host.state.currentTool === tool.name"
+        :active="hostState.currentTool === tool.name"
         @click="handleToolSelect(tool.name)"
       />
-    </div>
+    </div> -->
 
     <!-- 视图控制 -->
 
     <div class="toolbar-section">
       <ToolbarButton icon="🔍" title="缩放" :active="false" @click="handleZoom" />
       <ToolbarButton
-        :icon="host.state.showGrid ? '🔲' : '🔳'"
-        :title="host.state.showGrid ? '隐藏网格' : '显示网格'"
-        :active="host.state.showGrid"
+        :icon="hostState.showGrid ? '🔲' : '🔳'"
+        :title="hostState.showGrid ? '隐藏网格' : '显示网格'"
+        :active="hostState.showGrid"
         @click="handleToggleGrid"
       />
 
       <ToolbarButton
-        :icon="host.state.snapToGrid ? '🧲' : '🔗'"
-        :title="host.state.snapToGrid ? '关闭吸附' : '开启吸附'"
-        :active="host.state.snapToGrid"
+        :icon="hostState.snapToGrid ? '🧲' : '🔗'"
+        :title="hostState.snapToGrid ? '关闭吸附' : '开启吸附'"
+        :active="hostState.snapToGrid"
         @click="handleToggleSnap"
       />
     </div>
@@ -80,36 +80,17 @@
         :key="tool.id"
         :icon="tool.icon"
         :title="tool.title"
-        :active="host.state.currentTool === tool.id"
+        :active="hostState.currentTool === tool.id"
         @click="handlePluginToolSelect(tool)"
       />
-    </div>
-
-    <!-- 缩放控制 -->
-    <div class="toolbar-section zoom-controls">
-      <span class="zoom-label">缩放:</span>
-      <button class="zoom-btn" @click="handleZoomOut" title="缩小">-</button>
-      <span class="zoom-value">{{ Math.round(host.state.zoom * 100) }}%</span>
-      <button class="zoom-btn" @click="handleZoomIn" title="放大">+</button>
-      <button class="zoom-btn" @click="handleZoomToFit" title="适应画布">⤢</button>
-      <button class="zoom-btn" @click="handleZoomReset" title="重置缩放">1:1</button>
-    </div>
-
-    <!-- 状态显示 -->
-    <div class="toolbar-status">
-      <span class="status-item">工具: {{ currentToolTitle }}</span>
-      <span class="status-item" v-if="hasSelection">
-        选中: {{ host.state.selectedElementIds.length }} 个元素
-      </span>
-      <span class="status-item">坐标: ({{ cursorPosition.x }}, {{ cursorPosition.y }})</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
-import type { IEditorHost } from './types'
-import ToolbarButton from './ToolbarButton.vue'
+import type { IEditorHost, IEditorState } from '../types'
+import ToolbarButton from '@/components/ToolbarButton.vue'
 interface Props {
   host: IEditorHost
 }
@@ -135,61 +116,43 @@ const drawingTools = ref([
   { name: 'hand', icon: '✋', title: '手形工具' },
 ])
 
+const hostState = ref<IEditorState>(props.host.getState())
+
 // 插件工具
-
 const pluginTools = ref<PluginTool[]>([])
-
 // 光标位置
-
 const cursorPosition = ref({ x: 0, y: 0 })
-
 // 计算属性
-
 const canUndo = computed(() => {
   // 这里应该从命令系统获取实际状态
-
   return true
 })
 
 const canRedo = computed(() => {
   // 这里应该从命令系统获取实际状态
-
   return true
 })
 
 const hasSelection = computed(() => {
-  return props.host.state.selectedElementIds.length > 0
+  return hostState.value.selectedElementIds.length > 0
 })
 
 const hasMultipleSelection = computed(() => {
-  return props.host.state.selectedElementIds.length > 1
-})
-
-const currentToolTitle = computed(() => {
-  const tool = drawingTools.value.find((t) => t.name === props.host.state.currentTool)
-
-  return tool ? tool.title : '未知工具'
+  return hostState.value.selectedElementIds.length > 1
 })
 
 // 生命周期
-
 onMounted(() => {
   // 监听光标移动
-
   props.host.on('canvas:mousemove', handleCursorMove)
-
   // 监听插件注册事件，更新插件工具
-
   props.host.on('plugin:registered', handlePluginRegistered)
-
   // 初始化插件工具
-
   initializePluginTools()
 })
 
 onUnmounted(() => {
   props.host.off('canvas:mousemove', handleCursorMove)
-
   props.host.off('plugin:registered', handlePluginRegistered)
 })
 
@@ -231,19 +194,18 @@ const handleToolSelect = (toolName: string) => {
 
 const handleZoom = () => {
   // 打开缩放面板或执行缩放操作
-
   props.host.emit('view:zoom')
 }
 
 const handleToggleGrid = () => {
   props.host.setState({
-    showGrid: !props.host.state.showGrid,
+    showGrid: !hostState.value.showGrid,
   })
 }
 
 const handleToggleSnap = () => {
   props.host.setState({
-    snapToGrid: !props.host.state.snapToGrid,
+    snapToGrid: !hostState.value.snapToGrid,
   })
 }
 
@@ -259,30 +221,9 @@ const handleLayerChange = (operation: string) => {
   props.host.emit('elements:layer', operation)
 }
 
-const handleZoomIn = () => {
-  const newZoom = Math.min(props.host.state.zoom * 1.2, 5)
-
-  props.host.setState({ zoom: newZoom })
-}
-
-const handleZoomOut = () => {
-  const newZoom = Math.max(props.host.state.zoom / 1.2, 0.1)
-
-  props.host.setState({ zoom: newZoom })
-}
-
-const handleZoomReset = () => {
-  props.host.setState({ zoom: 1 })
-}
-
-const handleZoomToFit = () => {
-  props.host.emit('view:zoomToFit')
-}
-
 const handleCursorMove = (point: { x: number; y: number }) => {
   cursorPosition.value = {
     x: Math.round(point.x),
-
     y: Math.round(point.y),
   }
 }
@@ -300,14 +241,11 @@ const handlePluginRegistered = (plugin: any) => {
 
   if (plugin.getTools) {
     const tools = plugin.getTools()
-
     if (Array.isArray(tools)) {
       pluginTools.value = [
         ...pluginTools.value,
-
         ...tools.map((tool: any) => ({
           ...tool,
-
           pluginName: plugin.name,
         })),
       ]
@@ -324,33 +262,21 @@ const initializePluginTools = () => {
 <style scoped>
 .toolbar {
   display: flex;
-
   align-items: center;
-
   padding: 8px 12px;
-
   background: #2c3e50;
-
   color: white;
-
   border-bottom: 1px solid #34495e;
-
   flex-wrap: wrap;
-
   gap: 4px;
-
   min-height: 60px;
 }
 
 .toolbar-section {
   display: flex;
-
   align-items: center;
-
   gap: 2px;
-
   padding: 0 8px;
-
   border-right: 1px solid #34495e;
 }
 
@@ -360,41 +286,27 @@ const initializePluginTools = () => {
 
 .zoom-controls {
   display: flex;
-
   align-items: center;
-
   gap: 4px;
-
   margin-left: auto;
 }
 
 .zoom-label {
   font-size: 12px;
-
   margin-right: 4px;
 }
 
 .zoom-btn {
   background: #34495e;
-
   border: 1px solid #4a6572;
-
   color: white;
-
   width: 24px;
-
   height: 24px;
-
   border-radius: 3px;
-
   cursor: pointer;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   font-size: 12px;
 }
 
@@ -404,23 +316,16 @@ const initializePluginTools = () => {
 
 .zoom-value {
   font-size: 12px;
-
   min-width: 40px;
-
   text-align: center;
 }
 
 .toolbar-status {
   display: flex;
-
   align-items: center;
-
   gap: 16px;
-
   margin-left: 16px;
-
   font-size: 12px;
-
   color: #bdc3c7;
 }
 
@@ -429,7 +334,6 @@ const initializePluginTools = () => {
 }
 
 /* 响应式设计 */
-
 @media (max-width: 1200px) {
   .toolbar {
     padding: 6px 8px;
@@ -447,27 +351,20 @@ const initializePluginTools = () => {
 @media (max-width: 768px) {
   .toolbar {
     flex-direction: column;
-
     height: auto;
-
     min-height: 80px;
   }
 
   .toolbar-section {
     border-right: none;
-
     border-bottom: 1px solid #34495e;
-
     padding: 4px 0;
-
     width: 100%;
-
     justify-content: center;
   }
 
   .zoom-controls {
     margin-left: 0;
-
     order: -1;
   }
 }

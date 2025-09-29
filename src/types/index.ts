@@ -1,3 +1,6 @@
+import type { ICommand } from '@/commands/ICommand'
+import type { Component } from 'vue'
+
 export interface Point2D {
   x: number
   y: number
@@ -34,7 +37,6 @@ export interface IGraphicElement {
   visible: boolean
   locked: boolean
 
-  getComponent(): IGraphicComponent
   getBoundingBox(): BoundingBox
   clone(): IGraphicElement
   serialize(): any
@@ -65,9 +67,9 @@ export interface IGraphicType {
   type: string
   name: string
   icon: string
-  component: any
   defaultProps: any
-  createElement?(x: number, y: number): IGraphicElement
+  getComponent(): Component
+  createElement(x: number, y: number): IGraphicElement
 }
 
 // 宿主接口
@@ -100,14 +102,6 @@ export interface IEditorHost {
   setState(state: Partial<IEditorState>): void
 }
 
-// 命令接口
-export interface ICommand {
-  name: string
-  execute(): void
-  undo(): void
-  redo(): void
-}
-
 // 编辑器状态
 export interface IEditorState {
   zoom: number
@@ -115,4 +109,6 @@ export interface IEditorState {
   selectedElementIds: string[]
   snapToGrid: boolean
   showGrid: boolean
+  width: number
+  height: number
 }

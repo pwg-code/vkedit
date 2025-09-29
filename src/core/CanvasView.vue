@@ -7,26 +7,25 @@
       @mouseup="handleMouseUp"
       @wheel="handleWheel"
     >
-      <v-layer>
+      <v-layer ref="layerRef">
         <!-- 网格 -->
         <v-line
-          v-if="host.getState().showGrid"
+          v-if="hostState.showGrid"
           v-for="(line, index) in gridLines"
           :key="`grid-${index}`"
           :config="line"
         />
 
-        <!-- 动态渲染图形组件 -->
-
+        <!-- 渲染其他未选中的组件 -->
         <component
           v-for="element in elements"
           :key="element.id"
-          :is="getElementComponent(element)"
+          :is="getElementComponent(element.type)"
           :element="element"
-          :selected="isSelected(element.id)"
-          @select="handleElementSelect"
-          @transform="handleElementTransform"
+          @transformend="handleElementTransform($event, element)"
+          @dragend="handleDragEnd($event, element)"
         />
+        <v-transformer ref="transformerRef"></v-transformer>
 
         <!-- 选择框 -->
         <SelectionRectangle v-if="isSelecting" :start="selectionStart" :end="selectionEnd" />
@@ -36,27 +35,61 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, markRaw, onMounted, ref, watch } from 'vue'
 
-import type { IEditorHost, IGraphicElement, Point2D } from '../types'
+import type { IEditorHost, IEditorState, IGraphicElement, Point2D } from '../types'
 import SelectionRectangle from './SelectionRectangle.vue'
+import SelectionOverlay from './SelectionOverlay.vue'
+import useGraphicType from '@/hooks/useGraphicType'
+import { EditorEvents } from '@/types/EventTypes'
+import { TransformElementCommand, UpdatePropertyCommand } from '@/commands'
 
 interface Props {
   host: IEditorHost
 }
 
 const props = defineProps<Props>()
+
+// 画布状态
+const hostState = ref<IEditorState>(props.host.getState())
+
 const stageConfig = computed(() => ({
-  width: 800,
-  height: 600,
+  width: hostState.value.width,
+  height: hostState.value.height,
   scaleX: props.host.getState().zoom,
   scaleY: props.host.getState().zoom,
 }))
 
-const elements = computed(() => {
-  // 从host获取所有元素
-  return props.host.getElements()
+// 主图层
+const layerRef = ref()
+// 转换器
+const transformerRef = ref()
+
+// 获取选中的图像的node
+const getSelectedNodes = () => {
+  const nodes: any[] = []
+  if (layerRef.value) {
+    hostState.value.selectedElementIds.forEach((id) => {
+      nodes.push(layerRef.value.getNode().findOne('#' + id))
+    })
+  }
+  return nodes
+}
+
+// 监控选中的nodes 动态附件变化器
+const selectedNodes = computed(getSelectedNodes)
+watch(selectedNodes, (value) => {
+  const transformerNode = transformerRef.value.getNode()
+  if (transformerNode) {
+    transformerNode.nodes(value)
+  }
 })
+
+// 所有的图像元素
+const elements = ref<IGraphicElement[]>([])
+const initElements = () => {
+  elements.value = props.host.getElements()
+}
 
 const isSelecting = ref(false)
 const selectionStart = ref<Point2D>({ x: 0, y: 0 })
@@ -89,10 +122,7 @@ const gridLines = computed(() => {
   return lines
 })
 
-const isSelected = (elementId: string) => {
-  return props.host.getState().selectedElementIds.includes(elementId)
-}
-
+// 鼠标按下
 const handleMouseDown = (event: any) => {
   const point = getEventPoint(event)
   props.host.emit('canvas:mousedown', point)
@@ -134,43 +164,42 @@ const handleWheel = (event: any) => {
   })
 }
 
-const handleElementSelect = (elementId: string) => {
-  // 处理元素选择
+// 图形变换更改属性
+const handleElementTransform = (event: any, element: any) => {
+  console.log('图形变换event', event)
+  console.log('图形变换element', element)
+  const eAttrs = event.target.attrs
+  const newAttrs = { scaleX: eAttrs.scaleX, scaleY: eAttrs.scaleY }
+  const oldAttrs = {}
+  // 使用命令更改属性
+  // props.host.emit(EditorEvents)
 }
 
-// 图形变换更改属性
-const handleElementTransform = (e: any) => {}
+// 图形拖拽
+const handleDragEnd = (event: any, element: any) => {
+  const eAttrs = event.target.attrs
+  const newAttrs = { x: eAttrs.x, y: eAttrs.y }
+  const oldAttrs = { x: element.x, y: element.y }
+  // 使用命令更改属性
+  const command = new TransformElementCommand(element, props.host, oldAttrs, newAttrs)
+  props.host.executeCommand(command)
+}
 
 const getEventPoint = (event: any): Point2D => {
   const stage = event.target.getStage()
   const point = stage.getPointerPosition()
-
   return {
     x: point.x / props.host.getState().zoom,
     y: point.y / props.host.getState().zoom,
   }
 }
 
-// 图形类型注册表
-const graphicTypes = ref(new Map<string, any>())
-
-// 注册图形类型
-const registerGraphicType = (type: any) => {
-  console.log('注册图形类型', type)
-
-  graphicTypes.value.set(type.type, type.component)
-}
-
-// 获取元素的Vue组件
-const getElementComponent = (element: IGraphicElement) => {
-  return graphicTypes.value.get(element.type) || 'div'
-}
+const { getElementComponent } = useGraphicType(props.host)
 
 onMounted(() => {
-  // 监听图形类型注册事件
-  props.host.on('graphic-type:registered', registerGraphicType)
-  // 从已注册插件加载图形类型
-  // 这里需要遍历所有插件并调用registerGraphicTypes方法
+  // 添加或删除图形时触发更新elements
+  props.host.on('element:removed', initElements)
+  props.host.on('element:added', initElements)
 })
 </script>
 

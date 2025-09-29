@@ -1,5 +1,7 @@
 import { ref, reactive, computed } from 'vue'
-import type { IEditorHost, IEditorPlugin, IGraphicElement, ICommand, IEditorState } from '../types'
+import type { IEditorHost, IEditorPlugin, IGraphicElement, IEditorState } from '../types'
+import { EditorEvents, EventUtils } from '../types/EventTypes'
+import type { ICommand } from '@/commands/ICommand'
 
 export class EditorHost implements IEditorHost {
   private plugins: Map<string, IEditorPlugin> = new Map()
@@ -13,20 +15,39 @@ export class EditorHost implements IEditorHost {
     currentTool: 'select',
     selectedElementIds: [],
     snapToGrid: true,
-    showGrid: true,
+    showGrid: false,
+    width: 600,
+    height: 400,
   })
+
+  // 发送事件
+  private emitEvent(event: EditorEvents, data?: any): void {
+    const eventData = {
+      ...EventUtils.createBaseEventData('host'),
+      ...data,
+    }
+    this.emit(event, eventData)
+  }
+
+  // 发送事件
+  emit(event: EditorEvents, ...args: any[]): void {
+    const handlers = this.eventHandlers.get(event)
+    if (handlers) {
+      handlers.forEach((handler) => handler(...args))
+    }
+  }
 
   // 画布操作
   addElement(element: IGraphicElement): void {
     this.elements.set(element.id, element)
-    this.emit('element:added', element)
+    this.emitEvent(EditorEvents.ELEMENT_ADDED, { element, elementId: element.id })
   }
 
   removeElement(elementId: string): void {
     const element = this.elements.get(elementId)
     if (element) {
       this.elements.delete(elementId)
-      this.emit('element:removed', element)
+      this.emitEvent(EditorEvents.ELEMENT_REMOVED, { element, elementId: element.id })
     }
   }
 
@@ -42,7 +63,7 @@ export class EditorHost implements IEditorHost {
 
   clearSelection(): void {
     this.state.selectedElementIds = []
-    this.emit('selection:changed')
+    this.emitEvent(EditorEvents.SELECTION_CHANGED, { selectedElementIds: [] })
   }
 
   // 插件管理
@@ -54,7 +75,7 @@ export class EditorHost implements IEditorHost {
 
     this.plugins.set(plugin.name, plugin)
     plugin.install(this)
-    this.emit('plugin:registered', plugin)
+    this.emitEvent(EditorEvents.PLUGIN_REGISTERED, { plugin })
   }
 
   unregisterPlugin(pluginName: string): void {
@@ -62,7 +83,7 @@ export class EditorHost implements IEditorHost {
     if (plugin) {
       plugin.uninstall()
       this.plugins.delete(pluginName)
-      this.emit('plugin:unregistered', plugin)
+      this.emitEvent(EditorEvents.PLUGIN_UNREGISTERED, { plugin })
     }
   }
 
@@ -90,26 +111,16 @@ export class EditorHost implements IEditorHost {
     }
   }
 
-  // 发送事件
-  emit(event: string, ...args: any[]): void {
-    const handlers = this.eventHandlers.get(event)
-    if (handlers) {
-      handlers.forEach((handler) => handler(...args))
-    }
-  }
-
   // 命令系统
   executeCommand(command: ICommand): void {
     // 清楚redo栈
     if (this.currentCommandIndex < this.commandStack.length - 1) {
       this.commandStack = this.commandStack.slice(0, this.currentCommandIndex + 1)
     }
-
     this.commandStack.push(command)
     this.currentCommandIndex++
     command.execute()
-
-    this.emit('command:executed', command)
+    this.emitEvent(EditorEvents.COMMAND_EXECUTED, { command })
   }
 
   undo(): void {
@@ -117,7 +128,7 @@ export class EditorHost implements IEditorHost {
       const command = this.commandStack[this.currentCommandIndex]
       command.undo()
       this.currentCommandIndex--
-      this.emit('command:undone', command)
+      this.emitEvent(EditorEvents.COMMAND_UNDONE, { command })
     }
   }
 
@@ -126,18 +137,18 @@ export class EditorHost implements IEditorHost {
       this.currentCommandIndex++
       const command = this.commandStack[this.currentCommandIndex]
       command.redo()
-      this.emit('command:redone', command)
+      this.emitEvent(EditorEvents.COMMAND_REDONE, { command })
     }
   }
 
   // 状态管理
   getState(): IEditorState {
-    return { ...this.state }
+    return this.state
   }
 
   setState(newState: Partial<IEditorState>): void {
     Object.assign(this.state, newState)
-    this.emit('state:changed', this.state)
+    this.emitEvent(EditorEvents.STATE_CHANGED, { state: this.state })
   }
 
   // 获取所有元素

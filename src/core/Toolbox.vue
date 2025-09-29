@@ -1,24 +1,38 @@
 <template>
   <div class="p-5 flex gap-2">
-    <ElButton @click="handleToolSelect('select')">选择</ElButton>
-    <ElButton @click="handleToolSelect('rect-plugin')">矩形</ElButton>
+    <template v-for="graphicType in graphicTypes">
+      <ElButton
+        @click="
+          onCreate(graphicType[0], {
+            x: props.host.getState().width / 2,
+            y: props.host.getState().height / 2,
+          })
+        "
+      >
+        {{ graphicType[1].name }}{{ graphicType[1].icon }}</ElButton
+      >
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
 import { ElButton } from 'element-plus'
+import { EditorEvents } from '../types/EventTypes'
+import { onMounted, watch } from 'vue'
+import useGraphicType from '@/hooks/useGraphicType'
+
 const props = defineProps<{
   host: IEditorHost
 }>()
 
-const handleToolSelect = (toolName: string) => {
-  props.host.setState({ currentTool: toolName })
-  props.host.emit('tool-changed', toolName)
-  console.log('当前host state', props.host.getState())
-}
+const { graphicTypes, onCreate } = useGraphicType(props.host)
 
-function startDrag(e: any, name: string) {
-  e.dataTransfer.setData('plugin-name', name)
-}
+watch(
+  graphicTypes,
+  (value) => {
+    console.log('监听到的已注册的图像类插件', value)
+  },
+  { deep: true },
+)
 </script>

@@ -47,7 +47,7 @@ const transformAnchors = computed(() => {
 })
 
 const handleAnchorMouseDown = (anchorIndex: number, event: any) => {
-  event.cancelBubble = true
+  // event.cancelBubble = true
   // 处理控制点拖拽逻辑
 }
 </script>

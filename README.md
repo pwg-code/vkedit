@@ -1,774 +1,1204 @@
-您说得对！图形插件应该提供完整的Vue组件，让宿主负责渲染。这样架构更清晰，插件可以完全控制自己的UI表现。下面是改进的方案：
+Commands 文件夹完整代码
 
-1. 更新类型定义
+1. 基础命令接口
 
-types.ts（扩展图形组件接口）
+ICommand.ts
 
 ```typescript
-// 图形组件接口
-
-export interface IGraphicComponent {
-  // 组件定义
-  component: any // Vue组件
-  props?: any // 组件props
-  events?: any // 组件事件
-}
-
-// 扩展图形元素接口
-
-export interface IGraphicElement {
-  id: string
-  type: string
-  x: number
-  y: number
-  rotation: number
-  scaleX: number
-  scaleY: number
-  visible: boolean
-  locked: boolean
-
-  // 获取对应的Vue组件
-
-  getComponent(): IGraphicComponent
-
-  getBoundingBox(): BoundingBox
-
-  clone(): IGraphicElement
-
-  serialize(): any
-
-  deserialize(data: any): void
-}
-
-// 扩展插件接口以支持图形组件
-
-export interface IEditorPlugin {
+export interface ICommand {
   name: string
 
-  version: string
+  timestamp: number
 
-  install(host: IEditorHost): void
+  description?: string
 
-  uninstall(): void
+  execute(): void
 
-  activate?(): void
+  undo(): void
 
-  deactivate?(): void
+  redo(): void
 
-  // 注册图形类型
+  canMergeWith?(command: ICommand): boolean
 
-  registerGraphicTypes?(): IGraphicType[]
-
-  // 提供工具栏工具
-
-  getTools?(): IPluginTool[]
+  mergeWith?(command: ICommand): ICommand
 }
 
-// 图形类型定义
-
-export interface IGraphicType {
-  type: string
-
-  name: string
-
-  icon: string
-
-  component: any // 对应的Vue组件
-
-  defaultProps: any // 默认属性
-
-  createElement?(x: number, y: number): IGraphicElement
+export interface ICommandConstructor {
+  new (...args: any[]): ICommand
 }
 ```
 
-2. 图形组件基类
+2. 基础命令类
 
-GraphicComponentBase.vue
-
-```vue
-<template>
-  <v-group
-    :config="groupConfig"
-    @mousedown="handleMouseDown"
-    @touchstart="handleMouseDown"
-    @transformend="handleTransformEnd"
-    @dragstart="handleDragStart"
-    @dragend="handleDragEnd"
-  >
-    <!-- 具体图形由子组件实现 -->
-
-    <slot></slot>
-
-    <!-- 选中状态 -->
-
-    <selection-overlay
-      v-if="selected && !element.locked"
-      :element="element"
-      @transform="handleSelectionTransform"
-    />
-  </v-group>
-</template>
-
-<script setup lang="ts">
-import { computed } from 'vue'
-
-import { IGraphicElement, Point2D } from '../types'
-
-import SelectionOverlay from './SelectionOverlay.vue'
-
-interface Props {
-  element: IGraphicElement
-
-  selected: boolean
-}
-
-interface Emits {
-  (e: 'select', elementId: string): void
-
-  (e: 'transform', elementId: string, transforms: any): void
-
-  (e: 'dragStart', elementId: string): void
-
-  (e: 'dragEnd', elementId: string): void
-}
-
-const props = defineProps<Props>()
-
-const emit = defineEmits<Emits>()
-
-const groupConfig = computed(() => ({
-  x: props.element.x,
-
-  y: props.element.y,
-
-  rotation: props.element.rotation,
-
-  scaleX: props.element.scaleX,
-
-  scaleY: props.element.scaleY,
-
-  visible: props.element.visible,
-
-  draggable: !props.element.locked && props.selected,
-
-  name: `graphic-${props.element.id}`,
-}))
-
-const handleMouseDown = (event: any) => {
-  event.cancelBubble = true
-
-  if (props.element.locked) return
-
-  emit('select', props.element.id)
-}
-
-const handleTransformEnd = (event: any) => {
-  const node = event.target
-
-  const transforms = {
-    x: node.x(),
-
-    y: node.y(),
-
-    rotation: node.rotation(),
-
-    scaleX: node.scaleX(),
-
-    scaleY: node.scaleY(),
-  }
-
-  emit('transform', props.element.id, transforms)
-}
-
-const handleDragStart = (event: any) => {
-  emit('dragStart', props.element.id)
-}
-
-const handleDragEnd = (event: any) => {
-  emit('dragEnd', props.element.id)
-}
-
-const handleSelectionTransform = (transforms: any) => {
-  emit('transform', props.element.id, transforms)
-}
-</script>
-```
-
-SelectionOverlay.vue
-
-```vue
-<template>
-  <!-- 选中框 -->
-
-  <v-rect :config="selectionConfig" name="selection-overlay" />
-
-  <!-- 变换控制点 -->
-
-  <v-circle
-    v-for="(anchor, index) in transformAnchors"
-    :key="`anchor-${index}`"
-    :config="anchor"
-    @mousedown="handleAnchorMouseDown(index, $event)"
-  />
-</template>
-
-<script setup lang="ts">
-import { computed } from 'vue'
-
-import { IGraphicElement } from '../types'
-
-interface Props {
-  element: IGraphicElement
-}
-
-interface Emits {
-  (e: 'transform', transforms: any): void
-}
-
-const props = defineProps<Props>()
-
-const emit = defineEmits<Emits>()
-
-const selectionConfig = computed(() => {
-  const padding = 4
-
-  const bbox = props.element.getBoundingBox()
-
-  return {
-    x: -padding,
-
-    y: -padding,
-
-    width: bbox.width + padding * 2,
-
-    height: bbox.height + padding * 2,
-
-    stroke: '#3498db',
-
-    strokeWidth: 1,
-
-    dash: [4, 4],
-
-    listening: false,
-  }
-})
-
-const transformAnchors = computed(() => {
-  const bbox = props.element.getBoundingBox()
-
-  const anchors = []
-
-  const size = 6
-
-  // 控制点定义...
-
-  // 与之前类似的实现
-
-  return anchors
-})
-
-const handleAnchorMouseDown = (anchorIndex: number, event: any) => {
-  event.cancelBubble = true
-
-  // 处理控制点拖拽逻辑
-}
-</script>
-```
-
-3. 具体图形组件示例
-
-RectGraphic.vue
-
-```vue
-<template>
-  <GraphicComponentBase
-    :element="element"
-    :selected="selected"
-    @select="$emit('select', $event)"
-    @transform="$emit('transform', $event)"
-  >
-    <v-rect :config="rectConfig" @click="handleClick" />
-  </GraphicComponentBase>
-</template>
-
-<script setup lang="ts">
-import { computed } from 'vue'
-
-import { IGraphicElement } from '../types'
-
-import GraphicComponentBase from './GraphicComponentBase.vue'
-
-interface Props {
-  element: IGraphicElement
-
-  selected: boolean
-}
-
-interface Emits {
-  (e: 'select', elementId: string): void
-
-  (e: 'transform', elementId: string, transforms: any): void
-}
-
-defineProps<Props>()
-
-const emit = defineEmits<Emits>()
-
-const rectConfig = computed(() => ({
-  width: (props.element as any).width || 100,
-
-  height: (props.element as any).height || 60,
-
-  fill: (props.element as any).fill || '#3498db',
-
-  stroke: (props.element as any).stroke || '#2980b9',
-
-  strokeWidth: (props.element as any).strokeWidth || 2,
-
-  cornerRadius: (props.element as any).cornerRadius || 0,
-}))
-
-const handleClick = (event: any) => {
-  event.cancelBubble = true
-}
-</script>
-```
-
-CircleGraphic.vue
-
-```vue
-<template>
-  <GraphicComponentBase
-    :element="element"
-    :selected="selected"
-    @select="$emit('select', $event)"
-    @transform="$emit('transform', $event)"
-  >
-    <v-circle :config="circleConfig" @click="handleClick" />
-  </GraphicComponentBase>
-</template>
-
-<script setup lang="ts">
-import { computed } from 'vue'
-
-import { IGraphicElement } from '../types'
-
-import GraphicComponentBase from './GraphicComponentBase.vue'
-
-interface Props {
-  element: IGraphicElement
-
-  selected: boolean
-}
-
-interface Emits {
-  (e: 'select', elementId: string): void
-
-  (e: 'transform', elementId: string, transforms: any): void
-}
-
-defineProps<Props>()
-
-const emit = defineEmits<Emits>()
-
-const circleConfig = computed(() => ({
-  radius: (props.element as any).radius || 50,
-
-  fill: (props.element as any).fill || '#e74c3c',
-
-  stroke: (props.element as any).stroke || '#c0392b',
-
-  strokeWidth: (props.element as any).strokeWidth || 2,
-}))
-
-const handleClick = (event: any) => {
-  event.cancelBubble = true
-}
-</script>
-```
-
-4. 矩形插件完整实现
-
-RectPlugin.ts
+BaseCommand.ts
 
 ```typescript
-import { BasePlugin } from './BasePlugin'
-import { IEditorHost, IGraphicType, IGraphicElement } from './types'
-import RectGraphic from './components/RectGraphic.vue'
-import RectPropertyPanel from './components/RectPropertyPanel.vue'
+import { ICommand } from './ICommand'
 
-// 矩形元素实现
-class RectElement implements IGraphicElement {
-  public readonly type = 'rect'
+export abstract class BaseCommand implements ICommand {
+  public abstract name: string
+
+  public timestamp: number = Date.now()
+
+  public description?: string
+
+  constructor(description?: string) {
+    this.description = description
+  }
+
+  abstract execute(): void
+
+  abstract undo(): void
+
+  redo(): void {
+    this.execute()
+  }
+
+  canMergeWith?(command: ICommand): boolean {
+    return false
+  }
+
+  mergeWith?(command: ICommand): ICommand {
+    return this
+  }
+
+  protected getCurrentTimestamp(): number {
+    return Date.now()
+  }
+}
+```
+
+3. 图形元素相关命令
+
+AddElementCommand.ts
+
+```typescript
+import { BaseCommand } from './BaseCommand'
+
+import { IEditorHost, IGraphicElement } from '../types'
+
+import { EditorEvents } from '../EventTypes'
+
+export class AddElementCommand extends BaseCommand {
+  public name = 'ADD_ELEMENT'
+
   constructor(
-    public id: string,
-    public x: number,
-    public y: number,
-    public width: number,
-    public height: number,
-    public fill: string = '#3498db',
-    public stroke: string = '#2980b9',
-    public strokeWidth: number = 2,
-    public cornerRadius: number = 0,
-    public rotation: number = 0,
-    public scaleX: number = 1,
-    public scaleY: number = 1,
-    public visible: boolean = true,
-    public locked: boolean = false,
-  ) {}
+    private element: IGraphicElement,
 
-  getComponent() {
-    return {
-      component: RectGraphic,
-      props: {
-        element: this,
+    private host: IEditorHost,
+  ) {
+    super(`添加 ${element.type} 元素`)
+  }
+
+  execute(): void {
+    this.host.addElement(this.element)
+
+    this.host.emit(EditorEvents.ELEMENT_ADDED, {
+      element: this.element,
+
+      elementId: this.element.id,
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  undo(): void {
+    this.host.removeElement(this.element.id)
+
+    this.host.emit(EditorEvents.ELEMENT_REMOVED, {
+      element: this.element,
+
+      elementId: this.element.id,
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  canMergeWith(command: ICommand): boolean {
+    return command instanceof AddElementCommand && Date.now() - command.timestamp < 1000
+  }
+}
+```
+
+RemoveElementCommand.ts
+
+```typescript
+import { BaseCommand } from './BaseCommand'
+
+import { IEditorHost, IGraphicElement } from '../types'
+
+import { EditorEvents } from '../EventTypes'
+
+export class RemoveElementCommand extends BaseCommand {
+  public name = 'REMOVE_ELEMENT'
+
+  private elementData: any
+
+  constructor(
+    private elementId: string,
+
+    private host: IEditorHost,
+  ) {
+    super('删除元素')
+
+    // 保存元素的序列化数据，用于撤销时恢复
+
+    const element = this.host.getElement(elementId)
+
+    if (element) {
+      this.elementData = element.serialize()
+    }
+  }
+
+  execute(): void {
+    const element = this.host.getElement(this.elementId)
+
+    if (element) {
+      this.host.removeElement(this.elementId)
+
+      this.host.emit(EditorEvents.ELEMENT_REMOVED, {
+        element,
+
+        elementId: this.elementId,
+
+        timestamp: this.timestamp,
+      })
+    }
+  }
+
+  undo(): void {
+    if (this.elementData) {
+      const element = this.deserializeElement(this.elementData)
+
+      if (element) {
+        this.host.addElement(element)
+
+        this.host.emit(EditorEvents.ELEMENT_ADDED, {
+          element,
+
+          elementId: element.id,
+
+          timestamp: this.timestamp,
+        })
+      }
+    }
+  }
+
+  private deserializeElement(data: any): IGraphicElement | null {
+    try {
+      // 这里需要根据元素类型创建对应的元素实例
+
+      // 简化实现，实际应该根据类型映射到具体的元素类
+
+      const elementClass = this.getElementClass(data.type)
+
+      if (!elementClass) return null
+
+      const element = new elementClass(data.id, 0, 0)
+
+      element.deserialize(data)
+
+      return element
+    } catch (error) {
+      console.error('Failed to deserialize element:', error)
+
+      return null
+    }
+  }
+
+  private getElementClass(type: string): any {
+    // 这里应该从插件系统获取对应的元素类
+
+    const classMap: { [key: string]: any } = {
+      rect: class MockRectElement {
+        constructor(
+          public id: string,
+          public x: number,
+          public y: number,
+        ) {}
+
+        serialize() {
+          return {}
+        }
+
+        deserialize(data: any) {
+          Object.assign(this, data)
+        }
+      },
+
+      circle: class MockCircleElement {
+        constructor(
+          public id: string,
+          public x: number,
+          public y: number,
+        ) {}
+
+        serialize() {
+          return {}
+        }
+
+        deserialize(data: any) {
+          Object.assign(this, data)
+        }
       },
     }
+
+    return classMap[type]
+  }
+}
+```
+
+TransformElementCommand.ts
+
+```typescript
+import { BaseCommand } from './BaseCommand'
+
+import { IEditorHost, IGraphicElement } from '../types'
+
+import { EditorEvents } from '../EventTypes'
+
+export class TransformElementCommand extends BaseCommand {
+  public name = 'TRANSFORM_ELEMENT'
+
+  private element: IGraphicElement
+
+  private host: IEditorHost
+
+  private oldState: any
+
+  private newState: any
+
+  private transformType: string
+
+  constructor(
+    element: IGraphicElement,
+
+    host: IEditorHost,
+
+    oldState: any,
+
+    newState: any,
+  ) {
+    super('变换元素')
+
+    this.element = element
+
+    this.host = host
+
+    this.oldState = { ...oldState }
+
+    this.newState = { ...newState }
+
+    this.transformType = this.detectTransformType(oldState, newState)
   }
 
-  getBoundingBox() {
-    return {
-      x: this.x,
-      y: this.y,
-      width: this.width * this.scaleX,
-      height: this.height * this.scaleY,
+  execute(): void {
+    this.applyState(this.newState)
+
+    this.host.emit(EditorEvents.ELEMENT_TRANSFORMED, {
+      element: this.element,
+
+      elementId: this.element.id,
+
+      oldState: this.oldState,
+
+      newState: this.newState,
+
+      transformType: this.transformType,
+
+      timestamp: this.timestamp,
+    })
+
+    this.host.emit(EditorEvents.ELEMENT_UPDATED, {
+      element: this.element,
+
+      elementId: this.element.id,
+
+      updatedProperties: Object.keys(this.newState),
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  undo(): void {
+    this.applyState(this.oldState)
+
+    this.host.emit(EditorEvents.ELEMENT_TRANSFORMED, {
+      element: this.element,
+
+      elementId: this.element.id,
+
+      oldState: this.newState,
+
+      newState: this.oldState,
+
+      transformType: this.transformType,
+
+      timestamp: this.timestamp,
+    })
+
+    this.host.emit(EditorEvents.ELEMENT_UPDATED, {
+      element: this.element,
+
+      elementId: this.element.id,
+
+      updatedProperties: Object.keys(this.oldState),
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  private applyState(state: any): void {
+    // 更新基础变换属性
+
+    const transformProps = ['x', 'y', 'rotation', 'scaleX', 'scaleY']
+
+    transformProps.forEach((prop) => {
+      if (state[prop] !== undefined) {
+        ;(this.element as any)[prop] = state[prop]
+      }
+    })
+
+    // 更新图形特定属性
+
+    const graphicProps = ['width', 'height', 'radius', 'points']
+
+    graphicProps.forEach((prop) => {
+      if (state[prop] !== undefined && (this.element as any)[prop] !== undefined) {
+        ;(this.element as any)[prop] = state[prop]
+      }
+    })
+  }
+
+  private detectTransformType(oldState: any, newState: any): string {
+    if (newState.rotation !== undefined && newState.rotation !== oldState.rotation) {
+      return 'rotate'
     }
+
+    if (newState.scaleX !== undefined || newState.scaleY !== undefined) {
+      return 'scale'
+    }
+
+    if (newState.width !== undefined || newState.height !== undefined) {
+      return 'resize'
+    }
+
+    if (newState.x !== undefined || newState.y !== undefined) {
+      return 'move'
+    }
+
+    return 'transform'
   }
 
-  clone(): IGraphicElement {
-    return new RectElement(
-      `rect-${Date.now()}`,
-      this.x,
-      this.y,
-      this.width,
-      this.height,
-      this.fill,
-      this.stroke,
-      this.strokeWidth,
-      this.cornerRadius,
-      this.rotation,
-      this.scaleX,
-      this.scaleY,
-      this.visible,
-      this.locked,
+  canMergeWith(command: ICommand): boolean {
+    if (!(command instanceof TransformElementCommand)) return false
+
+    return (
+      command.element.id === this.element.id &&
+      command.transformType === this.transformType &&
+      Date.now() - command.timestamp < 500
     )
   }
 
-  serialize() {
-    return {
-      type: this.type,
-      id: this.id,
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
-      fill: this.fill,
-      stroke: this.stroke,
-      strokeWidth: this.strokeWidth,
-      cornerRadius: this.cornerRadius,
-      rotation: this.rotation,
-      scaleX: this.scaleX,
-      scaleY: this.scaleY,
-      visible: this.visible,
-      locked: this.locked,
+  mergeWith(command: TransformElementCommand): ICommand {
+    return new TransformElementCommand(
+      this.element,
+
+      this.host,
+
+      this.oldState,
+
+      command.newState,
+    )
+  }
+}
+```
+
+UpdatePropertyCommand.ts
+
+```typescript
+import { BaseCommand } from './BaseCommand'
+
+import { IEditorHost, IGraphicElement } from '../types'
+
+import { EditorEvents } from '../EventTypes'
+
+export class UpdatePropertyCommand extends BaseCommand {
+  public name = 'UPDATE_PROPERTY'
+
+  private element: IGraphicElement
+
+  private host: IEditorHost
+
+  private propertyPath: string
+
+  private oldValue: any
+
+  private newValue: any
+
+  constructor(
+    element: IGraphicElement,
+
+    host: IEditorHost,
+
+    propertyPath: string,
+
+    oldValue: any,
+
+    newValue: any,
+  ) {
+    super(`更新属性 ${propertyPath}`)
+
+    this.element = element
+
+    this.host = host
+
+    this.propertyPath = propertyPath
+
+    this.oldValue = this.deepClone(oldValue)
+
+    this.newValue = this.deepClone(newValue)
+  }
+
+  execute(): void {
+    this.setProperty(this.propertyPath, this.newValue)
+
+    this.emitPropertyChange()
+  }
+
+  undo(): void {
+    this.setProperty(this.propertyPath, this.oldValue)
+
+    this.emitPropertyChange()
+  }
+
+  private setProperty(path: string, value: any): void {
+    const parts = path.split('.')
+
+    let current: any = this.element
+
+    // 遍历到倒数第二个属性
+
+    for (let i = 0; i < parts.length - 1; i++) {
+      if (current[parts[i]] === undefined) {
+        current[parts[i]] = {}
+      }
+
+      current = current[parts[i]]
+    }
+
+    // 设置最后一个属性
+
+    current[parts[parts.length - 1]] = value
+  }
+
+  private getProperty(path: string): any {
+    const parts = path.split('.')
+
+    let current: any = this.element
+
+    for (const part of parts) {
+      if (current === undefined || current === null) {
+        return undefined
+      }
+
+      current = current[part]
+    }
+
+    return current
+  }
+
+  private emitPropertyChange(): void {
+    this.host.emit(EditorEvents.PROPERTY_VALUE_CHANGE, {
+      element: this.element,
+
+      elementId: this.element.id,
+
+      propertyPath: this.propertyPath,
+
+      oldValue: this.oldValue,
+
+      newValue: this.newValue,
+
+      timestamp: this.timestamp,
+    })
+
+    this.host.emit(EditorEvents.ELEMENT_UPDATED, {
+      element: this.element,
+
+      elementId: this.element.id,
+
+      updatedProperties: [this.propertyPath],
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  private deepClone(obj: any): any {
+    if (obj === null || typeof obj !== 'object') return obj
+
+    if (obj instanceof Date) return new Date(obj)
+
+    if (obj instanceof Array) return obj.map((item) => this.deepClone(item))
+
+    const cloned: any = {}
+
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        cloned[key] = this.deepClone(obj[key])
+      }
+    }
+
+    return cloned
+  }
+
+  canMergeWith(command: ICommand): boolean {
+    if (!(command instanceof UpdatePropertyCommand)) return false
+
+    return (
+      command.element.id === this.element.id &&
+      command.propertyPath === this.propertyPath &&
+      Date.now() - command.timestamp < 1000
+    )
+  }
+
+  mergeWith(command: UpdatePropertyCommand): ICommand {
+    return new UpdatePropertyCommand(
+      this.element,
+
+      this.host,
+
+      this.propertyPath,
+
+      this.oldValue,
+
+      command.newValue,
+    )
+  }
+}
+```
+
+4. 批量操作命令
+
+BatchCommand.ts
+
+```typescript
+import { BaseCommand } from './BaseCommand'
+
+import { ICommand } from './ICommand'
+
+import { EditorEvents } from '../EventTypes'
+
+export class BatchCommand extends BaseCommand {
+  public name = 'BATCH_COMMAND'
+
+  private commands: ICommand[] = []
+
+  constructor(
+    commands: ICommand[] = [],
+
+    description: string = '批量操作',
+  ) {
+    super(description)
+
+    this.commands = [...commands]
+  }
+
+  execute(): void {
+    this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_START, {
+      timestamp: this.timestamp,
+    })
+
+    this.commands.forEach((command) => {
+      command.execute()
+    })
+
+    this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_END, {
+      timestamp: this.timestamp,
+
+      commandCount: this.commands.length,
+    })
+  }
+
+  undo(): void {
+    this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_START, {
+      timestamp: this.timestamp,
+    })
+
+    // 逆序执行撤销
+    ;[...this.commands].reverse().forEach((command) => {
+      command.undo()
+    })
+
+    this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_END, {
+      timestamp: this.timestamp,
+
+      commandCount: this.commands.length,
+    })
+  }
+
+  addCommand(command: ICommand): void {
+    this.commands.push(command)
+  }
+
+  addCommands(commands: ICommand[]): void {
+    this.commands.push(...commands)
+  }
+
+  getCommands(): ICommand[] {
+    return [...this.commands]
+  }
+
+  isEmpty(): boolean {
+    return this.commands.length === 0
+  }
+
+  getDescription(): string {
+    if (this.description) return this.description
+
+    if (this.commands.length === 1) {
+      return this.commands[0].description || this.commands[0].name
+    }
+
+    return `批量操作 (${this.commands.length} 个命令)`
+  }
+
+  canMergeWith(command: ICommand): boolean {
+    return false // 批量命令通常不合并
+  }
+}
+```
+
+5. 选择相关命令
+
+SelectElementCommand.ts
+
+```typescript
+import { BaseCommand } from './BaseCommand'
+
+import { IEditorHost } from '../types'
+
+import { EditorEvents } from '../EventTypes'
+
+export class SelectElementCommand extends BaseCommand {
+  public name = 'SELECT_ELEMENT'
+
+  constructor(
+    private host: IEditorHost,
+
+    private elementIds: string[],
+
+    private previousElementIds: string[],
+  ) {
+    super('选择元素')
+  }
+
+  execute(): void {
+    this.host.setState({
+      selectedElementIds: this.elementIds,
+    })
+
+    this.host.emit(EditorEvents.SELECTION_CHANGED, {
+      selectedIds: this.elementIds,
+
+      previousSelectedIds: this.previousElementIds,
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  undo(): void {
+    this.host.setState({
+      selectedElementIds: this.previousElementIds,
+    })
+
+    this.host.emit(EditorEvents.SELECTION_CHANGED, {
+      selectedIds: this.previousElementIds,
+
+      previousSelectedIds: this.elementIds,
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  static createSelectionChange(
+    host: IEditorHost,
+
+    newSelection: string[],
+
+    oldSelection: string[],
+  ): SelectElementCommand {
+    return new SelectElementCommand(host, newSelection, oldSelection)
+  }
+}
+```
+
+ClearSelectionCommand.ts
+
+```typescript
+import { BaseCommand } from './BaseCommand'
+
+import { IEditorHost } from '../types'
+
+import { EditorEvents } from '../EventTypes'
+
+export class ClearSelectionCommand extends BaseCommand {
+  public name = 'CLEAR_SELECTION'
+
+  private previousSelection: string[] = []
+
+  constructor(private host: IEditorHost) {
+    super('清空选择')
+
+    this.previousSelection = [...host.state.selectedElementIds]
+  }
+
+  execute(): void {
+    this.host.setState({
+      selectedElementIds: [],
+    })
+
+    this.host.emit(EditorEvents.SELECTION_CLEARED, {
+      previousSelectedIds: this.previousSelection,
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  undo(): void {
+    this.host.setState({
+      selectedElementIds: this.previousSelection,
+    })
+
+    this.host.emit(EditorEvents.SELECTION_CHANGED, {
+      selectedIds: this.previousSelection,
+
+      previousSelectedIds: [],
+
+      timestamp: this.timestamp,
+    })
+  }
+}
+```
+
+6. 图层操作命令
+
+ChangeLayerOrderCommand.ts
+
+```typescript
+import { BaseCommand } from './BaseCommand'
+
+import { IEditorHost, IGraphicElement } from '../types'
+
+import { EditorEvents } from '../EventTypes'
+
+export class ChangeLayerOrderCommand extends BaseCommand {
+  public name = 'CHANGE_LAYER_ORDER'
+
+  private previousOrder: Map<string, number> = new Map()
+
+  constructor(
+    private host: IEditorHost,
+
+    private elementId: string,
+
+    private direction: 'up' | 'down' | 'top' | 'bottom',
+  ) {
+    super(`调整图层顺序: ${direction}`)
+  }
+
+  execute(): void {
+    // 保存当前顺序
+
+    this.saveCurrentOrder()
+
+    // 执行图层顺序调整
+
+    this.changeLayerOrder()
+
+    this.host.emit(EditorEvents.ELEMENTS_LAYER, {
+      elementId: this.elementId,
+
+      direction: this.direction,
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  undo(): void {
+    // 恢复之前的顺序
+
+    this.restorePreviousOrder()
+
+    this.host.emit(EditorEvents.ELEMENTS_LAYER, {
+      elementId: this.elementId,
+
+      direction: this.getReverseDirection(),
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  private saveCurrentOrder(): void {
+    // 这里需要实现保存当前图层顺序的逻辑
+    // 简化实现
+  }
+
+  private changeLayerOrder(): void {
+    // 这里需要实现调整图层顺序的逻辑
+    // 简化实现
+  }
+
+  private restorePreviousOrder(): void {
+    // 这里需要实现恢复图层顺序的逻辑
+    // 简化实现
+  }
+
+  private getReverseDirection(): string {
+    const reverseMap: { [key: string]: string } = {
+      up: 'down',
+
+      down: 'up',
+
+      top: 'bottom',
+
+      bottom: 'top',
+    }
+
+    return reverseMap[this.direction] || this.direction
+  }
+}
+```
+
+7. 对齐分布命令
+
+AlignElementsCommand.ts
+
+```typescript
+import { BaseCommand } from './BaseCommand'
+
+import { IEditorHost, IGraphicElement } from '../types'
+
+import { EditorEvents } from '../EventTypes'
+
+export class AlignElementsCommand extends BaseCommand {
+  public name = 'ALIGN_ELEMENTS'
+
+  private previousPositions: Map<string, { x: number; y: number }> = new Map()
+
+  constructor(
+    private host: IEditorHost,
+
+    private alignment: 'left' | 'right' | 'top' | 'bottom' | 'centerX' | 'centerY',
+
+    private elementIds: string[],
+  ) {
+    super(`对齐元素: ${alignment}`)
+
+    // 保存原始位置
+
+    this.elementIds.forEach((id) => {
+      const element = this.host.getElement(id)
+
+      if (element) {
+        this.previousPositions.set(id, { x: element.x, y: element.y })
+      }
+    })
+  }
+
+  execute(): void {
+    this.alignElements()
+
+    this.host.emit(EditorEvents.ELEMENTS_ALIGN, {
+      alignment: this.alignment,
+
+      elementIds: this.elementIds,
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  undo(): void {
+    this.restorePreviousPositions()
+
+    this.host.emit(EditorEvents.ELEMENTS_ALIGN, {
+      alignment: 'undo',
+
+      elementIds: this.elementIds,
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  private alignElements(): void {
+    const elements = this.elementIds
+
+      .map((id) => this.host.getElement(id))
+
+      .filter(Boolean) as IGraphicElement[]
+
+    if (elements.length === 0) return
+
+    switch (this.alignment) {
+      case 'left':
+        const minX = Math.min(...elements.map((el) => el.x))
+
+        elements.forEach((el) => (el.x = minX))
+
+        break
+
+      case 'right':
+        const maxX = Math.max(...elements.map((el) => el.x + (el as any).width))
+
+        elements.forEach((el) => (el.x = maxX - (el as any).width))
+
+        break
+
+      case 'top':
+        const minY = Math.min(...elements.map((el) => el.y))
+
+        elements.forEach((el) => (el.y = minY))
+
+        break
+
+      case 'bottom':
+        const maxY = Math.max(...elements.map((el) => el.y + (el as any).height))
+
+        elements.forEach((el) => (el.y = maxY - (el as any).height))
+
+        break
+
+      case 'centerX':
+        const centerX =
+          elements.reduce((sum, el) => sum + el.x + (el as any).width / 2, 0) / elements.length
+
+        elements.forEach((el) => (el.x = centerX - (el as any).width / 2))
+
+        break
+
+      case 'centerY':
+        const centerY =
+          elements.reduce((sum, el) => sum + el.y + (el as any).height / 2, 0) / elements.length
+
+        elements.forEach((el) => (el.y = centerY - (el as any).height / 2))
+
+        break
     }
   }
 
-  deserialize(data: any): void {
-    Object.assign(this, data)
+  private restorePreviousPositions(): void {
+    this.elementIds.forEach((id) => {
+      const element = this.host.getElement(id)
+
+      const previousPos = this.previousPositions.get(id)
+
+      if (element && previousPos) {
+        element.x = previousPos.x
+
+        element.y = previousPos.y
+      }
+    })
   }
 }
+```
 
-export class RectPlugin extends BasePlugin {
-  public name = 'rect-plugin'
-  public version = '1.0.0'
-  protected onInstall(): void {
-    if (!this.host) return
-    // 注册矩形图形类型
-    this.host.emit('graphic-type:registered', this.getGraphicType())
-    // 注册工具
-    this.host.emit('tool:registered', {
-      id: 'rect',
-      name: 'rectangle',
-      icon: '⬜',
-      title: '矩形工具',
-      description: '绘制矩形和正方形',
+8. 组合命令
+
+GroupElementsCommand.ts
+
+```typescript
+import { BaseCommand } from './BaseCommand'
+
+import { IEditorHost, IGraphicElement } from '../types'
+
+import { EditorEvents } from '../EventTypes'
+
+export class GroupElementsCommand extends BaseCommand {
+  public name = 'GROUP_ELEMENTS'
+
+  private groupElement: IGraphicElement | null = null
+
+  private originalElements: IGraphicElement[] = []
+
+  constructor(
+    private host: IEditorHost,
+
+    private elementIds: string[],
+  ) {
+    super('组合元素')
+
+    this.originalElements = elementIds
+
+      .map((id) => host.getElement(id))
+
+      .filter(Boolean) as IGraphicElement[]
+  }
+
+  execute(): void {
+    if (this.originalElements.length === 0) return
+
+    // 创建组合元素
+
+    this.groupElement = this.createGroupElement()
+
+    // 移除原始元素
+
+    this.originalElements.forEach((element) => {
+      this.host.removeElement(element.id)
     })
 
-    // 注册属性面板
-    this.host.emit('property-panel:registered', {
-      for: 'rect',
-      component: RectPropertyPanel,
-      title: '矩形属性',
+    // 添加组合元素
+
+    this.host.addElement(this.groupElement)
+
+    this.host.emit(EditorEvents.ELEMENTS_GROUP, {
+      elementIds: this.elementIds,
+
+      groupId: this.groupElement.id,
+
+      timestamp: this.timestamp,
     })
   }
 
-  private getGraphicType(): IGraphicType {
+  undo(): void {
+    if (!this.groupElement) return
+
+    // 移除组合元素
+
+    this.host.removeElement(this.groupElement.id)
+
+    // 恢复原始元素
+
+    this.originalElements.forEach((element) => {
+      this.host.addElement(element)
+    })
+
+    this.host.emit(EditorEvents.ELEMENTS_UNGROUP, {
+      elementIds: this.elementIds,
+
+      groupId: this.groupElement.id,
+
+      timestamp: this.timestamp,
+    })
+  }
+
+  private createGroupElement(): IGraphicElement {
+    // 这里需要实现创建组合元素的逻辑
+
+    // 简化实现，返回一个模拟的组合元素
+
     return {
-      type: 'rect',
-      name: '矩形',
-      icon: '⬜',
-      component: RectGraphic,
-      defaultProps: {
-        width: 100,
-        height: 60,
-        fill: '#3498db',
-        stroke: '#2980b9',
-        strokeWidth: 2,
-        cornerRadius: 0,
-      },
+      id: `group-${Date.now()}`,
 
-      createElement: (x: number, y: number) => {
-        return new RectElement(`rect-${Date.now()}`, x, y, 100, 60)
-      },
-    }
-  }
+      type: 'group',
 
-  getTools() {
-    return [
-      {
-        id: 'rect',
-        name: 'rectangle',
-        icon: '⬜',
-        title: '矩形工具',
-        description: '绘制矩形和正方形',
-        category: 'drawing',
-      },
-    ]
+      x: 0,
+      y: 0,
+      rotation: 0,
+      scaleX: 1,
+      scaleY: 1,
+
+      visible: true,
+      locked: false,
+
+      getComponent: () => ({ component: null }),
+
+      getBoundingBox: () => ({ x: 0, y: 0, width: 0, height: 0 }),
+
+      clone: () => this.createGroupElement(),
+
+      serialize: () => ({}),
+
+      deserialize: () => {},
+    } as IGraphicElement
   }
 }
 ```
 
-RectPropertyPanel.vue
+9. 命令导出文件
 
-```vue
-<template>
-  <div class="rect-property-panel">
-    <h3>矩形属性</h3>
+index.ts
 
-    <div class="property-group">
-      <label>位置</label>
+```typescript
+export * from './ICommand'
 
-      <div class="property-row">
-        <NumberInput label="X" :value="element.x" @change="updateProperty('x', $event)" />
+export * from './BaseCommand'
 
-        <NumberInput label="Y" :value="element.y" @change="updateProperty('y', $event)" />
-      </div>
-    </div>
+// 图形元素命令
 
-    <div class="property-group">
-      <label>尺寸</label>
+export * from './AddElementCommand'
 
-      <div class="property-row">
-        <NumberInput
-          label="宽度"
-          :value="element.width"
-          @change="updateProperty('width', $event)"
-        />
+export * from './RemoveElementCommand'
 
-        <NumberInput
-          label="高度"
-          :value="element.height"
-          @change="updateProperty('height', $event)"
-        />
-      </div>
-    </div>
+export * from './TransformElementCommand'
 
-    <div class="property-group">
-      <label>外观</label>
+export * from './UpdatePropertyCommand'
 
-      <ColorInput label="填充颜色" :value="element.fill" @change="updateProperty('fill', $event)" />
+// 选择命令
 
-      <ColorInput
-        label="边框颜色"
-        :value="element.stroke"
-        @change="updateProperty('stroke', $event)"
-      />
+export * from './SelectElementCommand'
 
-      <NumberInput
-        label="边框宽度"
-        :value="element.strokeWidth"
-        @change="updateProperty('strokeWidth', $event)"
-      />
+export * from './ClearSelectionCommand'
 
-      <NumberInput
-        label="圆角半径"
-        :value="element.cornerRadius"
-        @change="updateProperty('cornerRadius', $event)"
-      />
-    </div>
+// 批量命令
 
-    <div class="property-group">
-      <label>变换</label>
+export * from './BatchCommand'
 
-      <NumberInput
-        label="旋转角度"
-        :value="element.rotation"
-        @change="updateProperty('rotation', $event)"
-      />
+// 图层命令
 
-      <div class="property-row">
-        <NumberInput
-          label="缩放X"
-          :value="element.scaleX"
-          @change="updateProperty('scaleX', $event)"
-        />
+export * from './ChangeLayerOrderCommand'
 
-        <NumberInput
-          label="缩放Y"
-          :value="element.scaleY"
-          @change="updateProperty('scaleY', $event)"
-        />
-      </div>
-    </div>
-  </div>
-</template>
+// 对齐分布命令
 
-<script setup lang="ts">
-import { IGraphicElement } from '../types'
+export * from './AlignElementsCommand'
 
-import NumberInput from './common/NumberInput.vue'
+// 组合命令
 
-import ColorInput from './common/ColorInput.vue'
+export * from './GroupElementsCommand'
 
-interface Props {
-  element: IGraphicElement
+// 命令工具函数
+
+export class CommandUtils {
+  static createBatchFromSelection(
+    host: any,
+
+    commandClass: any,
+
+    ...args: any[]
+  ): any {
+    const selectedIds = host.state.selectedElementIds
+
+    const commands = selectedIds.map((id) => {
+      const element = host.getElement(id)
+
+      return new commandClass(element, host, ...args)
+    })
+
+    return new (await import('./BatchCommand')).BatchCommand(commands)
+  }
+
+  static isTransformCommand(command: any): boolean {
+    return command.name === 'TRANSFORM_ELEMENT'
+  }
+
+  static isPropertyCommand(command: any): boolean {
+    return command.name === 'UPDATE_PROPERTY'
+  }
 }
-
-const props = defineProps<Props>()
-
-const updateProperty = (property: string, value: any) => {
-  // 发送属性更新事件
-  // 这里应该通过host的命令系统执行更新
-}
-</script>
-
-<style scoped>
-.rect-property-panel {
-  padding: 12px;
-}
-
-.property-group {
-  margin-bottom: 16px;
-}
-
-.property-group label {
-  display: block;
-
-  font-weight: bold;
-
-  margin-bottom: 8px;
-
-  color: #2c3e50;
-}
-
-.property-row {
-  display: flex;
-
-  gap: 8px;
-}
-</style>
 ```
 
-5. 更新CanvasView.vue以支持插件组件
+1. 基础架构：统一的命令接口和基类
 
-```vue
-<template>
-  <div class="canvas-container">
-    <v-stage
-      ref="stageRef"
-      :config="stageConfig"
-      @mousedown="handleStageMouseDown"
-      @mousemove="handleStageMouseMove"
-      @mouseup="handleStageMouseUp"
-      @wheel="handleWheel"
-    >
-      <v-layer ref="mainLayerRef">
-        <!-- 网格 -->
+2. 图形操作：添加、删除、变换、属性更新
 
-        <v-line
-          v-if="host.state.showGrid"
-          v-for="(line, index) in gridLines"
-          :key="`grid-${index}`"
-          :config="line"
-        />
+3. 选择管理：选择、清空选择
 
-        <!-- 动态渲染图形组件 -->
+4. 批量操作：支持多个命令批量执行
 
-        <component
-          v-for="element in elements"
-          :key="element.id"
-          :is="getElementComponent(element)"
-          :element="element"
-          :selected="isSelected(element.id)"
-          @select="handleElementSelect"
-          @transform="handleElementTransform"
-        />
+5. 图层控制：图层顺序调整
 
-        <!-- 选择框 -->
+6. 对齐分布：各种对齐和分布操作
 
-        <SelectionRectangle v-if="isSelecting" :start="selectionStart" :end="selectionEnd" />
-      </v-layer>
-    </v-stage>
-  </div>
-</template>
+7. 组合功能：元素组合和解组
 
-<script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
-
-import { IEditorHost, Point2D, IGraphicElement } from '../types'
-
-import SelectionRectangle from './SelectionRectangle.vue'
-
-interface Props {
-  host: IEditorHost
-}
-
-const props = defineProps<Props>()
-
-// 图形类型注册表
-
-const graphicTypes = ref(new Map<string, any>())
-
-// 注册图形类型
-
-const registerGraphicType = (type: any) => {
-  graphicTypes.value.set(type.type, type.component)
-}
-
-// 获取元素的Vue组件
-
-const getElementComponent = (element: IGraphicElement) => {
-  return graphicTypes.value.get(element.type) || 'div'
-}
-
-onMounted(() => {
-  // 监听图形类型注册事件
-
-  props.host.on('graphic-type:registered', registerGraphicType)
-
-  // 从已注册插件加载图形类型
-
-  // 这里需要遍历所有插件并调用registerGraphicTypes方法
-})
-</script>
-```
-
-架构优势
-
-1. 真正的组件化：每个图形类型都是完整的Vue组件
-
-2. 插件完全控制UI：插件可以自定义图形的渲染逻辑和交互行为
-
-3. 更好的类型安全：TypeScript支持完整的类型检查
-
-4. 易于扩展：新增图形类型只需实现对应的Vue组件
-
-5. 属性面板集成：插件可以提供专用的属性编辑面板
-
-这种架构让插件开发者可以完全控制图形的视觉表现和交互行为，同时宿主负责整体的画布管理和插件协调。
-————————————————
-
-                            版权声明：本文为博主原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接和本声明。
-
-原文链接：https://blog.csdn.net/weixin_50723234/article/details/152217776
+8. 工具函数：命令创建和类型检查工具

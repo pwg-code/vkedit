@@ -21,16 +21,8 @@ export class RectElement implements IGraphicElement {
     public scaleY: number = 1,
     public visible: boolean = true,
     public locked: boolean = false,
+    public draggable: boolean = true,
   ) {}
-
-  getComponent() {
-    return {
-      component: RectGraphic,
-      props: {
-        element: this,
-      },
-    }
-  }
 
   getBoundingBox() {
     return {
@@ -107,15 +99,6 @@ export class RectPlugin extends BasePlugin {
       component: RectPropertyPanel,
       title: '矩形属性',
     })
-
-    // 订阅画布鼠标按下事件  创建图形
-    this.host.on('canvas:mouseup', (point: Point2D) => {
-      console.log('canvas:mouseup 当前host state', this.host?.getState())
-
-      if (this.host?.getState().currentTool == 'rect-plugin') {
-        this.host.addElement(new RectElement(`rect-${Date.now()}`, point.x, point.y))
-      }
-    })
   }
 
   private getGraphicType(): IGraphicType {
@@ -123,7 +106,6 @@ export class RectPlugin extends BasePlugin {
       type: 'rect',
       name: '矩形',
       icon: '⬜',
-      component: RectGraphic,
       defaultProps: {
         width: 100,
         height: 60,
@@ -132,7 +114,9 @@ export class RectPlugin extends BasePlugin {
         strokeWidth: 2,
         cornerRadius: 0,
       },
-
+      getComponent() {
+        return RectGraphic
+      },
       createElement: (x: number, y: number) => {
         return new RectElement(`rect-${Date.now()}`, x, y, 100, 60)
       },

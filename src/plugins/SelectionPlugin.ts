@@ -33,7 +33,6 @@ export class SelectionPlugin extends BasePlugin {
 
   private handleMouseDown(point: Point2D): void {
     if (!this.host || this.host.getState().currentTool !== 'select') return
-
     this.isSelecting = true
     this.selectionStart = point
 
@@ -54,8 +53,6 @@ export class SelectionPlugin extends BasePlugin {
     if (!this.isSelecting || !this.host) return
     // 实现框选逻辑
     const elementsInSelection = this.findElementsInRect(this.selectionStart, point)
-    console.log('当前选中元素为', elementsInSelection)
-
     this.updateSelection(elementsInSelection.map((el) => el.id))
   }
 
@@ -74,9 +71,8 @@ export class SelectionPlugin extends BasePlugin {
   private findElementAtPoint(point: Point2D): IGraphicElement | null {
     // 实现点选逻辑
     if (!this.host) return null
-
     // 简化实现：遍历所有元素检查点是否在边界框内
-    for (const element of this.host.getSelectedElements()) {
+    for (const element of this.host.getElements()) {
       const bbox = element.getBoundingBox()
       if (
         point.x >= bbox.x &&
@@ -103,7 +99,7 @@ export class SelectionPlugin extends BasePlugin {
     }
 
     // 简化实现：检查元素边界框是否与选择矩形相交
-    for (const element of this.host.getSelectedElements()) {
+    for (const element of this.host.getElements()) {
       const bbox = element.getBoundingBox()
       if (this.rectIntersect(rect, bbox)) {
         elements.push(element)

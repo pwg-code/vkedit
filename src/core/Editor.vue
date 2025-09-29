@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen flex flex-col p-4">
-    <!-- <Top :host="host" /> -->
+    <Toolbar :host="host" />
     <!-- 2. 自动撑满剩余区域 -->
     <main class="flex-1 overflow-auto flex">
       <div class="flex-1 border-[0.5px] border-gray-200">
@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import Top from './Top.vue' // 顶部区域
+import Toolbar from './Toolbar.vue' // 顶部区域
 import Bottom from './Bottom.vue' // 底部区域
 import Toolbox from './Toolbox.vue'
 import CanvasView from './CanvasView.vue'
