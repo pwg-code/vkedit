@@ -15,9 +15,9 @@ export class EditorHost implements IEditorHost {
     currentTool: 'select',
     selectedElementIds: [],
     snapToGrid: true,
-    showGrid: false,
-    width: 600,
-    height: 400,
+    showGrid: true,
+    width: 800,
+    height: 800,
   })
 
   // 发送事件

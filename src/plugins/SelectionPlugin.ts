@@ -1,3 +1,4 @@
+import { EditorEvents } from '@/types/EventTypes'
 import { BasePlugin } from '../styles/BasePlugin'
 import type { IGraphicElement, Point2D } from '../types'
 
@@ -5,17 +6,19 @@ export class SelectionPlugin extends BasePlugin {
   public name = 'selection'
   public version = '1.0.0'
 
-  private isSelecting: boolean = false
-  private selectionStart: Point2D = { x: 0, y: 0 }
-  private selectionElements: Set<string> = new Set()
+  public isSelecting: boolean = false
+  public selectionStart: Point2D = { x: 0, y: 0 }
+  public selectionEnd: Point2D = { x: 0, y: 0 }
+  public selectionElements: Set<string> = new Set()
+  public mouseDownInElement: IGraphicElement | null = null
 
   protected onInstall(): void {
     if (!this.host) return
-
     // 注册事件监听
     this.host.on('canvas:mousedown', this.handleMouseDown.bind(this))
     this.host.on('canvas:mousemove', this.handleMouseMove.bind(this))
     this.host.on('canvas:mouseup', this.handleMouseUp.bind(this))
+    this.host.on('canvas:click', this.handleClick.bind(this))
     this.host.on('element:added', this.handleElementAdded.bind(this))
     this.host.on('element:removed', this.handleElementRemoved.bind(this))
   }
@@ -27,41 +30,55 @@ export class SelectionPlugin extends BasePlugin {
     this.host.off('canvas:mousedown', this.handleMouseDown.bind(this))
     this.host.off('canvas:mousemove', this.handleMouseMove.bind(this))
     this.host.off('canvas:mouseup', this.handleMouseUp.bind(this))
+    this.host.off('canvas:click', this.handleClick.bind(this))
     this.host.off('element:added', this.handleElementAdded.bind(this))
     this.host.off('element:removed', this.handleElementRemoved.bind(this))
   }
 
-  private handleMouseDown(point: Point2D): void {
-    if (!this.host || this.host.getState().currentTool !== 'select') return
-    this.isSelecting = true
-    this.selectionStart = point
-
-    // 检查是否点击了元素
-    const clickedElement = this.findElementAtPoint(point)
-
-    if (clickedElement) {
-      if (!this.selectionElements.has(clickedElement.id)) {
+  private handleClick(point: Point2D): void {
+    // 如果正在用进行范围选择，则不做任何操作
+    if (this.isSelecting) {
+      return
+    }
+    if (this.mouseDownInElement) {
+      if (!this.selectionElements.has(this.mouseDownInElement.id)) {
         this.clearSelection()
-        this.selectElement(clickedElement.id)
+        this.selectElement(this.mouseDownInElement.id)
       }
-    } else {
-      this.clearSelection()
     }
   }
 
+  private handleMouseDown(point: Point2D): void {
+    if (!this.host || this.host.getState().currentTool !== 'select') return
+    this.selectionStart = point
+    // 检查是否点击了元素
+    this.mouseDownInElement = this.findElementAtPoint(point)
+    // 如果点击的是图形则不做任何事情
+    if (this.mouseDownInElement) {
+      return
+    }
+    this.isSelecting = true
+  }
+
   private handleMouseMove(point: Point2D): void {
+    // 如果没有开始选择，则不做任何操作
     if (!this.isSelecting || !this.host) return
-    // 实现框选逻辑
-    const elementsInSelection = this.findElementsInRect(this.selectionStart, point)
-    this.updateSelection(elementsInSelection.map((el) => el.id))
+    this.selectionEnd = point
   }
 
   private handleMouseUp(point: Point2D): void {
+    // 如果没有开始选择，则不做任何操作
+    if (!this.isSelecting) {
+      return
+    }
     this.isSelecting = false
+    const elementsInSelection = this.findElementsInRect(this.selectionStart, this.selectionEnd)
+    this.updateSelection(elementsInSelection.map((el) => el.id))
   }
 
   private handleElementAdded(element: IGraphicElement): void {
-    // 新添加的元素
+    // 新添加的元素 默认选中
+    // this.selectElement(element.id)
   }
 
   private handleElementRemoved(element: IGraphicElement): void {
@@ -94,7 +111,7 @@ export class SelectionPlugin extends BasePlugin {
     const rect = {
       x: Math.min(start.x, end.x),
       y: Math.min(start.y, end.y),
-      with: Math.abs(end.x - start.x),
+      width: Math.abs(end.x - start.x),
       height: Math.abs(end.y - start.y),
     }
 
@@ -108,6 +125,7 @@ export class SelectionPlugin extends BasePlugin {
     return elements
   }
 
+  // 识别两个矩形是否相交 暂不考虑角度
   private rectIntersect(rect1: any, rect2: any): boolean {
     return !(
       rect2.x > rect1.x + rect1.width ||
@@ -119,6 +137,7 @@ export class SelectionPlugin extends BasePlugin {
 
   private selectElement(elementId: string): void {
     this.selectionElements.add(elementId)
+    this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
     this.updateHostSelection()
   }
 
@@ -134,12 +153,12 @@ export class SelectionPlugin extends BasePlugin {
 
   private updateSelection(elementIds: string[]): void {
     this.selectionElements = new Set(elementIds)
+    this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
     this.updateHostSelection()
   }
 
   private updateHostSelection(): void {
     if (!this.host) return
-
     this.host.setState({
       selectedElementIds: Array.from(this.selectionElements),
     })

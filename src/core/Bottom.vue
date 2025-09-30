@@ -1,10 +1,10 @@
 <template>
-  <div class="h-12 flex items-center justify-end border-[0.5px] border-gray-200 gap-6 p-2">
+  <div class="w-full h-12 flex items-center justify-end gap-6 p-2">
     <div class="flex-4"></div>
     <!-- 缩放控制 -->
     <div class="flex gap-2 flex-2">
       <div class="min-w-[60px] text-sm">缩放:</div>
-      <ElSlider v-model="hostState.zoom" size="small" :step="0.1" :min="0.1" :max="3.0"></ElSlider>
+      <ElSlider v-model="hostState.zoom" size="small" :step="0.1" :min="0.6" :max="2.0"></ElSlider>
       <ElButton @click="handleZoomReset" title="重置缩放">1:1</ElButton>
     </div>
 

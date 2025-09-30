@@ -1,23 +1,37 @@
 <template>
-  <div class="h-screen flex flex-col p-4">
-    <Toolbar :host="host" />
-    <!-- 2. 自动撑满剩余区域 -->
-    <main class="flex-1 overflow-auto flex">
-      <div class="flex-1 border-[0.5px] border-gray-200">
-        <div class="text-center pt-2 pb-2 border-b-[0.5px] border-gray-200">添加图形</div>
+  <div class="h-screen flex flex-col overflow-hidden">
+    <!-- 顶部工具栏 -->
+    <div
+      class="h-16 w-full border-b border-gray-300 flex items-center justify-center px-4 bg-white p-5"
+    >
+      <Toolbar :host="host" />
+    </div>
+
+    <!-- 中间主区域 -->
+    <div class="flex flex-1 min-h-0">
+      <!-- 左侧菜单栏 -->
+      <div class="w-[200px] border-r border-gray-200 bg-gray-50">
+        <div class="text-center py-2 border-b border-gray-200">添加图形</div>
         <Toolbox :host="host" />
       </div>
-      <div class="flex-6 bg-gray-200 dark:bg-gray-600 flex justify-center">
-        <!-- 画布 -->
-        <CanvasView :host="host"></CanvasView>
+
+      <!-- 中间内容区（可滚动） -->
+      <div class="flex-1 overflow-auto bg-gray-100">
+        <div class="w-[2000px] h-[2000px] bg-white m-4 shadow" ref="canvasWrapper">
+          <CanvasView :host="host" />
+        </div>
       </div>
-      <!-- 右侧属性设置 -->
-      <div class="flex-2 border-[0.5px] border-gray-200 p-5">
-        <PropertyPanel :host="host"></PropertyPanel>
+
+      <!-- 右侧属性栏 -->
+      <div class="w-[400px] border-l border-gray-200 p-4 bg-white">
+        <PropertyPanel :host="host" />
       </div>
-    </main>
-    <!-- 3. 固定高度底部 -->
-    <Bottom :host="host"></Bottom>
+    </div>
+
+    <!-- 底部状态栏 -->
+    <div class="h-10 border-t border-gray-300 flex items-center px-4 bg-white">
+      <Bottom :host="host" />
+    </div>
   </div>
 </template>
 

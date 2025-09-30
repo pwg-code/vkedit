@@ -12,7 +12,7 @@ export class RectElement implements IGraphicElement {
     public y: number,
     public width: number = 200,
     public height: number = 100,
-    public fill: string = '#3498db',
+    public fill: string = '',
     public stroke: string = '#2980b9',
     public strokeWidth: number = 2,
     public cornerRadius: number = 0,

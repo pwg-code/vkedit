@@ -4,8 +4,8 @@
       <ElButton
         @click="
           onCreate(graphicType[0], {
-            x: props.host.getState().width / 2,
-            y: props.host.getState().height / 2,
+            x: 50,
+            y: 50,
           })
         "
       >
@@ -27,12 +27,4 @@ const props = defineProps<{
 }>()
 
 const { graphicTypes, onCreate } = useGraphicType(props.host)
-
-watch(
-  graphicTypes,
-  (value) => {
-    console.log('监听到的已注册的图像类插件', value)
-  },
-  { deep: true },
-)
 </script>
