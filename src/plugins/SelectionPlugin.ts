@@ -35,7 +35,7 @@ export class SelectionPlugin extends BasePlugin {
     this.host.off('element:removed', this.handleElementRemoved.bind(this))
   }
 
-  private handleClick(point: Point2D): void {
+  private handleClick(event: any): void {
     // 如果正在用进行范围选择，则不做任何操作
     if (this.isSelecting) {
       return
@@ -48,11 +48,15 @@ export class SelectionPlugin extends BasePlugin {
     }
   }
 
-  private handleMouseDown(point: Point2D): void {
+  private handleMouseDown(event: any): void {
     if (!this.host || this.host.getState().currentTool !== 'select') return
-    this.selectionStart = point
+    this.selectionStart = event.point
     // 检查是否点击了元素
-    this.mouseDownInElement = this.findElementAtPoint(point)
+    if (event.target !== event.currentTarget) {
+      this.mouseDownInElement = this.host.getElement(event.target.attrs.id) || null
+    } else {
+      this.mouseDownInElement = null
+    }
     // 如果点击的是图形则不做任何事情
     if (this.mouseDownInElement) {
       return
@@ -60,13 +64,13 @@ export class SelectionPlugin extends BasePlugin {
     this.isSelecting = true
   }
 
-  private handleMouseMove(point: Point2D): void {
+  private handleMouseMove(event: any): void {
     // 如果没有开始选择，则不做任何操作
     if (!this.isSelecting || !this.host) return
-    this.selectionEnd = point
+    this.selectionEnd = event.point
   }
 
-  private handleMouseUp(point: Point2D): void {
+  private handleMouseUp(event: any): void {
     // 如果没有开始选择，则不做任何操作
     if (!this.isSelecting) {
       return
@@ -83,24 +87,6 @@ export class SelectionPlugin extends BasePlugin {
 
   private handleElementRemoved(element: IGraphicElement): void {
     this.deselectElement(element.id)
-  }
-
-  private findElementAtPoint(point: Point2D): IGraphicElement | null {
-    // 实现点选逻辑
-    if (!this.host) return null
-    // 简化实现：遍历所有元素检查点是否在边界框内
-    for (const element of this.host.getElements().values()) {
-      const bbox = element.getBoundingBox()
-      if (
-        point.x >= bbox.x &&
-        point.x <= bbox.x + bbox.width &&
-        point.y >= bbox.y &&
-        point.y <= bbox.y + bbox.height
-      ) {
-        return element
-      }
-    }
-    return null
   }
 
   private findElementsInRect(start: Point2D, end: Point2D): IGraphicElement[] {
@@ -153,12 +139,12 @@ export class SelectionPlugin extends BasePlugin {
 
   private updateSelection(elementIds: string[]): void {
     this.selectionElements = new Set(elementIds)
-    this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
     this.updateHostSelection()
   }
 
   private updateHostSelection(): void {
     if (!this.host) return
+    this.host.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
     this.host.setState({
       selectedElementIds: Array.from(this.selectionElements),
     })

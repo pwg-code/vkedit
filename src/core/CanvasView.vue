@@ -97,6 +97,7 @@ const updateTransformerNodes = (selection: Set<string>) => {
   const transformerNode = transformerRef.value.getNode()
   if (transformerNode) {
     transformerNode.nodes(nodes)
+    console.log('updateTransformerNodes', nodes, selection)
   }
 }
 

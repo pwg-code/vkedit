@@ -54,13 +54,13 @@ export default function (host: IEditorHost) {
   // 鼠标按下
   const handleClick = (event: any) => {
     const point = getEventPoint(event)
-    host.emit(EditorEvents.CANVAS_CLICK, point)
+    host.emit(EditorEvents.CANVAS_CLICK, { point, ...event })
   }
 
   // 鼠标按下
   const handleMouseDown = (event: any) => {
     const point = getEventPoint(event)
-    host.emit('canvas:mousedown', point)
+    host.emit('canvas:mousedown', { point, ...event })
     if (host.getState().currentTool === 'select') {
       isSelecting.value = true
       selectionStart.value = point
@@ -70,7 +70,7 @@ export default function (host: IEditorHost) {
 
   const handleMouseMove = (event: any) => {
     const point = getEventPoint(event)
-    host.emit('canvas:mousemove', point)
+    host.emit('canvas:mousemove', { point, ...event })
     if (isSelecting.value) {
       selectionEnd.value = point
     }
@@ -78,7 +78,7 @@ export default function (host: IEditorHost) {
 
   const handleMouseUp = (event: any) => {
     const point = getEventPoint(event)
-    host.emit('canvas:mouseup', point)
+    host.emit('canvas:mouseup', { point, ...event })
     isSelecting.value = false
   }
 
