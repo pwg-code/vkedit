@@ -1,28 +1,18 @@
 import { BasePlugin } from '../../styles/BasePlugin'
-import type {
-  IEditorHost,
-  IGraphicType,
-  IGraphicElement,
-  Point2D,
-  IPropertyPanel,
-} from '../../types'
-import RectGraphic from './RectGraphic.vue'
-import RectPropertyPanel from './RectPropertyPanel.vue'
+import type { IGraphicType, IGraphicElement, IPropertyPanel } from '../../types'
+import TextGraphic from './TextGraphic.vue'
+import TextPropertyPanel from './TextPropertyPanel.vue'
 
 // 矩形元素实现
-export class RectElement implements IGraphicElement {
+export class TextElement implements IGraphicElement {
   [key: string]: any
-  public readonly type = 'rect'
+  public readonly type = 'text'
   constructor(
     public id: string,
     public x: number,
     public y: number,
-    public width: number = 200,
-    public height: number = 100,
-    public fill: string = '',
-    public stroke: string = '#000000',
-    public strokeWidth: number = 2,
-    public cornerRadius: number = 0,
+    public text: string = '新建文本',
+    public fontSize: number = 20,
     public rotation: number = 0,
     public scaleX: number = 1,
     public scaleY: number = 1,
@@ -35,22 +25,18 @@ export class RectElement implements IGraphicElement {
     return {
       x: this.x,
       y: this.y,
-      width: this.width * this.scaleX,
-      height: this.height * this.scaleY,
+      width: 10 * this.scaleX,
+      height: 10 * this.scaleY,
     }
   }
 
   clone(): IGraphicElement {
-    return new RectElement(
-      `rect-${Date.now()}`,
+    return new TextElement(
+      `text-${Date.now()}`,
       this.x,
       this.y,
-      this.width,
-      this.height,
-      this.fill,
-      this.stroke,
-      this.strokeWidth,
-      this.cornerRadius,
+      this.text,
+      this.fontSize,
       this.rotation,
       this.scaleX,
       this.scaleY,
@@ -65,12 +51,8 @@ export class RectElement implements IGraphicElement {
       id: this.id,
       x: this.x,
       y: this.y,
-      width: this.width,
-      height: this.height,
-      fill: this.fill,
-      stroke: this.stroke,
-      strokeWidth: this.strokeWidth,
-      cornerRadius: this.cornerRadius,
+      text: this.text,
+      fontSize: this.fontSize,
       rotation: this.rotation,
       scaleX: this.scaleX,
       scaleY: this.scaleY,
@@ -84,51 +66,50 @@ export class RectElement implements IGraphicElement {
   }
 }
 
-export class RectPlugin extends BasePlugin {
-  public name = 'rect-plugin'
+export class TextPlugin extends BasePlugin {
+  public name = 'text-plugin'
   public version = '1.0.0'
   protected onInstall(): void {
     if (!this.host) return
     // 注册矩形图形类型
     this.host.emit('graphic-type:registered', this.getGraphicType())
-    // 注册工具
-    this.host.emit('tool:registered', {
-      id: 'rect',
-      name: 'rectangle',
-      icon: '⬜',
-      title: '矩形工具',
-      description: '绘制矩形和正方形',
-    })
-
     // 注册属性面板
     this.host.emit('property-panel:registered', this.getPropertyPanel())
   }
   private getPropertyPanel(): IPropertyPanel {
     return {
-      type: 'rect',
-      title: '矩形属性',
-      getComponent: () => RectPropertyPanel,
+      type: 'text',
+      title: '文本属性',
+      getComponent: () => TextPropertyPanel,
     }
   }
 
   private getGraphicType(): IGraphicType {
     return {
-      type: 'rect',
-      name: '矩形',
-      icon: '⬜',
+      type: 'text',
+      name: '文本',
+      icon: '',
       defaultProps: {
-        width: 100,
-        height: 60,
         fill: '#3498db',
         stroke: '#2980b9',
         strokeWidth: 2,
         cornerRadius: 0,
       },
       getComponent() {
-        return RectGraphic
+        return TextGraphic
       },
       createElement: (x: number, y: number) => {
-        return new RectElement(`rect-${Date.now()}`, x, y, 100, 60)
+        return new TextElement(`text-${Date.now()}`, x, y)
+      },
+      getTransformAttr(event, element) {
+        return {
+          oldAttrs: {
+            ...element,
+          },
+          newAttrs: {
+            ...event.target.attrs,
+          },
+        }
       },
     }
   }

@@ -89,7 +89,7 @@ export class SelectionPlugin extends BasePlugin {
     // 实现点选逻辑
     if (!this.host) return null
     // 简化实现：遍历所有元素检查点是否在边界框内
-    for (const element of this.host.getElements()) {
+    for (const element of this.host.getElements().values()) {
       const bbox = element.getBoundingBox()
       if (
         point.x >= bbox.x &&
@@ -116,7 +116,7 @@ export class SelectionPlugin extends BasePlugin {
     }
 
     // 简化实现：检查元素边界框是否与选择矩形相交
-    for (const element of this.host.getElements()) {
+    for (const element of this.host.getElements().values()) {
       const bbox = element.getBoundingBox()
       if (this.rectIntersect(rect, bbox)) {
         elements.push(element)

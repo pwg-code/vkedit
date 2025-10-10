@@ -21,9 +21,12 @@ export default function (host: IEditorHost) {
   // 创建图形
   const getElementComponent = (type: string) => {
     const graphicType = graphicTypes.value.get(type)
-    return graphicType?.getComponent() || 'div'
+    return graphicType?.getComponent() || undefined
   }
 
+  const getGraphicType = (type: string) => {
+    return graphicTypes.value.get(type)
+  }
   onMounted(() => {
     // 订阅图形插件注册  收集已订阅的插件
     host.on(EditorEvents.GRAPHIC_TYPE_REGISTERED, (graphic: IGraphicType) => {
@@ -41,5 +44,5 @@ export default function (host: IEditorHost) {
     })
   })
 
-  return { graphicTypes, onCreate, getElementComponent }
+  return { graphicTypes, onCreate, getElementComponent, getGraphicType }
 }

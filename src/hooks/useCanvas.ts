@@ -9,8 +9,7 @@ export default function (host: IEditorHost) {
   const stageConfig = computed(() => ({
     width: hostState.value.width,
     height: hostState.value.height,
-    // scaleX: hostState.value.zoom,
-    // scaleY: hostState.value.zoom,
+
     x: stagePosition.x,
     y: stagePosition.y,
   }))
@@ -164,5 +163,6 @@ export default function (host: IEditorHost) {
     handleMouseMove,
     handleMouseUp,
     handleWheel,
+    initElements,
   }
 }

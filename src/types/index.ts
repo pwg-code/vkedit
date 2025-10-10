@@ -36,7 +36,6 @@ export interface IGraphicElement {
   scaleY: number
   visible: boolean
   locked: boolean
-
   getBoundingBox(): BoundingBox
   clone(): IGraphicElement
   serialize(): any
@@ -70,6 +69,17 @@ export interface IGraphicType {
   defaultProps: any
   getComponent(): Component
   createElement(x: number, y: number): IGraphicElement
+  getTransformAttr?(
+    event: any,
+    element: any,
+  ): { oldAttrs: { [key: string]: any }; newAttrs: { [key: string]: any } }
+}
+
+// 属性面板
+export interface IPropertyPanel {
+  type: string
+  title: string
+  getComponent(): Component
 }
 
 // 宿主接口

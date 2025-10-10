@@ -15,7 +15,7 @@ export class EditorHost implements IEditorHost {
     currentTool: 'select',
     selectedElementIds: [],
     snapToGrid: true,
-    showGrid: true,
+    showGrid: false,
     width: 800,
     height: 800,
   })

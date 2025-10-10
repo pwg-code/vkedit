@@ -58,21 +58,14 @@ export class TransformElementCommand extends BaseCommand {
   }
 
   private applyState(state: any): void {
-    // 更新基础变换属性
-    const transformProps = ['x', 'y', 'rotation', 'scaleX', 'scaleY']
-    transformProps.forEach((prop) => {
-      if (state[prop] !== undefined) {
-        ;(this.element as any)[prop] = state[prop]
-      }
-    })
+    // 更新属性
+    for (const key in state) {
+      if ((this.element as any)[key] !== undefined) {
+        console.log('应用属性', key, state[key])
 
-    // 更新图形特定属性
-    const graphicProps = ['width', 'height', 'radius', 'points']
-    graphicProps.forEach((prop) => {
-      if (state[prop] !== undefined && (this.element as any)[prop] !== undefined) {
-        ;(this.element as any)[prop] = state[prop]
+        ;(this.element as any)[key] = state[key]
       }
-    })
+    }
   }
 
   private detectTransformType(oldState: any, newState: any): string {

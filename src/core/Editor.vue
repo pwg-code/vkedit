@@ -1,9 +1,7 @@
 <template>
   <div class="h-screen flex flex-col overflow-hidden">
     <!-- 顶部工具栏 -->
-    <div
-      class="h-16 w-full border-b border-gray-300 flex items-center justify-center px-4 bg-white p-5"
-    >
+    <div class="h-16 w-full border-b border-gray-300 px-4 bg-white">
       <Toolbar :host="host" />
     </div>
 
@@ -16,8 +14,9 @@
       </div>
 
       <!-- 中间内容区（可滚动） -->
-      <div class="flex-1 overflow-auto bg-gray-100">
-        <div class="w-[2000px] h-[2000px] bg-white m-4 shadow" ref="canvasWrapper">
+      <div class="flex-1 overflow-auto bg-gray-100 flex justify-center">
+        <!-- <div class="w-[2000px] h-[2000px] bg-white m-4 shadow" ref="canvasWrapper"> -->
+        <div class="bg-white m-auto shadow-xl rounded-2xl" ref="canvasWrapper">
           <CanvasView :host="host" />
         </div>
       </div>
