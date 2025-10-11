@@ -2,6 +2,7 @@ import { BaseCommand } from './BaseCommand'
 import type { IEditorHost, IGraphicElement } from '../types'
 import { EditorEvents } from '@/types/EventTypes'
 import type { ICommand } from './ICommand'
+import type { ElementsPlugin } from '@/plugins'
 
 export class UpdatePropertyCommand extends BaseCommand {
   public name = 'UPDATE_PROPERTY'
@@ -47,7 +48,6 @@ export class UpdatePropertyCommand extends BaseCommand {
       }
       current = current[parts[i]]
     }
-
     // 设置最后一个属性
     current[parts[parts.length - 1]] = value
   }

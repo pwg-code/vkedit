@@ -61,8 +61,6 @@ export class TransformElementCommand extends BaseCommand {
     // 更新属性
     for (const key in state) {
       if ((this.element as any)[key] !== undefined) {
-        console.log('应用属性', key, state[key])
-
         ;(this.element as any)[key] = state[key]
       }
     }

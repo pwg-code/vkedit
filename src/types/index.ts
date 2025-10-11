@@ -50,12 +50,11 @@ export interface IEditorPlugin {
   uninstall(): void
   activate?(): void
   deactivate?(): void
-
   // 注册图形类型
   registerGraphicTypes?(): IGraphicType[]
-
   // 提供工具栏工具
   getTools?(): IPluginTool[]
+  [key: string]: any
 }
 
 export interface IPluginTool {
@@ -66,7 +65,7 @@ export interface IGraphicType {
   type: string
   name: string
   icon: string
-  defaultProps: any
+  defaultProps?: any
   getComponent(): Component
   createElement(x: number, y: number): IGraphicElement
   getTransformAttr?(
@@ -84,18 +83,10 @@ export interface IPropertyPanel {
 
 // 宿主接口
 export interface IEditorHost {
-  // 画布操作
-  addElement(element: IGraphicElement): void
-  removeElement(elementId: string): void
-  getElement(elementId: string): IGraphicElement | undefined
-  getElements(): IGraphicElement[]
-  getSelectedElements(): IGraphicElement[]
-  clearSelection(): void
-
   // 插件管理
   registerPlugin(plugin: IEditorPlugin): void
   unregisterPlugin(pluginName: string): void
-  getPlugin<T extends IEditorPlugin>(pluginName: string): IEditorPlugin
+  getPlugin<T extends IEditorPlugin>(pluginName: string): T | null
 
   // 事件系统
   on(event: string, handler: Function): void
@@ -116,7 +107,6 @@ export interface IEditorHost {
 export interface IEditorState {
   zoom: number
   currentTool: string
-  selectedElementIds: string[]
   snapToGrid: boolean
   showGrid: boolean
   width: number

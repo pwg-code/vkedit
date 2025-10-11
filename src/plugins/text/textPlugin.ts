@@ -1,4 +1,4 @@
-import { BasePlugin } from '../../styles/BasePlugin'
+import { BasePlugin } from '../../types/BasePlugin'
 import type { IGraphicType, IGraphicElement, IPropertyPanel } from '../../types'
 import TextGraphic from './TextGraphic.vue'
 import TextPropertyPanel from './TextPropertyPanel.vue'
@@ -89,12 +89,6 @@ export class TextPlugin extends BasePlugin {
       type: 'text',
       name: '文本',
       icon: '',
-      defaultProps: {
-        fill: '#3498db',
-        stroke: '#2980b9',
-        strokeWidth: 2,
-        cornerRadius: 0,
-      },
       getComponent() {
         return TextGraphic
       },

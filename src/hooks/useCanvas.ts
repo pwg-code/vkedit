@@ -1,3 +1,4 @@
+import type { ElementsPlugin } from '@/plugins'
 import type { IEditorHost, IEditorState, IGraphicElement, Point2D } from '@/types'
 import { EditorEvents } from '@/types/EventTypes'
 import { computed, onMounted, reactive, ref } from 'vue'
@@ -17,7 +18,10 @@ export default function (host: IEditorHost) {
   // 所有的图像元素
   const elements = ref<IGraphicElement[]>([])
   const initElements = () => {
-    elements.value = host.getElements()
+    const a = host.getPlugin<ElementsPlugin>('elements')?.elements.values()
+    if (a) {
+      elements.value = Array.from(a)
+    }
   }
 
   const isSelecting = ref(false)
@@ -108,29 +112,21 @@ export default function (host: IEditorHost) {
     hostState.value.zoom = Math.min(Math.max(newScale, 0.2), 3)
   }
 
-  // function handleWheel(e: any) {
-  //   e.evt.preventDefault()
-
-  //   const stage = stageRef.value.getNode()
-  //   const oldScale = hostState.value.zoom
-
-  //   const pointer = stage.getPointerPosition()
-  //   if (!pointer) return
-
-  //   const scaleBy = 1.05
-  //   const direction = e.evt.deltaY > 0 ? -1 : 1
-  //   const newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy
-
-  //   // 限制缩放范围
-  //   hostState.value.zoom = Math.min(Math.max(newScale, 0.6), 3)
-  //   const mousePointTo = {
-  //     x: (pointer.x - stage.x()) / oldScale,
-  //     y: (pointer.y - stage.y()) / oldScale,
-  //   }
-
-  //   stagePosition.x = pointer.x - mousePointTo.x * hostState.value.zoom
-  //   stagePosition.y = pointer.y - mousePointTo.y * hostState.value.zoom
-  // }
+  // 键盘事件
+  function handleKeyDown(event: any) {
+    host.emit(EditorEvents.CANVAS_KEYDOWN, event)
+    if (event.code == 'Delete') {
+      host.emit(EditorEvents.CANVAS_KEYDOWN_DELETE, event)
+    } else if (event.code == 'ArrowLeft') {
+      host.emit(EditorEvents.CANVAS_KEYDOWN_LEFT, event)
+    } else if (event.code == 'ArrowRight') {
+      host.emit(EditorEvents.CANVAS_KEYDOWN_RIGHT, event)
+    } else if (event.code == 'ArrowUp') {
+      host.emit(EditorEvents.CANVAS_KEYDOWN_UP, event)
+    } else if (event.code == 'ArrowDown') {
+      host.emit(EditorEvents.CANVAS_KEYDOWN_DOWN, event)
+    }
+  }
 
   const getEventPoint = (event: any): Point2D => {
     const stage = event.target.getStage()
@@ -163,6 +159,7 @@ export default function (host: IEditorHost) {
     handleMouseMove,
     handleMouseUp,
     handleWheel,
+    handleKeyDown,
     initElements,
   }
 }

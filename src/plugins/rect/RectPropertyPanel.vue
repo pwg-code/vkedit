@@ -76,8 +76,6 @@ interface Props {
 const { element, host } = defineProps<Props>()
 
 const updateProperty = (property: string, value: any) => {
-  console.log(property, value)
-
   // 这里应该通过host的命令系统执行更新
   if (property in element) {
     host.executeCommand(

@@ -3,7 +3,7 @@
     <!-- 如果有选择的元素则获取元素提供的面板 否则显示画布设置 -->
     <template v-if="activeElement">
       <component
-        :is="getPanel(activeElement?.type || '')"
+        :is="propertyPanelsPlugin?.getPanel(activeElement?.type || '')"
         :element="activeElement"
         :host="host"
       ></component>
@@ -30,23 +30,20 @@
 import { onMounted, ref, type Component } from 'vue'
 import type { IEditorHost, IGraphicElement } from '../types'
 import { EditorEvents } from '@/types/EventTypes'
-import usePropertyPanel from '@/hooks/usePropertyPanel'
 import { ElForm, ElFormItem, ElInputNumber, ElDivider } from 'element-plus'
+import type { PropertyPanelsPlugin } from '@/plugins/PropertyPanelsPlugin'
 const { host } = defineProps<{ host: IEditorHost }>()
 const hostState = ref(host.getState())
 
-const { getPanel } = usePropertyPanel(host)
-
+const propertyPanelsPlugin = host.getPlugin<PropertyPanelsPlugin>('property-panels')
 const activeElement = ref<IGraphicElement>()
 
 // 更新属性设置面板
-const updateSettings = (selection: Set<string>) => {
+const updateSettings = (selection: Map<string, IGraphicElement>) => {
   // 如果插件提供了组件则使用组件  否则显示基本长宽设置
   activeElement.value = undefined
   if (selection.size !== 1) return
-  const elementId = selection.values().next().value
-  if (!elementId) return
-  activeElement.value = host.getElement(elementId) || undefined
+  activeElement.value = selection.entries().next().value?.[1]
 }
 
 onMounted(() => {

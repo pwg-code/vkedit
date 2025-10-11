@@ -1,4 +1,4 @@
-import { BasePlugin } from '../../styles/BasePlugin'
+import { BasePlugin } from '../../types/BasePlugin'
 import type {
   IEditorHost,
   IGraphicType,

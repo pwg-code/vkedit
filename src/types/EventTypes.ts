@@ -54,6 +54,18 @@ export enum EditorEvents {
   CANVAS_DRAG_START = 'canvas:dragstart',
   /** 画布拖拽结束 */
   CANVAS_DRAG_END = 'canvas:dragend',
+  /** 按下键盘 */
+  CANVAS_KEYDOWN = 'canvas:keydown',
+  /** 按下删除键 */
+  CANVAS_KEYDOWN_DELETE = 'canvas:keydown-delete',
+  /** 按下方向键左 */
+  CANVAS_KEYDOWN_LEFT = 'canvas:keydown-left',
+  /** 按下方向键右 */
+  CANVAS_KEYDOWN_RIGHT = 'canvas:keydown-right',
+  /** 按下方向键上 */
+  CANVAS_KEYDOWN_UP = 'canvas:keydown-up',
+  /** 按下方向键下 */
+  CANVAS_KEYDOWN_DOWN = 'canvas:keydown-down',
 
   // ==================== 工具事件 ====================
   /** 工具改变 */

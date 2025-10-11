@@ -57,7 +57,7 @@
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
-import type { TextElement } from './textPlugin'
+import type { TextElement } from './TextPlugin'
 import { ElDivider, ElInputNumber, ElColorPicker, ElForm, ElFormItem } from 'element-plus'
 import { UpdatePropertyCommand } from '@/commands'
 

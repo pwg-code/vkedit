@@ -13,7 +13,6 @@ export class EditorHost implements IEditorHost {
   public state = reactive<IEditorState>({
     zoom: 1,
     currentTool: 'select',
-    selectedElementIds: [],
     snapToGrid: true,
     showGrid: false,
     width: 800,
@@ -37,42 +36,12 @@ export class EditorHost implements IEditorHost {
     }
   }
 
-  // 画布操作
-  addElement(element: IGraphicElement): void {
-    this.elements.set(element.id, element)
-    this.emitEvent(EditorEvents.ELEMENT_ADDED, { element, elementId: element.id })
-  }
-
-  removeElement(elementId: string): void {
-    const element = this.elements.get(elementId)
-    if (element) {
-      this.elements.delete(elementId)
-      this.emitEvent(EditorEvents.ELEMENT_REMOVED, { element, elementId: element.id })
-    }
-  }
-
-  getElement(elementId: string): IGraphicElement | undefined {
-    return this.elements.get(elementId)
-  }
-
-  getSelectedElements(): IGraphicElement[] {
-    return this.state.selectedElementIds
-      .map((id) => this.elements.get(id))
-      .filter(Boolean) as IGraphicElement[]
-  }
-
-  clearSelection(): void {
-    this.state.selectedElementIds = []
-    this.emitEvent(EditorEvents.SELECTION_CHANGED, { selectedElementIds: [] })
-  }
-
   // 插件管理
   registerPlugin(plugin: IEditorPlugin): void {
     if (this.plugins.has(plugin.name)) {
       console.warn(`Plugin ${plugin.name} is already registered`)
       return
     }
-
     this.plugins.set(plugin.name, plugin)
     plugin.install(this)
     this.emitEvent(EditorEvents.PLUGIN_REGISTERED, { plugin })
@@ -87,8 +56,13 @@ export class EditorHost implements IEditorHost {
     }
   }
 
-  getPlugin<T extends IEditorPlugin>(pluginName: string): IEditorPlugin {
-    return this.plugins.get(pluginName) as T
+  getPlugin<T = any>(pluginName: string): T | null {
+    if (this.plugins.has(pluginName)) {
+      return this.plugins.get(pluginName) as T
+    } else {
+      console.warn('不存在插件' + pluginName)
+      return null
+    }
   }
 
   // 事件系统
@@ -151,8 +125,8 @@ export class EditorHost implements IEditorHost {
     this.emitEvent(EditorEvents.STATE_CHANGED, { state: this.state })
   }
 
-  // 获取所有元素
-  getElements(): IGraphicElement[] {
-    return [...this.elements.values()]
-  }
+  // // 获取所有元素
+  // getElements(): IGraphicElement[] {
+  //   return [...this.elements.values()]
+  // }
 }

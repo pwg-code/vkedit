@@ -1,49 +1,47 @@
 <template>
-  <!-- <div
-    class="min-w-[2000px] min-h-[2000px] bg-gray-400 flex items-center justify-center"
-    ref="parentRef"
-    :style="{
-      transform: `scale(${hostState.zoom})`,
-      transformOrigin: `${transformOrigin.x}px ${transformOrigin.y}px`,
-    }"
-  > -->
-  <!-- <div class="bg-gray-400 flex items-center justify-center" ref="parentRef"> -->
-  <v-stage
-    ref="stageRef"
-    :config="stageConfig"
-    @mousedown="handleMouseDown"
-    @mousemove="handleMouseMove"
-    @mouseup="handleMouseUp"
-    @wheel="handleWheel"
-    @click="handleClick"
+  <div
+    class="bg-white m-auto shadow-xl rounded-2xl"
+    ref="canvasWrapper"
+    tabindex="0"
+    @keydown="handleKeyDown"
   >
-    <v-layer ref="layerRef">
-      <!-- 网格 -->
-      <v-line
-        v-if="hostState.showGrid"
-        v-for="(line, index) in gridLines"
-        :key="`grid-${index}`"
-        :config="line"
-      />
-      <component
-        v-for="element in elements"
-        :key="element.id"
-        :is="getElementComponent(element.type)"
-        :element="element"
-        @transform="handleElementTransform($event, element)"
-        @transformend="handleElementTransformEnd($event, element)"
-        @dragend="handleDragEnd($event, element)"
-      />
-      <v-transformer ref="transformerRef" :config="{}"></v-transformer>
-      <!-- <v-transformer
-        ref="transformerRef"
-        :config="{ enabledAnchors: ['bottom-right'] }"
-      ></v-transformer> -->
+    <v-stage
+      ref="stageRef"
+      :config="stageConfig"
+      @mousedown="handleMouseDown"
+      @mousemove="handleMouseMove"
+      @mouseup="handleMouseUp"
+      @wheel="handleWheel"
+      @click="handleClick"
+    >
+      <v-layer ref="layerRef">
+        <!-- 网格 -->
+        <v-line
+          v-if="hostState.showGrid"
+          v-for="(line, index) in gridLines"
+          :key="`grid-${index}`"
+          :config="line"
+        />
+        <component
+          v-for="element in elements"
+          :key="element.id"
+          :is="graphicTypesPlugin?.getElementComponent(element.type)"
+          :element="element"
+          :host="host"
+          @transform="handleElementTransform($event, element)"
+          @transformend="handleElementTransformEnd($event, element)"
+          @dragend="handleDragEnd($event, element)"
+        />
+        <v-transformer ref="transformerRef" :config="{}"></v-transformer>
+        <!-- <v-transformer
+                ref="transformerRef"
+                :config="{ enabledAnchors: ['bottom-right'] }"
+              ></v-transformer> -->
 
-      <SelectionRectangle v-if="isSelecting" :start="selectionStart" :end="selectionEnd" />
-    </v-layer>
-  </v-stage>
-  <!-- </div> -->
+        <SelectionRectangle v-if="isSelecting" :start="selectionStart" :end="selectionEnd" />
+      </v-layer>
+    </v-stage>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -56,6 +54,7 @@ import useGraphicType from '@/hooks/useGraphicType'
 import { EditorEvents } from '@/types/EventTypes'
 import { TransformElementCommand, UpdatePropertyCommand } from '@/commands'
 import useCanvas from '@/hooks/useCanvas'
+import type { GraphicTypesPlugin } from '@/plugins'
 const parentRef = ref<HTMLElement | null>(null)
 
 interface Props {
@@ -78,6 +77,7 @@ const {
   handleMouseMove,
   handleMouseUp,
   handleWheel,
+  handleKeyDown,
   initElements,
 } = useCanvas(props.host)
 
@@ -87,17 +87,21 @@ const layerRef = ref()
 const transformerRef = ref()
 
 // 更新选中元素
-const updateTransformerNodes = (selection: Set<string>) => {
+const updateTransformerNodes = (selection: Map<string, IGraphicElement>) => {
   const nodes: any[] = []
   if (layerRef.value) {
-    selection.forEach((id) => {
-      nodes.push(layerRef.value.getNode().findOne('#' + id))
+    selection.forEach((e) => {
+      const node = layerRef.value.getNode().findOne('#' + e.id)
+      if (node) {
+        nodes.push(node)
+      } else {
+        console.warn('找不到节点', e.id)
+      }
     })
   }
   const transformerNode = transformerRef.value.getNode()
   if (transformerNode) {
     transformerNode.nodes(nodes)
-    console.log('updateTransformerNodes', nodes, selection)
   }
 }
 
@@ -107,7 +111,7 @@ let isTransforming = false
 // 图形变换更改属性
 const handleElementTransform = (event: any, element: any) => {
   // 如果图形元素没有提供getTransformAttr则使用默认
-  const graphicType = getGraphicType(element.type)
+  const graphicType = graphicTypesPlugin?.getGraphicType(element.type)
   if (graphicType?.getTransformAttr) {
     const { oldAttrs, newAttrs } = graphicType.getTransformAttr(event, element)
     command = new TransformElementCommand(element, props.host, oldAttrs, newAttrs)
@@ -167,7 +171,8 @@ const getTransformAttr = (event: any, element: any) => {
   return { oldAttrs, newAttrs }
 }
 
-const { getElementComponent, getGraphicType } = useGraphicType(props.host)
+// const { getElementComponent, getGraphicType } = useGraphicType(props.host)
+const graphicTypesPlugin = props.host.getPlugin<GraphicTypesPlugin>('graphic-types')
 
 onMounted(() => {
   // 选中变更事件

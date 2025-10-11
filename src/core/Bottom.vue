@@ -1,19 +1,10 @@
 <template>
   <div class="w-full h-12 flex items-center justify-end gap-6 p-2">
     <div class="flex-4"></div>
-    <!-- 缩放控制 -->
-    <!-- <div class="flex gap-2 flex-2">
-      <div class="min-w-[60px] text-sm">缩放:</div>
-      <ElSlider v-model="hostState.zoom" size="small" :step="0.1" :min="0.6" :max="2.0"></ElSlider>
-      <ElButton @click="handleZoomReset" title="重置缩放">1:1</ElButton>
-    </div> -->
-
     <!-- 状态显示 -->
     <div class="text-sm flex gap-2 flex-2">
       <span class="status-item">工具: {{ currentToolTitle }}</span>
-      <span class="status-item" v-if="hasSelection">
-        选中: {{ hostState.selectedElementIds.length }} 个元素
-      </span>
+      <span class="status-item" v-if="selectionCount"> 选中: {{ selectionCount }} 个元素 </span>
       <span class="status-item">坐标: ({{ cursorPosition.x }}, {{ cursorPosition.y }})</span>
     </div>
   </div>
@@ -23,6 +14,7 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import type { IEditorHost, IEditorState } from '../types'
 import { ElButton, ElSlider } from 'element-plus'
+import type { SelectionPlugin } from '@/plugins'
 
 const { host } = defineProps<{ host: IEditorHost }>()
 
@@ -35,8 +27,9 @@ const currentToolTitle = computed(() => {
   return hostState.value.currentTool
 })
 
-const hasSelection = computed(() => {
-  return hostState.value.selectedElementIds.length > 0
+const selectionCount = computed(() => {
+  const selector = host.getPlugin<SelectionPlugin>('selection')
+  return selector?.selectionElements.size
 })
 
 const handleZoomIn = () => {

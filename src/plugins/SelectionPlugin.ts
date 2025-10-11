@@ -1,6 +1,7 @@
 import { EditorEvents } from '@/types/EventTypes'
-import { BasePlugin } from '../styles/BasePlugin'
+import { BasePlugin } from '../types/BasePlugin'
 import type { IGraphicElement, Point2D } from '../types'
+import type { ElementsPlugin } from './ElementsPlugin'
 
 export class SelectionPlugin extends BasePlugin {
   public name = 'selection'
@@ -9,11 +10,15 @@ export class SelectionPlugin extends BasePlugin {
   public isSelecting: boolean = false
   public selectionStart: Point2D = { x: 0, y: 0 }
   public selectionEnd: Point2D = { x: 0, y: 0 }
-  public selectionElements: Set<string> = new Set()
+  public selectionElements: Map<string, IGraphicElement> = new Map()
   public mouseDownInElement: IGraphicElement | null = null
+
+  private elementsPlugin: ElementsPlugin | null = null
 
   protected onInstall(): void {
     if (!this.host) return
+    this.elementsPlugin = this.host.getPlugin('elements') as ElementsPlugin
+
     // 注册事件监听
     this.host.on('canvas:mousedown', this.handleMouseDown.bind(this))
     this.host.on('canvas:mousemove', this.handleMouseMove.bind(this))
@@ -43,7 +48,7 @@ export class SelectionPlugin extends BasePlugin {
     if (this.mouseDownInElement) {
       if (!this.selectionElements.has(this.mouseDownInElement.id)) {
         this.clearSelection()
-        this.selectElement(this.mouseDownInElement.id)
+        this.selectElement(this.mouseDownInElement)
       }
     }
   }
@@ -53,7 +58,7 @@ export class SelectionPlugin extends BasePlugin {
     this.selectionStart = event.point
     // 检查是否点击了元素
     if (event.target !== event.currentTarget) {
-      this.mouseDownInElement = this.host.getElement(event.target.attrs.id) || null
+      this.mouseDownInElement = this.elementsPlugin?.getElement(event.target.attrs.id) || null
     } else {
       this.mouseDownInElement = null
     }
@@ -76,8 +81,8 @@ export class SelectionPlugin extends BasePlugin {
       return
     }
     this.isSelecting = false
-    const elementsInSelection = this.findElementsInRect(this.selectionStart, this.selectionEnd)
-    this.updateSelection(elementsInSelection.map((el) => el.id))
+    this.selectionElements = this.findElementsInRect(this.selectionStart, this.selectionEnd)
+    this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
   }
 
   private handleElementAdded(element: IGraphicElement): void {
@@ -89,11 +94,11 @@ export class SelectionPlugin extends BasePlugin {
     this.deselectElement(element.id)
   }
 
-  private findElementsInRect(start: Point2D, end: Point2D): IGraphicElement[] {
+  private findElementsInRect(start: Point2D, end: Point2D): Map<string, IGraphicElement> {
     // 实现框选逻辑
-    if (!this.host) return []
+    if (!this.host) return new Map()
 
-    const elements: IGraphicElement[] = []
+    const elements: Map<string, IGraphicElement> = new Map()
     const rect = {
       x: Math.min(start.x, end.x),
       y: Math.min(start.y, end.y),
@@ -102,12 +107,12 @@ export class SelectionPlugin extends BasePlugin {
     }
 
     // 简化实现：检查元素边界框是否与选择矩形相交
-    for (const element of this.host.getElements().values()) {
+    this.elementsPlugin?.elements.forEach((element) => {
       const bbox = element.getBoundingBox()
       if (this.rectIntersect(rect, bbox)) {
-        elements.push(element)
+        elements.set(element.id, element)
       }
-    }
+    })
     return elements
   }
 
@@ -121,32 +126,18 @@ export class SelectionPlugin extends BasePlugin {
     )
   }
 
-  private selectElement(elementId: string): void {
-    this.selectionElements.add(elementId)
+  public selectElement(element: IGraphicElement): void {
+    this.selectionElements.set(element.id, element)
     this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
-    this.updateHostSelection()
   }
 
-  private deselectElement(elementId: string): void {
+  public deselectElement(elementId: string): void {
     this.selectionElements.delete(elementId)
-    this.updateHostSelection()
+    this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
   }
 
-  private clearSelection(): void {
+  public clearSelection(): void {
     this.selectionElements.clear()
-    this.updateHostSelection()
-  }
-
-  private updateSelection(elementIds: string[]): void {
-    this.selectionElements = new Set(elementIds)
-    this.updateHostSelection()
-  }
-
-  private updateHostSelection(): void {
-    if (!this.host) return
-    this.host.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
-    this.host.setState({
-      selectedElementIds: Array.from(this.selectionElements),
-    })
+    this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
   }
 }

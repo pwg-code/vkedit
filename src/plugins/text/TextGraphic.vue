@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TextElement } from './textPlugin'
+import type { TextElement } from './TextPlugin'
 
 interface Props {
   element: TextElement

@@ -1,9 +1,9 @@
 <template>
-  <div class="p-5 flex gap-2">
-    <template v-for="graphicType in graphicTypes">
+  <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <template v-for="graphicType in graphicTypesPlugin?.graphicTypes">
       <ElButton
         @click="
-          onCreate(graphicType[0], {
+          graphicTypesPlugin?.onCreate(graphicType[0], {
             x: 50,
             y: 50,
           })
@@ -18,13 +18,11 @@
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
 import { ElButton } from 'element-plus'
-import { EditorEvents } from '../types/EventTypes'
-import { onMounted, watch } from 'vue'
-import useGraphicType from '@/hooks/useGraphicType'
+import { GraphicTypesPlugin } from '@/plugins'
 
-const props = defineProps<{
+const { host } = defineProps<{
   host: IEditorHost
 }>()
 
-const { graphicTypes, onCreate } = useGraphicType(props.host)
+const graphicTypesPlugin = host.getPlugin<GraphicTypesPlugin>('graphic-types')
 </script>

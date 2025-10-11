@@ -15,10 +15,7 @@
 
       <!-- 中间内容区（可滚动） -->
       <div class="flex-1 overflow-auto bg-gray-100 flex justify-center">
-        <!-- <div class="w-[2000px] h-[2000px] bg-white m-4 shadow" ref="canvasWrapper"> -->
-        <div class="bg-white m-auto shadow-xl rounded-2xl" ref="canvasWrapper">
-          <CanvasView :host="host" />
-        </div>
+        <CanvasView :host="host" />
       </div>
 
       <!-- 右侧属性栏 -->
