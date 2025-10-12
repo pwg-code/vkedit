@@ -91,15 +91,6 @@ export class RectPlugin extends BasePlugin {
     if (!this.host) return
     // 注册矩形图形类型
     this.host.emit('graphic-type:registered', this.getGraphicType())
-    // 注册工具
-    this.host.emit('tool:registered', {
-      id: 'rect',
-      name: 'rectangle',
-      icon: '⬜',
-      title: '矩形工具',
-      description: '绘制矩形和正方形',
-    })
-
     // 注册属性面板
     this.host.emit('property-panel:registered', this.getPropertyPanel())
   }

@@ -75,7 +75,6 @@ export class UpdatePropertyCommand extends BaseCommand {
       newValue: this.newValue,
       timestamp: this.timestamp,
     })
-
     this.host.emit(EditorEvents.ELEMENT_UPDATED, {
       element: this.element,
       elementId: this.element.id,

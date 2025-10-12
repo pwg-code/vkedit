@@ -11,6 +11,8 @@ export class TextElement implements IGraphicElement {
     public id: string,
     public x: number,
     public y: number,
+    public width: number = 100,
+    public height: number = 20,
     public text: string = '新建文本',
     public fontSize: number = 20,
     public rotation: number = 0,
@@ -35,6 +37,8 @@ export class TextElement implements IGraphicElement {
       `text-${Date.now()}`,
       this.x,
       this.y,
+      this.width,
+      this.height,
       this.text,
       this.fontSize,
       this.rotation,
@@ -51,6 +55,8 @@ export class TextElement implements IGraphicElement {
       id: this.id,
       x: this.x,
       y: this.y,
+      width: this.width,
+      height: this.height,
       text: this.text,
       fontSize: this.fontSize,
       rotation: this.rotation,
@@ -94,16 +100,6 @@ export class TextPlugin extends BasePlugin {
       },
       createElement: (x: number, y: number) => {
         return new TextElement(`text-${Date.now()}`, x, y)
-      },
-      getTransformAttr(event, element) {
-        return {
-          oldAttrs: {
-            ...element,
-          },
-          newAttrs: {
-            ...event.target.attrs,
-          },
-        }
       },
     }
   }

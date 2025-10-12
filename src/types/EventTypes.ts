@@ -193,7 +193,19 @@ export enum EditorEvents {
   CREATE_STRATEGY_NEEDS_REGISTER = 'create-strategy:needs-register',
 
   // ==================== 属性面板事件 ====================
-  /** 属性面板注册 */
+  /** 属性面板注册(画布) */
+  PROPERTY_PANEL_CANVAS_REGISTERED = 'property-panel-canvas:registered',
+  /** 属性面板注销(画布) */
+  PROPERTY_PANEL_CANVAS_UNREGISTERED = 'property-panel-canvas:unregistered',
+  /** 属性面板注册(公用) 选择任何元素都会显示的 */
+  PROPERTY_PANEL_PUBLIC_REGISTERED = 'property-panel-public:registered',
+  /** 属性面板注销(公用) 选择任何元素都会显示的 */
+  PROPERTY_PANEL_PUBLIC_UNREGISTERED = 'property-panel-public:unregistered',
+  /** 属性面板注册(多个图形公用的) */
+  PROPERTY_PANEL_FOR_GRAPHICS_REGISTERED = 'property-panel-for-graphics:registered',
+  /** 属性面板注销(多个图形公用的) */
+  PROPERTY_PANEL_FOR_GRAPHICS_UNREGISTERED = 'property-panel-for-graphics:unregistered',
+  /** 属性面板注册(选中单个元素时显示的) */
   PROPERTY_PANEL_REGISTERED = 'property-panel:registered',
   /** 属性面板注销 */
   PROPERTY_PANEL_UNREGISTERED = 'property-panel:unregistered',

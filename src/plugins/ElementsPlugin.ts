@@ -24,7 +24,7 @@ export class ElementsPlugin extends BasePlugin {
   // 添加元素
   addElement(element: IGraphicElement): void {
     this.elements.set(element.id, element)
-    this.host?.emit(EditorEvents.ELEMENT_ADDED, { element, elementId: element.id })
+    this.host?.emit(EditorEvents.ELEMENT_ADDED, element)
   }
 
   // 移除元素
@@ -32,7 +32,7 @@ export class ElementsPlugin extends BasePlugin {
     const element = this.elements.get(elementId)
     if (element) {
       this.elements.delete(elementId)
-      this.host?.emit(EditorEvents.ELEMENT_REMOVED, { element, elementId: element.id })
+      this.host?.emit(EditorEvents.ELEMENT_REMOVED, element)
     }
   }
 

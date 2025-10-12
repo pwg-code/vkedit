@@ -31,6 +31,8 @@ export interface IGraphicElement {
   type: string
   x: number
   y: number
+  width: number
+  height: number
   rotation: number
   scaleX: number
   scaleY: number
@@ -77,7 +79,15 @@ export interface IGraphicType {
 // 属性面板
 export interface IPropertyPanel {
   type: string
+  // forGraphicTypes?: string[] // 用于哪些图形类型
   title: string
+  getComponent(): Component
+}
+
+// 属性面板(多个图形共用的)
+export interface IPropertyPanelForGraphics {
+  title: string
+  forGraphics: string[] // 用于哪些图形类型
   getComponent(): Component
 }
 
@@ -111,4 +121,10 @@ export interface IEditorState {
   showGrid: boolean
   width: number
   height: number
+}
+
+// 工具接口
+export interface IToolbar {
+  name: string
+  getComponent(): Component
 }

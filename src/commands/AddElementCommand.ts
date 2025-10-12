@@ -16,11 +16,6 @@ export class AddElementCommand extends BaseCommand {
   }
   execute(): void {
     this.elementsPlugin?.addElement(this.element)
-    this.host.emit(EditorEvents.ELEMENT_ADDED, {
-      element: this.element,
-      elementId: this.element.id,
-      timestamp: this.timestamp,
-    })
   }
 
   undo(): void {

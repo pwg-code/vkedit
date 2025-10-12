@@ -2,6 +2,7 @@ import { BasePlugin } from '../../types/BasePlugin'
 import type { IGraphicType, IGraphicElement, IPropertyPanel } from '../../types'
 import TableGraphic from './TableGraphic.vue'
 import TablePropertyPanel from './TablePropertyPanel.vue'
+import { BaseGraphicElement } from '@/types/BaseGraphicElement'
 
 export interface CellConfig {
   rowIndex: number
@@ -15,7 +16,8 @@ export interface CellConfig {
 }
 
 // 元素实现
-export class TableElement implements IGraphicElement {
+export class TableElement extends BaseGraphicElement {
+  // export class TableElement implements IGraphicElement {
   [key: string]: any
   public readonly type = 'table'
   public activeCell: CellConfig
@@ -23,6 +25,8 @@ export class TableElement implements IGraphicElement {
     public id: string,
     public x: number,
     public y: number,
+    public width: number = 300,
+    public height: number = 80,
     public rowsHeight: number[] = [40, 40], // 行高
     public colsWidth: number[] = [100, 100, 100], // 列宽
     public cells: CellConfig[][] = [], // 单元格配置
@@ -33,9 +37,17 @@ export class TableElement implements IGraphicElement {
     public locked: boolean = false,
     public draggable: boolean = true,
   ) {
+    super()
     // 如果没有提供单元格数据则 初始化单元格
     if (cells.length === 0) this.initCells()
     this.activeCell = this.cells[0][0]
+    // 自动计算宽高
+    this.initWidthHeight()
+  }
+
+  private initWidthHeight() {
+    this.width = this.colsWidth.reduce((acc, curr) => acc + curr, 0)
+    this.height = this.rowsHeight.reduce((acc, curr) => acc + curr, 0)
   }
 
   // 初始化单元格
@@ -79,6 +91,7 @@ export class TableElement implements IGraphicElement {
         ...this.rowsHeight.slice(after + 1),
       ]
     }
+    this.initWidthHeight()
   }
 
   // 删除一行
@@ -90,6 +103,7 @@ export class TableElement implements IGraphicElement {
       this.cells.splice(index, 1)
       this.rowsHeight.splice(index, 1)
     }
+    this.initWidthHeight()
   }
 
   // 增加一列
@@ -115,6 +129,7 @@ export class TableElement implements IGraphicElement {
         ...this.colsWidth.slice(after + 1),
       ]
     }
+    this.initWidthHeight()
   }
 
   // 删除一列
@@ -130,15 +145,7 @@ export class TableElement implements IGraphicElement {
       })
       this.colsWidth.splice(index, 1)
     }
-  }
-
-  getBoundingBox() {
-    return {
-      x: this.x,
-      y: this.y,
-      width: 10 * this.scaleX,
-      height: 10 * this.scaleY,
-    }
+    this.initWidthHeight()
   }
 
   clone(): IGraphicElement {
@@ -146,6 +153,8 @@ export class TableElement implements IGraphicElement {
       `table-${Date.now()}`,
       this.x,
       this.y,
+      this.width,
+      this.height,
       this.rowsHeight,
       this.colsWidth,
       this.cells,
@@ -163,6 +172,8 @@ export class TableElement implements IGraphicElement {
       id: this.id,
       x: this.x,
       y: this.y,
+      width: this.width,
+      height: this.height,
       rowsHeight: this.rowsHeight,
       colsWidth: this.colsWidth,
       cells: this.cells,

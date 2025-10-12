@@ -92,6 +92,7 @@ const updateTransformerNodes = (selection: Map<string, IGraphicElement>) => {
   if (layerRef.value) {
     selection.forEach((e) => {
       const node = layerRef.value.getNode().findOne('#' + e.id)
+
       if (node) {
         nodes.push(node)
       } else {
@@ -174,10 +175,18 @@ const getTransformAttr = (event: any, element: any) => {
 // const { getElementComponent, getGraphicType } = useGraphicType(props.host)
 const graphicTypesPlugin = props.host.getPlugin<GraphicTypesPlugin>('graphic-types')
 
+// 更新画布
+function updateCanvas() {
+  elements.value = [...elements.value]
+}
+
 onMounted(() => {
   // 选中变更事件
   props.host.on(EditorEvents.SELECTION_CHANGED, updateTransformerNodes)
   props.host.on(EditorEvents.ELEMENT_TRANSFORMED, initElements)
+  props.host.on(EditorEvents.ELEMENT_UPDATED, updateCanvas)
+  props.host.on(EditorEvents.PROPERTY_VALUE_CHANGE, updateCanvas)
+  props.host.on(EditorEvents.ELEMENTS_ALIGN, updateCanvas)
 })
 </script>
 

@@ -82,12 +82,6 @@ const updateProperty = (property: string, value: any) => {
       new UpdatePropertyCommand(element, host, property, element[property], value),
     )
   }
-  // 发送属性更新事件
-  host.emit('element:property-updated', {
-    element: element,
-    property,
-    value,
-  })
 }
 </script>
 

@@ -12,7 +12,6 @@ export class SelectionPlugin extends BasePlugin {
   public selectionEnd: Point2D = { x: 0, y: 0 }
   public selectionElements: Map<string, IGraphicElement> = new Map()
   public mouseDownInElement: IGraphicElement | null = null
-
   private elementsPlugin: ElementsPlugin | null = null
 
   protected onInstall(): void {
@@ -23,7 +22,6 @@ export class SelectionPlugin extends BasePlugin {
     this.host.on('canvas:mousedown', this.handleMouseDown.bind(this))
     this.host.on('canvas:mousemove', this.handleMouseMove.bind(this))
     this.host.on('canvas:mouseup', this.handleMouseUp.bind(this))
-    this.host.on('canvas:click', this.handleClick.bind(this))
     this.host.on('element:added', this.handleElementAdded.bind(this))
     this.host.on('element:removed', this.handleElementRemoved.bind(this))
   }
@@ -35,38 +33,20 @@ export class SelectionPlugin extends BasePlugin {
     this.host.off('canvas:mousedown', this.handleMouseDown.bind(this))
     this.host.off('canvas:mousemove', this.handleMouseMove.bind(this))
     this.host.off('canvas:mouseup', this.handleMouseUp.bind(this))
-    this.host.off('canvas:click', this.handleClick.bind(this))
     this.host.off('element:added', this.handleElementAdded.bind(this))
     this.host.off('element:removed', this.handleElementRemoved.bind(this))
-  }
-
-  private handleClick(event: any): void {
-    // 如果正在用进行范围选择，则不做任何操作
-    if (this.isSelecting) {
-      return
-    }
-    if (this.mouseDownInElement) {
-      if (!this.selectionElements.has(this.mouseDownInElement.id)) {
-        this.clearSelection()
-        this.selectElement(this.mouseDownInElement)
-      }
-    }
   }
 
   private handleMouseDown(event: any): void {
     if (!this.host || this.host.getState().currentTool !== 'select') return
     this.selectionStart = event.point
-    // 检查是否点击了元素
-    if (event.target !== event.currentTarget) {
-      this.mouseDownInElement = this.elementsPlugin?.getElement(event.target.attrs.id) || null
-    } else {
+    // 如果点击的是画布 开始范围选择
+    if (event.target == event.currentTarget) {
+      this.isSelecting = true
       this.mouseDownInElement = null
+    } else {
+      this.mouseDownInElement = this.elementsPlugin?.getElement(event.target.attrs.id) || null
     }
-    // 如果点击的是图形则不做任何事情
-    if (this.mouseDownInElement) {
-      return
-    }
-    this.isSelecting = true
   }
 
   private handleMouseMove(event: any): void {
@@ -76,18 +56,25 @@ export class SelectionPlugin extends BasePlugin {
   }
 
   private handleMouseUp(event: any): void {
-    // 如果没有开始选择，则不做任何操作
-    if (!this.isSelecting) {
-      return
+    // 如果开始范围选择 则框选
+    if (this.isSelecting) {
+      this.selectionElements = this.findElementsInRect(this.selectionStart, this.selectionEnd)
+      this.isSelecting = false
+      this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
+    } else if (this.mouseDownInElement && !this.selectionElements.has(this.mouseDownInElement.id)) {
+      this.selectionElements.clear()
+      this.selectionElements.set(this.mouseDownInElement.id, this.mouseDownInElement)
+      this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
     }
-    this.isSelecting = false
-    this.selectionElements = this.findElementsInRect(this.selectionStart, this.selectionEnd)
-    this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
   }
 
   private handleElementAdded(element: IGraphicElement): void {
-    // 新添加的元素 默认选中
-    // this.selectElement(element.id)
+    // 新添加的元素 默认选中 延迟选中 以便画布刷新
+    setTimeout(() => {
+      this.selectionElements.clear()
+      this.selectionElements.set(element.id, element)
+      this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
+    }, 200)
   }
 
   private handleElementRemoved(element: IGraphicElement): void {

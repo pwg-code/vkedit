@@ -5,9 +5,7 @@ export abstract class BasePlugin implements IEditorPlugin {
   registerGraphicTypes?(): IGraphicType[] {
     throw new Error('Method not implemented.')
   }
-  getTools?(): IPluginTool[] {
-    throw new Error('Method not implemented.')
-  }
+
   public abstract name: string
   public abstract version: string
 

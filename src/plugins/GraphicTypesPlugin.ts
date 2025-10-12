@@ -51,7 +51,7 @@ export class GraphicTypesPlugin extends BasePlugin {
     }
   }
 
-  // 创建图形
+  // 获得组件图形
   getElementComponent(type: string) {
     const graphicType = this.graphicTypes.get(type)
     return graphicType?.getComponent() || undefined
