@@ -1,17 +1,28 @@
 <template>
   <div>
-    <ElButton @click="handleAlign('left')">左对齐</ElButton>
-    <ElButton @click="handleAlign('right')">右对齐</ElButton>
-    <ElButton @click="handleAlign('top')">上对齐</ElButton>
-    <ElButton @click="handleAlign('bottom')">下对齐</ElButton>
+    <ElButtonGroup>
+      <ElButton text @click="handleAlign('left')" title="左对齐">
+        <Icon icon="material-symbols-light:align-horizontal-left" width="25px" />
+      </ElButton>
+      <ElButton text @click="handleAlign('right')" title="右对齐">
+        <Icon icon="material-symbols-light:align-horizontal-right" width="25px" />
+      </ElButton>
+      <ElButton text @click="handleAlign('top')" title="上对齐">
+        <Icon icon="material-symbols-light:align-vertical-top" width="25px" />
+      </ElButton>
+      <ElButton text @click="handleAlign('bottom')" title="下对齐">
+        <Icon icon="material-symbols-light:align-vertical-bottom" width="25px" />
+      </ElButton>
+    </ElButtonGroup>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
-import { ElButton } from 'element-plus'
+import { ElButton, ElButtonGroup } from 'element-plus'
 import type { SelectionPlugin } from '../SelectionPlugin'
 import { AlignElementsCommand } from '@/commands'
+import { Icon } from '@iconify/vue'
 
 const { host } = defineProps<{ host: IEditorHost }>()
 

@@ -6,23 +6,13 @@
     <!-- 撤销重做 -->
     <div class="flex-1 flex gap-2">
       <ElButtonGroup>
-        <ToolbarButton icon="↩️" title="撤销" :disabled="!canUndo" @click="handleUndo" />
-        <ToolbarButton icon="↪️" title="重做" :disabled="!canRedo" @click="handleRedo" />
-        <!-- <ToolbarButton icon="⬅️" title="左对齐" @click="handleAlign('left')" />
-        <ToolbarButton icon="➡️" title="右对齐" @click="handleAlign('right')" />
-        <ToolbarButton icon="⬆️" title="上对齐" @click="handleAlign('top')" />
-        <ToolbarButton icon="⬇️" title="下对齐" @click="handleAlign('bottom')" /> -->
+        <ElButton text title="撤销" @click="handleUndo" :disabled="!canUndo"
+          ><Icon icon="material-symbols-light:undo" width="25px"></Icon
+        ></ElButton>
+        <ElButton text title="重做" @click="handleRedo" :disabled="!canRedo"
+          ><Icon icon="material-symbols-light:redo" width="25px"></Icon
+        ></ElButton>
       </ElButtonGroup>
-      <!-- <ElButtonGroup>
-        <ToolbarButton
-          v-for="tool in pluginTools"
-          :key="tool.id"
-          :icon="tool.icon"
-          :title="tool.title"
-          :active="hostState.currentTool === tool.id"
-          @click="handlePluginToolSelect(tool)"
-        />
-      </ElButtonGroup> -->
       <template v-for="item in tools">
         <component :is="item.getComponent()" :host="host"></component>
       </template>
@@ -30,7 +20,8 @@
 
     <div class="w-[200px]">
       <ElButtonGroup>
-        <ToolbarButton icon="💾" title="保存"></ToolbarButton>
+        <ElButton type="primary" @click="handleLoadByJSON">加载</ElButton>
+        <ElButton type="primary" @click="handleSave">保存</ElButton>
       </ElButtonGroup>
     </div>
   </div>
@@ -39,9 +30,10 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import type { IEditorHost, IEditorState, IToolbar } from '../types'
-import ToolbarButton from '@/components/ToolbarButton.vue'
 import { ElButton, ElButtonGroup } from 'element-plus'
 import { ToolbarPlugin } from '@/plugins'
+import { Icon } from '@iconify/vue'
+
 interface Props {
   host: IEditorHost
 }
@@ -81,6 +73,15 @@ const handleUndo = () => {
 
 const handleRedo = () => {
   host.redo()
+}
+
+function handleSave() {
+  console.log(host.toJSON())
+}
+
+function handleLoadByJSON() {
+  const jsonStr = `{"state":{"zoom":1,"currentTool":"select","snapToGrid":true,"showGrid":false,"width":500,"height":800},"elements":[{"type":"table","id":"51215ff6-3a43-4491-b39c-37cbd6af1ede","x":87,"y":221,"width":300,"height":80,"rotation":0,"scaleX":1,"scaleY":1,"visible":true,"locked":false,"rowsHeight":[40,40],"colsWidth":[100,100,100],"cells":[[{"rowIndex":0,"colIndex":0,"fill":"#000000","text":"文本","isMergeLeft":false,"isMergeUp":false,"fontSize":14},{"rowIndex":0,"colIndex":1,"fill":"#000000","text":"文本","isMergeLeft":false,"isMergeUp":false,"fontSize":14},{"rowIndex":0,"colIndex":2,"fill":"#000000","text":"文本","isMergeLeft":false,"isMergeUp":false,"fontSize":14}],[{"rowIndex":1,"colIndex":0,"fill":"#000000","text":"文本","isMergeLeft":false,"isMergeUp":false,"fontSize":14},{"rowIndex":1,"colIndex":1,"fill":"#000000","text":"123","isMergeLeft":false,"isMergeUp":false,"fontSize":14},{"rowIndex":1,"colIndex":2,"fill":"#000000","text":"文本","isMergeLeft":false,"isMergeUp":false,"fontSize":14}]]}]}`
+  host.loadJSON(jsonStr)
 }
 
 // 生命周期

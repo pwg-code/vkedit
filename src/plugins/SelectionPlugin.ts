@@ -127,4 +127,14 @@ export class SelectionPlugin extends BasePlugin {
     this.selectionElements.clear()
     this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
   }
+
+  public selectElementByIds(ids: string[]): void {
+    this.selectionElements.clear()
+    ids.forEach((id) => {
+      const element = this.elementsPlugin?.getElement(id)
+      if (element) {
+        this.selectionElements.set(element.id, element)
+      }
+    })
+  }
 }

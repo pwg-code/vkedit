@@ -19,7 +19,7 @@
       </div>
 
       <!-- 右侧属性栏 -->
-      <div class="w-[400px] border-l border-gray-200 p-4 bg-white">
+      <div class="w-[460px] border-l border-gray-200 p-4 bg-white">
         <PropertyPanel :host="host" />
       </div>
     </div>

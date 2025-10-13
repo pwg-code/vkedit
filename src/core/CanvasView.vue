@@ -49,8 +49,6 @@ import { computed, markRaw, onMounted, ref, watch } from 'vue'
 
 import type { IEditorHost, IEditorPlugin, IEditorState, IGraphicElement, Point2D } from '../types'
 import SelectionRectangle from './SelectionRectangle.vue'
-// import SelectionOverlay from './SelectionOverlay.vue'
-import useGraphicType from '@/hooks/useGraphicType'
 import { EditorEvents } from '@/types/EventTypes'
 import { TransformElementCommand, UpdatePropertyCommand } from '@/commands'
 import useCanvas from '@/hooks/useCanvas'

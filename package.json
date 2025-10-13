@@ -1,49 +1,72 @@
 {
   "name": "vkedit",
-  "version": "0.0.0",
+  "version": "1.0.3",
   "private": true,
   "type": "module",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
+  "description": "Vue3 Konva Plug-in designer",
+  "main": "dist/vkedit.umd.js",
+  "module": "dist/vkedit.es.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "vue-tsc --noEmit && vite build",
+    "prepublishOnly": "npm run build",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
     "format": "prettier --write src/"
   },
+  "peerDependencies": {
+    "konva": "^10.0.2",
+    "vue": "^3.5.18",
+    "vue-konva": "^3.2.6"
+  },
+  "keywords": [
+    "vue3",
+    "typescript",
+    "component"
+  ],
+  "license": "MIT",
   "dependencies": {
+    "@iconify/vue": "^5.0.0",
+    "@tailwindcss/vite": "^4.1.13",
     "element-plus": "^2.11.4",
     "konva": "^10.0.2",
     "pinia": "^3.0.3",
     "tailwind": "^4.0.0",
+    "vkedit": "file:vkedit-1.0.3.tgz",
     "vue": "^3.5.18",
     "vue-konva": "^3.2.6"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
     "@tsconfig/node22": "^22.0.2",
     "@types/node": "^22.16.5",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/tsconfig": "^0.7.0",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.31.0",
     "eslint-plugin-vue": "~10.3.0",
     "jiti": "^2.4.2",
     "npm-run-all2": "^8.0.4",
+    "postcss": "^8.5.6",
     "prettier": "3.6.2",
+    "tailwindcss": "^4.0.0",
     "typescript": "~5.8.0",
     "vite": "^7.0.6",
-    "vite-plugin-vue-devtools": "^8.0.0",
-    "vue-tsc": "^3.0.4",
-    "@tailwindcss/postcss": "^4.1.13",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.0.0",
     "vite-plugin-css-injected-by-js": "^3.5.2",
-    "vite-plugin-dts": "^4.5.4"
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-tailwind": "^0.0.4",
+    "vite-plugin-vue-devtools": "^8.0.0",
+    "vue-tsc": "^3.0.4"
   }
 }

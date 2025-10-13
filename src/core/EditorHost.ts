@@ -2,10 +2,10 @@ import { ref, reactive, computed } from 'vue'
 import type { IEditorHost, IEditorPlugin, IGraphicElement, IEditorState } from '../types'
 import { EditorEvents, EventUtils } from '../types/EventTypes'
 import type { ICommand } from '@/commands/ICommand'
+import type { ElementsPlugin, GraphicTypesPlugin } from '@/plugins'
 
 export class EditorHost implements IEditorHost {
   private plugins: Map<string, IEditorPlugin> = new Map()
-  private elements: Map<string, IGraphicElement> = new Map()
   private eventHandlers: Map<string, Function[]> = new Map()
   private commandStack: ICommand[] = []
   private currentCommandIndex: number = -1
@@ -131,4 +131,41 @@ export class EditorHost implements IEditorHost {
   // getElements(): IGraphicElement[] {
   //   return [...this.elements.values()]
   // }
+
+  toJSON(): string {
+    const elements = this.getPlugin<ElementsPlugin>('elements')?.elements
+    const serializeElements: any[] = []
+    if (elements) {
+      elements.forEach((value, key) => {
+        serializeElements.push(value.serialize())
+      })
+    }
+
+    return JSON.stringify({
+      state: this.state,
+      elements: serializeElements,
+    })
+  }
+
+  loadJSON(jsonStr: string): void {
+    const data = JSON.parse(jsonStr)
+    // 加载编辑器状态
+    Object.assign(this.state, data.state)
+    const elementsPlugin = this.getPlugin<ElementsPlugin>('elements')
+    const elements: any[] = data.elements
+    const graphicTypesPlugin = this.getPlugin<GraphicTypesPlugin>('graphic-types')
+    if (elementsPlugin && graphicTypesPlugin) {
+      elementsPlugin.elements.clear()
+      // 加载所有图形元素
+      elements.forEach((value) => {
+        const graphicType = graphicTypesPlugin.getGraphicType(value.type)
+        if (graphicType) {
+          const e = graphicType.createElement(0, 0)
+          e.deserialize(value)
+          elementsPlugin.addElement(e)
+        }
+      })
+      Object.assign(this.state, data.state)
+    }
+  }
 }

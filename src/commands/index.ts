@@ -6,7 +6,6 @@ export * from './RemoveElementCommand'
 export * from './TransformElementCommand'
 export * from './UpdatePropertyCommand'
 // 选择命令
-export * from './SelectElementCommand'
 export * from './ClearSelectionCommand'
 // 批量命令
 export * from './BatchCommand'
@@ -15,7 +14,6 @@ export * from './ChangeLayerOrderCommand'
 // 对齐分布命令
 export * from './AlignElementsCommand'
 // 组合命令
-export * from './GroupElementsCommand'
 // 命令工具函数
 export class CommandUtils {
   static async createBatchFromSelection(

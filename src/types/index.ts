@@ -1,4 +1,5 @@
-export * from './base'
+export * from './Base'
 export * from './BaseGraphicElement'
 export * from './BaseGraphicType'
 export * from './BasePlugin'
+export * from './EventTypes'

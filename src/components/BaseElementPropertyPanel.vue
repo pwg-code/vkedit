@@ -3,35 +3,39 @@
   <ElForm>
     <div class="pt-5">位置</div>
     <ElDivider></ElDivider>
-    <ElFormItem label="X">
-      <ElInputNumber
-        label="X"
-        :model-value="element.x"
-        @input="(value) => updateProperty('x', element.x, value)"
-      />
-    </ElFormItem>
-    <ElFormItem label="Y">
-      <ElInputNumber
-        label="Y"
-        :model-value="element.y"
-        @input="(value) => updateProperty('y', element.y, value)"
-      />
-    </ElFormItem>
+    <div class="flex gap-4">
+      <ElFormItem label="X">
+        <ElInputNumber
+          label="X"
+          :model-value="element.x"
+          @input="(value) => updateProperty('x', element.x, value)"
+        />
+      </ElFormItem>
+      <ElFormItem label="Y">
+        <ElInputNumber
+          label="Y"
+          :model-value="element.y"
+          @input="(value) => updateProperty('y', element.y, value)"
+        />
+      </ElFormItem>
+    </div>
     <div class="pt-5">尺寸</div>
     <ElDivider></ElDivider>
+    <div class="flex gap-4">
+      <ElFormItem label="宽度">
+        <ElInputNumber
+          :model-value="element.width"
+          @input="(value) => updateProperty('width', element.width, value)"
+        />
+      </ElFormItem>
+      <ElFormItem label="高度">
+        <ElInputNumber
+          :model-value="element.height"
+          @input="(value) => updateProperty('height', element.height, value)"
+        />
+      </ElFormItem>
+    </div>
 
-    <ElFormItem label="宽度">
-      <ElInputNumber
-        :model-value="element.width"
-        @input="(value) => updateProperty('width', element.width, value)"
-      />
-    </ElFormItem>
-    <ElFormItem label="高度">
-      <ElInputNumber
-        :model-value="element.height"
-        @input="(value) => updateProperty('height', element.height, value)"
-      />
-    </ElFormItem>
     <ElFormItem label="角度">
       <ElInputNumber
         :model-value="element.rotation"

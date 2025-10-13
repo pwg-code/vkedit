@@ -126,6 +126,12 @@ export interface IEditorHost {
   // 状态管理
   getState(): IEditorState
   setState(state: Partial<IEditorState>): void
+
+  // 导出json
+  toJSON(): string
+
+  // 从JSON加载
+  loadJSON(jsonStr: string): void
 }
 
 // 编辑器状态

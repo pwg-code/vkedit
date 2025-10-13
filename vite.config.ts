@@ -1,18 +1,35 @@
-import { fileURLToPath, URL } from 'node:url'
-
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
+import { resolve } from 'path'
+import dts from 'vite-plugin-dts'
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    tailwindcss(),
+    cssInjectedByJsPlugin(),
+    dts({ tsconfigPath: './tsconfig.build.json' }), // 自动生成 .d.ts
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': resolve(__dirname, './src'),
+    },
+  },
+  build: {
+    lib: {
+      entry: resolve(__dirname, './src/index.ts'),
+      name: 'Vkedit', // 全局变量名（UMD）
+      fileName: (format) => `vkedit.${format}.js`,
+      formats: ['es', 'umd'],
+    },
+    rollupOptions: {
+      external: ['vue', 'konva', 'vue-konva'], // 不把 vue 打进去
+      output: {
+        exports: 'named',
+        globals: { vue: 'Vue' },
+      },
     },
   },
 })
