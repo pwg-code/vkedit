@@ -2,7 +2,6 @@
   <div class="">
     <div class="text-xl font-bold pb-2">表格属性</div>
     <ElForm>
-      <div class="pt-5">基础</div>
       <ElDivider></ElDivider>
       <ElFormItem label="行数">
         <ElInputNumber
@@ -24,29 +23,6 @@
           "
         />
       </ElFormItem>
-      <ElFormItem label="缩放">
-        <ElInputNumber
-          :model-value="element.scaleX"
-          :step="0.1"
-          :min="0.5"
-          @input="(value: any) => updateProperty('scaleX', element.scaleX, value)"
-        ></ElInputNumber>
-        <ElInputNumber
-          :model-value="element.scaleY"
-          :step="0.1"
-          :min="0.5"
-          @input="(value: any) => updateProperty('scaleY', element.scaleY, value)"
-        ></ElInputNumber>
-      </ElFormItem>
-      <ElFormItem label="角度">
-        <ElInputNumber
-          :model-value="element.rotation"
-          :step="1"
-          :min="0"
-          :max="360"
-          @input="(value: any) => updateProperty('rotation', element.rotation, value)"
-        ></ElInputNumber>
-      </ElFormItem>
       <div class="pt-5">单元格</div>
       <ElDivider></ElDivider>
       <div v-if="element.activeCell">
@@ -55,7 +31,8 @@
             :model-value="element.activeCell.text"
             @input="
               (value: any) =>
-                updateProperty(
+                element.updateProperty(
+                  host,
                   `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.text`,
                   element.activeCell.text,
                   value,
@@ -68,7 +45,8 @@
             :model-value="element.activeCell.fontSize"
             @input="
               (value: any) =>
-                updateProperty(
+                element.updateProperty(
+                  host,
                   `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.fontSize`,
                   element.activeCell.fontSize,
                   value,
@@ -82,7 +60,8 @@
             :min="0"
             @input="
               (value: any) =>
-                updateProperty(
+                element.updateProperty(
+                  host,
                   `rowsHeight.${element.activeCell.rowIndex}`,
                   element.rowsHeight[element.activeCell.rowIndex],
                   value,
@@ -96,7 +75,8 @@
             :min="0"
             @input="
               (value: any) =>
-                updateProperty(
+                element.updateProperty(
+                  host,
                   `colsWidth.${element.activeCell.colIndex}`,
                   element.colsWidth[element.activeCell.colIndex],
                   value,
@@ -110,7 +90,8 @@
               :model-value="element.activeCell.isMergeLeft"
               @input="
                 (value: any) =>
-                  updateProperty(
+                  element.updateProperty(
+                    host,
                     `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.isMergeLeft`,
                     element.activeCell.isMergeLeft,
                     value,
@@ -123,7 +104,8 @@
               :model-value="element.activeCell.isMergeUp"
               @input="
                 (value: any) =>
-                  updateProperty(
+                  element.updateProperty(
+                    host,
                     `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.isMergeUp`,
                     element.activeCell.isMergeUp,
                     value,
@@ -139,7 +121,7 @@
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
-import type { CellConfig, TableElement } from './TablePlugin'
+import type { TableElement } from './TablePlugin'
 import {
   ElDivider,
   ElInputNumber,
@@ -149,8 +131,6 @@ import {
   ElInput,
   ElSwitch,
 } from 'element-plus'
-import { UpdatePropertyCommand } from '@/commands'
-import { computed } from 'vue'
 
 interface Props {
   host: IEditorHost
@@ -158,11 +138,6 @@ interface Props {
 }
 
 const { element, host } = defineProps<Props>()
-
-const updateProperty = (property: string, oldValue: any, newValue: any) => {
-  // 这里应该通过host的命令系统执行更新
-  host.executeCommand(new UpdatePropertyCommand(element, host, property, oldValue, newValue))
-}
 
 // 更新行数
 const updateRows = (value: number) => {

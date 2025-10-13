@@ -1,8 +1,11 @@
 import { BasePlugin } from '../../types/BasePlugin'
-import type { IGraphicType, IGraphicElement, IPropertyPanel } from '../../types'
-import TableGraphic from './TableGraphic.vue'
-import TablePropertyPanel from './TablePropertyPanel.vue'
+import { type IGraphicElement, BaseGraphicType } from '../../types'
+import Shape from './Shape.vue'
+import PropertyPanel from './PropertyPanel.vue'
+import Tool from './Tool.vue'
 import { BaseGraphicElement } from '@/types/BaseGraphicElement'
+import { EditorEvents } from '@/types/EventTypes'
+import type { Component } from 'vue'
 
 export interface CellConfig {
   rowIndex: number
@@ -22,22 +25,13 @@ export class TableElement extends BaseGraphicElement {
   public readonly type = 'table'
   public activeCell: CellConfig
   constructor(
-    public id: string,
-    public x: number,
-    public y: number,
-    public width: number = 300,
-    public height: number = 80,
+    x: number = 50,
+    y: number = 50,
     public rowsHeight: number[] = [40, 40], // 行高
     public colsWidth: number[] = [100, 100, 100], // 列宽
     public cells: CellConfig[][] = [], // 单元格配置
-    public rotation: number = 0,
-    public scaleX: number = 1,
-    public scaleY: number = 1,
-    public visible: boolean = true,
-    public locked: boolean = false,
-    public draggable: boolean = true,
   ) {
-    super()
+    super(x, y)
     // 如果没有提供单元格数据则 初始化单元格
     if (cells.length === 0) this.initCells()
     this.activeCell = this.cells[0][0]
@@ -149,44 +143,34 @@ export class TableElement extends BaseGraphicElement {
   }
 
   clone(): IGraphicElement {
-    return new TableElement(
-      `table-${Date.now()}`,
-      this.x,
-      this.y,
-      this.width,
-      this.height,
-      this.rowsHeight,
-      this.colsWidth,
-      this.cells,
-      this.rotation,
-      this.scaleX,
-      this.scaleY,
-      this.visible,
-      this.locked,
-    )
+    const newElement = new TableElement()
+    newElement.deserialize(this)
+    return newElement
   }
 
   serialize() {
     return {
-      type: this.type,
-      id: this.id,
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
+      ...super.serialize(),
       rowsHeight: this.rowsHeight,
       colsWidth: this.colsWidth,
       cells: this.cells,
-      rotation: this.rotation,
-      scaleX: this.scaleX,
-      scaleY: this.scaleY,
-      visible: this.visible,
-      locked: this.locked,
     }
   }
+}
 
-  deserialize(data: any): void {
-    Object.assign(this, data)
+export class TableGraphicType extends BaseGraphicType {
+  type: string = 'table'
+  render(): Component {
+    return Shape
+  }
+  renderPropertyPanel(): Component {
+    return PropertyPanel
+  }
+  renderTool(): Component {
+    return Tool
+  }
+  createElement(x: number, y: number): IGraphicElement {
+    return new TableElement()
   }
 }
 
@@ -196,29 +180,6 @@ export class TablePlugin extends BasePlugin {
   protected onInstall(): void {
     if (!this.host) return
     // 注册表格图形类型
-    this.host.emit('graphic-type:registered', this.getGraphicType())
-    // 注册属性面板
-    this.host.emit('property-panel:registered', this.getPropertyPanel())
-  }
-  private getPropertyPanel(): IPropertyPanel {
-    return {
-      type: 'table',
-      title: '表格属性',
-      getComponent: () => TablePropertyPanel,
-    }
-  }
-
-  private getGraphicType(): IGraphicType {
-    return {
-      type: 'table',
-      name: '表格',
-      icon: '',
-      getComponent() {
-        return TableGraphic
-      },
-      createElement: (x: number, y: number) => {
-        return new TableElement(`table-${Date.now()}`, x, y)
-      },
-    }
+    this.host.emit(EditorEvents.GRAPHIC_TYPE_REGISTERED, new TableGraphicType())
   }
 }

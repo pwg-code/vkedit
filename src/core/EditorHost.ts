@@ -37,23 +37,25 @@ export class EditorHost implements IEditorHost {
   }
 
   // 插件管理
-  registerPlugin(plugin: IEditorPlugin): void {
+  installPlugin(plugin: IEditorPlugin): EditorHost {
     if (this.plugins.has(plugin.name)) {
       console.warn(`Plugin ${plugin.name} is already registered`)
-      return
+      return this
     }
     this.plugins.set(plugin.name, plugin)
     plugin.install(this)
     this.emitEvent(EditorEvents.PLUGIN_REGISTERED, { plugin })
+    return this
   }
 
-  unregisterPlugin(pluginName: string): void {
+  uninstallPlugin(pluginName: string): EditorHost {
     const plugin = this.plugins.get(pluginName)
     if (plugin) {
       plugin.uninstall()
       this.plugins.delete(pluginName)
       this.emitEvent(EditorEvents.PLUGIN_UNREGISTERED, { plugin })
     }
+    return this
   }
 
   getPlugin<T = any>(pluginName: string): T | null {

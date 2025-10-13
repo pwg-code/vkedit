@@ -1,28 +1,36 @@
 <template>
   <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-    <template v-for="graphicType in graphicTypesPlugin?.graphicTypes">
-      <ElButton
-        @click="
-          graphicTypesPlugin?.onCreate(graphicType[0], {
-            x: 50,
-            y: 50,
-          })
-        "
-      >
-        {{ graphicType[1].name }}{{ graphicType[1].icon }}</ElButton
-      >
+    <template v-for="graphicType in graphicTypes">
+      <component
+        :is="graphicType.renderTool()"
+        @click="handleClick(graphicType)"
+        :host="host"
+        :graphicType="graphicType"
+      ></component>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { IEditorHost } from '@/types'
-import { ElButton } from 'element-plus'
-import { GraphicTypesPlugin } from '@/plugins'
+import type { IEditorHost, IGraphicType } from '@/types'
+import { ElementsPlugin, GraphicTypesPlugin } from '@/plugins'
+import { onMounted, ref } from 'vue'
+import { AddElementCommand } from '@/commands'
 
 const { host } = defineProps<{
   host: IEditorHost
 }>()
 
 const graphicTypesPlugin = host.getPlugin<GraphicTypesPlugin>('graphic-types')
+
+// 活动元素管理插件
+const elementsPlugin = host.getPlugin<ElementsPlugin>('elements')
+
+const graphicTypes = ref(graphicTypesPlugin?.getGraphicTypes())
+
+function handleClick(graphicType: IGraphicType) {
+  const newElement = graphicType.createElement(50, 50)
+  // 使用命令系统创建元素
+  host.executeCommand(new AddElementCommand(newElement, host))
+}
 </script>

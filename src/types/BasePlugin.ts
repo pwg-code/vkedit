@@ -1,10 +1,7 @@
-import type { IEditorHost, IEditorPlugin, IGraphicType, IPluginTool } from '.'
+import type { IEditorHost, IEditorPlugin } from '.'
 
 export abstract class BasePlugin implements IEditorPlugin {
   [key: string]: any
-  registerGraphicTypes?(): IGraphicType[] {
-    throw new Error('Method not implemented.')
-  }
 
   public abstract name: string
   public abstract version: string

@@ -1,33 +1,8 @@
 <template>
   <div class="flex-2 border-[0.5px] border-gray-200 p-5">
-    <!-- 如果有选择的元素则获取元素提供的面板 否则显示画布设置 -->
-    <!-- <template v-if="activeElement">
-      <component
-        :is="propertyPanelsPlugin?.getPanel(activeElement?.type || '')"
-        :element="activeElement"
-        :host="host"
-      ></component>
-    </template>
-    <template v-else>
-      <div class="text-xl font-bold pb-2">画布属性</div>
-      <ElForm>
-        <div class="pt-5">尺寸</div>
-        <ElDivider></ElDivider>
-
-        <ElFormItem label="宽度">
-          <ElInputNumber v-model="hostState.width" />
-        </ElFormItem>
-        <ElFormItem label="高度">
-          <ElInputNumber v-model="hostState.height" />
-        </ElFormItem>
-      </ElForm>
-    </template> -->
-    <!-- 动态渲染属性面板 -->
     <ElForm>
       <template v-for="item in panels">
-        <div class="pt-5">{{ item.title }}</div>
-        <ElDivider></ElDivider>
-        <component :is="item?.getComponent()" :element="activeElement" :host="host" />
+        <component :is="item" :element="activeElement" :host="host" />
       </template>
     </ElForm>
     <slot></slot>
@@ -35,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, type Component } from 'vue'
+import { markRaw, onMounted, ref, type Component } from 'vue'
 import type {
   IEditorHost,
   IGraphicElement,
@@ -50,7 +25,8 @@ const hostState = ref(host.getState())
 
 const propertyPanelsPlugin = host.getPlugin<PropertyPanelsPlugin>('property-panels')
 const activeElement = ref<IGraphicElement>()
-const panels = ref<(IPropertyPanel | IPropertyPanelForGraphics)[]>()
+
+const panels = ref<Component[]>()
 
 // 更新属性设置面板
 const updatePanels = (selection: Map<string, IGraphicElement>) => {
@@ -58,11 +34,14 @@ const updatePanels = (selection: Map<string, IGraphicElement>) => {
   activeElement.value = undefined
   // if (selection.size !== 1) return
   activeElement.value = selection.entries().next().value?.[1]
+  let currentPanels: Component[] = []
   if (selection.size > 0) {
-    panels.value = propertyPanelsPlugin?.getPanelsBySelection(selection)
+    currentPanels = propertyPanelsPlugin?.getPanelsBySelection(selection) || []
   } else {
-    panels.value = propertyPanelsPlugin?.getCanvasPanels()
+    currentPanels = propertyPanelsPlugin?.getCanvasPanels() || []
   }
+  // 使用markRaw 防止监控组件响应
+  panels.value = currentPanels.map((p) => markRaw(p))
 }
 
 onMounted(() => {

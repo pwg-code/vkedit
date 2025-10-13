@@ -2,6 +2,8 @@ import { EditorEvents } from '@/types/EventTypes'
 import { BasePlugin } from '../types/BasePlugin'
 import type { IGraphicElement, IPropertyPanel, IPropertyPanelForGraphics } from '../types'
 import type { SelectionPlugin } from './SelectionPlugin'
+import type { GraphicTypesPlugin } from './GraphicTypesPlugin'
+import type { Component } from 'vue'
 
 export class PropertyPanelsPlugin extends BasePlugin {
   public name = 'property-panels'
@@ -9,7 +11,7 @@ export class PropertyPanelsPlugin extends BasePlugin {
   public propertyPanels: Map<string, IPropertyPanel> = new Map()
   public propertyPanelCanvas: Map<string, IPropertyPanel> = new Map()
   public propertyForGraphics: Map<string[], IPropertyPanelForGraphics> = new Map()
-  public propertyPublic: IPropertyPanel[] = []
+  public propertyPublic: Component[] = []
 
   protected onInstall(): void {
     if (!this.host) return
@@ -62,9 +64,7 @@ export class PropertyPanelsPlugin extends BasePlugin {
   }
 
   // 根据选中的元素获取面板
-  getPanelsBySelection(
-    selection: Map<string, IGraphicElement>,
-  ): (IPropertyPanel | IPropertyPanelForGraphics)[] {
+  getPanelsBySelection(selection: Map<string, IGraphicElement>): Component[] {
     if (!selection) return this.getCanvasPanels()
     if (selection.size == 1) {
       // 单选
@@ -76,21 +76,21 @@ export class PropertyPanelsPlugin extends BasePlugin {
   }
 
   // 按类型选择面
-  private getPanelsByType(
-    type: string | undefined,
-  ): (IPropertyPanel | IPropertyPanelForGraphics)[] {
+  private getPanelsByType(type: string | undefined): Component[] {
     if (!type) return []
-    const panels: (IPropertyPanel | IPropertyPanelForGraphics)[] = []
+    const panels: Component[] = []
     // 获取公共面板
     panels.push(...this.propertyPublic)
     // 再次从多用的属性面板里面找
     this.propertyForGraphics.forEach((value, key) => {
       if (key.includes(type)) {
-        panels.push(value)
+        panels.push(value.getComponent())
       }
     })
-    // 获取专属的面板
-    const panel = this.propertyPanels.get(type)
+    // 获取图形构造器提供的面板
+    const panel = this.host
+      ?.getPlugin<GraphicTypesPlugin>('graphic-types')
+      ?.getElementPropertyPanel(type)
     if (panel) {
       panels.push(panel)
     }
@@ -98,10 +98,8 @@ export class PropertyPanelsPlugin extends BasePlugin {
   }
 
   // 根据所选的多个元素 获取它们共有的属性面板
-  private getPanelsByMultipleSelect(
-    selectionElements: Map<string, IGraphicElement>,
-  ): (IPropertyPanel | IPropertyPanelForGraphics)[] {
-    const panels = new Map<string, (IPropertyPanel | IPropertyPanelForGraphics)[]>()
+  private getPanelsByMultipleSelect(selectionElements: Map<string, IGraphicElement>): Component[] {
+    const panels = new Map<string, Component[]>()
     selectionElements.forEach((value, key) => {
       if (!panels.has(value.type)) {
         panels.set(value.type, this.getPanelsByType(value.type))

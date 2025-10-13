@@ -1,12 +1,12 @@
-import type { IEditorHost, IEditorPlugin, IGraphicElement, IGraphicType, IPluginTool } from '.'
+import { UpdatePropertyCommand } from '@/commands'
+import type { IEditorHost, IGraphicElement } from '.'
 
 export abstract class BaseGraphicElement implements IGraphicElement {
   public abstract type: string
-
+  id: string
   constructor(
-    public id: string,
-    public x: number,
-    public y: number,
+    public x: number = 50,
+    public y: number = 50,
     public width: number = 300,
     public height: number = 80,
     public rotation: number = 0,
@@ -15,7 +15,17 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     public visible: boolean = true,
     public locked: boolean = false,
     public draggable: boolean = true,
-  ) {}
+  ) {
+    this.id = crypto.randomUUID()
+  }
+
+  updateProperty(host: IEditorHost, property: string, oldValue: any, newValue: any): void {
+    host.executeCommand(new UpdatePropertyCommand(this, host, property, oldValue, newValue))
+  }
+
+  clone(): IGraphicElement {
+    throw new Error('Method not implemented.')
+  }
 
   getBoundingBox() {
     return {
@@ -45,6 +55,4 @@ export abstract class BaseGraphicElement implements IGraphicElement {
       locked: this.locked,
     }
   }
-
-  public abstract clone(): IGraphicElement
 }

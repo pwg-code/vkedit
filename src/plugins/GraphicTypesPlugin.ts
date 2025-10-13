@@ -1,8 +1,7 @@
 import { EditorEvents } from '@/types/EventTypes'
 import { BasePlugin } from '../types/BasePlugin'
-import type { IGraphicElement, IGraphicType, Point2D } from '../types'
-import { AddElementCommand, RemoveElementCommand } from '@/commands'
-import type { SelectionPlugin } from './SelectionPlugin'
+import type { IGraphicType, Point2D } from '../types'
+import { AddElementCommand } from '@/commands'
 
 export class GraphicTypesPlugin extends BasePlugin {
   public name = 'graphic-types'
@@ -12,31 +11,21 @@ export class GraphicTypesPlugin extends BasePlugin {
   protected onInstall(): void {
     if (!this.host) return
     // 订阅图形插件注册  收集已订阅的插件
-    this.host.on(EditorEvents.GRAPHIC_TYPE_REGISTERED, (graphic: IGraphicType) => {
-      this.graphicTypes.set(graphic.type, graphic)
-    })
-    // 订阅图形插件注册  收集已订阅的插件
-    this.host.on(EditorEvents.GRAPHIC_TYPE_REGISTERED, (graphic: IGraphicType) => {
-      this.graphicTypes.set(graphic.type, graphic)
-    })
-    // 卸载图形插件 移除
-    this.host.on(EditorEvents.GRAPHIC_TYPE_UNREGISTERED, (graphic: IGraphicType) => {
-      this.graphicTypes.delete(graphic.type)
-    })
+    this.host.on(EditorEvents.GRAPHIC_TYPE_REGISTERED, this.handleGraphicTypeRegistered.bind(this))
   }
 
   protected onUninstall(): void {
     if (!this.host) return
     // 移除事件监听
-    this.host.off(EditorEvents.GRAPHIC_TYPE_REGISTERED, (graphic: IGraphicType) => {
+    this.host.off(EditorEvents.GRAPHIC_TYPE_REGISTERED, this.handleGraphicTypeRegistered.bind(this))
+  }
+
+  handleGraphicTypeRegistered(graphic: IGraphicType) {
+    if (this.graphicTypes.has(graphic.type)) {
+      console.warn(graphic.type + '插件已注册!')
+    } else {
       this.graphicTypes.set(graphic.type, graphic)
-    })
-    this.host.off(EditorEvents.GRAPHIC_TYPE_REGISTERED, (graphic: IGraphicType) => {
-      this.graphicTypes.set(graphic.type, graphic)
-    })
-    this.host.off(EditorEvents.GRAPHIC_TYPE_UNREGISTERED, (graphic: IGraphicType) => {
-      this.graphicTypes.delete(graphic.type)
-    })
+    }
   }
 
   // 创建图形
@@ -51,10 +40,21 @@ export class GraphicTypesPlugin extends BasePlugin {
     }
   }
 
+  // 获取所有构造器
+  getGraphicTypes() {
+    return Array.from(this.graphicTypes.values())
+  }
+
   // 获得组件图形
   getElementComponent(type: string) {
     const graphicType = this.graphicTypes.get(type)
-    return graphicType?.getComponent() || undefined
+    return graphicType?.render() || undefined
+  }
+
+  // 获得元素的属性面板
+  getElementPropertyPanel(type: string) {
+    const graphicType = this.graphicTypes.get(type)
+    return graphicType?.renderPropertyPanel() || undefined
   }
 
   getGraphicType(type: string) {
