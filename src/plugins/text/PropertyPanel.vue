@@ -21,7 +21,7 @@
     <div>
       <Label>文本</Label>
       <Input
-        :default-value="element.text"
+        :model-value="element.text"
         @update:model-value="(value) => element.updateProperty(host, 'text', element.text, value)"
       ></Input>
     </div>
