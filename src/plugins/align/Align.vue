@@ -1,28 +1,30 @@
 <template>
   <div>
-    <ElButtonGroup>
-      <ElButton text @click="handleAlign('left')" title="左对齐">
+    <ButtonGroup>
+      <Button variant="ghost" @click="handleAlign('left')" title="左对齐">
         <Icon icon="material-symbols-light:align-horizontal-left" width="25px" />
-      </ElButton>
-      <ElButton text @click="handleAlign('right')" title="右对齐">
+      </Button>
+      <Button variant="ghost" @click="handleAlign('right')" title="右对齐">
         <Icon icon="material-symbols-light:align-horizontal-right" width="25px" />
-      </ElButton>
-      <ElButton text @click="handleAlign('top')" title="上对齐">
+      </Button>
+      <Button variant="ghost" @click="handleAlign('top')" title="上对齐">
         <Icon icon="material-symbols-light:align-vertical-top" width="25px" />
-      </ElButton>
-      <ElButton text @click="handleAlign('bottom')" title="下对齐">
+      </Button>
+      <Button variant="ghost" @click="handleAlign('bottom')" title="下对齐">
         <Icon icon="material-symbols-light:align-vertical-bottom" width="25px" />
-      </ElButton>
-    </ElButtonGroup>
+      </Button>
+    </ButtonGroup>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
-import { ElButton, ElButtonGroup } from 'element-plus'
 import type { SelectionPlugin } from '../SelectionPlugin'
 import { AlignElementsCommand } from '@/commands'
 import { Icon } from '@iconify/vue'
+import { ButtonGroup } from '@/components/ui/button-group'
+
+import { Button } from '@/components/ui/button'
 
 const { host } = defineProps<{ host: IEditorHost }>()
 
