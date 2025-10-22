@@ -1,7 +1,7 @@
 import type { ElementsPlugin } from '@/plugins'
 import type { IEditorHost, IEditorState, IGraphicElement, Point2D } from '@/types'
 import { EditorEvents } from '@/types/EventTypes'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 export default function (host: IEditorHost) {
   // 画布状态
@@ -10,9 +10,9 @@ export default function (host: IEditorHost) {
   const stageConfig = computed(() => ({
     width: hostState.value.width,
     height: hostState.value.height,
-
-    x: stagePosition.x,
-    y: stagePosition.y,
+    // 缩放
+    scaleX: hostState.value.zoom,
+    scaleY: hostState.value.zoom,
   }))
 
   // 所有的图像元素

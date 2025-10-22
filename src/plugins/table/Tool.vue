@@ -1,9 +1,9 @@
 <template>
-  <ElButton v-bind="$attrs">表格</ElButton>
+  <Button v-bind="$attrs" variant="outline">表格</Button>
 </template>
 
 <script setup lang="ts">
-import { ElButton } from 'element-plus'
+import { Button } from '@/components/ui/button'
 </script>
 
 <style scoped></style>

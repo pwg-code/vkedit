@@ -2,7 +2,17 @@
   <div class="h-screen flex flex-col overflow-hidden">
     <!-- 顶部工具栏 -->
     <div class="h-16 w-full border-b border-gray-300 px-4 bg-white">
-      <Toolbar :host="host" />
+      <Toolbar :host="host">
+        <template #left>
+          <slot name="toolbar-left"></slot>
+        </template>
+        <template #center>
+          <slot name="toolbar-center"></slot>
+        </template>
+        <template #right>
+          <slot name="toolbar-right"></slot>
+        </template>
+      </Toolbar>
     </div>
 
     <!-- 中间主区域 -->
@@ -38,8 +48,6 @@ import Toolbox from './Toolbox.vue'
 import CanvasView from './CanvasView.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import type { IEditorHost } from '../types'
-import '../styles/tailwind.css'
-import 'element-plus/dist/index.css'
 
 const { host } = defineProps<{ host: IEditorHost }>()
 </script>

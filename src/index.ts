@@ -11,8 +11,7 @@ import {
   AlignPlugin,
 } from './plugins'
 
-import './styles/tailwind.css'
-import 'element-plus/dist/index.css'
+// import './styles/tailwind.css'
 
 export type {
   IEditorHost,

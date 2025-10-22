@@ -1,28 +1,30 @@
 <template>
   <div class="flex h-full items-center justify-center m-auto">
     <!-- 文件操作 -->
-    <div class="w-[200px] flex items-end"></div>
+    <div class="w-[200px] flex items-center">
+      <slot name="left"></slot>
+    </div>
 
     <!-- 撤销重做 -->
-    <div class="flex-1 flex gap-2">
-      <ElButtonGroup>
-        <ElButton text title="撤销" @click="handleUndo" :disabled="!canUndo"
+    <div class="flex-1 flex gap-2 items-center">
+      <div>
+        <Button text title="撤销" @click="handleUndo" :disabled="!canUndo" variant="ghost"
           ><Icon icon="material-symbols-light:undo" width="25px"></Icon
-        ></ElButton>
-        <ElButton text title="重做" @click="handleRedo" :disabled="!canRedo"
+        ></Button>
+        <Button text title="重做" @click="handleRedo" :disabled="!canRedo" variant="ghost"
           ><Icon icon="material-symbols-light:redo" width="25px"></Icon
-        ></ElButton>
-      </ElButtonGroup>
+        ></Button>
+      </div>
       <template v-for="item in tools">
         <component :is="item.getComponent()" :host="host"></component>
       </template>
+      <slot name="center"></slot>
     </div>
 
     <div class="w-[200px]">
-      <ElButtonGroup>
-        <ElButton type="primary" @click="handleLoadByJSON">加载</ElButton>
-        <ElButton type="primary" @click="handleSave">保存</ElButton>
-      </ElButtonGroup>
+      <!-- <Button @click="handleLoadByJSON">加载</Button>
+      <Button @click="handleSave">保存</Button> -->
+      <slot name="right"></slot>
     </div>
   </div>
 </template>
@@ -30,7 +32,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import type { IEditorHost, IEditorState, IToolbar } from '../types'
-import { ElButton, ElButtonGroup } from 'element-plus'
+import { Button } from '@/components/ui/button'
 import { ToolbarPlugin } from '@/plugins'
 import { Icon } from '@iconify/vue'
 

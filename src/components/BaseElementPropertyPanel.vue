@@ -1,71 +1,121 @@
 <template>
   <div class="text-xl font-bold pb-2">基础属性</div>
-  <ElForm>
-    <div class="pt-5">位置</div>
-    <ElDivider></ElDivider>
-    <div class="flex gap-4">
-      <ElFormItem label="X">
-        <ElInputNumber
-          label="X"
-          :model-value="element.x"
-          @input="(value) => updateProperty('x', element.x, value)"
-        />
-      </ElFormItem>
-      <ElFormItem label="Y">
-        <ElInputNumber
-          label="Y"
-          :model-value="element.y"
-          @input="(value) => updateProperty('y', element.y, value)"
-        />
-      </ElFormItem>
-    </div>
-    <div class="pt-5">尺寸</div>
-    <ElDivider></ElDivider>
-    <div class="flex gap-4">
-      <ElFormItem label="宽度">
-        <ElInputNumber
-          :model-value="element.width"
-          @input="(value) => updateProperty('width', element.width, value)"
-        />
-      </ElFormItem>
-      <ElFormItem label="高度">
-        <ElInputNumber
-          :model-value="element.height"
-          @input="(value) => updateProperty('height', element.height, value)"
-        />
-      </ElFormItem>
-    </div>
-
-    <ElFormItem label="角度">
-      <ElInputNumber
-        :model-value="element.rotation"
-        :step="1"
+  <div class="grid grid-cols-2 gap-4 items-center py-3">
+    <div>
+      <Label>X</Label>
+      <NumberField
+        :model-value="element.x"
         :min="0"
-        :max="360"
-        @input="(value: any) => updateProperty('rotation', element.rotation, value)"
-      ></ElInputNumber>
-    </ElFormItem>
-
-    <ElFormItem label="缩放">
-      <ElInputNumber
+        @update:model-value="(value: any) => updateProperty('x', element.x, value)"
+      >
+        <NumberFieldContent>
+          <NumberFieldDecrement />
+          <NumberFieldInput />
+          <NumberFieldIncrement />
+        </NumberFieldContent>
+      </NumberField>
+    </div>
+    <div>
+      <Label>Y</Label>
+      <NumberField
+        :model-value="element.y"
+        :min="0"
+        @update:model-value="(value: any) => updateProperty('y', element.y, value)"
+      >
+        <NumberFieldContent>
+          <NumberFieldDecrement />
+          <NumberFieldInput />
+          <NumberFieldIncrement />
+        </NumberFieldContent>
+      </NumberField>
+    </div>
+    <div>
+      <Label>宽</Label>
+      <NumberField
+        :model-value="element.width"
+        :min="0"
+        @update:model-value="(value: any) => updateProperty('width', element.width, value)"
+      >
+        <NumberFieldContent>
+          <NumberFieldDecrement />
+          <NumberFieldInput />
+          <NumberFieldIncrement />
+        </NumberFieldContent>
+      </NumberField>
+    </div>
+    <div>
+      <Label>高</Label>
+      <NumberField
+        :model-value="element.height"
+        :min="0"
+        @update:model-value="(value: any) => updateProperty('height', element.height, value)"
+      >
+        <NumberFieldContent>
+          <NumberFieldDecrement />
+          <NumberFieldInput />
+          <NumberFieldIncrement />
+        </NumberFieldContent>
+      </NumberField>
+    </div>
+    <div>
+      <Label>缩放X</Label>
+      <NumberField
         :model-value="element.scaleX"
         :step="0.1"
         :min="0.5"
-        @input="(value: any) => updateProperty('scaleX', element.scaleX, value)"
-      ></ElInputNumber>
-      <ElInputNumber
+        @update:model-value="(value: any) => updateProperty('scaleX', element.scaleX, value)"
+      >
+        <NumberFieldContent>
+          <NumberFieldDecrement />
+          <NumberFieldInput />
+          <NumberFieldIncrement />
+        </NumberFieldContent>
+      </NumberField>
+    </div>
+    <div>
+      <Label>缩放Y</Label>
+      <NumberField
         :model-value="element.scaleY"
         :step="0.1"
         :min="0.5"
-        @input="(value: any) => updateProperty('scaleY', element.scaleY, value)"
-      ></ElInputNumber>
-    </ElFormItem>
-  </ElForm>
+        @update:model-value="(value: any) => updateProperty('scaleY', element.scaleY, value)"
+      >
+        <NumberFieldContent>
+          <NumberFieldDecrement />
+          <NumberFieldInput />
+          <NumberFieldIncrement />
+        </NumberFieldContent>
+      </NumberField>
+    </div>
+    <div>
+      <Label>角度</Label>
+      <NumberField
+        :model-value="element.rotation"
+        :min="0"
+        :max="359"
+        @update:model-value="(value: any) => updateProperty('rotation', element.rotation, value)"
+      >
+        <NumberFieldContent>
+          <NumberFieldDecrement />
+          <NumberFieldInput />
+          <NumberFieldIncrement />
+        </NumberFieldContent>
+      </NumberField>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import type { BaseGraphicElement, IEditorHost } from '@/types'
-import { ElDivider, ElInputNumber, ElColorPicker, ElForm, ElFormItem } from 'element-plus'
+import { Label } from '@/components/ui/label'
+
+import {
+  NumberField,
+  NumberFieldContent,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from '@/components/ui/number-field'
 
 interface Props {
   host: IEditorHost

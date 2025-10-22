@@ -13,7 +13,17 @@ import {
   EditorEvents,
   BaseElementPropertyPanel,
   CanvasPropertyPanel,
-} from 'vkedit'
+} from '@/index'
+// import {
+//   createEditorHost,
+//   RectPlugin,
+//   TextPlugin,
+//   TablePlugin,
+//   Vkedit,
+//   EditorEvents,
+//   BaseElementPropertyPanel,
+//   CanvasPropertyPanel,
+// } from 'vkedit'
 
 const host = createEditorHost()
 host

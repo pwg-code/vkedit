@@ -1,10 +1,8 @@
 <template>
   <div class="flex-2 border-[0.5px] border-gray-200 p-5">
-    <ElForm>
-      <template v-for="item in panels">
-        <component :is="item" :element="activeElement" :host="host" />
-      </template>
-    </ElForm>
+    <template v-for="item in panels">
+      <component :is="item" :element="activeElement" :host="host" />
+    </template>
     <slot></slot>
   </div>
 </template>
@@ -18,7 +16,6 @@ import type {
   IPropertyPanelForGraphics,
 } from '../types'
 import { EditorEvents } from '@/types/EventTypes'
-import { ElForm, ElFormItem, ElInputNumber, ElDivider } from 'element-plus'
 import type { PropertyPanelsPlugin } from '@/plugins/PropertyPanelsPlugin'
 const { host } = defineProps<{ host: IEditorHost }>()
 const hostState = ref(host.getState())

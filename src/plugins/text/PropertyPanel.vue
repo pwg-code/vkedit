@@ -1,24 +1,45 @@
 <template>
-  <div class="">
-    <div class="text-xl font-bold pb-2">文本属性</div>
-    <ElForm>
-      <div class="pt-5">字体</div>
-      <ElDivider></ElDivider>
-      <ElFormItem label="字号">
-        <ElInputNumber
-          :model-value="element.fontSize"
-          :min="4"
-          @change="(value) => element.updateProperty(host, 'fontSize', element.fontSize, value)"
-        />
-      </ElFormItem>
-    </ElForm>
+  <div class="text-xl font-bold py-2">文本属性</div>
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <Label>字号</Label>
+
+      <NumberField
+        :model-value="element.fontSize"
+        :min="1"
+        @update:model-value="
+          (value) => element.updateProperty(host, 'fontSize', element.fontSize, value)
+        "
+      >
+        <NumberFieldContent>
+          <NumberFieldDecrement />
+          <NumberFieldInput />
+          <NumberFieldIncrement />
+        </NumberFieldContent>
+      </NumberField>
+    </div>
+    <div>
+      <Label>文本</Label>
+      <Input
+        :default-value="element.text"
+        @update:model-value="(value) => element.updateProperty(host, 'text', element.text, value)"
+      ></Input>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
 import type { TextElement } from './TextPlugin'
-import { ElDivider, ElInputNumber, ElColorPicker, ElForm, ElFormItem } from 'element-plus'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import {
+  NumberField,
+  NumberFieldContent,
+  NumberFieldDecrement,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from '@/components/ui/number-field'
 
 interface Props {
   host: IEditorHost

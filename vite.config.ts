@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import dts from 'vite-plugin-dts'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
+import postcssPresetEnv from 'postcss-preset-env'
 
 export default defineConfig({
   plugins: [
@@ -25,10 +26,15 @@ export default defineConfig({
       formats: ['es', 'umd'],
     },
     rollupOptions: {
-      external: ['vue', 'konva', 'vue-konva'], // 不把 vue 打进去
+      // 不把这些运行时依赖打包进库，让使用方提供它们（作为 peerDependencies）
+      external: ['vue', 'konva', 'vue-konva'],
       output: {
         exports: 'named',
-        globals: { vue: 'Vue' },
+        globals: {
+          vue: 'Vue',
+          konva: 'Konva',
+          'vue-konva': 'VueKonva',
+        },
       },
     },
   },

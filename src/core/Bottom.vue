@@ -2,10 +2,28 @@
   <div class="w-full h-12 flex items-center justify-end gap-6 p-2">
     <div class="flex-4"></div>
     <!-- 状态显示 -->
-    <div class="text-sm flex gap-2 flex-2">
+    <div class="text-sm flex gap-4 flex-2 items-center">
       <span class="status-item">工具: {{ currentToolTitle }}</span>
       <span class="status-item" v-if="selectionCount"> 选中: {{ selectionCount }} 个元素 </span>
-      <span class="status-item">坐标: ({{ cursorPosition.x }}, {{ cursorPosition.y }})</span>
+      <div class="pl-3 flex items-center">
+        <div class="w-[40px]">缩放</div>
+        <div class="w-[200px]">
+          <Slider
+            :max="3"
+            :min="0.2"
+            size="small"
+            :model-value="[hostState.zoom]"
+            :step="0.1"
+            @update:model-value="
+              (value) => {
+                if (value) {
+                  hostState.zoom = value[0]
+                }
+              }
+            "
+          ></Slider>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -13,8 +31,8 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import type { IEditorHost, IEditorState } from '../types'
-import { ElButton, ElSlider } from 'element-plus'
 import type { SelectionPlugin } from '@/plugins'
+import { Slider } from '@/components/ui/slider'
 
 const { host } = defineProps<{ host: IEditorHost }>()
 
