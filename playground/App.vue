@@ -14,6 +14,8 @@ import {
   BaseElementPropertyPanel,
   CanvasPropertyPanel,
 } from '@/index'
+// import '@/styles/tailwind-base.css' // 手动导入样式
+
 // import {
 //   createEditorHost,
 //   RectPlugin,

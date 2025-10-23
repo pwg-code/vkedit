@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import VueKonva from 'vue-konva'
-import '@/styles/tailwind.css' // 手动导入样式
+import '@/styles/index.css' // 手动导入样式
 
 const app = createApp(App)
 

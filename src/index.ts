@@ -1,3 +1,4 @@
+import '@/styles/index.css'
 import type { App } from 'vue'
 import Vkedit from './core/Editor.vue'
 import { EditorHost } from './core/EditorHost'
@@ -10,8 +11,6 @@ import {
   ToolbarPlugin,
   AlignPlugin,
 } from './plugins'
-
-// import './styles/tailwind.css'
 
 export type {
   IEditorHost,

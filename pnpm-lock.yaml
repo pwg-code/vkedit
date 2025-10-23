@@ -8,33 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@iconify/vue':
-        specifier: ^5.0.0
-        version: 5.0.0(vue@3.5.22(typescript@5.8.3))
-      '@vueuse/core':
-        specifier: ^13.9.0
-        version: 13.9.0(vue@3.5.22(typescript@5.8.3))
-      class-variance-authority:
-        specifier: ^0.7.1
-        version: 0.7.1
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
       konva:
         specifier: ^10.0.2
         version: 10.0.4
-      lucide-vue-next:
-        specifier: ^0.546.0
-        version: 0.546.0(vue@3.5.22(typescript@5.8.3))
-      pinia:
-        specifier: ^3.0.3
-        version: 3.0.3(typescript@5.8.3)(vue@3.5.22(typescript@5.8.3))
-      reka-ui:
-        specifier: ^2.6.0
-        version: 2.6.0(typescript@5.8.3)(vue@3.5.22(typescript@5.8.3))
-      tailwind-merge:
-        specifier: ^3.3.1
-        version: 3.3.1
       vue:
         specifier: ^3.5.18
         version: 3.5.22(typescript@5.8.3)
@@ -42,6 +18,9 @@ importers:
         specifier: ^3.2.6
         version: 3.2.6(konva@10.0.4)(vue@3.5.22(typescript@5.8.3))
     devDependencies:
+      '@iconify/vue':
+        specifier: ^5.0.0
+        version: 5.0.0(vue@3.5.22(typescript@5.8.3))
       '@tailwindcss/postcss':
         specifier: ^4.1.13
         version: 4.1.15
@@ -66,9 +45,18 @@ importers:
       '@vue/tsconfig':
         specifier: ^0.7.0
         version: 0.7.0(typescript@5.8.3)(vue@3.5.22(typescript@5.8.3))
+      '@vueuse/core':
+        specifier: ^13.9.0
+        version: 13.9.0(vue@3.5.22(typescript@5.8.3))
       autoprefixer:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.6)
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       eslint:
         specifier: ^9.31.0
         version: 9.38.0(jiti@2.6.1)
@@ -78,9 +66,15 @@ importers:
       jiti:
         specifier: ^2.4.2
         version: 2.6.1
+      lucide-vue-next:
+        specifier: ^0.546.0
+        version: 0.546.0(vue@3.5.22(typescript@5.8.3))
       npm-run-all2:
         specifier: ^8.0.4
         version: 8.0.4
+      pinia:
+        specifier: ^3.0.3
+        version: 3.0.3(typescript@5.8.3)(vue@3.5.22(typescript@5.8.3))
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -93,8 +87,14 @@ importers:
       primevue:
         specifier: ^4.4.1
         version: 4.4.1(vue@3.5.22(typescript@5.8.3))
+      reka-ui:
+        specifier: ^2.6.0
+        version: 2.6.0(typescript@5.8.3)(vue@3.5.22(typescript@5.8.3))
+      tailwind-merge:
+        specifier: ^3.3.1
+        version: 3.3.1
       tailwindcss:
-        specifier: ^4.0.0
+        specifier: ^4.1.15
         version: 4.1.15
       tailwindcss-animate:
         specifier: ^1.0.7
@@ -114,6 +114,9 @@ importers:
       vite-plugin-dts:
         specifier: ^4.5.4
         version: 4.5.4(@types/node@22.18.12)(rollup@4.52.5)(typescript@5.8.3)(vite@7.1.11(@types/node@22.18.12)(jiti@2.6.1)(lightningcss@1.30.2))
+      vite-plugin-static-copy:
+        specifier: ^3.1.4
+        version: 3.1.4(vite@7.1.11(@types/node@22.18.12)(jiti@2.6.1)(lightningcss@1.30.2))
       vite-plugin-tailwind:
         specifier: ^0.0.4
         version: 0.0.4
@@ -2643,6 +2646,10 @@ packages:
     resolution: {integrity: sha512-LaNjtRWUBY++zB5nE/NwcaoMylSPk+S+ZHNB1TzdbMJMny6dynpAGt7X/tl/QYq3TIeE6nxHppbo2LGymrG5Pw==}
     engines: {node: '>=10'}
 
+  p-map@7.0.3:
+    resolution: {integrity: sha512-VkndIv2fIB99swvQoA65bm+fsmt6UNdGeIB0oxBs+WhAhdh08QA04JXpI7rbB9r08/nkbysKoya9rtDERYOYMA==}
+    engines: {node: '>=18'}
+
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -3302,6 +3309,12 @@ packages:
     peerDependenciesMeta:
       '@nuxt/kit':
         optional: true
+
+  vite-plugin-static-copy@3.1.4:
+    resolution: {integrity: sha512-iCmr4GSw4eSnaB+G8zc2f4dxSuDjbkjwpuBLLGvQYR9IW7rnDzftnUjOH5p4RYR+d4GsiBqXRvzuFhs5bnzVyw==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      vite: ^5.0.0 || ^6.0.0 || ^7.0.0
 
   vite-plugin-tailwind@0.0.4:
     resolution: {integrity: sha512-Q33L6pIO1nMwcIrXoiNAZJABMJ8GTvkzc2CdaIZcCj0mJ05SUIdGvbUpxGJR1A+89EFCSvdfeAwuTjX28ZzNPg==}
@@ -5968,6 +5981,8 @@ snapshots:
     dependencies:
       p-limit: 3.1.0
 
+  p-map@7.0.3: {}
+
   parent-module@1.0.1:
     dependencies:
       callsites: 3.1.0
@@ -6707,6 +6722,14 @@ snapshots:
       vite-dev-rpc: 1.1.0(vite@7.1.11(@types/node@22.18.12)(jiti@2.6.1)(lightningcss@1.30.2))
     transitivePeerDependencies:
       - supports-color
+
+  vite-plugin-static-copy@3.1.4(vite@7.1.11(@types/node@22.18.12)(jiti@2.6.1)(lightningcss@1.30.2)):
+    dependencies:
+      chokidar: 3.6.0
+      p-map: 7.0.3
+      picocolors: 1.1.1
+      tinyglobby: 0.2.15
+      vite: 7.1.11(@types/node@22.18.12)(jiti@2.6.1)(lightningcss@1.30.2)
 
   vite-plugin-tailwind@0.0.4:
     dependencies:
