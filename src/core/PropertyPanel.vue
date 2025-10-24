@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-2 border-[0.5px] border-gray-200 p-5">
+  <div class="flex-2 p-5 bg-card grid grid-cols-1 xl:grid-cols-2 gap-4">
     <template v-for="item in panels">
       <component :is="item" :element="activeElement" :host="host" />
     </template>

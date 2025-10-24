@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen flex flex-col overflow-hidden">
+  <div class="h-screen flex flex-col overflow-hidden bg-card">
     <!-- 顶部工具栏 -->
-    <div class="h-16 w-full border-b border-gray-300 px-4 bg-white">
+    <header class="h-16 w-full border-b border-border">
       <Toolbar :host="host">
         <template #left>
           <slot name="toolbar-left"></slot>
@@ -13,31 +13,31 @@
           <slot name="toolbar-right"></slot>
         </template>
       </Toolbar>
-    </div>
+    </header>
 
     <!-- 中间主区域 -->
-    <div class="flex flex-1 min-h-0">
+    <main class="flex flex-row flex-1 min-h-0 w-full">
       <!-- 左侧菜单栏 -->
-      <div class="w-[200px] border-r border-gray-200 bg-gray-50">
-        <div class="text-center py-2 border-b border-gray-200">添加图形</div>
+      <div class="flex-1 border-r border-border">
+        <div class="text-center py-2 border-b border-border">添加图形</div>
         <Toolbox :host="host" />
       </div>
 
       <!-- 中间内容区（可滚动） -->
-      <div class="flex-1 overflow-auto bg-gray-100 flex justify-center">
+      <div class="flex-6 overflow-auto bg-border flex">
         <CanvasView :host="host" />
       </div>
 
       <!-- 右侧属性栏 -->
-      <div class="w-[460px] border-l border-gray-200 p-4 bg-white">
+      <div class="flex-2 border-l border-border p-4 bg-card">
         <PropertyPanel :host="host" />
       </div>
-    </div>
+    </main>
 
     <!-- 底部状态栏 -->
-    <div class="h-10 border-t border-gray-300 flex items-center px-4 bg-white">
+    <footer class="h-12 border-t border-border flex items-center px-4 bg-card w-full">
       <Bottom :host="host" />
-    </div>
+    </footer>
   </div>
 </template>
 

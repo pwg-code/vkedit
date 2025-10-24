@@ -1,257 +1,106 @@
+# VKEdit
+
+VKEdit 是一个基于 Vue 3 和 Konva.js 的插件设计器，提供了强大的图形编辑和设计功能。
+
+## ✨ 特性
+
+- 🎨 基于 Vue 3 和 Konva.js 构建
+- 📦 支持多种图形元素（矩形、表格、文本等）
+- 🛠️ 完整的图形编辑功能（变换、对齐等）
+- 🎯 高度可定制的属性面板
+- 🌗 支持亮色/暗色主题
+- 💡 智能的命令系统
+- 🚀 基于 TypeScript，提供完整类型支持
+
+## 🚀 安装
+
+```bash
+pnpm add vkedit
+```
+
+## 🔨 使用
+
+```typescript
+import { createApp } from 'vue'
+import VKEdit from 'vkedit'
+import 'vkedit/dist/styles/index.css'
+
+const app = createApp(App)
+app.use(VKEdit)
+app.mount('#app')
+```
+
+### 在组件中使用
+
+```vue
 <template>
-  <v-stage
-    :config="stageSize"
-    @mousedown="handleMouseDown"
-    @mousemove="handleMouseMove"
-    @mouseup="handleMouseUp"
-    @click="handleStageClick"
-    ref="stageRef"
-  >
-    <v-layer ref="layerRef">
-      <v-rect
-        v-for="(rect, i) in rectangles"
-        :key="i"
-        :config="{
-          ...rect,
-          name: 'rect', // 与纯JavaScript版本的逻辑相匹配非常重要
-          draggable: true
-        }"
-        @dragend="(e) => handleDragEnd(e, i)"
-        @transformend="(e) => handleTransformEnd(e, i)"
-        ref="rectRefs"
-      />
-      <v-transformer
-        ref="transformerRef"
-        :config="{
-          boundBoxFunc: (oldBox, newBox) => {
-            // 限制调整大小
-            if (newBox.width < 5 || newBox.height < 5) {
-              return oldBox;
-            }
-            return newBox;
-          },
-        }"
-      />
-      <v-rect
-        v-if="selectionRectangle.visible"
-        :config="{
-          x: Math.min(selectionRectangle.x1, selectionRectangle.x2),
-          y: Math.min(selectionRectangle.y1, selectionRectangle.y2),
-          width: Math.abs(selectionRectangle.x2 - selectionRectangle.x1),
-          height: Math.abs(selectionRectangle.y2 - selectionRectangle.y1),
-          fill: 'rgba(0,0,255,0.5)'
-        }"
-      />
-    </v-layer>
-  </v-stage>
+  <vk-editor-host>
+    <vk-editor></vk-editor>
+  </vk-editor-host>
 </template>
+```
 
-<script setup>
-import { ref, watch, reactive, onMounted } from 'vue';
+## 📝 配置要求
 
-const stageSize = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-};
+- Node.js: ^20.19.0 || >=22.12.0
+- Vue: ^3.5.18
+- Konva: ^10.0.2
+- vue-konva: ^3.2.6
 
-const rectangles = ref([
-  {
-    x: 60,
-    y: 60,
-    width: 100,
-    height: 90,
-    fill: 'red',
-    id: 'rect1',
-    rotation: 0,
-  },
-  {
-    x: 250,
-    y: 100,
-    width: 150,
-    height: 90,
-    fill: 'green',
-    id: 'rect2',
-    rotation: 0,
-  },
-]);
+## 🛠️ 开发
 
-const selectedIds = ref([]);
-const rectRefs = ref([]);
-const transformerRef = ref(null);
-const stageRef = ref(null);
-const layerRef = ref(null);
-const isSelecting = ref(false);
-const selectionRectangle = reactive({
-  visible: false,
-  x1: 0,
-  y1: 0,
-  x2: 0,
-  y2: 0
-});
+```bash
+# 安装依赖
+pnpm install
 
-// 计算旋转矩形边界框的辅助函数
-const degToRad = (angle) => (angle / 180) * Math.PI;
+# 启动开发服务器
+pnpm dev
 
-const getCorner = (pivotX, pivotY, diffX, diffY, angle) => {
-  const distance = Math.sqrt(diffX * diffX + diffY * diffY);
-  angle += Math.atan2(diffY, diffX);
-  const x = pivotX + distance * Math.cos(angle);
-  const y = pivotY + distance * Math.sin(angle);
-  return { x, y };
-};
+# 构建库
+pnpm build
 
-const getClientRect = (element) => {
-  const { x, y, width, height, rotation = 0 } = element;
-  const rad = degToRad(rotation);
+# 代码检查
+pnpm lint
 
-  const p1 = getCorner(x, y, 0, 0, rad);
-  const p2 = getCorner(x, y, width, 0, rad);
-  const p3 = getCorner(x, y, width, height, rad);
-  const p4 = getCorner(x, y, 0, height, rad);
+# 代码格式化
+pnpm format
+```
 
-  const minX = Math.min(p1.x, p2.x, p3.x, p4.x);
-  const minY = Math.min(p1.y, p2.y, p3.y, p4.y);
-  const maxX = Math.max(p1.x, p2.x, p3.x, p4.x);
-  const maxY = Math.max(p1.y, p2.y, p3.y, p4.y);
+## 📦 项目结构
 
-  return {
-    x: minX,
-    y: minY,
-    width: maxX - minX,
-    height: maxY - minY,
-  };
-};
+```
+src/
+  ├── commands/        # 命令系统
+  ├── components/      # UI组件
+  ├── core/           # 核心功能
+  ├── plugins/        # 插件系统
+  ├── styles/         # 样式文件
+  └── types/          # TypeScript 类型定义
+```
 
-// 当选择变化时更新变换器节点
-watch(selectedIds, () => {
-  if (!transformerRef.value) return;
-  
-  const nodes = selectedIds.value.map(id => {
-    return rectRefs.value.find(ref => ref.getNode().attrs.id === id)?.getNode();
-  }).filter(Boolean);
-  
-  transformerRef.value.getNode().nodes(nodes);
-});
+## ✨ 插件系统
 
-const handleStageClick = (e) => {
-  // 如果正在用矩形选择，则不做任何操作
-  if (selectionRectangle.visible) {
-    return;
-  }
+VKEdit 提供了丰富的插件系统，支持：
 
-  // 如果点击空白区域 - 移除所有选择
-  if (e.target === e.target.getStage()) {
-    selectedIds.value = [];
-    return;
-  }
+- 元素插件（矩形、表格、文本等）
+- 图形类型插件
+- 属性面板插件
+- 工具栏插件
+- 对齐功能插件
 
-  // 如果点击的不是我们的矩形则不做任何操作
-  if (!e.target.hasName('rect')) {
-    return;
-  }
-  
-  const clickedId = e.target.attrs.id;
-  
-  // 检查我们是否按下了shift或ctrl？
-  const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-  const isSelected = selectedIds.value.includes(clickedId);
+## 🎨 主题定制
 
-  if (!metaPressed && !isSelected) {
-    // 如果没有按下任何键且节点未被选中
-    // 仅选择一个
-    selectedIds.value = [clickedId];
-  } else if (metaPressed && isSelected) {
-    // 如果我们按下了键且节点已被选中
-    // 我们需要将其移除选择：
-    selectedIds.value = selectedIds.value.filter(id => id !== clickedId);
-  } else if (metaPressed && !isSelected) {
-    // 将节点添加到选择中
-    selectedIds.value = [...selectedIds.value, clickedId];
-  }
-};
+VKEdit 使用 Tailwind CSS 进行样式管理，支持完整的主题定制：
 
-const handleMouseDown = (e) => {
-  // 如果在任何形状上按下鼠标，则不做任何操作
-  if (e.target !== e.target.getStage()) {
-    return;
-  }
-  
-  // 开始选择矩形
-  isSelecting.value = true;
-  const pos = e.target.getStage().getPointerPosition();
-  selectionRectangle.visible = true;
-  selectionRectangle.x1 = pos.x;
-  selectionRectangle.y1 = pos.y;
-  selectionRectangle.x2 = pos.x;
-  selectionRectangle.y2 = pos.y;
-};
+- 支持亮色/暗色主题切换
+- 可自定义颜色变量
+- 响应式设计
+- 动画效果支持
 
-const handleMouseMove = (e) => {
-  // 如果没有开始选择，则不做任何操作
-  if (!isSelecting.value) {
-    return;
-  }
-  
-  const pos = e.target.getStage().getPointerPosition();
-  selectionRectangle.x2 = pos.x;
-  selectionRectangle.y2 = pos.y;
-};
+## 📄 许可证
 
-const handleMouseUp = () => {
-  // 如果没有开始选择，则不做任何操作
-  if (!isSelecting.value) {
-    return;
-  }
-  
-  isSelecting.value = false;
-  
-  // 在超时内更新可见性，以便我们可以在点击事件中检查
-  setTimeout(() => {
-    selectionRectangle.visible = false;
-  });
+[MIT](LICENSE)
 
-  const selBox = {
-    x: Math.min(selectionRectangle.x1, selectionRectangle.x2),
-    y: Math.min(selectionRectangle.y1, selectionRectangle.y2),
-    width: Math.abs(selectionRectangle.x2 - selectionRectangle.x1),
-    height: Math.abs(selectionRectangle.y2 - selectionRectangle.y1),
-  };
+## 🤝 贡献指南
 
-  const selected = rectangles.value.filter(rect => {
-    // 检查矩形是否与选择框相交
-    return Konva.Util.haveIntersection(selBox, getClientRect(rect));
-  });
-  
-  selectedIds.value = selected.map(rect => rect.id);
-};
-
-const handleDragEnd = (e, index) => {
-  const rects = [...rectangles.value];
-  rects[index] = {
-    ...rects[index],
-    x: e.target.x(),
-    y: e.target.y(),
-  };
-  rectangles.value = rects;
-};
-
-const handleTransformEnd = (e, index) => {
-  const node = rectRefs.value[index].getNode();
-  const scaleX = node.scaleX();
-  const scaleY = node.scaleY();
-
-  node.scaleX(1);
-  node.scaleY(1);
-  
-  const rects = [...rectangles.value];
-  rects[index] = {
-    ...rects[index],
-    x: node.x(),
-    y: node.y(),
-    width: Math.max(5, node.width() * scaleX),
-    height: Math.max(node.height() * scaleY),
-    rotation: node.rotation(),
-  };
-  rectangles.value = rects;
-};
-</script>
+欢迎提交 Issue 和 Pull Request 来帮助改进这个项目。

@@ -1,22 +1,21 @@
 <template>
-  <div class="">
-    <div class="text-xl font-bold pb-2">矩形属性</div>
-    <div>
-      <NumberField
-        :model-value="element.strokeWidth"
-        :min="1"
-        @update:model-value="
-          (value) => element.updateProperty(host, 'strokeWidth', element.strokeWidth, value)
-        "
-      >
-        <Label>边框粗细</Label>
-        <NumberFieldContent>
-          <NumberFieldDecrement />
-          <NumberFieldInput />
-          <NumberFieldIncrement />
-        </NumberFieldContent>
-      </NumberField>
-    </div>
+  <div class="text-xl font-bold pb-2">矩形属性</div>
+  <div></div>
+  <div>
+    <NumberField
+      :model-value="element.strokeWidth"
+      :min="1"
+      @update:model-value="
+        (value) => element.updateProperty(host, 'strokeWidth', element.strokeWidth, value)
+      "
+    >
+      <Label>边框粗细</Label>
+      <NumberFieldContent>
+        <NumberFieldDecrement />
+        <NumberFieldInput />
+        <NumberFieldIncrement />
+      </NumberFieldContent>
+    </NumberField>
   </div>
 </template>
 

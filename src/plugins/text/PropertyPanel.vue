@@ -1,30 +1,28 @@
 <template>
   <div class="text-xl font-bold py-2">文本属性</div>
-  <div class="grid grid-cols-2 gap-4">
-    <div>
-      <Label>字号</Label>
-
-      <NumberField
-        :model-value="element.fontSize"
-        :min="1"
-        @update:model-value="
-          (value) => element.updateProperty(host, 'fontSize', element.fontSize, value)
-        "
-      >
-        <NumberFieldContent>
-          <NumberFieldDecrement />
-          <NumberFieldInput />
-          <NumberFieldIncrement />
-        </NumberFieldContent>
-      </NumberField>
-    </div>
-    <div>
-      <Label>文本</Label>
-      <Input
-        :model-value="element.text"
-        @update:model-value="(value) => element.updateProperty(host, 'text', element.text, value)"
-      ></Input>
-    </div>
+  <div></div>
+  <div>
+    <Label>文本</Label>
+    <Input
+      :model-value="element.text"
+      @update:model-value="(value) => element.updateProperty(host, 'text', element.text, value)"
+    ></Input>
+  </div>
+  <div>
+    <Label>字号</Label>
+    <NumberField
+      :model-value="element.fontSize"
+      :min="1"
+      @update:model-value="
+        (value) => element.updateProperty(host, 'fontSize', element.fontSize, value)
+      "
+    >
+      <NumberFieldContent>
+        <NumberFieldDecrement />
+        <NumberFieldInput />
+        <NumberFieldIncrement />
+      </NumberFieldContent>
+    </NumberField>
   </div>
 </template>
 

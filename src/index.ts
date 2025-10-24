@@ -1,7 +1,8 @@
-import '@/styles/index.css'
 import type { App } from 'vue'
 import Vkedit from './core/Editor.vue'
 import { EditorHost } from './core/EditorHost'
+import '@/styles/index.css'
+
 import {
   SelectionPlugin,
   KeyDownPlugin,
@@ -21,6 +22,7 @@ export type {
 } from './types'
 
 export { BaseGraphicElement, BaseGraphicType, BasePlugin, EditorEvents } from './types'
+import { EditorEvents } from './types'
 
 export { TextPlugin } from './plugins/text/TextPlugin'
 export { RectPlugin } from './plugins/rect/RectPlugin'
@@ -33,10 +35,18 @@ export function install(app: App) {
   app.component('Vkedit', Vkedit)
 }
 
+interface IOptions {
+  basePropertyPanel?: boolean
+  baseCanvasPropertyPanel?: boolean
+}
+
 // 创建安装了核心插件的宿主
-export function createEditorHost() {
+export function createEditorHost({
+  basePropertyPanel = true,
+  baseCanvasPropertyPanel = true,
+}: IOptions) {
   const host = new EditorHost()
-  return host
+  host
     .installPlugin(new ToolbarPlugin())
     .installPlugin(new PropertyPanelsPlugin())
     .installPlugin(new GraphicTypesPlugin())
@@ -44,6 +54,31 @@ export function createEditorHost() {
     .installPlugin(new KeyDownPlugin())
     .installPlugin(new SelectionPlugin())
     .installPlugin(new AlignPlugin())
+
+  if (basePropertyPanel) {
+    host.emit(EditorEvents.PROPERTY_PANEL_PUBLIC_REGISTERED, BaseElementPropertyPanel)
+  }
+
+  if (baseCanvasPropertyPanel) {
+    host.emit(EditorEvents.PROPERTY_PANEL_CANVAS_REGISTERED, CanvasPropertyPanel)
+  }
+
+  return host
 }
 
-export { Vkedit, EditorHost, CanvasPropertyPanel, BaseElementPropertyPanel }
+// 导出UI
+export * from '@/components/ui'
+
+export {
+  Vkedit,
+  EditorHost,
+  CanvasPropertyPanel,
+  BaseElementPropertyPanel,
+  SelectionPlugin,
+  KeyDownPlugin,
+  ElementsPlugin,
+  GraphicTypesPlugin,
+  PropertyPanelsPlugin,
+  ToolbarPlugin,
+  AlignPlugin,
+}

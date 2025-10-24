@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white m-auto shadow-xl rounded-2xl"
+    class="m-auto shadow-xl rounded-2xl bg-white"
     :style="`height: ${stageConfig.height * stageConfig.scaleY}px; width: ${stageConfig.width * stageConfig.scaleX}px`"
     ref="canvasWrapper"
     tabindex="0"
