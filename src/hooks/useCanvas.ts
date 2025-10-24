@@ -2,17 +2,66 @@ import type { ElementsPlugin } from '@/plugins'
 import type { IEditorHost, IEditorState, IGraphicElement, Point2D } from '@/types'
 import { EditorEvents } from '@/types/EventTypes'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useElementSize } from '@vueuse/core'
 
 export default function (host: IEditorHost) {
   // 画布状态
   const hostState = ref<IEditorState>(host.getState())
 
+  const stageRef = ref<any>(null)
+  const stagePosition = reactive({ x: 0, y: 0 })
+  const canvasRef = ref<HTMLElement | null>(null)
+  const scrollContainer = ref<HTMLElement | null>(null)
+  const transformOrigin = ref({ x: 0, y: 0 })
+
+  const { width, height } = useElementSize(canvasRef)
+
+  // 内容图层
+  const contentLayer = ref()
+  // 顶部标尺
+  const rulerTopLayer = ref()
+  // 左侧标尺
+  const rulerLeftLayer = ref()
+
+  // 内容图层配置
+  const contentLayerConfig = reactive({
+    x:0,
+    y:0,
+    scaleX:1,
+    scaleY:1,
+    fill:"6666"
+  })
+
+  // 上标尺图层配置
+  const rulerTopLayerConfig = reactive({
+    x:0,
+    y:0,
+    scaleX:1,
+    scaleY:1,
+    fill:"6666"
+  })
+
+  // 左标尺图层配置
+  const rulerLeftLayerConfig = reactive({
+    x:0,
+    y:0,
+    scaleX:1,
+    scaleY:1,
+    fill:"6666"
+  })
+
+
+  // 舞台配置
   const stageConfig = computed(() => ({
-    width: hostState.value.width,
-    height: hostState.value.height,
+    width: width.value,
+    height: height.value,
+    // width: hostState.value.width,
+    // height: hostState.value.height,
     // 缩放
-    scaleX: hostState.value.zoom,
-    scaleY: hostState.value.zoom,
+    scaleX: 1,
+    scaleY: 1,
+    // scaleX: hostState.value.zoom,
+    // scaleY: hostState.value.zoom,
   }))
 
   // 所有的图像元素
@@ -86,12 +135,6 @@ export default function (host: IEditorHost) {
     isSelecting.value = false
   }
 
-  const stageRef = ref<any>(null)
-  const stagePosition = reactive({ x: 0, y: 0 })
-  const canvasRef = ref<HTMLElement | null>(null)
-  const scrollContainer = ref<HTMLElement | null>(null)
-  const transformOrigin = ref({ x: 0, y: 0 })
-
   function handleWheel(e: WheelEvent) {
     if (!canvasRef.value || !scrollContainer.value) return
 
@@ -132,9 +175,13 @@ export default function (host: IEditorHost) {
     const stage = event.target.getStage()
     const point = stage.getPointerPosition()
     return {
-      x: point.x / host.getState().zoom,
-      y: point.y / host.getState().zoom,
+      x: point.x ,
+      y: point.y ,
     }
+    // return {
+    //   x: point.x / host.getState().zoom,
+    //   y: point.y / host.getState().zoom,
+    // }
   }
 
   onMounted(() => {
@@ -161,5 +208,12 @@ export default function (host: IEditorHost) {
     handleWheel,
     handleKeyDown,
     initElements,
+    contentLayer,
+    contentLayerConfig,
+    rulerTopLayer,
+    rulerTopLayerConfig,
+    rulerLeftLayer,
+    rulerLeftLayerConfig,
+
   }
 }
