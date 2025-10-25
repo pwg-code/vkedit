@@ -127,8 +127,6 @@ watch(contentHeight,(v)=>{
 
 })
 
-console.log(canvasRef.value)
-
 // 转换器
 const transformerRef = ref()
 
@@ -232,6 +230,9 @@ onMounted(() => {
   props.host.on(EditorEvents.ELEMENT_UPDATED, updateCanvas)
   props.host.on(EditorEvents.PROPERTY_VALUE_CHANGE, updateCanvas)
   props.host.on(EditorEvents.ELEMENTS_ALIGN, updateCanvas)
+
+  // 将内容图层赋值给宿主  以便其他插件使用
+  props.host.contentLayer = contentLayer.value
 })
 </script>
 

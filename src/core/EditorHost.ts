@@ -3,12 +3,14 @@ import type { IEditorHost, IEditorPlugin, IGraphicElement, IEditorState } from '
 import { EditorEvents, EventUtils } from '../types/EventTypes'
 import type { ICommand } from '@/commands/ICommand'
 import type { ElementsPlugin, GraphicTypesPlugin } from '@/plugins'
+import type { Layer } from 'konva/lib/Layer'
 
 export class EditorHost implements IEditorHost {
   private plugins: Map<string, IEditorPlugin> = new Map()
   private eventHandlers: Map<string, Function[]> = new Map()
   private commandStack: ICommand[] = []
   private currentCommandIndex: number = -1
+  public contentLayer: Layer | undefined
 
   public state = reactive<IEditorState>({
     zoom: 1,
