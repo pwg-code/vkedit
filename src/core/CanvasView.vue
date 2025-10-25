@@ -12,7 +12,7 @@
       <v-layer ref="contentLayer" :config="contentLayerConfig">
         <!-- 背景 -->
         <v-rect
-          :config="{ x: 0, y: 0, width: stageConfig.width, height: stageConfig.height, fill: '#fce7f3' }"
+          :config="{ x: 0, y: 0, width: stageConfig.width, height: stageConfig.height, fill: '#e5e7eb' }"
         ></v-rect>
         <!-- 上标尺 -->
         <v-rect
