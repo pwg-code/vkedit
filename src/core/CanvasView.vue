@@ -1,11 +1,5 @@
 <template>
-  <div
-    class="m-auto shadow-xl rounded-2xl bg-white"
-    :style="`height: ${stageConfig.height * stageConfig.scaleY}px; width: ${stageConfig.width * stageConfig.scaleX}px`"
-    ref="canvasWrapper"
-    tabindex="0"
-    @keydown="handleKeyDown"
-  >
+  <div class="flex-1 w-full bg-gray-200" ref="canvasRef" tabindex="0" @keydown="handleKeyDown">
     <v-stage
       ref="stageRef"
       :config="stageConfig"
@@ -15,25 +9,62 @@
       @wheel="handleWheel"
       @click="handleClick"
     >
-      <v-layer ref="layerRef">
-        <!-- 网格 -->
-        <v-line
-          v-if="hostState.showGrid"
-          v-for="(line, index) in gridLines"
-          :key="`grid-${index}`"
-          :config="line"
-        />
-        <component
-          v-for="element in elements"
-          :key="element.id"
-          :is="graphicTypesPlugin?.getElementComponent(element.type)"
-          :element="element"
-          :host="host"
-          @transform="handleElementTransform($event, element)"
-          @transformend="handleElementTransformEnd($event, element)"
-          @dragend="handleDragEnd($event, element)"
-        />
-        <v-transformer ref="transformerRef" :config="{}"></v-transformer>
+      <v-layer ref="contentLayer" :config="contentLayerConfig">
+        <!-- 背景 -->
+        <v-rect
+          :config="{ x: 0, y: 0, width: stageConfig.width, height: stageConfig.height, fill: '#e5e7eb' }"
+        ></v-rect>
+        <!-- 上标尺 -->
+        <v-rect
+          :config="{ x: 0, y: 0, width: stageConfig.width, height: 10, fill: '#6666' }"
+        ></v-rect>
+
+        <!-- 左标尺 -->
+        <v-rect
+          :config="{ x: 0, y: 0, width: 10, height: stageConfig.height, fill: '#6666' }"
+        ></v-rect>
+
+        <!-- 内容区底板 -->
+        <v-rect
+          :config="{
+            x: contentX,
+            y: contentY,
+            width: contentWidth,
+            height: contentHeight,
+            fill: '#fff',
+          }"
+        ></v-rect>
+
+        <!-- 图形区域 -->
+        <v-group
+          :config="{
+            x: contentX,
+            y: contentY,
+            width: contentWidth,
+            height: contentHeight,
+            scaleX: hostState.zoom,
+            scaleY: hostState.zoom,
+          }"
+        >
+          <!-- 网格 -->
+          <v-line
+            v-if="hostState.showGrid"
+            v-for="(line, index) in gridLines"
+            :key="`grid-${index}`"
+            :config="line"
+          />
+          <component
+            v-for="element in elements"
+            :key="element.id"
+            :is="graphicTypesPlugin?.getElementComponent(element.type)"
+            :element="element"
+            :host="host"
+            @transform="handleElementTransform($event, element)"
+            @transformend="handleElementTransformEnd($event, element)"
+            @dragend="handleDragEnd($event, element)"
+          />
+          <v-transformer ref="transformerRef" :config="{}"></v-transformer>
+        </v-group>
         <!-- <v-transformer
                 ref="transformerRef"
                 :config="{ enabledAnchors: ['bottom-right'] }"
@@ -43,6 +74,7 @@
       </v-layer>
     </v-stage>
   </div>
+  <!-- </div> -->
 </template>
 
 <script setup lang="ts">
@@ -54,14 +86,16 @@ import { EditorEvents } from '@/types/EventTypes'
 import { TransformElementCommand, UpdatePropertyCommand } from '@/commands'
 import useCanvas from '@/hooks/useCanvas'
 import type { GraphicTypesPlugin } from '@/plugins'
-const parentRef = ref<HTMLElement | null>(null)
+import useZoom from '@/hooks/useZoom'
 
 interface Props {
   host: IEditorHost
 }
 
 const props = defineProps<Props>()
+
 const {
+  canvasRef,
   transformOrigin,
   stageRef,
   stageConfig,
@@ -78,27 +112,37 @@ const {
   handleWheel,
   handleKeyDown,
   initElements,
+  contentLayer,
+  contentLayerConfig,
+  rulerLeftLayer,
+  rulerTopLayer,
+  rulerLeftLayerConfig,
+  rulerTopLayerConfig,
 } = useCanvas(props.host)
 
-// 主图层
-const layerRef = ref()
+const { contentHeight,contentWidth,contentX,contentY}  = useZoom(stageConfig, hostState)
+
+watch(contentHeight,(v)=>{
+  console.log(v);
+
+})
+
 // 转换器
 const transformerRef = ref()
 
 // 更新选中元素
 const updateTransformerNodes = (selection: Map<string, IGraphicElement>) => {
   const nodes: any[] = []
-  if (layerRef.value) {
-    selection.forEach((e) => {
-      const node = layerRef.value.getNode().findOne('#' + e.id)
+  if (!contentLayer.value) return
+  selection.forEach((e) => {
+    const node = contentLayer.value.getNode().findOne('#' + e.id)
+    if (node) {
+      nodes.push(node)
+    } else {
+      console.warn('找不到节点', e.id)
+    }
+  })
 
-      if (node) {
-        nodes.push(node)
-      } else {
-        console.warn('找不到节点', e.id)
-      }
-    })
-  }
   const transformerNode = transformerRef.value.getNode()
   if (transformerNode) {
     transformerNode.nodes(nodes)
@@ -186,6 +230,9 @@ onMounted(() => {
   props.host.on(EditorEvents.ELEMENT_UPDATED, updateCanvas)
   props.host.on(EditorEvents.PROPERTY_VALUE_CHANGE, updateCanvas)
   props.host.on(EditorEvents.ELEMENTS_ALIGN, updateCanvas)
+
+  // 将内容图层赋值给宿主  以便其他插件使用
+  props.host.contentLayer = contentLayer.value
 })
 </script>
 

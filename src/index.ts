@@ -24,7 +24,7 @@ export type {
 export { BaseGraphicElement, BaseGraphicType, BasePlugin, EditorEvents } from './types'
 import { EditorEvents } from './types'
 
-export { TextPlugin } from './plugins/text/TextPlugin'
+export { TextPlugin } from './plugins/text/textPlugin'
 export { RectPlugin } from './plugins/rect/RectPlugin'
 export { TablePlugin } from './plugins/table/TablePlugin'
 

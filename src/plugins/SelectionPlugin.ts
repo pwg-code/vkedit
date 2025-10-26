@@ -40,12 +40,15 @@ export class SelectionPlugin extends BasePlugin {
   private handleMouseDown(event: any): void {
     if (!this.host || this.host.getState().currentTool !== 'select') return
     this.selectionStart = event.point
-    // 如果点击的是画布 开始范围选择
-    if (event.target == event.currentTarget) {
+    // const target = event.target
+    // console.log('handleMouseDown',target);
+    // 如果点击的是不是元素则开始范围选择
+    const clickEl = this.getClickElement(event)
+    if (!clickEl) {
       this.isSelecting = true
       this.mouseDownInElement = null
     } else {
-      this.mouseDownInElement = this.elementsPlugin?.getElement(event.target.attrs.id) || null
+      this.mouseDownInElement = clickEl
     }
   }
 
@@ -58,10 +61,12 @@ export class SelectionPlugin extends BasePlugin {
   private handleMouseUp(event: any): void {
     // 如果开始范围选择 则框选
     if (this.isSelecting) {
+      // 根据框选的范围进行选
       this.selectionElements = this.findElementsInRect(this.selectionStart, this.selectionEnd)
       this.isSelecting = false
       this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
     } else if (this.mouseDownInElement && !this.selectionElements.has(this.mouseDownInElement.id)) {
+      // 点击的是元素且为为选择状态则清空选择后单选该元素
       this.selectionElements.clear()
       this.selectionElements.set(this.mouseDownInElement.id, this.mouseDownInElement)
       this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
@@ -95,12 +100,28 @@ export class SelectionPlugin extends BasePlugin {
 
     // 简化实现：检查元素边界框是否与选择矩形相交
     this.elementsPlugin?.elements.forEach((element) => {
-      const bbox = element.getBoundingBox()
-      if (this.rectIntersect(rect, bbox)) {
-        elements.set(element.id, element)
+      // 从内容区查找KONVA SHAPE元素 以便获得在画布的绝对坐标
+      const shape = this.host?.contentLayer?.getNode().findOne("#" + element.id)
+      if (shape){
+        const absPos = shape?.getAbsolutePosition()
+        const bbox = element.getBoundingBox()
+        bbox.x = absPos.x
+        bbox.y = absPos.y
+        if (this.rectIntersect(rect, bbox)) {
+          elements.set(element.id, element)
+        }
       }
     })
     return elements
+  }
+
+  /* 获取点击的元素 */
+  private getClickElement(event:any):IGraphicElement|undefined{
+    const elementId = event.target.attrs.id
+    if (elementId){
+      return this.elementsPlugin?.getElement(elementId)
+    }
+    return undefined
   }
 
   // 识别两个矩形是否相交 暂不考虑角度
