@@ -30,6 +30,21 @@ export { TablePlugin } from './plugins/table/TablePlugin'
 
 import BaseElementPropertyPanel from '@/components/BaseElementPropertyPanel.vue'
 import CanvasPropertyPanel from '@/components/CanvasPropertyPanel.vue'
+// 导出UI
+import {
+  VkButton,
+  VkButtonGroup,
+  VkInput,
+  VkLabel,
+  VkNumberField,
+  VkNumberFieldContent,
+  VkNumberFieldDecrement,
+  VkNumberFieldIncrement,
+  VkNumberFieldInput,
+  VkSeparator,
+  VkSlider,
+  VkSwitch,
+} from '@/components/ui'
 
 export function install(app: App) {
   app.component('Vkedit', Vkedit)
@@ -66,9 +81,6 @@ export function createEditorHost({
   return host
 }
 
-// 导出UI
-export * from '@/components/ui'
-
 export {
   Vkedit,
   EditorHost,
@@ -81,4 +93,16 @@ export {
   PropertyPanelsPlugin,
   ToolbarPlugin,
   AlignPlugin,
+  VkButton,
+  VkButtonGroup,
+  VkInput,
+  VkLabel,
+  VkNumberField,
+  VkNumberFieldContent,
+  VkNumberFieldDecrement,
+  VkNumberFieldIncrement,
+  VkNumberFieldInput,
+  VkSeparator,
+  VkSlider,
+  VkSwitch,
 }
