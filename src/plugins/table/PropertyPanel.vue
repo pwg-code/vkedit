@@ -37,6 +37,24 @@
 
   <div class="pt-4 font-bold">单元格设置</div>
   <div></div>
+
+  <div>
+    <Label>内容</Label>
+    <Input
+      :model-value="element.activeCell.text"
+      @update:model-value="
+        (value: any) =>
+          element.updateProperty(
+            host,
+            `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.text`,
+            element.activeCell.text,
+            value,
+          )
+      "
+    >
+    </Input>
+  </div>
+  <div></div>
   <div>
     <NumberField
       :model-value="element.rowsHeight[element.activeCell.rowIndex]"
@@ -84,13 +102,13 @@
   <div class="flex gap-4 items-center">
     <Label>合并左</Label>
     <Switch
-      :model-value="element.activeCell.isMergeLeft"
+      :model-value="element.activeCell.mergeLeft"
       @update:model-value="
         (value: any) =>
           element.updateProperty(
             host,
-            `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.isMergeLeft`,
-            element.activeCell.isMergeLeft,
+            `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.mergeLeft`,
+            element.activeCell.mergeLeft,
             value,
           )
       "
@@ -100,40 +118,100 @@
   <div class="flex gap-4 items-center">
     <Label>合并上</Label>
     <Switch
-      :model-value="element.activeCell.isMergeUp"
+      :model-value="element.activeCell.mergeUp"
       @update:model-value="
         (value: any) =>
           element.updateProperty(
             host,
-            `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.isMergeUp`,
-            element.activeCell.isMergeUp,
+            `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.mergeUp`,
+            element.activeCell.mergeUp,
             value,
           )
       "
     >
     </Switch>
   </div>
-
   <div>
-    <Label>内容</Label>
-    <Input
-      :model-value="element.activeCell.text"
-      @update:model-value="
-        (value: any) =>
-          element.updateProperty(
-            host,
-            `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.text`,
-            element.activeCell.text,
-            value,
-          )
-      "
-    >
-    </Input>
+    <Label>边框</Label>
+    <div class="grid grid-cols-3 border-2 border-border">
+      <div></div>
+      <div class="flex gap-4 items-center">
+        <Switch
+          :model-value="element.activeCell.borderUp"
+          @update:model-value="
+            (value: any) =>
+              element.updateProperty(
+                host,
+                `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.borderUp`,
+                element.activeCell.borderUp,
+                value,
+              )
+          "
+        >
+        </Switch>
+      </div>
+      <div></div>
+      <div class="flex gap-4 items-center">
+        <Switch
+          :model-value="element.activeCell.borderLeft"
+          @update:model-value="
+            (value: any) =>
+              element.updateProperty(
+                host,
+                `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.borderLeft`,
+                element.activeCell.borderLeft,
+                value,
+              )
+          "
+        >
+        </Switch>
+      </div>
+      <div></div>
+      <div class="flex gap-4 items-center">
+        <Switch
+          :model-value="
+            element.getCell(element.activeCell.rowIndex, element.activeCell.colIndex + 1)
+              ?.borderLeft
+          "
+          @update:model-value="
+            (value: any) =>
+              element.updateProperty(
+                host,
+                `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex + 1}.borderLeft`,
+                element.getCell(element.activeCell.rowIndex, element.activeCell.colIndex + 1)
+                  ?.borderLeft,
+                value,
+              )
+          "
+        >
+        </Switch>
+      </div>
+      <div></div>
+      <div class="flex gap-4 items-center">
+        <Switch
+          :model-value="
+            element.getCell(element.activeCell.rowIndex + 1, element.activeCell.colIndex)?.borderUp
+          "
+          @update:model-value="
+            (value: any) =>
+              element.updateProperty(
+                host,
+                `cells.${element.activeCell.rowIndex + 1}.${element.activeCell.colIndex}.borderUp`,
+                element.getCell(element.activeCell.rowIndex + 1, element.activeCell.colIndex)
+                  ?.borderUp,
+                value,
+              )
+          "
+        >
+        </Switch>
+      </div>
+      <div></div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { IEditorHost } from '@/types'
+import type { IEditorHost, IGraphicElement } from '@/types'
 import type { TableElement } from './TablePlugin'
 import { Label } from '@/components/ui/label'
 import {
@@ -178,6 +256,22 @@ const updateCols = (value: number) => {
     }
   }
 }
+
+// 设置上边框  同时设置上一个单元格的边框
+// const setBorderUp = (element: TableElement, value: any) => {
+//   element.updateProperty(
+//     host,
+//     `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.borderUp`,
+//     element.activeCell.borderUp,
+//     value,
+//   )
+//   element.updateProperty(
+//     host,
+//     `cells.${element.activeCell.rowIndex}.${element.activeCell.colIndex}.borderUp`,
+//     element.activeCell.borderUp,
+//     value,
+//   )
+// }
 </script>
 
 <style scoped></style>

@@ -12,3 +12,12 @@ export {
 export { Separator as VkSeparator } from './separator'
 export { Slider as VkSlider } from './slider'
 export { Switch as VkSwitch } from './switch'
+import {
+  Select as VkSelect,
+  SelectContent as VkSelectContent,
+  SelectGroup as VkSelectGroup,
+  SelectItem as VkSelectItem,
+  SelectLabel as VkSelectLabel,
+  SelectTrigger as VkSelectTrigger,
+  SelectValue as VkSelectValue,
+} from './select'

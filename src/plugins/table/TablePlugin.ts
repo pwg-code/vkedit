@@ -12,8 +12,12 @@ export interface CellConfig {
   colIndex: number
   fill: string
   text: string
-  isMergeLeft: boolean // 合并左
-  isMergeUp: boolean // 合并上
+  mergeLeft: boolean // 合并左
+  mergeUp: boolean // 合并上
+  borderUp: boolean
+  // borderDown: boolean
+  borderLeft: boolean
+  // borderRight: boolean
   fontSize: number
   [key: string]: any
 }
@@ -27,8 +31,8 @@ export class TableElement extends BaseGraphicElement {
   constructor(
     x: number = 50,
     y: number = 50,
-    public rowsHeight: number[] = [40, 40], // 行高
-    public colsWidth: number[] = [100, 100, 100], // 列宽
+    public rowsHeight: number[] = [30, 30, 30, 30], // 行高
+    public colsWidth: number[] = [80, 80, 80, 80, 80, 80], // 列宽
     public cells: CellConfig[][] = [], // 单元格配置
   ) {
     super(x, y)
@@ -59,10 +63,15 @@ export class TableElement extends BaseGraphicElement {
       rowIndex: rowIndex,
       colIndex: colIndex,
       fill: '#000000',
-      text: '文本',
-      isMergeLeft: false,
-      isMergeUp: false,
+      text: '',
+      mergeLeft: false,
+      mergeUp: false,
+      borderUp: true,
+      borderDown: true,
+      borderLeft: true,
+      borderRight: true,
       fontSize: 14,
+      borders: ['up', 'down', 'left', 'right'],
     }
   }
 
@@ -154,6 +163,17 @@ export class TableElement extends BaseGraphicElement {
       rowsHeight: this.rowsHeight,
       colsWidth: this.colsWidth,
       cells: this.cells,
+    }
+  }
+
+  // 获取单元格
+  getCell(row: number = 0, col: number = 0): CellConfig | undefined {
+    const a = this.cells[row]
+    if (a) {
+      const b = a[col]
+      if (b) {
+        return b
+      }
     }
   }
 }
