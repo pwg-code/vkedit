@@ -1,5 +1,10 @@
 <template>
-  <div class="flex-1 w-full bg-gray-200" ref="canvasRef" tabindex="0" @keydown="handleKeyDown">
+  <div
+    class="flex-1 w-full bg-gray-200"
+    tabindex="0"
+    ref="canvasWrapperRef"
+    @keydown="handleKeyDown"
+  >
     <v-stage
       ref="stageRef"
       :config="stageConfig"
@@ -9,7 +14,7 @@
       @wheel="handleWheel"
       @click="handleClick"
     >
-      <v-layer ref="contentLayer" :config="contentLayerConfig">
+      <v-layer ref="layerRef" :config="layerConfig">
         <!-- 背景 -->
         <v-rect
           :config="{
@@ -19,15 +24,6 @@
             height: stageConfig.height,
             fill: '#e5e7eb',
           }"
-        ></v-rect>
-        <!-- 上标尺 -->
-        <v-rect
-          :config="{ x: 0, y: 0, width: stageConfig.width, height: 10, fill: '#6666' }"
-        ></v-rect>
-
-        <!-- 左标尺 -->
-        <v-rect
-          :config="{ x: 0, y: 0, width: 10, height: stageConfig.height, fill: '#6666' }"
         ></v-rect>
 
         <!-- 内容区底板 -->
@@ -77,9 +73,45 @@
               ></v-transformer> -->
 
         <SelectionRectangle v-if="isSelecting" :start="selectionStart" :end="selectionEnd" />
-        <!-- 放大缩小按钮 -->
+        <!-- 上标尺 -->
+        <v-rect
+          :config="{ x: 0, y: 0, width: stageConfig.width, height: 10, fill: '#6666' }"
+        ></v-rect>
+
+        <!-- 左标尺 -->
+        <v-rect
+          :config="{ x: 0, y: 0, width: 10, height: stageConfig.height, fill: '#6666' }"
+        ></v-rect>
+
+        <!-- 水平滚动条 -->
+        <template>
+          <v-group>
+            <v-rect
+              :config="{
+                x: 10,
+                y: stageConfig.height - 10,
+                width: stageConfig.width,
+                height: 10,
+                fill: '#f3f4f6',
+              }"
+            ></v-rect>
+            <v-rect
+              :config="{
+                x: 10,
+                y: stageConfig.height - 10,
+                width: stageConfig.width - 50,
+                height: 10,
+                fill: '#6666',
+              }"
+            ></v-rect>
+          </v-group>
+        </template>
+        <!-- 垂直滚动条 -->
+        <template></template>
       </v-layer>
     </v-stage>
+    <!-- 放大缩小按钮 -->
+
     <div
       class="fixed flex items-center"
       :style="{
@@ -89,16 +121,16 @@
     >
       <button
         class="hover:bg-background rounded-xl active:bg-secondary p-2"
-        @click="handleZoomIn()"
+        @click="handleZoomOut()"
       >
-        <Icon icon="material-symbols-light:zoom-in-rounded" :width="30"></Icon>
+        <Icon icon="material-symbols-light:zoom-out" :width="30"></Icon>
       </button>
       <div class="w-10 flex-1 text-center">{{ hostState.zoom.toFixed(1) }}</div>
       <button
         class="hover:bg-background rounded-xl active:bg-secondary p-2"
-        @click="handleZoomOut()"
+        @click="handleZoomIn()"
       >
-        <Icon icon="material-symbols-light:zoom-out" :width="30"></Icon>
+        <Icon icon="material-symbols-light:zoom-in-rounded" :width="30"></Icon>
       </button>
       <button
         class="hover:bg-background rounded-xl active:bg-secondary p-2"
@@ -108,12 +140,12 @@
       </button>
     </div>
   </div>
-  <!-- </div> -->
 </template>
 
 <script setup lang="ts">
 import { computed, markRaw, onMounted, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 import type { IEditorHost, IEditorPlugin, IEditorState, IGraphicElement, Point2D } from '../types'
 import SelectionRectangle from './SelectionRectangle.vue'
@@ -123,6 +155,8 @@ import useCanvas from '@/hooks/useCanvas'
 import type { GraphicTypesPlugin } from '@/plugins'
 import useZoom from '@/hooks/useZoom'
 
+const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`)
+
 interface Props {
   host: IEditorHost
 }
@@ -130,8 +164,8 @@ interface Props {
 const props = defineProps<Props>()
 
 const {
-  canvasRef,
-  transformOrigin,
+  canvasWrapperRef,
+  layerRef,
   stageRef,
   stageConfig,
   hostState,
@@ -147,12 +181,7 @@ const {
   handleWheel,
   handleKeyDown,
   initElements,
-  contentLayer,
-  contentLayerConfig,
-  rulerLeftLayer,
-  rulerTopLayer,
-  rulerLeftLayerConfig,
-  rulerTopLayerConfig,
+  layerConfig,
 } = useCanvas(props.host)
 
 const {
@@ -175,9 +204,9 @@ const transformerRef = ref()
 // 更新选中元素
 const updateTransformerNodes = (selection: Map<string, IGraphicElement>) => {
   const nodes: any[] = []
-  if (!contentLayer.value) return
+  if (!layerRef.value) return
   selection.forEach((e) => {
-    const node = contentLayer.value.getNode().findOne('#' + e.id)
+    const node = layerRef.value.getNode().findOne('#' + e.id)
     if (node) {
       nodes.push(node)
     } else {
@@ -274,7 +303,7 @@ onMounted(() => {
   props.host.on(EditorEvents.ELEMENTS_ALIGN, updateCanvas)
 
   // 将内容图层赋值给宿主  以便其他插件使用
-  props.host.contentLayer = contentLayer.value
+  props.host.layer = layerRef.value
 })
 </script>
 

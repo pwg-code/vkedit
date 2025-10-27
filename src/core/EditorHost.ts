@@ -10,7 +10,7 @@ export class EditorHost implements IEditorHost {
   private eventHandlers: Map<string, Function[]> = new Map()
   private commandStack: ICommand[] = []
   private currentCommandIndex: number = -1
-  public contentLayer: Layer | undefined
+  public layer: Layer | undefined
 
   public state = reactive<IEditorState>({
     zoom: 1,
@@ -18,8 +18,8 @@ export class EditorHost implements IEditorHost {
     snapToGrid: true,
     showGrid: false,
     // 像素 = （毫米 * DPI）/ 25.4
-    width: (50 * 150) / 25.4,
-    height: (50 * 150) / 25.4,
+    width: (50 * 300) / 25.4,
+    height: (50 * 300) / 25.4,
     dpi: 300,
     widthMM: 50,
     heightMM: 50,

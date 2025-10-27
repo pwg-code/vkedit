@@ -9,40 +9,15 @@ export default function (host: IEditorHost) {
   const hostState = ref<IEditorState>(host.getState())
 
   const stageRef = ref<any>(null)
-  const stagePosition = reactive({ x: 0, y: 0 })
-  const canvasRef = ref<HTMLElement | null>(null)
+  const canvasWrapperRef = ref<HTMLElement | null>(null) // 画布div ref对象
+  const layerRef = ref() // 画布图层 ref对象
   const scrollContainer = ref<HTMLElement | null>(null)
   const transformOrigin = ref({ x: 0, y: 0 })
 
-  const { width, height } = useElementSize(canvasRef)
-
-  // 内容图层
-  const contentLayer = ref()
-  // 顶部标尺
-  const rulerTopLayer = ref()
-  // 左侧标尺
-  const rulerLeftLayer = ref()
+  const { width, height } = useElementSize(canvasWrapperRef)
 
   // 内容图层配置
-  const contentLayerConfig = reactive({
-    x: 0,
-    y: 0,
-    scaleX: 1,
-    scaleY: 1,
-    fill: '6666',
-  })
-
-  // 上标尺图层配置
-  const rulerTopLayerConfig = reactive({
-    x: 0,
-    y: 0,
-    scaleX: 1,
-    scaleY: 1,
-    fill: '6666',
-  })
-
-  // 左标尺图层配置
-  const rulerLeftLayerConfig = reactive({
+  const layerConfig = reactive({
     x: 0,
     y: 0,
     scaleX: 1,
@@ -54,13 +29,8 @@ export default function (host: IEditorHost) {
   const stageConfig = computed(() => ({
     width: width.value,
     height: height.value,
-    // width: hostState.value.width,
-    // height: hostState.value.height,
-    // 缩放
     scaleX: 1,
     scaleY: 1,
-    // scaleX: hostState.value.zoom,
-    // scaleY: hostState.value.zoom,
   }))
 
   // 所有的图像元素
@@ -135,11 +105,11 @@ export default function (host: IEditorHost) {
   }
 
   function handleWheel(e: WheelEvent) {
-    if (!canvasRef.value || !scrollContainer.value) return
+    if (!canvasWrapperRef.value || !scrollContainer.value) return
 
     e.preventDefault()
 
-    const rect = canvasRef.value.getBoundingClientRect()
+    const rect = canvasWrapperRef.value.getBoundingClientRect()
     const containerRect = scrollContainer.value.getBoundingClientRect()
 
     const pointerX = e.clientX - containerRect.left
@@ -177,10 +147,6 @@ export default function (host: IEditorHost) {
       x: point.x,
       y: point.y,
     }
-    // return {
-    //   x: point.x / host.getState().zoom,
-    //   y: point.y / host.getState().zoom,
-    // }
   }
 
   onMounted(() => {
@@ -190,8 +156,9 @@ export default function (host: IEditorHost) {
   })
 
   return {
+    canvasWrapperRef,
     transformOrigin,
-    canvasRef,
+    layerRef,
     stageRef,
     stageConfig,
     hostState,
@@ -207,11 +174,8 @@ export default function (host: IEditorHost) {
     handleWheel,
     handleKeyDown,
     initElements,
-    contentLayer,
-    contentLayerConfig,
-    rulerTopLayer,
-    rulerTopLayerConfig,
-    rulerLeftLayer,
-    rulerLeftLayerConfig,
+    layerConfig,
+    height,
+    width,
   }
 }

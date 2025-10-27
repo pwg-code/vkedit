@@ -108,7 +108,7 @@ export interface IPropertyPanelForGraphics {
 
 // 宿主接口
 export interface IEditorHost {
-  contentLayer: any
+  layer: any
   // 插件管理
   installPlugin(plugin: IEditorPlugin): void
   uninstallPlugin(pluginName: string): void

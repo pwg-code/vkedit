@@ -28,7 +28,7 @@
       </div>
 
       <!-- 中间内容区（可滚动） -->
-      <div class="flex-6 overflow-auto bg-border flex">
+      <div class="flex-6 flex">
         <CanvasView :host="host" />
       </div>
 
