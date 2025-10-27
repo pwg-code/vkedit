@@ -25,31 +25,30 @@ export default function (host: IEditorHost) {
 
   // 内容图层配置
   const contentLayerConfig = reactive({
-    x:0,
-    y:0,
-    scaleX:1,
-    scaleY:1,
-    fill:"6666"
+    x: 0,
+    y: 0,
+    scaleX: 1,
+    scaleY: 1,
+    fill: '6666',
   })
 
   // 上标尺图层配置
   const rulerTopLayerConfig = reactive({
-    x:0,
-    y:0,
-    scaleX:1,
-    scaleY:1,
-    fill:"6666"
+    x: 0,
+    y: 0,
+    scaleX: 1,
+    scaleY: 1,
+    fill: '6666',
   })
 
   // 左标尺图层配置
   const rulerLeftLayerConfig = reactive({
-    x:0,
-    y:0,
-    scaleX:1,
-    scaleY:1,
-    fill:"6666"
+    x: 0,
+    y: 0,
+    scaleX: 1,
+    scaleY: 1,
+    fill: '6666',
   })
-
 
   // 舞台配置
   const stageConfig = computed(() => ({
@@ -175,8 +174,8 @@ export default function (host: IEditorHost) {
     const stage = event.target.getStage()
     const point = stage.getPointerPosition()
     return {
-      x: point.x ,
-      y: point.y ,
+      x: point.x,
+      y: point.y,
     }
     // return {
     //   x: point.x / host.getState().zoom,
@@ -214,6 +213,5 @@ export default function (host: IEditorHost) {
     rulerTopLayerConfig,
     rulerLeftLayer,
     rulerLeftLayerConfig,
-
   }
 }

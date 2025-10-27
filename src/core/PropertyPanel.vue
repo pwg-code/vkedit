@@ -3,7 +3,7 @@
     <template v-for="item in panels">
       <component :is="item" :element="activeElement" :host="host" />
     </template>
-    <slot></slot>
+    <slot name="property-panel" :host="host"></slot>
   </div>
 </template>
 

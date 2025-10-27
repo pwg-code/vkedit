@@ -1,7 +1,6 @@
 import type { ICommand } from '@/commands/ICommand'
 import type { Component } from 'vue'
 
-
 export interface Point2D {
   x: number
   y: number
@@ -109,7 +108,7 @@ export interface IPropertyPanelForGraphics {
 
 // 宿主接口
 export interface IEditorHost {
-  contentLayer:any
+  contentLayer: any
   // 插件管理
   installPlugin(plugin: IEditorPlugin): void
   uninstallPlugin(pluginName: string): void
@@ -144,6 +143,9 @@ export interface IEditorState {
   showGrid: boolean
   width: number
   height: number
+  dpi: number
+  widthMM: number
+  heightMM: number
 }
 
 // 工具接口

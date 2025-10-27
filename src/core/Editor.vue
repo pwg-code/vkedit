@@ -4,13 +4,13 @@
     <header class="h-16 w-full border-b border-border">
       <Toolbar :host="host">
         <template #left>
-          <slot name="toolbar-left"></slot>
+          <slot name="toolbar-left" :host="host"></slot>
         </template>
         <template #center>
-          <slot name="toolbar-center"></slot>
+          <slot name="toolbar-center" :host="host"></slot>
         </template>
         <template #right>
-          <slot name="toolbar-right"></slot>
+          <slot name="toolbar-right" :host="host"></slot>
         </template>
       </Toolbar>
     </header>
@@ -20,7 +20,11 @@
       <!-- 左侧菜单栏 -->
       <div class="flex-1 border-r border-border">
         <div class="text-center py-2 border-b border-border">添加图形</div>
-        <Toolbox :host="host" />
+        <Toolbox :host="host">
+          <template #toolbox>
+            <slot name="toolbox" :host="host"></slot>
+          </template>
+        </Toolbox>
       </div>
 
       <!-- 中间内容区（可滚动） -->
@@ -30,20 +34,18 @@
 
       <!-- 右侧属性栏 -->
       <div class="flex-2 border-l border-border p-4 bg-card">
-        <PropertyPanel :host="host" />
+        <PropertyPanel :host="host">
+          <template #property-panel>
+            <slot name="property-panel" :host="host"></slot>
+          </template>
+        </PropertyPanel>
       </div>
     </main>
-
-    <!-- 底部状态栏 -->
-    <footer class="h-12 border-t border-border flex items-center px-4 bg-card w-full">
-      <Bottom :host="host" />
-    </footer>
   </div>
 </template>
 
 <script setup lang="ts">
 import Toolbar from './Toolbar.vue' // 顶部区域
-import Bottom from './Bottom.vue' // 底部区域
 import Toolbox from './Toolbox.vue'
 import CanvasView from './CanvasView.vue'
 import PropertyPanel from './PropertyPanel.vue'

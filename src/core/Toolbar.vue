@@ -2,7 +2,7 @@
   <div class="flex h-full items-center justify-center m-auto">
     <!-- 文件操作 -->
     <div class="w-[200px] flex items-center">
-      <slot name="left"></slot>
+      <slot name="left" :host="host"></slot>
     </div>
 
     <!-- 撤销重做 -->
@@ -18,13 +18,13 @@
       <template v-for="item in tools">
         <component :is="item.getComponent()" :host="host"></component>
       </template>
-      <slot name="center"></slot>
+      <slot name="center" :host="host"></slot>
     </div>
 
     <div class="w-[200px]">
       <!-- <Button @click="handleLoadByJSON">加载</Button>
       <Button @click="handleSave">保存</Button> -->
-      <slot name="right"></slot>
+      <slot name="right" :host="host"></slot>
     </div>
   </div>
 </template>

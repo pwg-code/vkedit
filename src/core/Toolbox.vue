@@ -7,6 +7,7 @@
         :host="host"
         :graphicType="graphicType"
       ></component>
+      <slot name="toolbox" :host="host"></slot>
     </template>
   </div>
 </template>

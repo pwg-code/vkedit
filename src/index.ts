@@ -24,9 +24,9 @@ export type {
 export { BaseGraphicElement, BaseGraphicType, BasePlugin, EditorEvents } from './types'
 import { EditorEvents } from './types'
 
-export { TextPlugin } from './plugins/text/textPlugin'
-export { RectPlugin } from './plugins/rect/RectPlugin'
-export { TablePlugin } from './plugins/table/TablePlugin'
+export { TextPlugin, TextElement } from './plugins/text/TextPlugin'
+export { RectPlugin, RectElement } from './plugins/rect/RectPlugin'
+export { TablePlugin, TableElement } from './plugins/table/TablePlugin'
 
 import BaseElementPropertyPanel from '@/components/BaseElementPropertyPanel.vue'
 import CanvasPropertyPanel from '@/components/CanvasPropertyPanel.vue'

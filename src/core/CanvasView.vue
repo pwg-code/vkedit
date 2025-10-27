@@ -12,7 +12,13 @@
       <v-layer ref="contentLayer" :config="contentLayerConfig">
         <!-- 背景 -->
         <v-rect
-          :config="{ x: 0, y: 0, width: stageConfig.width, height: stageConfig.height, fill: '#e5e7eb' }"
+          :config="{
+            x: 0,
+            y: 0,
+            width: stageConfig.width,
+            height: stageConfig.height,
+            fill: '#e5e7eb',
+          }"
         ></v-rect>
         <!-- 上标尺 -->
         <v-rect
@@ -71,14 +77,43 @@
               ></v-transformer> -->
 
         <SelectionRectangle v-if="isSelecting" :start="selectionStart" :end="selectionEnd" />
+        <!-- 放大缩小按钮 -->
       </v-layer>
     </v-stage>
+    <div
+      class="fixed flex items-center"
+      :style="{
+        top: stageConfig.height + 'px',
+        left: stageConfig.width - 50 + 'px',
+      }"
+    >
+      <button
+        class="hover:bg-background rounded-xl active:bg-secondary p-2"
+        @click="handleZoomIn()"
+      >
+        <Icon icon="material-symbols-light:zoom-in-rounded" :width="30"></Icon>
+      </button>
+      <div class="w-10 flex-1 text-center">{{ hostState.zoom.toFixed(1) }}</div>
+      <button
+        class="hover:bg-background rounded-xl active:bg-secondary p-2"
+        @click="handleZoomOut()"
+      >
+        <Icon icon="material-symbols-light:zoom-out" :width="30"></Icon>
+      </button>
+      <button
+        class="hover:bg-background rounded-xl active:bg-secondary p-2"
+        @click="handleZoomAuto()"
+      >
+        <Icon icon="material-symbols-light:zoom-out-map" :width="30"></Icon>
+      </button>
+    </div>
   </div>
   <!-- </div> -->
 </template>
 
 <script setup lang="ts">
 import { computed, markRaw, onMounted, ref, watch } from 'vue'
+import { Icon } from '@iconify/vue'
 
 import type { IEditorHost, IEditorPlugin, IEditorState, IGraphicElement, Point2D } from '../types'
 import SelectionRectangle from './SelectionRectangle.vue'
@@ -120,11 +155,18 @@ const {
   rulerTopLayerConfig,
 } = useCanvas(props.host)
 
-const { contentHeight,contentWidth,contentX,contentY}  = useZoom(stageConfig, hostState)
+const {
+  contentHeight,
+  contentWidth,
+  contentX,
+  contentY,
+  handleZoomIn,
+  handleZoomOut,
+  handleZoomAuto,
+} = useZoom(stageConfig, hostState)
 
-watch(contentHeight,(v)=>{
-  console.log(v);
-
+watch(contentHeight, (v) => {
+  console.log(v)
 })
 
 // 转换器

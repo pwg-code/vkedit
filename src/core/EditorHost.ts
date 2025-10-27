@@ -17,8 +17,12 @@ export class EditorHost implements IEditorHost {
     currentTool: 'select',
     snapToGrid: true,
     showGrid: false,
-    width: 800,
-    height: 800,
+    // 像素 = （毫米 * DPI）/ 25.4
+    width: (50 * 150) / 25.4,
+    height: (50 * 150) / 25.4,
+    dpi: 300,
+    widthMM: 50,
+    heightMM: 50,
   })
 
   // 发送事件
