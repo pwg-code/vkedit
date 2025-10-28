@@ -1,0 +1,40 @@
+<template>
+  <!-- 放大缩小按钮 -->
+  <div
+    class="fixed flex items-center"
+    :style="{
+      top: height + 'px',
+      left: width - 50 + 'px',
+    }"
+  >
+    <button class="hover:bg-background rounded-xl active:bg-secondary p-2" @click="handleZoomOut()">
+      <Icon icon="material-symbols-light:zoom-out" :width="30"></Icon>
+    </button>
+    <div class="w-10 flex-1 text-center">{{ zoom.toFixed(1) }}</div>
+    <button class="hover:bg-background rounded-xl active:bg-secondary p-2" @click="handleZoomIn()">
+      <Icon icon="material-symbols-light:zoom-in-rounded" :width="30"></Icon>
+    </button>
+    <button
+      class="hover:bg-background rounded-xl active:bg-secondary p-2"
+      @click="handleZoomAuto()"
+    >
+      <Icon icon="material-symbols-light:zoom-out-map" :width="30"></Icon>
+    </button>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useStage, useZoom } from '@/hooks'
+import type { IEditorHost } from '@/types'
+import { Icon } from '@iconify/vue'
+
+const { host } = defineProps<{ host: IEditorHost }>()
+
+// 画布长宽
+const { width, height } = useStage()
+
+// 缩放hook
+const { zoom, handleZoomIn, handleZoomOut, handleZoomAuto } = useZoom(host)
+</script>
+
+<style scoped></style>

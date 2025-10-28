@@ -29,7 +29,7 @@
 
       <!-- 中间内容区（可滚动） -->
       <div class="flex-6 flex">
-        <CanvasView :host="host" />
+        <StageView :host="host" />
       </div>
 
       <!-- 右侧属性栏 -->
@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import Toolbar from './Toolbar.vue' // 顶部区域
 import Toolbox from './Toolbox.vue'
-import CanvasView from './CanvasView.vue'
+import StageView from './StageView.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import type { IEditorHost } from '../types'
 

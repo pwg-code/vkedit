@@ -1,32 +1,39 @@
+import type { IEditorHost } from '@/types'
 import { computed, reactive, ref } from 'vue'
+import useHostState from './useHostState'
+import useStage from './useStage'
 
 // 处理缩放相关的逻辑
-export default function (stageConfig: any, hostState: any) {
+export default function (host: IEditorHost) {
+  const { hostState } = useHostState(host)
+  const { width, height } = useStage()
+
   // 内容区的配置
-  const contentWidth = computed(() => hostState.value.width * hostState.value.zoom)
-  const contentHeight = computed(() => hostState.value.height * hostState.value.zoom)
-  const contentX = computed(() => stageConfig.value.width / 2 - contentWidth.value / 2)
-  const contentY = computed(() => stageConfig.value.height / 2 - contentHeight.value / 2)
+  const contentWidth = computed(() => hostState.width * hostState.zoom)
+  const contentHeight = computed(() => hostState.height * hostState.zoom)
+  const contentX = computed(() => width.value / 2 - contentWidth.value / 2)
+  const contentY = computed(() => height.value / 2 - contentHeight.value / 2)
+  const zoom = computed(() => hostState.zoom)
 
   // 放大
   const handleZoomIn = () => {
-    if (hostState.value.zoom < 3) {
-      hostState.value.zoom += 0.1
+    if (hostState.zoom < 3) {
+      hostState.zoom += 0.1
     }
   }
   // 缩小
   const handleZoomOut = () => {
-    if (hostState.value.zoom > 0.2) {
-      hostState.value.zoom -= 0.1
+    if (hostState.zoom > 0.2) {
+      hostState.zoom -= 0.1
     }
   }
   // 自适应缩放
   const handleZoomAuto = () => {
     // 长宽均不超出则为最佳
-    const zoomX = (stageConfig.value.width - 100) / hostState.value.width
-    const zoomY = (stageConfig.value.height - 100) / hostState.value.height
+    const zoomX = (width.value - 100) / hostState.width
+    const zoomY = (height.value - 100) / hostState.height
     // 取缩放最新值
-    hostState.value.zoom = Math.min(zoomX, zoomY)
+    hostState.zoom = Math.min(zoomX, zoomY)
   }
 
   return {
@@ -37,5 +44,6 @@ export default function (stageConfig: any, hostState: any) {
     handleZoomIn,
     handleZoomOut,
     handleZoomAuto,
+    zoom,
   }
 }
