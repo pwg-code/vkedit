@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import useContentLayer from '@/hooks/useContentLayer'
+import useContentLayer from '@/hooks/use-content-layer'
 import type { IEditorHost } from '@/types'
 
 const { host } = defineProps<{ host: IEditorHost }>()

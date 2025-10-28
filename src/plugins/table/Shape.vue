@@ -28,9 +28,9 @@
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
-import type { CellConfig, TableElement } from './TablePlugin'
+import type { CellConfig, TableElement } from './table-plugin'
 import { ref } from 'vue'
-import type { SelectionPlugin } from '../SelectionPlugin'
+import type { SelectionPlugin } from '../selection-plugin'
 
 interface Props {
   element: TableElement

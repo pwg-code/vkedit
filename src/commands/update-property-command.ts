@@ -1,7 +1,7 @@
-import { BaseCommand } from './BaseCommand'
+import { BaseCommand } from './base-command'
 import type { IEditorHost, IGraphicElement } from '../types'
-import { EditorEvents } from '@/types/EventTypes'
-import type { ICommand } from './ICommand'
+import { EditorEvents } from '@/types/event-types'
+import type { ICommand } from './i-command'
 import type { ElementsPlugin } from '@/plugins'
 
 export class UpdatePropertyCommand extends BaseCommand {

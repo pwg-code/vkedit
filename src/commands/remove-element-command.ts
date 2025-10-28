@@ -1,6 +1,6 @@
-import { BaseCommand } from './BaseCommand'
+import { BaseCommand } from './base-command'
 import type { IEditorHost, IGraphicElement, IGraphicType } from '../types'
-import { EditorEvents } from '@/types/EventTypes'
+import { EditorEvents } from '@/types/event-types'
 import type { ElementsPlugin, GraphicTypesPlugin } from '@/plugins'
 export class RemoveElementCommand extends BaseCommand {
   public name = 'REMOVE_ELEMENT'

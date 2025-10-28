@@ -212,7 +212,7 @@
 
 <script setup lang="ts">
 import type { IEditorHost, IGraphicElement } from '@/types'
-import type { TableElement } from './TablePlugin'
+import type { TableElement } from './table-plugin'
 import { Label } from '@/components/ui/label'
 import {
   NumberField,

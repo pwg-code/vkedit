@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import useScrollbarLayer from '@/hooks/useScrollbarLayer'
+import useScrollbarLayer from '@/hooks/use-scrollbar-layer'
 import type { IEditorHost } from '@/types'
 
 const { host } = defineProps<{ host: IEditorHost }>()

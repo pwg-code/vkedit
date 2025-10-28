@@ -1,4 +1,4 @@
-import type { ICommand } from '@/commands/ICommand'
+import type { ICommand } from '@/commands/i-command'
 import type { Component } from 'vue'
 
 export interface Point2D {

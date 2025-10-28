@@ -1,7 +1,7 @@
 import type { IEditorHost } from '@/types'
 import { computed, reactive, ref } from 'vue'
-import useHostState from './useHostState'
-import useStage from './useStage'
+import useHostState from './use-host-state'
+import useStage from './use-stage'
 
 // 处理缩放相关的逻辑
 export default function (host: IEditorHost) {

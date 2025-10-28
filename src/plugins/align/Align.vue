@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
-import type { SelectionPlugin } from '../SelectionPlugin'
+import type { SelectionPlugin } from '../selection-plugin'
 import { AlignElementsCommand } from '@/commands'
 import { Icon } from '@iconify/vue'
 import { ButtonGroup } from '@/components/ui/button-group'

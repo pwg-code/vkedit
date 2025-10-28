@@ -1,5 +1,5 @@
-import { EditorEvents } from '@/types/EventTypes'
-import { BasePlugin } from '../types/BasePlugin'
+import { EditorEvents } from '@/types/event-types'
+import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicType, Point2D } from '../types'
 import { AddElementCommand } from '@/commands'
 

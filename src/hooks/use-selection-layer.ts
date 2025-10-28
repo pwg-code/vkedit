@@ -3,7 +3,7 @@
 */
 
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import useStage from './useStage'
+import useStage from './use-stage'
 import type { IEditorHost, Point2D } from '@/types'
 import { EditorEvents } from '@/types'
 

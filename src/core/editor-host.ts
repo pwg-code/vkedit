@@ -1,7 +1,7 @@
 import { ref, reactive, computed } from 'vue'
 import type { IEditorHost, IEditorPlugin, IGraphicElement, IEditorState } from '../types'
-import { EditorEvents, EventUtils } from '../types/EventTypes'
-import type { ICommand } from '@/commands/ICommand'
+import { EditorEvents, EventUtils } from '../types/event-types'
+import type { ICommand } from '@/commands/i-command'
 import type { ElementsPlugin, GraphicTypesPlugin } from '@/plugins'
 import type { Layer } from 'konva/lib/Layer'
 

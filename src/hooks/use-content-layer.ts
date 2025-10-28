@@ -3,11 +3,11 @@
 */
 
 import { computed, onMounted, ref } from 'vue'
-import useZoom from './useZoom'
+import useZoom from './use-zoom'
 import { EditorEvents, type IEditorHost, type IGraphicElement } from '@/types'
 import type { ElementsPlugin, GraphicTypesPlugin } from '@/plugins'
 import { TransformElementCommand } from '@/commands'
-import useScrollbarLayer from './useScrollbarLayer'
+import useScrollbarLayer from './use-scrollbar-layer'
 
 export default function (host: IEditorHost) {
   // 图层

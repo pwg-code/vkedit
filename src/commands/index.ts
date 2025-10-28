@@ -1,18 +1,18 @@
-export * from './ICommand'
-export * from './BaseCommand'
+export * from './i-command'
+export * from './base-command'
 // 图形元素命令
-export * from './AddElementCommand'
-export * from './RemoveElementCommand'
-export * from './TransformElementCommand'
-export * from './UpdatePropertyCommand'
+export * from './add-element-command'
+export * from './remove-element-command'
+export * from './transform-element-command'
+export * from './update-property-command'
 // 选择命令
-export * from './ClearSelectionCommand'
+export * from './clear-selection-command'
 // 批量命令
-export * from './BatchCommand'
+export * from './batch-command'
 // 图层命令
-export * from './ChangeLayerOrderCommand'
+export * from './change-layer-order-command'
 // 对齐分布命令
-export * from './AlignElementsCommand'
+export * from './align-elements-command'
 // 组合命令
 // 命令工具函数
 export class CommandUtils {
@@ -26,7 +26,7 @@ export class CommandUtils {
       const element = host.getElement(id)
       return new commandClass(element, host, ...args)
     })
-    return new (await import('./BatchCommand')).BatchCommand(commands)
+    return new (await import('./batch-command')).BatchCommand(commands)
   }
 
   static isTransformCommand(command: any): boolean {

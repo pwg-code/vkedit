@@ -1,6 +1,6 @@
 import type { App } from 'vue'
 import Vkedit from './core/Editor.vue'
-import { EditorHost } from './core/EditorHost'
+import { EditorHost } from './core/editor-host'
 import '@/styles/index.css'
 
 import {
@@ -24,9 +24,9 @@ export type {
 export { BaseGraphicElement, BaseGraphicType, BasePlugin, EditorEvents } from './types'
 import { EditorEvents } from './types'
 
-export { TextPlugin, TextElement } from './plugins/text/TextPlugin'
-export { RectPlugin, RectElement } from './plugins/rect/RectPlugin'
-export { TablePlugin, TableElement } from './plugins/table/TablePlugin'
+export { TextPlugin, TextElement } from './plugins/text/text-plugin'
+export { RectPlugin, RectElement } from './plugins/rect/rect-plugin'
+export { TablePlugin, TableElement } from './plugins/table/table-plugin'
 
 import BaseElementPropertyPanel from '@/components/BaseElementPropertyPanel.vue'
 import CanvasPropertyPanel from '@/components/CanvasPropertyPanel.vue'

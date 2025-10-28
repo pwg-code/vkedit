@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type { RectElement } from './RectPlugin'
+import type { RectElement } from './rect-plugin'
 
 interface Props {
   element: RectElement

@@ -1,11 +1,11 @@
-import { BasePlugin } from '../../types/BasePlugin'
+import { BasePlugin } from '../../types/base-plugin'
 import { type IGraphicElement, BaseGraphicType } from '../../types'
-import { BaseGraphicElement } from '@/types/BaseGraphicElement'
+import { BaseGraphicElement } from '@/types/base-graphic-element'
 import type { Component } from 'vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
 import Tool from './Tool.vue'
-import { EditorEvents } from '@/types/EventTypes'
+import { EditorEvents } from '@/types/event-types'
 
 // 矩形元素实现
 export class TextElement extends BaseGraphicElement {

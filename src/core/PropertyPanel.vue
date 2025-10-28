@@ -15,8 +15,8 @@ import type {
   IPropertyPanel,
   IPropertyPanelForGraphics,
 } from '../types'
-import { EditorEvents } from '@/types/EventTypes'
-import type { PropertyPanelsPlugin } from '@/plugins/PropertyPanelsPlugin'
+import { EditorEvents } from '@/types/event-types'
+import type { PropertyPanelsPlugin } from '@/plugins/property-panels-plugin'
 const { host } = defineProps<{ host: IEditorHost }>()
 const hostState = ref(host.getState())
 

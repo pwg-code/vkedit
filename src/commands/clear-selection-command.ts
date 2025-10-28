@@ -1,6 +1,6 @@
-import { BaseCommand } from './BaseCommand'
+import { BaseCommand } from './base-command'
 import type { IEditorHost, IGraphicElement } from '../types'
-import { EditorEvents } from '@/types/EventTypes'
+import { EditorEvents } from '@/types/event-types'
 import type { SelectionPlugin } from '@/plugins'
 export class ClearSelectionCommand extends BaseCommand {
   public name = 'CLEAR_SELECTION'

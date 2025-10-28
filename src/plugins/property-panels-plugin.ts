@@ -1,8 +1,8 @@
-import { EditorEvents } from '@/types/EventTypes'
-import { BasePlugin } from '../types/BasePlugin'
+import { EditorEvents } from '@/types/event-types'
+import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicElement, IPropertyPanel, IPropertyPanelForGraphics } from '../types'
-import type { SelectionPlugin } from './SelectionPlugin'
-import type { GraphicTypesPlugin } from './GraphicTypesPlugin'
+import type { SelectionPlugin } from './selection-plugin'
+import type { GraphicTypesPlugin } from './graphic-types-plugin'
 import type { Component } from 'vue'
 
 export class PropertyPanelsPlugin extends BasePlugin {

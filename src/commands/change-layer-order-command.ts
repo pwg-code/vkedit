@@ -1,6 +1,6 @@
-import { BaseCommand } from './BaseCommand'
+import { BaseCommand } from './base-command'
 import type { IEditorHost, IGraphicElement } from '../types'
-import { EditorEvents } from '@/types/EventTypes'
+import { EditorEvents } from '@/types/event-types'
 
 export class ChangeLayerOrderCommand extends BaseCommand {
   public name = 'CHANGE_LAYER_ORDER'

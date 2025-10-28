@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia'
-import { useStageStore } from '@/stores/useStageStore'
+import { useStageStore } from '@/stores/use-stage-store'
 
 export default function () {
   const {

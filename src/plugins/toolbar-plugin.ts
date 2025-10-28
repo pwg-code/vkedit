@@ -1,7 +1,7 @@
-import { EditorEvents } from '@/types/EventTypes'
-import { BasePlugin } from '../types/BasePlugin'
+import { EditorEvents } from '@/types/event-types'
+import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicElement, Point2D, IToolbar } from '../types'
-import type { ElementsPlugin } from './ElementsPlugin'
+import type { ElementsPlugin } from './elements-plugin'
 
 export class ToolbarPlugin extends BasePlugin {
   name = 'toolbar'

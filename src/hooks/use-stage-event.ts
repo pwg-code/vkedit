@@ -1,9 +1,9 @@
 import type { ElementsPlugin } from '@/plugins'
 import type { IEditorHost, IEditorState, IGraphicElement, Point2D } from '@/types'
-import { EditorEvents } from '@/types/EventTypes'
+import { EditorEvents } from '@/types/event-types'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import useStage from './useStage'
-import useHostState from './useHostState'
+import useStage from './use-stage'
+import useHostState from './use-host-state'
 
 export default function (host: IEditorHost) {
   // 画布状态
@@ -72,7 +72,7 @@ export default function (host: IEditorHost) {
   }
 
   // 鼠标离开舞台
-  function handleMouseleave(event:any){
+  function handleMouseleave(event: any) {
     host.emit(EditorEvents.CANVAS_MOUSE_LEAVE, event)
   }
 

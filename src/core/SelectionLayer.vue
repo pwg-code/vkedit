@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
 import type { IEditorHost, Point2D } from '../types'
-import useSelectionLayer from '@/hooks/useSelectionLayer'
+import useSelectionLayer from '@/hooks/use-selection-layer'
 
 const { host } = defineProps<{ host: IEditorHost }>()
 const { rectConfig, isSelecting, selectionLayerConfig } = useSelectionLayer(host)

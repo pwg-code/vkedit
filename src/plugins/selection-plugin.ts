@@ -1,7 +1,7 @@
-import { EditorEvents } from '@/types/EventTypes'
-import { BasePlugin } from '../types/BasePlugin'
+import { EditorEvents } from '@/types/event-types'
+import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicElement, Point2D } from '../types'
-import type { ElementsPlugin } from './ElementsPlugin'
+import type { ElementsPlugin } from './elements-plugin'
 
 export class SelectionPlugin extends BasePlugin {
   public name = 'selection'
@@ -24,7 +24,7 @@ export class SelectionPlugin extends BasePlugin {
     this.host.on(EditorEvents.CANVAS_MOUSE_UP, this.handleMouseUp.bind(this))
     this.host.on(EditorEvents.ELEMENT_ADDED, this.handleElementAdded.bind(this))
     this.host.on(EditorEvents.ELEMENT_REMOVED, this.handleElementRemoved.bind(this))
-    this.host.on(EditorEvents.CANVAS_MOUSE_LEAVE,this.handleMouseUp.bind(this))
+    this.host.on(EditorEvents.CANVAS_MOUSE_LEAVE, this.handleMouseUp.bind(this))
   }
 
   protected onUninstall(): void {
@@ -36,7 +36,7 @@ export class SelectionPlugin extends BasePlugin {
     this.host.off(EditorEvents.CANVAS_MOUSE_UP, this.handleMouseUp.bind(this))
     this.host.off(EditorEvents.ELEMENT_ADDED, this.handleElementAdded.bind(this))
     this.host.off(EditorEvents.ELEMENT_REMOVED, this.handleElementRemoved.bind(this))
-    this.host.on(EditorEvents.CANVAS_MOUSE_LEAVE,this.handleMouseUp.bind(this))
+    this.host.on(EditorEvents.CANVAS_MOUSE_LEAVE, this.handleMouseUp.bind(this))
   }
 
   private handleMouseDown(event: any): void {

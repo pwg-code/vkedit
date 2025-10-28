@@ -3,7 +3,7 @@
 */
 
 import { computed } from 'vue'
-import useStage from './useStage'
+import useStage from './use-stage'
 
 export default function () {
   const { width, height } = useStage()

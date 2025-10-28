@@ -1,10 +1,10 @@
-import { BasePlugin } from '../../types/BasePlugin'
+import { BasePlugin } from '../../types/base-plugin'
 import { type IGraphicElement, BaseGraphicType } from '../../types'
 import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Tool from './Tool.vue'
-import { BaseGraphicElement } from '@/types/BaseGraphicElement'
-import { EditorEvents } from '@/types/EventTypes'
+import { BaseGraphicElement } from '@/types/base-graphic-element'
+import { EditorEvents } from '@/types/event-types'
 import type { Component } from 'vue'
 
 // 矩形元素实现

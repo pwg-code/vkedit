@@ -1,8 +1,8 @@
-import { EditorEvents } from '@/types/EventTypes'
-import { BasePlugin } from '../types/BasePlugin'
+import { EditorEvents } from '@/types/event-types'
+import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicElement, Point2D } from '../types'
 import { RemoveElementCommand } from '@/commands'
-import type { SelectionPlugin } from './SelectionPlugin'
+import type { SelectionPlugin } from './selection-plugin'
 
 export class KeyDownPlugin extends BasePlugin {
   public name = 'keydown'

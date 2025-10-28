@@ -1,5 +1,5 @@
 import { computed, reactive, ref, watch } from 'vue'
-import useStage from './useStage'
+import useStage from './use-stage'
 import { useZoom } from '@/hooks'
 import type { IEditorHost } from '@/types'
 

@@ -1,4 +1,4 @@
-import type { ICommand } from './ICommand'
+import type { ICommand } from './i-command'
 
 export abstract class BaseCommand implements ICommand {
   public abstract name: string

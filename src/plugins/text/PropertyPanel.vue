@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
-import type { TextElement } from './TextPlugin'
+import type { TextElement } from './text-plugin'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import {

@@ -1,7 +1,7 @@
 import type { IEditorHost } from '@/types'
-import { BaseCommand } from './BaseCommand'
-import type { ICommand } from './ICommand'
-import { EditorEvents } from '@/types/EventTypes'
+import { BaseCommand } from './base-command'
+import type { ICommand } from './i-command'
+import { EditorEvents } from '@/types/event-types'
 
 export class BatchCommand extends BaseCommand {
   public name = 'BATCH_COMMAND'

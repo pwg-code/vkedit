@@ -1,5 +1,5 @@
-import { EditorEvents } from '@/types/EventTypes'
-import { BasePlugin } from '@/types/BasePlugin'
+import { EditorEvents } from '@/types/event-types'
+import { BasePlugin } from '@/types/base-plugin'
 import type { IToolbar } from '@/types'
 import Align from './Align.vue'
 
