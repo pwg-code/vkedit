@@ -71,6 +71,11 @@ export default function (host: IEditorHost) {
     }
   }
 
+  // 鼠标离开舞台
+  function handleMouseleave(event:any){
+    host.emit(EditorEvents.CANVAS_MOUSE_LEAVE, event)
+  }
+
   const getEventPoint = (event: any): Point2D => {
     const stage = event.target.getStage()
     const point = stage.getPointerPosition()
@@ -90,7 +95,6 @@ export default function (host: IEditorHost) {
     handleMouseUp,
     handleWheel,
     handleKeyDown,
-    height,
-    width,
+    handleMouseleave,
   }
 }

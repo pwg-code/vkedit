@@ -49,9 +49,6 @@ export default function (host: IEditorHost) {
 
   const handleMouseMove = (event: any) => {
     const point = event.point
-    if (point.x > width.value - 50 || point.y > height.value - 50) {
-      isSelecting.value = false
-    }
     if (isSelecting.value) {
       selectionEnd.value = point
     }
@@ -61,12 +58,15 @@ export default function (host: IEditorHost) {
     isSelecting.value = false
   }
 
-  const handlePointerOut = () => {}
+  const handlePMouseleave = (event: any) => {
+    isSelecting.value = false
+  }
 
   onMounted(() => {
     host.on(EditorEvents.CANVAS_MOUSE_DOWN, handleMouseDown)
     host.on(EditorEvents.CANVAS_MOUSE_MOVE, handleMouseMove)
     host.on(EditorEvents.CANVAS_MOUSE_UP, handleMouseUp)
+    host.on(EditorEvents.CANVAS_MOUSE_LEAVE, handlePMouseleave)
   })
 
   return {

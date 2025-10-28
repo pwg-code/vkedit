@@ -19,29 +19,29 @@ export class SelectionPlugin extends BasePlugin {
     this.elementsPlugin = this.host.getPlugin('elements') as ElementsPlugin
 
     // 注册事件监听
-    this.host.on('canvas:mousedown', this.handleMouseDown.bind(this))
-    this.host.on('canvas:mousemove', this.handleMouseMove.bind(this))
-    this.host.on('canvas:mouseup', this.handleMouseUp.bind(this))
-    this.host.on('element:added', this.handleElementAdded.bind(this))
-    this.host.on('element:removed', this.handleElementRemoved.bind(this))
+    this.host.on(EditorEvents.CANVAS_MOUSE_DOWN, this.handleMouseDown.bind(this))
+    this.host.on(EditorEvents.CANVAS_MOUSE_MOVE, this.handleMouseMove.bind(this))
+    this.host.on(EditorEvents.CANVAS_MOUSE_UP, this.handleMouseUp.bind(this))
+    this.host.on(EditorEvents.ELEMENT_ADDED, this.handleElementAdded.bind(this))
+    this.host.on(EditorEvents.ELEMENT_REMOVED, this.handleElementRemoved.bind(this))
+    this.host.on(EditorEvents.CANVAS_MOUSE_LEAVE,this.handleMouseUp.bind(this))
   }
 
   protected onUninstall(): void {
     if (!this.host) return
 
     // 移除事件监听
-    this.host.off('canvas:mousedown', this.handleMouseDown.bind(this))
-    this.host.off('canvas:mousemove', this.handleMouseMove.bind(this))
-    this.host.off('canvas:mouseup', this.handleMouseUp.bind(this))
-    this.host.off('element:added', this.handleElementAdded.bind(this))
-    this.host.off('element:removed', this.handleElementRemoved.bind(this))
+    this.host.off(EditorEvents.CANVAS_MOUSE_DOWN, this.handleMouseDown.bind(this))
+    this.host.off(EditorEvents.CANVAS_MOUSE_MOVE, this.handleMouseMove.bind(this))
+    this.host.off(EditorEvents.CANVAS_MOUSE_UP, this.handleMouseUp.bind(this))
+    this.host.off(EditorEvents.ELEMENT_ADDED, this.handleElementAdded.bind(this))
+    this.host.off(EditorEvents.ELEMENT_REMOVED, this.handleElementRemoved.bind(this))
+    this.host.on(EditorEvents.CANVAS_MOUSE_LEAVE,this.handleMouseUp.bind(this))
   }
 
   private handleMouseDown(event: any): void {
     if (!this.host || this.host.getState().currentTool !== 'select') return
     this.selectionStart = event.point
-    // const target = event.target
-    // console.log('handleMouseDown',target);
     // 如果点击的是不是元素则开始范围选择
     const clickEl = this.getClickElement(event)
     if (!clickEl) {

@@ -4,6 +4,7 @@
     tabindex="0"
     ref="stageWrapperRef"
     @keydown="handleKeyDown"
+    @mouseleave="handleMouseleave"
   >
     <v-stage
       ref="stageRef"
@@ -13,7 +14,6 @@
       @mouseup="handleMouseUp"
       @wheel="handleWheel"
       @click="handleClick"
-      @pointerout="handlePointerOut"
     >
       <BgLayer :host="host"></BgLayer>
       <ContentLayer :host="host"> <SelectionLayer :host="host"></SelectionLayer></ContentLayer>
@@ -44,11 +44,8 @@ const props = defineProps<Props>()
 // 使用舞台hook
 const { stageRef, stageWrapperRef, stageConfig } = useStage()
 
-function handlePointerOut(event: any) {
-  console.log('鼠标离开', event)
-}
 
-const { handleClick, handleMouseDown, handleMouseMove, handleMouseUp, handleWheel, handleKeyDown } =
+const { handleClick, handleMouseDown, handleMouseMove, handleMouseUp, handleWheel, handleKeyDown, handleMouseleave } =
   useStageEvent(props.host)
 
 onMounted(() => {})
