@@ -44,9 +44,15 @@ const props = defineProps<Props>()
 // 使用舞台hook
 const { stageRef, stageWrapperRef, stageConfig } = useStage()
 
-
-const { handleClick, handleMouseDown, handleMouseMove, handleMouseUp, handleWheel, handleKeyDown, handleMouseleave } =
-  useStageEvent(props.host)
+const {
+  handleClick,
+  handleMouseDown,
+  handleMouseMove,
+  handleMouseUp,
+  handleWheel,
+  handleKeyDown,
+  handleMouseleave,
+} = useStageEvent(props.host)
 
 onMounted(() => {})
 </script>

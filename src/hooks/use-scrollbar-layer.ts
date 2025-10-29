@@ -1,7 +1,7 @@
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import useStage from './use-stage'
 import { useZoom } from '@/hooks'
-import type { IEditorHost } from '@/types'
+import { EditorEvents, type IEditorHost } from '@/types'
 
 // 处理缩放相关的逻辑
 export default function (host: IEditorHost) {
@@ -72,15 +72,30 @@ export default function (host: IEditorHost) {
       draggable: true,
     }
   })
+
+  // 垂直滑块的Y位置可用范围
+  const verticalThumbYRange = computed(() => {
+    const max = verticalTrackConfig.value.height - verticalThumbConfig.value.height
+    return { min: 0, max }
+  })
+
+  // 取中间值
+  function middleValue(a: number, b: number, c: number) {
+    if ((a <= b && b <= c) || (c <= b && b <= a)) return b
+    if ((b <= a && a <= c) || (c <= a && a <= b)) return a
+    return c
+  }
+
   // 限制拖动
   const handleVerticalDragMove = (e: any) => {
-    if (e.target.y() < 0) {
-      e.target.y(0)
-    } else if (e.target.y() > verticalTrackConfig.value.height - verticalThumbConfig.value.height) {
-      e.target.y(verticalTrackConfig.value.height - verticalThumbConfig.value.height)
-    }
+    const y = middleValue(
+      verticalThumbYRange.value.min,
+      verticalThumbYRange.value.max,
+      e.target.y(),
+    )
+    e.target.y(y)
     e.target.x(verticalTrackConfig.value.x)
-    verticalThumbY.value = e.target.y()
+    verticalThumbY.value = y
   }
 
   // 显示水平滚动条
@@ -135,19 +150,36 @@ export default function (host: IEditorHost) {
     }
   })
 
+  // 水平滑块的X位置可用范围
+  const horizontalThumbXRange = computed(() => {
+    const max = horizontalTrackConfig.value.width - horizontalThumbConfig.value.width
+    return { min: 0, max }
+  })
+
   // 限制拖动
   const handleHorizontalDragMove = (e: any) => {
-    if (e.target.x() < 0) {
-      e.target.x(0)
-    } else if (
-      e.target.x() >
-      horizontalTrackConfig.value.width - horizontalThumbConfig.value.width
-    ) {
-      e.target.x(horizontalTrackConfig.value.width - horizontalThumbConfig.value.width)
-    }
+    const x = middleValue(
+      horizontalThumbXRange.value.min,
+      horizontalThumbXRange.value.max,
+      e.target.x(),
+    )
+    e.target.x(x)
     e.target.y(horizontalTrackConfig.value.y)
-    horizontalThumbX.value = e.target.x()
+    horizontalThumbX.value = x
   }
+
+  // 鼠标滚轮
+  function handleWheel(e: any) {
+    verticalThumbY.value = middleValue(
+      verticalThumbYRange.value.min,
+      verticalThumbYRange.value.max,
+      verticalThumbY.value + e.evt.deltaY / 4,
+    )
+  }
+
+  onMounted(() => {
+    host.on(EditorEvents.CANVAS_WHEEL, handleWheel)
+  })
 
   return {
     scrollbarLayerRef,

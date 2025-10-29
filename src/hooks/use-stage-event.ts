@@ -22,37 +22,21 @@ export default function (host: IEditorHost) {
   // 鼠标按下
   const handleMouseDown = (event: any) => {
     const point = getEventPoint(event)
-    host.emit('canvas:mousedown', { point, ...event })
+    host.emit(EditorEvents.CANVAS_MOUSE_DOWN, { point, ...event })
   }
 
   const handleMouseMove = (event: any) => {
     const point = getEventPoint(event)
-    host.emit('canvas:mousemove', { point, ...event })
+    host.emit(EditorEvents.CANVAS_MOUSE_MOVE, { point, ...event })
   }
 
   const handleMouseUp = (event: any) => {
     const point = getEventPoint(event)
-    host.emit('canvas:mouseup', { point, ...event })
+    host.emit(EditorEvents.CANVAS_MOUSE_UP, { point, ...event })
   }
 
   function handleWheel(e: WheelEvent) {
-    if (!stageWrapperRef.value || !scrollContainer.value) return
-
-    e.preventDefault()
-
-    const rect = stageWrapperRef.value.getBoundingClientRect()
-    const containerRect = scrollContainer.value.getBoundingClientRect()
-
-    const pointerX = e.clientX - containerRect.left
-    const pointerY = e.clientY - containerRect.top
-
-    transformOrigin.value = { x: pointerX, y: pointerY }
-
-    const delta = e.deltaY
-    const zoomFactor = 0.05
-    const newScale = hostState.zoom - (delta * zoomFactor) / 100
-
-    hostState.zoom = Math.min(Math.max(newScale, 0.2), 3)
+    host.emit(EditorEvents.CANVAS_WHEEL, e)
   }
 
   // 键盘事件
