@@ -1,5 +1,10 @@
 <template>
-  <Vkedit :host="host"></Vkedit>
+  <Vkedit
+    :host="host"
+    :show-toolbox="false"
+    :show-property-panel="false"
+    :show-toolbar="false"
+  ></Vkedit>
 </template>
 
 <script setup lang="ts">
@@ -14,6 +19,7 @@ import {
   BaseElementPropertyPanel,
   CanvasPropertyPanel,
 } from '@/index'
+import { Flag } from 'lucide-vue-next'
 // import '@/styles/tailwind-base.css' // 手动导入样式
 
 // import {

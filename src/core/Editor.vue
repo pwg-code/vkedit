@@ -1,7 +1,7 @@
 <template>
   <div class="h-screen flex flex-col overflow-hidden bg-card">
     <!-- 顶部工具栏 -->
-    <header class="h-16 w-full border-b border-border">
+    <header v-if="showToolbar" class="h-16 w-full border-b border-border">
       <Toolbar :host="host">
         <template #left>
           <slot name="toolbar-left" :host="host"></slot>
@@ -16,9 +16,12 @@
     </header>
 
     <!-- 中间主区域 -->
-    <main class="flex flex-row flex-1 min-h-0 w-full">
+    <main class="flex flex-auto min-h-0 w-full">
       <!-- 左侧菜单栏 -->
-      <div class="flex-1 border-r border-border">
+      <div
+        v-if="showToolbox"
+        class="basis-1/6 min-w-40 flex-none border-r border-border overflow-auto"
+      >
         <div class="text-center py-2 border-b border-border">添加图形</div>
         <Toolbox :host="host">
           <template #toolbox>
@@ -28,12 +31,15 @@
       </div>
 
       <!-- 中间内容区（可滚动） -->
-      <div class="flex-6 flex">
+      <div class="basis-4/6 flex-auto flex relative overflow-hidden">
         <StageView :host="host" />
       </div>
 
       <!-- 右侧属性栏 -->
-      <div class="flex-2 border-l border-border p-4 bg-card">
+      <div
+        v-if="showPropertyPanel"
+        class="basis-1/6 min-w-44 flex-none border-l border-border p-4 bg-card overflow-auto"
+      >
         <PropertyPanel :host="host">
           <template #property-panel>
             <slot name="property-panel" :host="host"></slot>
@@ -51,7 +57,17 @@ import StageView from './StageView.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import type { IEditorHost } from '../types'
 
-const { host } = defineProps<{ host: IEditorHost }>()
+const {
+  host,
+  showToolbox = true,
+  showPropertyPanel = true,
+  showToolbar = true,
+} = defineProps<{
+  host: IEditorHost
+  showToolbox?: boolean
+  showPropertyPanel?: boolean
+  showToolbar?: boolean
+}>()
 </script>
 
 <style scoped></style>

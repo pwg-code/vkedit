@@ -1,10 +1,10 @@
 <template>
   <!-- 放大缩小按钮 -->
   <div
-    class="fixed flex items-center"
+    class="flex items-center absolute"
     :style="{
-      top: height + 'px',
-      left: width - 50 + 'px',
+      top: height - 50 + 'px',
+      left: width - 200 + 'px',
     }"
   >
     <button class="hover:bg-background rounded-xl active:bg-secondary p-2" @click="handleZoomOut()">
@@ -27,11 +27,15 @@
 import { useStage, useZoom } from '@/hooks'
 import type { IEditorHost } from '@/types'
 import { Icon } from '@iconify/vue'
+import { watch } from 'vue'
 
 const { host } = defineProps<{ host: IEditorHost }>()
 
 // 画布长宽
 const { width, height } = useStage()
+watch(width, () => {
+  console.log('width', width)
+})
 
 // 缩放hook
 const { zoom, handleZoomIn, handleZoomOut, handleZoomAuto } = useZoom(host)

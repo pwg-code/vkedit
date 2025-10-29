@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-1 w-full bg-gray-200"
+    class="flex-1 w-full bg-gray-200 relative"
     tabindex="0"
     ref="stageWrapperRef"
     @keydown="handleKeyDown"
