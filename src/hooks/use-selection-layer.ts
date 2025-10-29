@@ -15,7 +15,6 @@ export default function (host: IEditorHost) {
 
   // 图层配置
   const selectionLayerConfig = ref({
-    zIndex: 9999,
   })
 
   // 计算矩形配置

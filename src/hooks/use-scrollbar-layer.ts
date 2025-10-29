@@ -9,7 +9,6 @@ export default function (host: IEditorHost) {
   const { contentHeight, contentWidth, contentX, contentY } = useZoom(host)
 
   const scrollbarLayerConfig = reactive({
-    zIndex: 4,
   })
 
   const margin = 30

@@ -12,7 +12,7 @@ export default function () {
 
   // 标尺图层配置
   const rulerLayerConfig = computed(() => {
-    return { zIndex: 3 }
+    return { }
   })
 
   // 上标尺
