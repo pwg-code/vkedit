@@ -29,7 +29,7 @@ export default defineConfig({
     rollupOptions: {
       // 不把这些运行时依赖打包进库，让使用方提供它们（作为 peerDependencies）
       // external: ['vue', 'konva', 'vue-konva', /^(.*\.(css|scss|sass))$/],
-      external: ['vue', 'konva', 'vue-konva'],
+      external: ['vue', 'konva', 'vue-konva', 'pinia'],
     },
     cssCodeSplit: false,
   },
