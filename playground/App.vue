@@ -18,8 +18,9 @@ import {
   EditorEvents,
   BaseElementPropertyPanel,
   CanvasPropertyPanel,
+  ElementsPlugin,
+  TextElement
 } from '@/index'
-import { Flag } from 'lucide-vue-next'
 // import '@/styles/tailwind-base.css' // 手动导入样式
 
 // import {
@@ -39,9 +40,29 @@ host
   .installPlugin(new TextPlugin())
   .installPlugin(new TablePlugin())
 
+function test(){
+  host.setState({
+    widthMM: 210,
+    heightMM: 297,
+    dpi: 150,
+    width: (210 * 150) / 25.4,
+    height: (297 * 150) / 25.4,
+    zoom: 0.4,
+  })
+  const hostState = host.getState()
+  // 随机添加文本
+  for (let i=0;i<5000;i++){
+    const x = Math.random() * hostState.width
+    const y = Math.random() * hostState.height
+    const newText =  new TextElement(x,y)
+    host.getPlugin<ElementsPlugin>('elements')?.addElement(newText)
+  }
+}
+
 onMounted(() => {
   // host.emit(EditorEvents.PROPERTY_PANEL_PUBLIC_REGISTERED, BaseElementPropertyPanel)
   // host.emit(EditorEvents.PROPERTY_PANEL_CANVAS_REGISTERED, CanvasPropertyPanel)
+  // test()
 })
 </script>
 
