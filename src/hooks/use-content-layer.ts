@@ -36,7 +36,6 @@ export default function (host: IEditorHost) {
       width: contentWidth.value,
       height: contentHeight.value,
       fill: 'rgba(255, 255, 255, 1)',
-      zIndex: 0,
     }
   })
 

@@ -10,7 +10,7 @@ export default function () {
 
   // 标尺图层配置
   const bgLayerConfig = computed(() => {
-    return { zIndex: 0 }
+    return { }
   })
 
   // 上标尺
