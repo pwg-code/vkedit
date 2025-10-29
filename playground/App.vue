@@ -1,9 +1,9 @@
 <template>
   <Vkedit
     :host="host"
-    :show-toolbox="false"
-    :show-property-panel="false"
-    :show-toolbar="false"
+    :show-toolbox="true"
+    :show-property-panel="true"
+    :show-toolbar="true"
   ></Vkedit>
 </template>
 

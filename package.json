@@ -1,6 +1,6 @@
 {
   "name": "vkedit",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "private": true,
   "type": "module",
   "engines": {
@@ -26,7 +26,8 @@
   "peerDependencies": {
     "konva": "^10.0.2",
     "vue": "^3.5.18",
-    "vue-konva": "^3.2.6"
+    "vue-konva": "^3.2.6",
+    "pinia": "^3.0.3"
   },
   "keywords": [
     "vue3",
