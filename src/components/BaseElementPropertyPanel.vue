@@ -7,7 +7,7 @@
     <NumberField
       :model-value="element.x"
       :min="0"
-      @update:model-value="(value: any) => updateProperty('x', element.x, value)"
+      @update:model-value="(value: any) => updateProperty(element, 'x', element.x, value)"
     >
       <NumberFieldContent>
         <NumberFieldDecrement />
@@ -21,7 +21,7 @@
     <NumberField
       :model-value="element.y"
       :min="0"
-      @update:model-value="(value: any) => updateProperty('y', element.y, value)"
+      @update:model-value="(value: any) => updateProperty(element, 'y', element.y, value)"
     >
       <NumberFieldContent>
         <NumberFieldDecrement />
@@ -35,7 +35,9 @@
     <NumberField
       :model-value="element.width"
       :min="0"
-      @update:model-value="(value: any) => updateProperty('width', element.width, value)"
+      @update:model-value="
+        (value: any) => batchUpdateProperty(selection, 'width', element.width, value)
+      "
     >
       <NumberFieldContent>
         <NumberFieldDecrement />
@@ -49,7 +51,9 @@
     <NumberField
       :model-value="element.height"
       :min="0"
-      @update:model-value="(value: any) => updateProperty('height', element.height, value)"
+      @update:model-value="
+        (value: any) => batchUpdateProperty(selection, 'height', element.height, value)
+      "
     >
       <NumberFieldContent>
         <NumberFieldDecrement />
@@ -64,7 +68,9 @@
       :model-value="element.scaleX"
       :step="0.1"
       :min="0.5"
-      @update:model-value="(value: any) => updateProperty('scaleX', element.scaleX, value)"
+      @update:model-value="
+        (value: any) => batchUpdateProperty(selection, 'scaleX', element.scaleX, value)
+      "
     >
       <NumberFieldContent>
         <NumberFieldDecrement />
@@ -79,7 +85,9 @@
       :model-value="element.scaleY"
       :step="0.1"
       :min="0.5"
-      @update:model-value="(value: any) => updateProperty('scaleY', element.scaleY, value)"
+      @update:model-value="
+        (value: any) => batchUpdateProperty(selection, 'scaleY', element.scaleY, value)
+      "
     >
       <NumberFieldContent>
         <NumberFieldDecrement />
@@ -94,7 +102,9 @@
       :model-value="element.rotation"
       :min="0"
       :max="359"
-      @update:model-value="(value: any) => updateProperty('rotation', element.rotation, value)"
+      @update:model-value="
+        (value: any) => batchUpdateProperty(selection, 'rotation', element.rotation, value)
+      "
     >
       <NumberFieldContent>
         <NumberFieldDecrement />
@@ -117,6 +127,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from '@/components/ui/number-field'
+import { usePropertyCommand } from '@/hooks'
 
 interface Props {
   host: IEditorHost
@@ -126,10 +137,7 @@ interface Props {
 
 const { element, host, selection } = defineProps<Props>()
 
-const updateProperty = (property: string, oldValue: any, newValue: any) => {
-  element.updateProperty(host, property, oldValue, newValue)
-  // 处理多选的情况.....
-}
+const { updateProperty, batchUpdateProperty } = usePropertyCommand(host)
 </script>
 
 <style scoped></style>
