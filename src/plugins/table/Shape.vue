@@ -29,6 +29,7 @@
         </template>
       </template>
     </template>
+    <!-- <v-text :config="{ x: 0, y: 0, width: 200, height: 200, text: '对齐文本', align: 'left' }" /> -->
   </v-group>
 </template>
 
@@ -68,8 +69,10 @@ const getCellConfig = (row: number, col: number, cell: CellConfig) => {
 
 const getTextConfig = (row: number, col: number, cell: CellConfig) => {
   return {
-    x: getCellX(col) + 5,
-    y: getCellY(row) + 10,
+    x: getCellX(col) + 2,
+    y: getCellY(row) + 2,
+    width: getCellWidth(row, col) - 4,
+    height: getCellHeight(row, col) - 4,
     ...cell,
   }
 }
@@ -143,7 +146,7 @@ const getDownBorderConfig = (rowIndex: number, colIndex: number, cell: CellConfi
   const height = getCellHeight(rowIndex, colIndex)
   return {
     points: [x, y + height, x + width, y + height],
-    stroke: cell.borderDown ? 'block' : '#e5e7eb',
+    stroke: 'block',
     strokeWidth: 1,
     listening: false,
   }
@@ -170,7 +173,7 @@ const getRightBorderConfig = (rowIndex: number, colIndex: number, cell: CellConf
   const height = getCellHeight(rowIndex, colIndex)
   return {
     points: [x + width, y, x + width, y + height],
-    stroke: cell.borderRight ? 'block' : '#e5e7eb',
+    stroke: 'block',
     strokeWidth: 1,
     listening: false,
   }

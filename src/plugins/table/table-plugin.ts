@@ -15,11 +15,12 @@ export interface CellConfig {
   mergeLeft: boolean // 合并左
   mergeUp: boolean // 合并上
   borderUp: boolean
-  // borderDown: boolean
   borderLeft: boolean
-  // borderRight: boolean
   fontSize: number
-  [key: string]: any
+  align: 'left' | 'center' | 'right' | 'justify'
+  verticalAlign: 'top' | 'middle' | 'bottom'
+  fontStyle?: 'normal' | 'italic' | 'bold' | '500' | 'italic bold' // 文字加粗
+  // [key: string]: any
 }
 
 // 元素实现
@@ -58,7 +59,7 @@ export class TableElement extends BaseGraphicElement {
   }
 
   // 获取默认的单元格配置
-  private getDefaultCellConfig(rowIndex: number, colIndex: number) {
+  private getDefaultCellConfig(rowIndex: number, colIndex: number): CellConfig {
     return {
       rowIndex: rowIndex,
       colIndex: colIndex,
@@ -67,11 +68,10 @@ export class TableElement extends BaseGraphicElement {
       mergeLeft: false,
       mergeUp: false,
       borderUp: true,
-      borderDown: true,
       borderLeft: true,
-      borderRight: true,
       fontSize: 14,
-      borders: ['up', 'down', 'left', 'right'],
+      align: 'center',
+      verticalAlign: 'middle',
     }
   }
 

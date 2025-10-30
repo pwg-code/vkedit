@@ -20,7 +20,7 @@
       <!-- 左侧菜单栏 -->
       <div
         v-if="showToolbox"
-        class="basis-1/6 min-w-40 flex-none border-r border-border overflow-auto"
+        class="basis-2/12 min-w-40 flex-none border-r border-border overflow-auto"
       >
         <div class="text-center py-2 border-b border-border">添加图形</div>
         <Toolbox :host="host">
@@ -31,14 +31,14 @@
       </div>
 
       <!-- 中间内容区（可滚动） -->
-      <div class="basis-4/6 flex-auto flex relative overflow-hidden">
+      <div class="basis-7/12 flex-auto flex relative overflow-hidden">
         <StageView :host="host" />
       </div>
 
       <!-- 右侧属性栏 -->
       <div
         v-if="showPropertyPanel"
-        class="basis-1/6 min-w-44 flex-none border-l border-border p-4 bg-card overflow-auto"
+        class="basis-3/12 min-w-44 flex-none border-l border-border p-4 bg-card overflow-auto"
       >
         <PropertyPanel :host="host">
           <template #property-panel>

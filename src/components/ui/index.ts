@@ -12,7 +12,7 @@ export {
 export { Separator as VkSeparator } from './separator'
 export { Slider as VkSlider } from './slider'
 export { Switch as VkSwitch } from './switch'
-import {
+export {
   Select as VkSelect,
   SelectContent as VkSelectContent,
   SelectGroup as VkSelectGroup,
@@ -21,3 +21,6 @@ import {
   SelectTrigger as VkSelectTrigger,
   SelectValue as VkSelectValue,
 } from './select'
+
+export { Toggle as VkToggle } from './toggle'
+export { Textarea as VkTextarea } from './textarea'
