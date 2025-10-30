@@ -34,9 +34,10 @@ import {
 interface Props {
   host: IEditorHost
   element: RectElement
+  selection: RectElement[]
 }
 
-const { element, host } = defineProps<Props>()
+const { element, host, selection } = defineProps<Props>()
 </script>
 
 <style scoped></style>

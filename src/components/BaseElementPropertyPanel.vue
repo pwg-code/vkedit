@@ -121,9 +121,10 @@ import {
 interface Props {
   host: IEditorHost
   element: BaseGraphicElement
+  selection: BaseGraphicElement[]
 }
 
-const { element, host } = defineProps<Props>()
+const { element, host, selection } = defineProps<Props>()
 
 const updateProperty = (property: string, oldValue: any, newValue: any) => {
   element.updateProperty(host, property, oldValue, newValue)

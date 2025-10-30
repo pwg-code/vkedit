@@ -227,9 +227,10 @@ import { Switch } from '@/components/ui/switch'
 interface Props {
   host: IEditorHost
   element: TableElement
+  selection: TableElement[]
 }
 
-const { element, host } = defineProps<Props>()
+const { host, element, selection } = defineProps<Props>()
 
 // 更新行数
 const updateRows = (value: number) => {

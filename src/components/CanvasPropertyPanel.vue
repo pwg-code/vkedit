@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IEditorHost } from '@/types'
+import type { BaseGraphicElement, IEditorHost } from '@/types'
 import { ref } from 'vue'
 import { Label } from '@/components/ui/label'
 
@@ -49,7 +49,13 @@ import {
   NumberFieldInput,
 } from '@/components/ui/number-field'
 
-const { host } = defineProps<{ host: IEditorHost }>()
+interface Props {
+  host: IEditorHost
+  element: BaseGraphicElement
+  selection: BaseGraphicElement[]
+}
+
+const { host } = defineProps<Props>()
 const hostState = ref(host.getState())
 
 // 更新画布像素
