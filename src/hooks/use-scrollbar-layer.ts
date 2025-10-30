@@ -8,8 +8,7 @@ export default function (host: IEditorHost) {
   const { width, height, verticalThumbY, horizontalThumbX } = useStage()
   const { contentHeight, contentWidth, contentX, contentY } = useZoom(host)
 
-  const scrollbarLayerConfig = reactive({
-  })
+  const scrollbarLayerConfig = reactive({})
 
   const margin = 30
 
@@ -57,6 +56,7 @@ export default function (host: IEditorHost) {
       width: 10,
       height: height.value,
       fill: '#ffff',
+      listening: false,
     }
   })
 
@@ -134,6 +134,7 @@ export default function (host: IEditorHost) {
       width: width.value,
       height: 10,
       fill: '#ffff',
+      listening: false,
     }
   })
 

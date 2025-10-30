@@ -10,7 +10,7 @@ export default function () {
 
   // 标尺图层配置
   const bgLayerConfig = computed(() => {
-    return { }
+    return { listening: false }
   })
 
   // 上标尺
@@ -21,6 +21,7 @@ export default function () {
       width: width.value,
       height: height.value,
       fill: '#6666',
+      listening: false,
     }
   })
 

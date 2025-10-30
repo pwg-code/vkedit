@@ -6,9 +6,15 @@
         <template v-if="!cell.mergeLeft && !cell.mergeUp">
           <!-- 绘制边框 线-->
           <v-line :config="getUpBorderConfig(rowIndex, colIndex, cell)"></v-line>
-          <v-line :config="getDownBorderConfig(rowIndex, colIndex, cell)"></v-line>
+          <v-line
+            v-if="rowIndex === element.rowsHeight.length - 1"
+            :config="getDownBorderConfig(rowIndex, colIndex, cell)"
+          ></v-line>
           <v-line :config="getLeftBorderConfig(rowIndex, colIndex, cell)"></v-line>
-          <v-line :config="getRightBorderConfig(rowIndex, colIndex, cell)"></v-line>
+          <v-line
+            v-if="colIndex === element.colsWidth.length - 1"
+            :config="getRightBorderConfig(rowIndex, colIndex, cell)"
+          ></v-line>
           <!-- 单元格  矩形 -->
           <v-rect
             :config="getCellConfig(rowIndex, colIndex, cell)"
@@ -121,44 +127,25 @@ const getUpBorderConfig = (rowIndex: number, colIndex: number, cell: CellConfig)
   const x = getCellX(colIndex)
   const y = getCellY(rowIndex)
   const width = getCellWidth(rowIndex, colIndex)
-  // const height = getCellHeight(rowIndex, colIndex)
-  if (cell.borderUp) {
-    return {
-      points: [x, y, x + width, y],
-      stroke: 'block',
-      strokeWidth: 1,
-    }
-  } else {
-    return {
-      points: [x, y, x + width, y],
-      stroke: '#e5e7eb',
-      strokeWidth: 1,
-    }
+  return {
+    points: [x, y, x + width, y],
+    stroke: cell.borderUp ? 'block' : '#e5e7eb',
+    strokeWidth: 1,
+    listening: false,
   }
 }
 
 // 下边框配置
 const getDownBorderConfig = (rowIndex: number, colIndex: number, cell: CellConfig) => {
-  // 如果不是最后一行 则不渲染边框
-  if (rowIndex !== element.rowsHeight.length - 1) return {}
-
   const x = getCellX(colIndex)
   const y = getCellY(rowIndex)
   const width = getCellWidth(rowIndex, colIndex)
   const height = getCellHeight(rowIndex, colIndex)
-
-  if (cell.borderDown) {
-    return {
-      points: [x, y + height, x + width, y + height],
-      stroke: 'block',
-      strokeWidth: 1,
-    }
-  } else {
-    return {
-      points: [x, y + height, x + width, y + height],
-      stroke: '#e5e7eb',
-      strokeWidth: 1,
-    }
+  return {
+    points: [x, y + height, x + width, y + height],
+    stroke: cell.borderDown ? 'block' : '#e5e7eb',
+    strokeWidth: 1,
+    listening: false,
   }
 }
 
@@ -166,44 +153,26 @@ const getDownBorderConfig = (rowIndex: number, colIndex: number, cell: CellConfi
 const getLeftBorderConfig = (rowIndex: number, colIndex: number, cell: CellConfig) => {
   const x = getCellX(colIndex)
   const y = getCellY(rowIndex)
-  // const width = getCellWidth(rowIndex, colIndex)
   const height = getCellHeight(rowIndex, colIndex)
-  if (cell.borderLeft) {
-    return {
-      points: [x, y, x, y + height],
-      stroke: 'block',
-      strokeWidth: 1,
-    }
-  } else {
-    return {
-      points: [x, y, x, y + height],
-      stroke: '#e5e7eb',
-      strokeWidth: 1,
-    }
+  return {
+    points: [x, y, x, y + height],
+    stroke: cell.borderLeft ? 'block' : '#e5e7eb',
+    strokeWidth: 1,
+    listening: false,
   }
 }
 
 // 右边框配置
 const getRightBorderConfig = (rowIndex: number, colIndex: number, cell: CellConfig) => {
-  // 如果不是最后一列 则不渲染边框
-  if (colIndex !== element.colsWidth.length - 1) return {}
-
   const x = getCellX(colIndex)
   const y = getCellY(rowIndex)
   const width = getCellWidth(rowIndex, colIndex)
   const height = getCellHeight(rowIndex, colIndex)
-  if (cell.borderRight) {
-    return {
-      points: [x + width, y, x + width, y + height],
-      stroke: 'block',
-      strokeWidth: 1,
-    }
-  } else {
-    return {
-      points: [x + width, y, x + width, y + height],
-      stroke: '#e5e7eb',
-      strokeWidth: 1,
-    }
+  return {
+    points: [x + width, y, x + width, y + height],
+    stroke: cell.borderRight ? 'block' : '#e5e7eb',
+    strokeWidth: 1,
+    listening: false,
   }
 }
 </script>

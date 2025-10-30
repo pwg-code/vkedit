@@ -12,17 +12,17 @@ export default function () {
 
   // 标尺图层配置
   const rulerLayerConfig = computed(() => {
-    return { }
+    return { listening: false }
   })
 
   // 上标尺
   const upRulerConfig = computed(() => {
-    return { x: 0, y: 0, width: width.value, height: 10, fill: '#6666' }
+    return { x: 0, y: 0, width: width.value, height: 10, fill: '#6666', listening: false }
   })
 
   // 左标尺
   const leftRulerConfig = computed(() => {
-    return { x: 0, y: 0, width: 10, height: height.value, fill: '#6666' }
+    return { x: 0, y: 0, width: 10, height: height.value, fill: '#6666', listening: false }
   })
 
   return { rulerLayerRef, rulerLayerConfig, upRulerConfig, leftRulerConfig }
