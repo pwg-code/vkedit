@@ -133,11 +133,6 @@ export class EditorHost implements IEditorHost {
     this.emitEvent(EditorEvents.STATE_CHANGED, { state: this.state })
   }
 
-  // // 获取所有元素
-  // getElements(): IGraphicElement[] {
-  //   return [...this.elements.values()]
-  // }
-
   toJSON(): string {
     const elements = this.getPlugin<ElementsPlugin>('elements')?.elements
     const serializeElements: any[] = []
@@ -156,7 +151,6 @@ export class EditorHost implements IEditorHost {
   loadJSON(jsonStr: string): void {
     const data = JSON.parse(jsonStr)
     // 加载编辑器状态
-    Object.assign(this.state, data.state)
     const elementsPlugin = this.getPlugin<ElementsPlugin>('elements')
     const elements: any[] = data.elements
     const graphicTypesPlugin = this.getPlugin<GraphicTypesPlugin>('graphic-types')

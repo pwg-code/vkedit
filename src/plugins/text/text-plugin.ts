@@ -9,13 +9,15 @@ import { EditorEvents } from '@/types/event-types'
 
 // 矩形元素实现
 export class TextElement extends BaseGraphicElement {
-  [key: string]: any
   public readonly type = 'text'
   constructor(
     public x: number = 50,
     public y: number = 50,
     public text: string = '新建文本',
     public fontSize: number = 20,
+    public align: 'left' | 'center' | 'right' | 'justify' = 'left',
+    public verticalAlign: 'top' | 'middle' | 'bottom' = 'bottom',
+    public fontStyle: 'normal' | 'italic' | 'bold' | '500' | 'italic bold' = 'normal', // 文字加粗
   ) {
     super(x, y, 80, 20)
   }
@@ -25,6 +27,9 @@ export class TextElement extends BaseGraphicElement {
       ...super.serialize(),
       text: this.text,
       fontSize: this.fontSize,
+      align: this.align,
+      verticalAlign: this.verticalAlign,
+      fontStyle: this.fontStyle,
     }
   }
 }

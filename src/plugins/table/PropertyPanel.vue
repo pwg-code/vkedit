@@ -37,14 +37,6 @@
 
   <div class="pt-4 font-bold">单元格设置</div>
   <div></div>
-
-  <div class="col-span-full">
-    <Label>内容</Label>
-    <VkTextarea
-      :model-value="element.activeCell.text"
-      @update:model-value="(value: any) => updateActiveCellConfig('text', value)"
-    ></VkTextarea>
-  </div>
   <div>
     <NumberField
       :model-value="element.rowsHeight[element.activeRow]"
@@ -144,61 +136,16 @@
       <Icon icon="material-symbols-light:border-right" style="width: 25px; height: 25px"></Icon>
     </VkToggle>
   </div>
-  <div class="col-span-full flex">
-    <div class="min-w-[100px]">
-      <NumberField
-        :model-value="element.activeCell.fontSize"
-        :min="0"
-        @update:model-value="(value: any) => updateActiveCellConfig('fontSize', value)"
-      >
-        <NumberFieldContent>
-          <NumberFieldDecrement />
-          <NumberFieldInput />
-          <NumberFieldIncrement />
-        </NumberFieldContent>
-      </NumberField>
-    </div>
-    <VkToggle
-      :model-value="element.activeCell.fontStyle == 'bold'"
-      @update:model-value="
-        (value) => updateActiveCellConfig('fontStyle', value ? 'bold' : 'normal')
-      "
-    >
-      <Icon icon="material-symbols-light:format-bold" style="width: 25px; height: 25px"></Icon>
-    </VkToggle>
-    <VkToggle
-      :model-value="element.activeCell.align == 'left'"
-      @update:model-value="updateActiveCellConfig('align', 'left')"
-      ><Icon
-        icon="material-symbols-light:align-justify-flex-start"
-        style="width: 25px; height: 25px"
-    /></VkToggle>
-    <VkToggle
-      :model-value="element.activeCell.align == 'center'"
-      @update:model-value="updateActiveCellConfig('align', 'center')"
-      ><Icon icon="material-symbols-light:align-justify-center" style="width: 25px; height: 25px"
-    /></VkToggle>
-    <VkToggle
-      :model-value="element.activeCell.align == 'right'"
-      @update:model-value="updateActiveCellConfig('align', 'right')"
-      ><Icon icon="material-symbols-light:align-justify-flex-end" style="width: 25px; height: 25px"
-    /></VkToggle>
-    <VkToggle
-      :model-value="element.activeCell.verticalAlign == 'top'"
-      @update:model-value="updateActiveCellConfig('verticalAlign', 'top')"
-      ><Icon icon="material-symbols-light:align-start" style="width: 25px; height: 25px"
-    /></VkToggle>
-    <VkToggle
-      :model-value="element.activeCell.verticalAlign == 'middle'"
-      @update:model-value="updateActiveCellConfig('verticalAlign', 'middle')"
-      ><Icon icon="material-symbols-light:align-center" style="width: 25px; height: 25px"
-    /></VkToggle>
-    <VkToggle
-      :model-value="element.activeCell.verticalAlign == 'bottom'"
-      @update:model-value="updateActiveCellConfig('verticalAlign', 'bottom')"
-      ><Icon icon="material-symbols-light:align-end" style="width: 25px; height: 25px"
-    /></VkToggle>
-  </div>
+
+  <TextProperty
+    :text="element.activeCell.text"
+    :font-size="element.activeCell.fontSize"
+    :align="element.activeCell.align"
+    :font-style="element.activeCell.fontStyle"
+    :vertical-align="element.activeCell.verticalAlign"
+    @update="updateActiveCellConfig"
+  ></TextProperty>
+
 </template>
 
 <script setup lang="ts">
@@ -206,6 +153,7 @@ import { EditorEvents, type IEditorHost } from '@/types'
 import type { CellConfig, TableElement } from './table-plugin'
 import { Label } from '@/components/ui/label'
 import { VkButton, VkInput, VkTextarea, VkToggle } from '@/components/ui'
+import TextProperty from '@/components/TextProperty.vue'
 import {
   NumberField,
   NumberFieldContent,
@@ -287,12 +235,28 @@ const handleDissolve = () => {
     for (let colI = 0; colI < col; colI++) {
       const cell = element.offset(rowI, colI)
       if (cell) {
-        comms.push(new UpdatePropertyCommand(element,host,`cells.${cell.rowIndex}.${cell.colIndex}.mergeLeft`,cell.mergeLeft,false))
-        comms.push(new UpdatePropertyCommand(element,host,`cells.${cell.rowIndex}.${cell.colIndex}.mergeUp`,cell.mergeUp,false))
+        comms.push(
+          new UpdatePropertyCommand(
+            element,
+            host,
+            `cells.${cell.rowIndex}.${cell.colIndex}.mergeLeft`,
+            cell.mergeLeft,
+            false,
+          ),
+        )
+        comms.push(
+          new UpdatePropertyCommand(
+            element,
+            host,
+            `cells.${cell.rowIndex}.${cell.colIndex}.mergeUp`,
+            cell.mergeUp,
+            false,
+          ),
+        )
       }
     }
   }
-  host.executeCommand(new BatchCommand(host,comms,'updateCells'))
+  host.executeCommand(new BatchCommand(host, comms, 'updateCells'))
 }
 
 const resizeRow = ref(1)
@@ -316,30 +280,45 @@ const mergeCell = () => {
       const cell = element.offset(i - 1, j - 1)
       if (cell) {
         if (j > 1) {
-          comms.push(new UpdatePropertyCommand(element,host,`cells.${cell.rowIndex}.${cell.colIndex}.mergeLeft`,cell.mergeLeft,true))
+          comms.push(
+            new UpdatePropertyCommand(
+              element,
+              host,
+              `cells.${cell.rowIndex}.${cell.colIndex}.mergeLeft`,
+              cell.mergeLeft,
+              true,
+            ),
+          )
         }
         if (i > 1) {
-          comms.push(new UpdatePropertyCommand(element,host,`cells.${cell.rowIndex}.${cell.colIndex}.mergeUp`,cell.mergeUp,true))
+          comms.push(
+            new UpdatePropertyCommand(
+              element,
+              host,
+              `cells.${cell.rowIndex}.${cell.colIndex}.mergeUp`,
+              cell.mergeUp,
+              true,
+            ),
+          )
         }
       }
     }
   }
-  host.executeCommand(new BatchCommand(host,comms,'updateCells'))
+  host.executeCommand(new BatchCommand(host, comms, 'updateCells'))
 }
 
-
-onMounted(()=>{
+onMounted(() => {
   // 为使用命令更新的属性触发更新单元格
-  host.on(EditorEvents.PROPERTY_BATCH_UPDATE_END,(e:any)=>{
-    if (e.description==='updateCells'){
+  host.on(EditorEvents.PROPERTY_BATCH_UPDATE_END, (e: any) => {
+    if (e.description === 'updateCells') {
       element.updateCells()
     }
   })
 })
 
-onUnmounted(()=>{
-    host.off(EditorEvents.PROPERTY_BATCH_UPDATE_END,(e:any)=>{
-    if (e.description==='updateCells'){
+onUnmounted(() => {
+  host.off(EditorEvents.PROPERTY_BATCH_UPDATE_END, (e: any) => {
+    if (e.description === 'updateCells') {
       element.updateCells()
     }
   })

@@ -1,13 +1,14 @@
-import { BatchCommand, UpdatePropertyCommand } from '@/commands'
+import { BatchCommand, UpdatePropertyCommand, type ICommand } from '@/commands'
 import type { IEditorHost, IGraphicElement } from '@/types'
+import { get } from "lodash";
 
 export default function (host: IEditorHost) {
   const updateProperty = (
     element: IGraphicElement,
     propertyPath: string,
-    oldValue: any,
     newValue: any,
   ) => {
+    const oldValue = get(element,propertyPath)
     if (oldValue === newValue) return
     host.executeCommand(new UpdatePropertyCommand(element, host, propertyPath, oldValue, newValue))
   }
@@ -16,16 +17,22 @@ export default function (host: IEditorHost) {
   const batchUpdateProperty = (
     elements: IGraphicElement[],
     propertyPath: string,
-    oldValue: any,
     newValue: any,
   ) => {
-    if (oldValue === newValue) return
+    if (elements.length===0) return
+    if (elements.length===1) return updateProperty(elements[0],propertyPath,newValue)
+
+      const comms:ICommand[] = []
+      elements.forEach(e=>{
+        let oldValue = get(e,propertyPath)
+        if (oldValue !== newValue){
+          comms.push(new UpdatePropertyCommand(e,host,propertyPath,oldValue,newValue))
+        }
+      })
     host.executeCommand(
       new BatchCommand(
         host,
-        elements.map(
-          (item) => new UpdatePropertyCommand(item, host, propertyPath, oldValue, newValue),
-        ),
+        comms,
       ),
     )
   }

@@ -8,7 +8,7 @@
       :model-value="element.x"
       :min="0"
       @update:model-value="(value: any) => {
-        updateProperty(element, 'x', element.x, value)
+        updateProperty(element, 'x',  value)
         }"
       >
       <NumberFieldContent>
@@ -23,7 +23,7 @@
     <NumberField
       :model-value="element.y"
       :min="0"
-      @update:model-value="(value: any) => updateProperty(element, 'y', element.y, value)"
+      @update:model-value="(value: any) => updateProperty(element, 'y', value)"
     >
       <NumberFieldContent>
         <NumberFieldDecrement />
@@ -38,7 +38,7 @@
       :model-value="element.width"
       :min="0"
       @update:model-value="
-        (value: any) => batchUpdateProperty(selection, 'width', element.width, value)
+        (value: any) => batchUpdateProperty(selection, 'width', value)
       "
     >
       <NumberFieldContent>
@@ -54,7 +54,7 @@
       :model-value="element.height"
       :min="0"
       @update:model-value="
-        (value: any) => batchUpdateProperty(selection, 'height', element.height, value)
+        (value: any) => batchUpdateProperty(selection, 'height', value)
       "
     >
       <NumberFieldContent>
@@ -71,7 +71,7 @@
       :step="0.1"
       :min="0.5"
       @update:model-value="
-        (value: any) => batchUpdateProperty(selection, 'scaleX', element.scaleX, value)
+        (value: any) => batchUpdateProperty(selection, 'scaleX', value)
       "
     >
       <NumberFieldContent>
@@ -88,7 +88,7 @@
       :step="0.1"
       :min="0.5"
       @update:model-value="
-        (value: any) => batchUpdateProperty(selection, 'scaleY', element.scaleY, value)
+        (value: any) => batchUpdateProperty(selection, 'scaleY', value)
       "
     >
       <NumberFieldContent>
@@ -105,7 +105,7 @@
       :min="0"
       :max="359"
       @update:model-value="
-        (value: any) => batchUpdateProperty(selection, 'rotation', element.rotation, value)
+        (value: any) => batchUpdateProperty(selection, 'rotation', value)
       "
     >
       <NumberFieldContent>
