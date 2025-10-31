@@ -111,7 +111,7 @@
     </VkToggle>
 
     <VkToggle
-      :model-value="element.getCell(element.activeRow + 1, element.activeCol)?.borderUp"
+      :model-value="element.offset(1,0)?.borderUp"
       @update:model-value="
         (value: any) =>
           updateCellConfig(element.activeRow + 1, element.activeCol, 'borderUp', value)
@@ -127,7 +127,7 @@
     </VkToggle>
 
     <VkToggle
-      :model-value="element.getCell(element.activeRow, element.activeCol + 1)?.borderLeft"
+      :model-value="element.offset(0,1)?.borderLeft"
       @update:model-value="
         (value: any) =>
           updateCellConfig(element.activeRow, element.activeCol + 1, 'borderLeft', value)
@@ -206,13 +206,13 @@ const updateActiveCellConfig = (prop: string, value: any) => {
 
 // 更新字体对齐
 const updateCellConfig = (row: number, col: number, prop: string, value: any) => {
-  const cell = element.cells[row][col]
+  const cell = element.getCell(row,col)
   if (!cell) return
   host.executeCommand(
     new UpdatePropertyCommand(
       element,
       host,
-      `cells.${element.activeRow}.${element.activeCol}.${prop}`,
+      `cells.${row}.${col}.${prop}`,
       cell[prop as keyof typeof cell],
       value,
     ),

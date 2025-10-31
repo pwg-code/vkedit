@@ -1,6 +1,6 @@
 <template>
     <div class="col-span-full">
-    <Label>内容</Label>
+    <VkLabel>内容</VkLabel>
     <VkTextarea
       :model-value="text"
       @update:model-value="(value: any) => emit('update','text',value)"
@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { VkTextarea, VkToggle } from '@/components/ui'
+import { VkTextarea, VkToggle,VkLabel } from '@/components/ui'
 import { Icon } from '@iconify/vue'
 import {
   NumberField,

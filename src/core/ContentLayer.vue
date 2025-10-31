@@ -13,12 +13,17 @@
         :is="graphicTypesPlugin?.getElementComponent(element.type)"
         :element="element"
         :host="host"
-        @transformend="handleElementTransformEnd($event, element)"
         @dragend="handleDragEnd($event, element)"
+        @mousedown="(e:any)=>e.cancelBubble = true"
+        @transformend="handleElementTransformEnd($event, element)"
         @transform="handleElementTransform($event, element)"
-      />
+        />
+        <!-- @mousemove="(e:any)=>e.cancelBubble = true" -->
+        <!-- @mouseup="(e:any)=>e.cancelBubble = true" -->
+        <!-- @click="(e:any)=>e.cancelBubble = true" -->
+        <!-- @wheel="(e:any)=>e.cancelBubble = true" -->
 
-      <v-transformer ref="transformerRef" :config="{}"></v-transformer>
+      <v-transformer ref="transformerRef"></v-transformer>
     </v-group>
     <slot></slot>
   </v-layer>

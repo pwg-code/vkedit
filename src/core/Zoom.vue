@@ -27,15 +27,12 @@
 import { useStage, useZoom } from '@/hooks'
 import type { IEditorHost } from '@/types'
 import { Icon } from '@iconify/vue'
-import { watch } from 'vue'
 
 const { host } = defineProps<{ host: IEditorHost }>()
 
 // 画布长宽
 const { width, height } = useStage()
-watch(width, () => {
-  console.log('width', width)
-})
+
 
 // 缩放hook
 const { zoom, handleZoomIn, handleZoomOut, handleZoomAuto } = useZoom(host)

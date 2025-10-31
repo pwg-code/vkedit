@@ -18,7 +18,7 @@
               verticalAlign: cell.verticalAlign,
               fontStyle: cell.fontStyle,
             }"
-            @click="handleCellClick(cell, rowIndex, colIndex)"
+            @click="handleCellClick($event, cell, rowIndex, colIndex)"
           />
         </template>
       </template>
@@ -55,12 +55,15 @@ const cells = computed(() => element.cells)
 const activeCell = computed(() => element.activeCell)
 
 // 当前活动单元格
-const handleCellClick = (cell: CellConfig, row: number, col: number) => {
+const handleCellClick = (e:any, cell: CellConfig, row: number, col: number) => {
   element.activeCell = cell
   element.activeRow = row
   element.activeCol = col
+  // 停止事件冒泡
+  e.cancelBubble = true;
   // 获取选择插件 设置当前元素为选中状态
-  const selectionPlugin = host.getPlugin<SelectionPlugin>('selection')
-  selectionPlugin?.selectElement(element)
+  // const selectionPlugin = host.getPlugin<SelectionPlugin>('selection')
+  // selectionPlugin?.selectElement(element)
+
 }
 </script>

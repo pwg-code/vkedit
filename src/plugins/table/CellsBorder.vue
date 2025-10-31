@@ -22,14 +22,25 @@ function sceneFunc(context: konva.Context, shape: konva.Shape) {
   context.beginPath()
   cells.value.forEach((row, i) => {
     row.forEach((c, j) => {
-      if (c.visible) {
+      if (!c.visible) return
+      if (c.borderUp){
         context.moveTo(c.x, c.y)
         context.lineTo(c.x + c.width, c.y)
+      }
+      if (c.borderLeft){
         context.moveTo(c.x, c.y)
         context.lineTo(c.x, c.y + c.height)
       }
     })
   })
+
+  // 整体左侧 和底部边框
+  context.moveTo(element.width, 0)
+  context.lineTo(element.width, element.height)
+  context.moveTo(0, element.height)
+  context.lineTo(element.width, element.height)
+
+
   context.closePath()
   context.fillStrokeShape(shape)
 }
