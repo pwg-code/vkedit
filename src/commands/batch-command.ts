@@ -17,7 +17,7 @@ export class BatchCommand extends BaseCommand {
 
   execute(): void {
     this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_START, {
-      timestamp: this.timestamp,
+      timestamp: this.timestamp,description:this.description
     })
 
     this.commands.forEach((command) => {
@@ -27,12 +27,14 @@ export class BatchCommand extends BaseCommand {
     this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_END, {
       timestamp: this.timestamp,
       commandCount: this.commands.length,
+      description:this.description
     })
   }
 
   undo(): void {
     this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_START, {
       timestamp: this.timestamp,
+      description:this.description
     })
 
     // 逆序执行撤销
@@ -43,6 +45,7 @@ export class BatchCommand extends BaseCommand {
     this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_END, {
       timestamp: this.timestamp,
       commandCount: this.commands.length,
+      description:this.description
     })
   }
 

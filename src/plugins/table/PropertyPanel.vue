@@ -202,7 +202,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IEditorHost } from '@/types'
+import { EditorEvents, type IEditorHost } from '@/types'
 import type { CellConfig, TableElement } from './table-plugin'
 import { Label } from '@/components/ui/label'
 import { VkButton, VkInput, VkTextarea, VkToggle } from '@/components/ui'
@@ -215,7 +215,7 @@ import {
 } from '@/components/ui/number-field'
 import { Icon } from '@iconify/vue'
 import { BatchCommand, UpdatePropertyCommand, type ICommand } from '@/commands'
-import { ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 interface Props {
   host: IEditorHost
@@ -273,6 +273,7 @@ const updateCellConfig = (row: number, col: number, prop: string, value: any) =>
 
 // 解除单元格合并
 const handleDissolve = () => {
+  const comms = []
   let row = 1
   while (element.offset(row, 0) && element.offset(row, 0)?.mergeUp) {
     row++
@@ -286,12 +287,12 @@ const handleDissolve = () => {
     for (let colI = 0; colI < col; colI++) {
       const cell = element.offset(rowI, colI)
       if (cell) {
-        cell.mergeLeft = false
-        cell.mergeUp = false
+        comms.push(new UpdatePropertyCommand(element,host,`cells.${cell.rowIndex}.${cell.colIndex}.mergeLeft`,cell.mergeLeft,false))
+        comms.push(new UpdatePropertyCommand(element,host,`cells.${cell.rowIndex}.${cell.colIndex}.mergeUp`,cell.mergeUp,false))
       }
     }
   }
-  element.updateCells()
+  host.executeCommand(new BatchCommand(host,comms,'updateCells'))
 }
 
 const resizeRow = ref(1)
@@ -309,21 +310,40 @@ watch(resizeCol, (v) => {
 
 // 合并单元格
 const mergeCell = () => {
+  const comms = []
   for (let i = 1; i < resizeRow.value + 1; i++) {
     for (let j = 1; j < resizeCol.value + 1; j++) {
       const cell = element.offset(i - 1, j - 1)
       if (cell) {
         if (j > 1) {
-          cell.mergeLeft = true
+          comms.push(new UpdatePropertyCommand(element,host,`cells.${cell.rowIndex}.${cell.colIndex}.mergeLeft`,cell.mergeLeft,true))
         }
         if (i > 1) {
-          cell.mergeUp = true
+          comms.push(new UpdatePropertyCommand(element,host,`cells.${cell.rowIndex}.${cell.colIndex}.mergeUp`,cell.mergeUp,true))
         }
       }
     }
   }
-  element.updateCells()
+  host.executeCommand(new BatchCommand(host,comms,'updateCells'))
 }
+
+
+onMounted(()=>{
+  // 为使用命令更新的属性触发更新单元格
+  host.on(EditorEvents.PROPERTY_BATCH_UPDATE_END,(e:any)=>{
+    if (e.description==='updateCells'){
+      element.updateCells()
+    }
+  })
+})
+
+onUnmounted(()=>{
+    host.off(EditorEvents.PROPERTY_BATCH_UPDATE_END,(e:any)=>{
+    if (e.description==='updateCells'){
+      element.updateCells()
+    }
+  })
+})
 </script>
 
 <style scoped></style>

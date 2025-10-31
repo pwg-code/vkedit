@@ -8,6 +8,7 @@ export default function (host: IEditorHost) {
     oldValue: any,
     newValue: any,
   ) => {
+    if (oldValue === newValue) return
     host.executeCommand(new UpdatePropertyCommand(element, host, propertyPath, oldValue, newValue))
   }
 
@@ -18,6 +19,7 @@ export default function (host: IEditorHost) {
     oldValue: any,
     newValue: any,
   ) => {
+    if (oldValue === newValue) return
     host.executeCommand(
       new BatchCommand(
         host,

@@ -7,8 +7,10 @@
     <NumberField
       :model-value="element.x"
       :min="0"
-      @update:model-value="(value: any) => updateProperty(element, 'x', element.x, value)"
-    >
+      @update:model-value="(value: any) => {
+        updateProperty(element, 'x', element.x, value)
+        }"
+      >
       <NumberFieldContent>
         <NumberFieldDecrement />
         <NumberFieldInput />

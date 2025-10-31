@@ -30,6 +30,7 @@ export class UpdatePropertyCommand extends BaseCommand {
   execute(): void {
     this.setProperty(this.propertyPath, this.newValue)
     this.emitPropertyChange()
+
   }
 
   undo(): void {
