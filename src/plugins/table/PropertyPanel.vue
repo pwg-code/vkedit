@@ -42,21 +42,23 @@
     <Label>内容</Label>
     <VkTextarea
       :model-value="element.activeCell.text"
-      @update:model-value="(value: any) => updateCellConfig(element.activeCell, 'text', value)"
+      @update:model-value="(value: any) => updateActiveCellConfig('text', value)"
     ></VkTextarea>
   </div>
   <div>
     <NumberField
-      :model-value="element.rowsHeight[element.activeCell.rowIndex]"
+      :model-value="element.rowsHeight[element.activeRow]"
       :min="0"
       @update:model-value="
-        (value: any) =>
+        (value: any) => {
           element.updateProperty(
             host,
-            `rowsHeight.${element.activeCell.rowIndex}`,
-            element.rowsHeight[element.activeCell.rowIndex],
+            `rowsHeight.${element.activeRow}`,
+            element.rowsHeight[element.activeRow],
             value,
           )
+          element.updateCells()
+        }
       "
     >
       <Label>行高</Label>
@@ -69,16 +71,18 @@
   </div>
   <div>
     <NumberField
-      :model-value="element.colsWidth[element.activeCell.colIndex]"
+      :model-value="element.colsWidth[element.activeCol]"
       :min="0"
       @update:model-value="
-        (value: any) =>
+        (value: any) => {
           element.updateProperty(
             host,
-            `colsWidth.${element.activeCell.colIndex}`,
-            element.colsWidth[element.activeCell.colIndex],
+            `colsWidth.${element.activeCol}`,
+            element.colsWidth[element.activeCol],
             value,
           )
+          element.updateCells()
+        }
       "
     >
       <Label>列宽</Label>
@@ -90,70 +94,51 @@
     </NumberField>
   </div>
   <div class="flex gap-4 items-center">
-    <Label>合并左</Label>
-    <Switch
-      :model-value="element.activeCell.mergeLeft"
-      @update:model-value="(value: any) => updateCellConfig(element.activeCell, 'mergeLeft', value)"
-    >
-    </Switch>
+    <NumberField v-model="resizeRow">
+      <NumberFieldContent>
+        <NumberFieldInput />
+      </NumberFieldContent>
+    </NumberField>
+    <NumberField v-model="resizeCol">
+      <NumberFieldContent>
+        <NumberFieldInput />
+      </NumberFieldContent>
+    </NumberField>
+    <VkButton size="xs" variant="outline" @click="mergeCell()">合并</VkButton>
   </div>
   <div class="flex gap-4 items-center">
-    <Label>合并上</Label>
-    <Switch
-      :model-value="element.activeCell.mergeUp"
-      @update:model-value="(value: any) => updateCellConfig(element.activeCell, 'mergeUp', value)"
-    >
-    </Switch>
-  </div>
-  <div class="flex gap-4 items-center">
-    <VkButton size="xs" variant="outline" @click="handleDissolve(element.activeCell)"
-      >解除合并</VkButton
-    >
+    <VkButton size="xs" variant="outline" @click="handleDissolve()">解除合并</VkButton>
   </div>
   <div></div>
   <div class="col-span-full">
     <VkToggle
       :model-value="element.activeCell.borderUp"
-      @update:model-value="(value: any) => updateCellConfig(element.activeCell, 'borderUp', value)"
+      @update:model-value="(value: any) => updateActiveCellConfig('borderUp', value)"
     >
       <Icon icon="material-symbols-light:border-top" style="width: 25px; height: 25px"></Icon>
     </VkToggle>
 
     <VkToggle
-      :model-value="
-        element.getCell(element.activeCell.rowIndex + 1, element.activeCell.colIndex)?.borderUp
-      "
+      :model-value="element.getCell(element.activeRow + 1, element.activeCol)?.borderUp"
       @update:model-value="
         (value: any) =>
-          updateCellConfig(
-            element.getCell(element.activeCell.rowIndex + 1, element.activeCell.colIndex),
-            'borderUp',
-            value,
-          )
+          updateCellConfig(element.activeRow + 1, element.activeCol, 'borderUp', value)
       "
     >
       <Icon icon="material-symbols-light:border-bottom" style="width: 25px; height: 25px"></Icon>
     </VkToggle>
     <VkToggle
       :model-value="element.activeCell.borderLeft"
-      @update:model-value="
-        (value: any) => updateCellConfig(element.activeCell, 'borderLeft', value)
-      "
+      @update:model-value="(value: any) => updateActiveCellConfig('borderLeft', value)"
     >
       <Icon icon="material-symbols-light:border-left" style="width: 25px; height: 25px"></Icon>
     </VkToggle>
 
     <VkToggle
-      :model-value="
-        element.getCell(element.activeCell.rowIndex, element.activeCell.colIndex + 1)?.borderLeft
-      "
+      :model-value="element.getCell(element.activeRow, element.activeCol + 1)?.borderLeft"
       @update:model-value="
         (value: any) =>
-          updateCellConfig(
-            element.getCell(element.activeCell.rowIndex, element.activeCell.colIndex + 1),
-            'borderLeft',
-            value,
-          )
+          updateCellConfig(element.activeRow, element.activeCol + 1, 'borderLeft', value)
       "
     >
       <Icon icon="material-symbols-light:border-right" style="width: 25px; height: 25px"></Icon>
@@ -164,9 +149,7 @@
       <NumberField
         :model-value="element.activeCell.fontSize"
         :min="0"
-        @update:model-value="
-          (value: any) => updateCellConfig(element.activeCell, 'fontSize', value)
-        "
+        @update:model-value="(value: any) => updateActiveCellConfig('fontSize', value)"
       >
         <NumberFieldContent>
           <NumberFieldDecrement />
@@ -178,41 +161,41 @@
     <VkToggle
       :model-value="element.activeCell.fontStyle == 'bold'"
       @update:model-value="
-        (value) => updateCellConfig(element.activeCell, 'fontStyle', value ? 'bold' : 'normal')
+        (value) => updateActiveCellConfig('fontStyle', value ? 'bold' : 'normal')
       "
     >
       <Icon icon="material-symbols-light:format-bold" style="width: 25px; height: 25px"></Icon>
     </VkToggle>
     <VkToggle
       :model-value="element.activeCell.align == 'left'"
-      @update:model-value="updateCellConfig(element.activeCell, 'align', 'left')"
+      @update:model-value="updateActiveCellConfig('align', 'left')"
       ><Icon
         icon="material-symbols-light:align-justify-flex-start"
         style="width: 25px; height: 25px"
     /></VkToggle>
     <VkToggle
       :model-value="element.activeCell.align == 'center'"
-      @update:model-value="updateCellConfig(element.activeCell, 'align', 'center')"
+      @update:model-value="updateActiveCellConfig('align', 'center')"
       ><Icon icon="material-symbols-light:align-justify-center" style="width: 25px; height: 25px"
     /></VkToggle>
     <VkToggle
       :model-value="element.activeCell.align == 'right'"
-      @update:model-value="updateCellConfig(element.activeCell, 'align', 'right')"
+      @update:model-value="updateActiveCellConfig('align', 'right')"
       ><Icon icon="material-symbols-light:align-justify-flex-end" style="width: 25px; height: 25px"
     /></VkToggle>
     <VkToggle
       :model-value="element.activeCell.verticalAlign == 'top'"
-      @update:model-value="updateCellConfig(element.activeCell, 'verticalAlign', 'top')"
+      @update:model-value="updateActiveCellConfig('verticalAlign', 'top')"
       ><Icon icon="material-symbols-light:align-start" style="width: 25px; height: 25px"
     /></VkToggle>
     <VkToggle
       :model-value="element.activeCell.verticalAlign == 'middle'"
-      @update:model-value="updateCellConfig(element.activeCell, 'verticalAlign', 'middle')"
+      @update:model-value="updateActiveCellConfig('verticalAlign', 'middle')"
       ><Icon icon="material-symbols-light:align-center" style="width: 25px; height: 25px"
     /></VkToggle>
     <VkToggle
       :model-value="element.activeCell.verticalAlign == 'bottom'"
-      @update:model-value="updateCellConfig(element.activeCell, 'verticalAlign', 'bottom')"
+      @update:model-value="updateActiveCellConfig('verticalAlign', 'bottom')"
       ><Icon icon="material-symbols-light:align-end" style="width: 25px; height: 25px"
     /></VkToggle>
   </div>
@@ -230,9 +213,9 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from '@/components/ui/number-field'
-import { Switch } from '@/components/ui/switch'
 import { Icon } from '@iconify/vue'
 import { BatchCommand, UpdatePropertyCommand, type ICommand } from '@/commands'
+import { ref, watch } from 'vue'
 
 interface Props {
   host: IEditorHost
@@ -268,42 +251,78 @@ const updateCols = (value: number) => {
   }
 }
 
-// 解除单元格合并
-const handleDissolve = (cell: CellConfig) => {
-  // 下方的单元格
-  const downCell = element.cells[cell.rowIndex + 1][cell.colIndex]
-  // 右侧的单元格
-  const rightCell = element.cells[cell.rowIndex][cell.colIndex + 1]
-
-  if (downCell) {
-    if (downCell.mergeUp) {
-      downCell.mergeUp = false
-      // 继续往下走
-      handleDissolve(downCell)
-    }
-  }
-
-  if (rightCell) {
-    if (rightCell.mergeLeft) {
-      rightCell.mergeLeft = false
-      // 继续往右走
-      handleDissolve(rightCell)
-    }
-  }
+// 更新字体对齐
+const updateActiveCellConfig = (prop: string, value: any) => {
+  updateCellConfig(element.activeRow, element.activeCol, prop, value)
 }
 
 // 更新字体对齐
-const updateCellConfig = (cell: CellConfig | undefined, prop: string, value: string) => {
+const updateCellConfig = (row: number, col: number, prop: string, value: any) => {
+  const cell = element.cells[row][col]
   if (!cell) return
   host.executeCommand(
     new UpdatePropertyCommand(
       element,
       host,
-      `cells.${cell.rowIndex}.${cell.colIndex}.${prop}`,
+      `cells.${element.activeRow}.${element.activeCol}.${prop}`,
       cell[prop as keyof typeof cell],
       value,
     ),
   )
+}
+
+// 解除单元格合并
+const handleDissolve = () => {
+  let row = 1
+  while (element.offset(row, 0) && element.offset(row, 0)?.mergeUp) {
+    row++
+  }
+  let col = 1
+  while (element.offset(0, col) && element.offset(0, col)?.mergeLeft) {
+    col++
+  }
+
+  for (let rowI = 0; rowI < row; rowI++) {
+    for (let colI = 0; colI < col; colI++) {
+      const cell = element.offset(rowI, colI)
+      if (cell) {
+        cell.mergeLeft = false
+        cell.mergeUp = false
+      }
+    }
+  }
+  element.updateCells()
+}
+
+const resizeRow = ref(1)
+const resizeCol = ref(1)
+watch(resizeRow, (v) => {
+  if (element.activeRow + v > element.rowCount) {
+    resizeRow.value = element.rowCount - element.activeRow
+  }
+})
+watch(resizeCol, (v) => {
+  if (element.activeCol + v > element.rowCount) {
+    resizeCol.value = element.colCount - element.activeCol
+  }
+})
+
+// 合并单元格
+const mergeCell = () => {
+  for (let i = 1; i < resizeRow.value + 1; i++) {
+    for (let j = 1; j < resizeCol.value + 1; j++) {
+      const cell = element.offset(i - 1, j - 1)
+      if (cell) {
+        if (j > 1) {
+          cell.mergeLeft = true
+        }
+        if (i > 1) {
+          cell.mergeUp = true
+        }
+      }
+    }
+  }
+  element.updateCells()
 }
 </script>
 

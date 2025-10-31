@@ -1,43 +1,54 @@
 <template>
   <v-group :config="element">
-    <template v-for="(row, rowIndex) in element.cells" :key="`row-${rowIndex}`">
+    <CellsBorder :element="element"></CellsBorder>
+    <template v-for="(row, rowIndex) in cells" :key="`row-${rowIndex}`">
       <template v-for="(cell, colIndex) in row" :key="`cell-${rowIndex}-${colIndex}`">
         <!-- 如果单元格已经是合并状态则不渲染 -->
-        <template v-if="!cell.mergeLeft && !cell.mergeUp">
-          <!-- 绘制边框 线-->
-          <v-line :config="getUpBorderConfig(rowIndex, colIndex, cell)"></v-line>
-          <v-line
-            v-if="rowIndex === element.rowsHeight.length - 1"
-            :config="getDownBorderConfig(rowIndex, colIndex, cell)"
-          ></v-line>
-          <v-line :config="getLeftBorderConfig(rowIndex, colIndex, cell)"></v-line>
-          <v-line
-            v-if="colIndex === element.colsWidth.length - 1"
-            :config="getRightBorderConfig(rowIndex, colIndex, cell)"
-          ></v-line>
+        <template v-if="cell.visible">
           <!-- 单元格  矩形 -->
           <v-rect
-            :config="getCellConfig(rowIndex, colIndex, cell)"
-            @click="handleCellClick($event, rowIndex, colIndex, cell)"
+            :config="{ x: cell.x, y: cell.y, width: cell.width, height: cell.height }"
+            @click="handleCellClick(cell, rowIndex, colIndex)"
           />
 
           <!-- 单元格内容 文本 -->
           <v-text
-            :config="getTextConfig(rowIndex, colIndex, cell)"
-            @click="handleCellClick($event, rowIndex, colIndex, cell)"
+            :config="{
+              x: cell.x + 2,
+              y: cell.y + 2,
+              width: cell.width - 4,
+              height: cell.height - 4,
+              text: cell.text,
+              fontSize: cell.fontSize,
+              align: cell.align,
+              verticalAlign: cell.verticalAlign,
+              fontStyle: cell.fontStyle,
+            }"
+            @click="handleCellClick(cell, rowIndex, colIndex)"
           />
         </template>
       </template>
     </template>
-    <!-- <v-text :config="{ x: 0, y: 0, width: 200, height: 200, text: '对齐文本', align: 'left' }" /> -->
+    <!-- 高亮活动单元格 -->
+    <v-rect
+      :config="{
+        x: activeCell.x,
+        y: activeCell.y,
+        width: activeCell.width,
+        height: activeCell.height,
+        stroke: 'green',
+        strokeWidth: 4,
+      }"
+    />
   </v-group>
 </template>
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
 import type { CellConfig, TableElement } from './table-plugin'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { SelectionPlugin } from '../selection-plugin'
+import CellsBorder from './CellsBorder.vue'
 
 interface Props {
   element: TableElement
@@ -46,136 +57,16 @@ interface Props {
 
 const { element, host } = defineProps<Props>()
 
-const getCellConfig = (row: number, col: number, cell: CellConfig) => {
-  // 单元格边框
-  let stroke = ''
-  let strokeWidth = 0
-
-  if (element.activeCell?.rowIndex == row && element.activeCell.colIndex == col) {
-    // 选中的单元格  边框为绿色
-    stroke = 'green'
-    strokeWidth = 3
-  }
-
-  return {
-    x: getCellX(col),
-    y: getCellY(row),
-    width: getCellWidth(row, col),
-    height: getCellHeight(row, col),
-    stroke: stroke,
-    strokeWidth: strokeWidth,
-  }
-}
-
-const getTextConfig = (row: number, col: number, cell: CellConfig) => {
-  return {
-    x: getCellX(col) + 2,
-    y: getCellY(row) + 2,
-    width: getCellWidth(row, col) - 4,
-    height: getCellHeight(row, col) - 4,
-    ...cell,
-  }
-}
-
-// 计算x的位置
-const getCellX = (col: number) => {
-  let x = 0
-  for (var i = 0; i < col; i++) {
-    x = x + element.colsWidth[i]
-  }
-  return x
-}
-
-// 计算y的位置
-const getCellY = (row: number) => {
-  let y = 0
-  for (var i = 0; i < row; i++) {
-    y = y + element.rowsHeight[i]
-  }
-  return y
-}
-
-// 计算单元格的宽度
-const getCellWidth = (row: number, col: number) => {
-  let width = element.colsWidth[col]
-  // 从当前索引往前走 如果下个单元格是合并的则把宽加到当前单元格
-  for (var i = col + 1; i < element.colsWidth.length; i++) {
-    if (!element.cells[row][i].mergeLeft) break
-    width = width + element.colsWidth[i]
-  }
-  return width
-}
-
-// 计算单元格的高度
-const getCellHeight = (row: number, col: number) => {
-  let height = element.rowsHeight[row]
-  // 从当前索引往下走 如果下个单元格是合并的则把宽加到当前单元格
-  for (var i = row + 1; i < element.rowsHeight.length; i++) {
-    if (!element.cells[i][col].mergeUp) break
-    height = height + element.rowsHeight[i]
-  }
-  return height
-}
+const cells = computed(() => element.cells)
+const activeCell = computed(() => element.activeCell)
 
 // 当前活动单元格
-const handleCellClick = (event: any, rowIndex: number, colIndex: number, cell: CellConfig) => {
+const handleCellClick = (cell: CellConfig, row: number, col: number) => {
   element.activeCell = cell
+  element.activeRow = row
+  element.activeCol = col
   // 获取选择插件 设置当前元素为选中状态
   const selectionPlugin = host.getPlugin<SelectionPlugin>('selection')
   selectionPlugin?.selectElement(element)
-}
-
-// 上边框配置
-const getUpBorderConfig = (rowIndex: number, colIndex: number, cell: CellConfig) => {
-  const x = getCellX(colIndex)
-  const y = getCellY(rowIndex)
-  const width = getCellWidth(rowIndex, colIndex)
-  return {
-    points: [x, y, x + width, y],
-    stroke: cell.borderUp ? 'block' : '#e5e7eb',
-    strokeWidth: 1,
-    listening: false,
-  }
-}
-
-// 下边框配置
-const getDownBorderConfig = (rowIndex: number, colIndex: number, cell: CellConfig) => {
-  const x = getCellX(colIndex)
-  const y = getCellY(rowIndex)
-  const width = getCellWidth(rowIndex, colIndex)
-  const height = getCellHeight(rowIndex, colIndex)
-  return {
-    points: [x, y + height, x + width, y + height],
-    stroke: 'block',
-    strokeWidth: 1,
-    listening: false,
-  }
-}
-
-// 左边框配置
-const getLeftBorderConfig = (rowIndex: number, colIndex: number, cell: CellConfig) => {
-  const x = getCellX(colIndex)
-  const y = getCellY(rowIndex)
-  const height = getCellHeight(rowIndex, colIndex)
-  return {
-    points: [x, y, x, y + height],
-    stroke: cell.borderLeft ? 'block' : '#e5e7eb',
-    strokeWidth: 1,
-    listening: false,
-  }
-}
-
-// 右边框配置
-const getRightBorderConfig = (rowIndex: number, colIndex: number, cell: CellConfig) => {
-  const x = getCellX(colIndex)
-  const y = getCellY(rowIndex)
-  const width = getCellWidth(rowIndex, colIndex)
-  const height = getCellHeight(rowIndex, colIndex)
-  return {
-    points: [x + width, y, x + width, y + height],
-    stroke: 'block',
-    strokeWidth: 1,
-    listening: false,
-  }
 }
 </script>

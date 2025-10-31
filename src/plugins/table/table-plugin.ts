@@ -10,25 +10,31 @@ import type { Component } from 'vue'
 export interface CellConfig {
   rowIndex: number
   colIndex: number
+  x: number
+  y: number
+  width: number
+  height: number
   fill: string
   text: string
-  mergeLeft: boolean // 合并左
-  mergeUp: boolean // 合并上
   borderUp: boolean
   borderLeft: boolean
+  mergeUp: boolean
+  mergeLeft: boolean
   fontSize: number
   align: 'left' | 'center' | 'right' | 'justify'
   verticalAlign: 'top' | 'middle' | 'bottom'
   fontStyle?: 'normal' | 'italic' | 'bold' | '500' | 'italic bold' // 文字加粗
-  // [key: string]: any
+  visible: boolean
 }
 
 // 元素实现
 export class TableElement extends BaseGraphicElement {
   // export class TableElement implements IGraphicElement {
-  [key: string]: any
+  // [key: string]: any
   public readonly type = 'table'
   public activeCell: CellConfig
+  public activeRow: number = 0
+  public activeCol: number = 0
   constructor(
     x: number = 50,
     y: number = 50,
@@ -42,6 +48,8 @@ export class TableElement extends BaseGraphicElement {
     this.activeCell = this.cells[0][0]
     // 自动计算宽高
     this.initWidthHeight()
+    // 计算隐藏的单元格
+    this.updateCells()
   }
 
   private initWidthHeight() {
@@ -58,20 +66,78 @@ export class TableElement extends BaseGraphicElement {
     })
   }
 
+  // 某些属性变更需要调用触发更新单元格 增加行
+  public updateCells() {
+    this.cells.forEach((row, i) => {
+      row.forEach((c, j) => {
+        const { width, height } = this.getCellSize(i, j)
+        c.width = width
+        c.height = height
+        c.x = this.getCellX(j)
+        c.y = this.getCellY(i)
+        c.visible = !c.mergeLeft && !c.mergeUp
+      })
+    })
+  }
+
+  // 计算x的位置
+  private getCellX(col: number) {
+    let x = 0
+    for (var i = 0; i < col; i++) {
+      x = x + this.colsWidth[i]
+    }
+    return x
+  }
+
+  // 计算y的位置
+  private getCellY(row: number) {
+    let y = 0
+    for (var i = 0; i < row; i++) {
+      y = y + this.rowsHeight[i]
+    }
+    return y
+  }
+
+  // 计算单元格的宽度
+  private getCellSize = (rowIndex: number, colIndex: number) => {
+    let width = this.colsWidth[colIndex]
+    let height = this.rowsHeight[rowIndex]
+    let cell = this.cells[rowIndex][colIndex]
+    // 如果右侧单元格是合并左 则加上其宽度
+    let i = colIndex + 1
+    while (i < this.colCount && this.cells[rowIndex][i].mergeLeft) {
+      width += this.colsWidth[i]
+      i++
+    }
+    // 如果下方单元格是合并上 则加上其高度
+    i = rowIndex + 1
+    while (i < this.rowCount && this.cells[i][colIndex].mergeUp) {
+      height += this.rowsHeight[i]
+      i++
+    }
+    return { width, height }
+  }
+
   // 获取默认的单元格配置
   private getDefaultCellConfig(rowIndex: number, colIndex: number): CellConfig {
     return {
       rowIndex: rowIndex,
       colIndex: colIndex,
-      fill: '#000000',
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      fill: '',
       text: '',
-      mergeLeft: false,
+      borderUp: false,
+      borderLeft: false,
       mergeUp: false,
-      borderUp: true,
-      borderLeft: true,
+      mergeLeft: false,
       fontSize: 14,
       align: 'center',
       verticalAlign: 'middle',
+      fontStyle: 'normal',
+      visible: true,
     }
   }
 
@@ -95,6 +161,7 @@ export class TableElement extends BaseGraphicElement {
       ]
     }
     this.initWidthHeight()
+    this.updateCells()
   }
 
   // 删除一行
@@ -107,6 +174,7 @@ export class TableElement extends BaseGraphicElement {
       this.rowsHeight.splice(index, 1)
     }
     this.initWidthHeight()
+    this.updateCells()
   }
 
   // 增加一列
@@ -133,6 +201,7 @@ export class TableElement extends BaseGraphicElement {
       ]
     }
     this.initWidthHeight()
+    this.updateCells()
   }
 
   // 删除一列
@@ -149,6 +218,7 @@ export class TableElement extends BaseGraphicElement {
       this.colsWidth.splice(index, 1)
     }
     this.initWidthHeight()
+    this.updateCells()
   }
 
   clone(): IGraphicElement {
@@ -174,6 +244,23 @@ export class TableElement extends BaseGraphicElement {
       if (b) {
         return b
       }
+    }
+  }
+
+  get rowCount() {
+    return this.rowsHeight.length
+  }
+  get colCount() {
+    return this.colsWidth.length
+  }
+
+  public offset(row: number, col: number): CellConfig | undefined {
+    const rowI = this.activeRow + row
+    const colI = this.activeCol + col
+    try {
+      return this.cells[rowI][colI]
+    } catch {
+      return undefined
     }
   }
 }

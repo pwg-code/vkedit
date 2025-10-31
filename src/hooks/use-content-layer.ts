@@ -151,8 +151,8 @@ export default function (host: IEditorHost) {
 
   onMounted(() => {
     // 添加或删除图形时触发更新elements
-    host.on('element:removed', initElements)
-    host.on('element:added', initElements)
+    host.on(EditorEvents.ELEMENT_REMOVED, initElements)
+    host.on(EditorEvents.ELEMENT_ADDED, initElements)
 
     // 选中变更事件
     host.on(EditorEvents.SELECTION_CHANGED, updateTransformerNodes)
