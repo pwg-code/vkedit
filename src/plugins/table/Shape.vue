@@ -5,12 +5,6 @@
       <template v-for="(cell, colIndex) in row" :key="`cell-${rowIndex}-${colIndex}`">
         <!-- 如果单元格已经是合并状态则不渲染 -->
         <template v-if="cell.visible">
-          <!-- 单元格  矩形 -->
-          <v-rect
-            :config="{ x: cell.x, y: cell.y, width: cell.width, height: cell.height }"
-            @click="handleCellClick(cell, rowIndex, colIndex)"
-          />
-
           <!-- 单元格内容 文本 -->
           <v-text
             :config="{
