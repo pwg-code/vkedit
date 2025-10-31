@@ -14,8 +14,7 @@ export default function (host: IEditorHost) {
   const selectionEnd = ref<Point2D>({ x: 0, y: 0 })
 
   // 图层配置
-  const selectionLayerConfig = ref({
-  })
+  const selectionLayerConfig = ref({})
 
   // 计算矩形配置
   const rectConfig = computed(() => {
@@ -61,13 +60,6 @@ export default function (host: IEditorHost) {
     isSelecting.value = false
   }
 
-  onMounted(() => {
-    host.on(EditorEvents.CANVAS_MOUSE_DOWN, handleMouseDown)
-    host.on(EditorEvents.CANVAS_MOUSE_MOVE, handleMouseMove)
-    host.on(EditorEvents.CANVAS_MOUSE_UP, handleMouseUp)
-    host.on(EditorEvents.CANVAS_MOUSE_LEAVE, handlePMouseleave)
-  })
-
   return {
     isSelecting,
     selectionStart,
@@ -75,6 +67,7 @@ export default function (host: IEditorHost) {
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
+    handlePMouseleave,
     rectConfig,
     selectionLayerConfig,
   }

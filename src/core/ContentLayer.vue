@@ -4,7 +4,7 @@
     <!-- 内容区底板 -->
     <!-- 图形区域组 -->
 
-    <v-rect :config="contentBgConfig"></v-rect>
+    <!-- <v-rect :config="contentBgConfig"></v-rect> -->
     <v-group :config="contentGroupConfig" ref="groupRef">
       <!-- 事件会导致卡顿 考虑优化？  拖拽 变化时 移动到临时图层进行处理 -->
       <component
@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import useContentLayer from '@/hooks/use-content-layer'
 import { TextElement, type ElementsPlugin } from '@/plugins'
-import type { IEditorHost } from '@/types'
+import { EditorEvents, type IEditorHost } from '@/types'
 import { onMounted, ref } from 'vue'
 
 const { host } = defineProps<{ host: IEditorHost }>()
@@ -39,14 +39,32 @@ const {
   contentLayerConfig,
   contentLayerRef,
   transformerRef,
-  contentBgConfig,
   contentGroupConfig,
   elements,
   graphicTypesPlugin,
   handleDragEnd,
   handleElementTransform,
   handleElementTransformEnd,
+  initElements,
+  updateTransformerNodes,
+  updateCanvas,
 } = useContentLayer(host)
+
+onMounted(() => {
+  // 添加或删除图形时触发更新elements
+  host.on(EditorEvents.ELEMENT_REMOVED, initElements)
+  host.on(EditorEvents.ELEMENT_ADDED, initElements)
+
+  // 选中变更事件
+  host.on(EditorEvents.SELECTION_CHANGED, updateTransformerNodes)
+  host.on(EditorEvents.ELEMENT_TRANSFORMED, initElements)
+  host.on(EditorEvents.ELEMENT_UPDATED, updateCanvas)
+  host.on(EditorEvents.PROPERTY_VALUE_CHANGE, updateCanvas)
+  host.on(EditorEvents.ELEMENTS_ALIGN, updateCanvas)
+
+  // 将内容图层赋值给宿主  以便其他插件使用
+  host.layer = contentLayerRef.value
+})
 </script>
 
 <style scoped></style>

@@ -20,24 +20,12 @@ export default function (host: IEditorHost) {
   const graphicTypesPlugin = host.getPlugin<GraphicTypesPlugin>('graphic-types')
 
   // 缩放逻辑hook
-  const { contentHeight, contentWidth, contentX, contentY, zoom } = useZoom(host)
+  const { zoom } = useZoom(host)
   const { contentScrollX, contentScrollY } = useScrollbarLayer(host)
 
   // 内容图层配置
   const contentLayerConfig = computed(() => {
     return {}
-  })
-
-  // 内容图层底板
-  const contentBgConfig = computed(() => {
-    return {
-      x: contentScrollX.value,
-      y: contentScrollY.value,
-      width: contentWidth.value,
-      height: contentHeight.value,
-      fill: 'rgba(255, 255, 255, 1)',
-      listening: false,
-    }
   })
 
   // 内容图层组配置
@@ -149,27 +137,10 @@ export default function (host: IEditorHost) {
     return { oldAttrs, newAttrs }
   }
 
-  onMounted(() => {
-    // 添加或删除图形时触发更新elements
-    host.on(EditorEvents.ELEMENT_REMOVED, initElements)
-    host.on(EditorEvents.ELEMENT_ADDED, initElements)
-
-    // 选中变更事件
-    host.on(EditorEvents.SELECTION_CHANGED, updateTransformerNodes)
-    host.on(EditorEvents.ELEMENT_TRANSFORMED, initElements)
-    host.on(EditorEvents.ELEMENT_UPDATED, updateCanvas)
-    host.on(EditorEvents.PROPERTY_VALUE_CHANGE, updateCanvas)
-    host.on(EditorEvents.ELEMENTS_ALIGN, updateCanvas)
-
-    // 将内容图层赋值给宿主  以便其他插件使用
-    host.layer = contentLayerRef.value
-  })
-
   return {
     contentLayerRef,
     transformerRef,
     contentLayerConfig,
-    contentBgConfig,
     contentGroupConfig,
     elements,
     graphicTypesPlugin,
@@ -177,5 +148,7 @@ export default function (host: IEditorHost) {
     handleDragEnd,
     handleElementTransform,
     handleElementTransformEnd,
+    updateTransformerNodes,
+    updateCanvas,
   }
 }

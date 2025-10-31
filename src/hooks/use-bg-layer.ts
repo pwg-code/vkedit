@@ -4,9 +4,15 @@
 
 import { computed } from 'vue'
 import useStage from './use-stage'
+import useZoom from './use-zoom'
+import useScrollbarLayer from './use-scrollbar-layer'
+import type { IEditorHost } from '@/types'
 
-export default function () {
+export default function (host:IEditorHost) {
   const { width, height } = useStage()
+  // 缩放逻辑hook
+  const { contentHeight, contentWidth } = useZoom(host)
+  const { contentScrollX, contentScrollY } = useScrollbarLayer(host)
 
   // 标尺图层配置
   const bgLayerConfig = computed(() => {
@@ -25,5 +31,17 @@ export default function () {
     }
   })
 
-  return { bgLayerConfig, bgConfig }
+  // 内容图层底板
+  const contentBgConfig = computed(() => {
+    return {
+      x: contentScrollX.value,
+      y: contentScrollY.value,
+      width: contentWidth.value,
+      height: contentHeight.value,
+      fill: 'rgba(255, 255, 255, 1)',
+      listening: false,
+    }
+  })
+
+  return { bgLayerConfig, bgConfig, contentBgConfig }
 }

@@ -177,10 +177,6 @@ export default function (host: IEditorHost) {
     )
   }
 
-  onMounted(() => {
-    host.on(EditorEvents.CANVAS_WHEEL, handleWheel)
-  })
-
   return {
     scrollbarLayerRef,
     scrollbarLayerConfig,
@@ -194,5 +190,6 @@ export default function (host: IEditorHost) {
     handleHorizontalDragMove,
     contentScrollX,
     contentScrollY,
+    handleWheel
   }
 }

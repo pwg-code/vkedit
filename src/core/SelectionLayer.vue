@@ -7,12 +7,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from 'vue'
-import type { IEditorHost, Point2D } from '../types'
+import { computed, onMounted, watch } from 'vue'
+import { EditorEvents, type IEditorHost, type Point2D } from '../types'
 import useSelectionLayer from '@/hooks/use-selection-layer'
 
 const { host } = defineProps<{ host: IEditorHost }>()
-const { rectConfig, isSelecting, selectionLayerConfig } = useSelectionLayer(host)
+const {
+  rectConfig,
+  isSelecting,
+  selectionLayerConfig,
+  handleMouseDown,
+  handleMouseMove,
+  handleMouseUp,
+  handlePMouseleave,
+} = useSelectionLayer(host)
+
+onMounted(() => {
+  host.on(EditorEvents.CANVAS_MOUSE_DOWN, handleMouseDown)
+  host.on(EditorEvents.CANVAS_MOUSE_MOVE, handleMouseMove)
+  host.on(EditorEvents.CANVAS_MOUSE_UP, handleMouseUp)
+  host.on(EditorEvents.CANVAS_MOUSE_LEAVE, handlePMouseleave)
+})
 </script>
 
 <style scoped>
