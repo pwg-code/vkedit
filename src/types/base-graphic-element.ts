@@ -31,8 +31,8 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     return {
       x: this.x,
       y: this.y,
-      width: 10 * this.scaleX,
-      height: 10 * this.scaleY,
+      width: this.width * this.scaleX,
+      height: this.height * this.scaleY,
     }
   }
 

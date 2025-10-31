@@ -14,10 +14,10 @@
         :element="element"
         :host="host"
         @dragend="handleDragEnd($event, element)"
-        @mousedown="(e:any)=>e.cancelBubble = true"
         @transformend="handleElementTransformEnd($event, element)"
         @transform="handleElementTransform($event, element)"
         />
+        <!-- @mousedown="(e:any)=>e.cancelBubble = true" -->
         <!-- @mousemove="(e:any)=>e.cancelBubble = true" -->
         <!-- @mouseup="(e:any)=>e.cancelBubble = true" -->
         <!-- @click="(e:any)=>e.cancelBubble = true" -->
