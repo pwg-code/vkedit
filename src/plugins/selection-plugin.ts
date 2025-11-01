@@ -107,7 +107,7 @@ export class SelectionPlugin extends BasePlugin {
         const bbox = element.getBoundingBox()
         bbox.x = absPos.x
         bbox.y = absPos.y
-        if (this.rectIntersect(rect, bbox)) {
+        if (!element.locked && element.visible && this.rectIntersect(rect, bbox)) {
           elements.set(element.id, element)
         }
       }

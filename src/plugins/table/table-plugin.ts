@@ -38,16 +38,14 @@ export class TableElement extends BaseGraphicElement {
   constructor(
     x: number = 50,
     y: number = 50,
-    public rowsHeight: number[] = [30, 30, 30, 30], // 行高
-    public colsWidth: number[] = [80, 80, 80, 80, 80, 80], // 列宽
+    public rowsHeight: number[] = [48, 48, 48, 48], // 行高
+    public colsWidth: number[] = [168, 168, 168, 168, 168, 168], // 列宽
     public cells: CellConfig[][] = [], // 单元格配置
   ) {
     super(x, y)
     // 如果没有提供单元格数据则 初始化单元格
     if (cells.length === 0) this.initCells()
     this.activeCell = this.cells[0][0]
-    // 自动计算宽高
-    this.initWidthHeight()
     // 计算隐藏的单元格
     this.updateCells()
   }
@@ -78,6 +76,8 @@ export class TableElement extends BaseGraphicElement {
         c.visible = !c.mergeLeft && !c.mergeUp
       })
     })
+    // 自动计算宽高
+    this.initWidthHeight()
   }
 
   // 计算x的位置
@@ -156,11 +156,10 @@ export class TableElement extends BaseGraphicElement {
       this.cells = [...this.cells.slice(0, after + 1), row, ...this.cells.slice(after + 1)]
       this.rowsHeight = [
         ...this.rowsHeight.slice(0, after + 1),
-        40,
+        48,
         ...this.rowsHeight.slice(after + 1),
       ]
     }
-    this.initWidthHeight()
     this.updateCells()
   }
 
@@ -173,7 +172,6 @@ export class TableElement extends BaseGraphicElement {
       this.cells.splice(index, 1)
       this.rowsHeight.splice(index, 1)
     }
-    this.initWidthHeight()
     this.updateCells()
   }
 
@@ -196,11 +194,10 @@ export class TableElement extends BaseGraphicElement {
       })
       this.colsWidth = [
         ...this.colsWidth.slice(0, after + 1),
-        100,
+        168,
         ...this.colsWidth.slice(after + 1),
       ]
     }
-    this.initWidthHeight()
     this.updateCells()
   }
 
@@ -217,7 +214,6 @@ export class TableElement extends BaseGraphicElement {
       })
       this.colsWidth.splice(index, 1)
     }
-    this.initWidthHeight()
     this.updateCells()
   }
 
