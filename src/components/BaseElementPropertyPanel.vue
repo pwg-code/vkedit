@@ -4,65 +4,48 @@
   <!-- <div class="grid grid-cols-2 gap-4 items-center py-3"> -->
   <div>
     <Label>X</Label>
-    <NumberField
+    <VkInputMM
+      :step="0.1"
       :model-value="element.x"
       :min="0"
-      @update:model-value="(value: any) => {
-        updateProperty(element, 'x',  value)
-        }"
-      >
-      <NumberFieldContent>
-        <NumberFieldDecrement />
-        <NumberFieldInput />
-        <NumberFieldIncrement />
-      </NumberFieldContent>
-    </NumberField>
+      @update:model-value="
+        (value: any) => {
+          updateProperty(element, 'x', value)
+        }
+      "
+    ></VkInputMM>
   </div>
   <div>
     <Label>Y</Label>
-    <NumberField
+    <VkInputMM
+      :step="0.1"
       :model-value="element.y"
       :min="0"
-      @update:model-value="(value: any) => updateProperty(element, 'y', value)"
-    >
-      <NumberFieldContent>
-        <NumberFieldDecrement />
-        <NumberFieldInput />
-        <NumberFieldIncrement />
-      </NumberFieldContent>
-    </NumberField>
+      @update:model-value="
+        (value: any) => {
+          updateProperty(element, 'y', value)
+        }
+      "
+    ></VkInputMM>
   </div>
   <div>
     <Label>宽</Label>
-    <NumberField
+    <VkInputMM
+      :step="0.1"
       :model-value="element.width"
+      @update:model-value="(value: any) => batchUpdateProperty(selection, 'width', value)"
       :min="0"
-      @update:model-value="
-        (value: any) => batchUpdateProperty(selection, 'width', value)
-      "
-    >
-      <NumberFieldContent>
-        <NumberFieldDecrement />
-        <NumberFieldInput />
-        <NumberFieldIncrement />
-      </NumberFieldContent>
-    </NumberField>
+    ></VkInputMM>
   </div>
+
   <div>
     <Label>高</Label>
-    <NumberField
+    <VkInputMM
+      :step="0.1"
       :model-value="element.height"
+      @update:model-value="(value: any) => batchUpdateProperty(selection, 'height', value)"
       :min="0"
-      @update:model-value="
-        (value: any) => batchUpdateProperty(selection, 'height', value)
-      "
-    >
-      <NumberFieldContent>
-        <NumberFieldDecrement />
-        <NumberFieldInput />
-        <NumberFieldIncrement />
-      </NumberFieldContent>
-    </NumberField>
+    ></VkInputMM>
   </div>
   <div>
     <Label>缩放X</Label>
@@ -70,9 +53,7 @@
       :model-value="element.scaleX"
       :step="0.1"
       :min="0.5"
-      @update:model-value="
-        (value: any) => batchUpdateProperty(selection, 'scaleX', value)
-      "
+      @update:model-value="(value: any) => batchUpdateProperty(selection, 'scaleX', value)"
     >
       <NumberFieldContent>
         <NumberFieldDecrement />
@@ -87,9 +68,7 @@
       :model-value="element.scaleY"
       :step="0.1"
       :min="0.5"
-      @update:model-value="
-        (value: any) => batchUpdateProperty(selection, 'scaleY', value)
-      "
+      @update:model-value="(value: any) => batchUpdateProperty(selection, 'scaleY', value)"
     >
       <NumberFieldContent>
         <NumberFieldDecrement />
@@ -104,9 +83,7 @@
       :model-value="element.rotation"
       :min="0"
       :max="359"
-      @update:model-value="
-        (value: any) => batchUpdateProperty(selection, 'rotation', value)
-      "
+      @update:model-value="(value: any) => batchUpdateProperty(selection, 'rotation', value)"
     >
       <NumberFieldContent>
         <NumberFieldDecrement />
@@ -130,6 +107,7 @@ import {
   NumberFieldInput,
 } from '@/components/ui/number-field'
 import { usePropertyCommand } from '@/hooks'
+import { VkInputMM } from './ui'
 
 interface Props {
   host: IEditorHost

@@ -1,14 +1,19 @@
 <template>
-    <div class="col-span-full">
+  <div class="col-span-full">
     <VkLabel>内容</VkLabel>
     <VkTextarea
       :model-value="text"
-      @update:model-value="(value: any) => emit('update','text',value)"
+      @update:model-value="(value: any) => emit('update', 'text', value)"
     ></VkTextarea>
   </div>
   <div class="col-span-full flex">
     <div class="min-w-[100px]">
-      <NumberField
+      <VkInputMM
+        :model-value="fontSize"
+        :min="0"
+        @update:model-value="(value: any) => emit('update', 'fontSize', value)"
+      ></VkInputMM>
+      <!-- <NumberField
         :model-value="fontSize"
         :min="0"
         @update:model-value="(value: any) => emit('update','fontSize',value)"
@@ -18,53 +23,49 @@
           <NumberFieldInput />
           <NumberFieldIncrement />
         </NumberFieldContent>
-      </NumberField>
+      </NumberField> -->
     </div>
     <VkToggle
       :model-value="fontStyle == 'bold'"
       @update:model-value="
-        (value:boolean) => emit('update','fontStyle',value ? 'bold' : 'normal')
+        (value: boolean) => emit('update', 'fontStyle', value ? 'bold' : 'normal')
       "
     >
       <Icon icon="material-symbols-light:format-bold" style="width: 25px; height: 25px"></Icon>
     </VkToggle>
-    <VkToggle
-      :model-value="align == 'left'"
-      @update:model-value="emit('update','align','left')"
+    <VkToggle :model-value="align == 'left'" @update:model-value="emit('update', 'align', 'left')"
       ><Icon
         icon="material-symbols-light:align-justify-flex-start"
         style="width: 25px; height: 25px"
     /></VkToggle>
     <VkToggle
       :model-value="align == 'center'"
-      @update:model-value="emit('update','align','center')"
+      @update:model-value="emit('update', 'align', 'center')"
       ><Icon icon="material-symbols-light:align-justify-center" style="width: 25px; height: 25px"
     /></VkToggle>
-    <VkToggle
-      :model-value="align == 'right'"
-      @update:model-value="emit('update','align','right')"
+    <VkToggle :model-value="align == 'right'" @update:model-value="emit('update', 'align', 'right')"
       ><Icon icon="material-symbols-light:align-justify-flex-end" style="width: 25px; height: 25px"
     /></VkToggle>
     <VkToggle
       :model-value="verticalAlign == 'top'"
-      @update:model-value="emit('update','verticalAlign','top')"
+      @update:model-value="emit('update', 'verticalAlign', 'top')"
       ><Icon icon="material-symbols-light:align-start" style="width: 25px; height: 25px"
     /></VkToggle>
     <VkToggle
       :model-value="verticalAlign == 'middle'"
-      @update:model-value="emit('update','verticalAlign','middle')"
+      @update:model-value="emit('update', 'verticalAlign', 'middle')"
       ><Icon icon="material-symbols-light:align-center" style="width: 25px; height: 25px"
     /></VkToggle>
     <VkToggle
       :model-value="verticalAlign == 'bottom'"
-      @update:model-value="emit('update','verticalAlign','bottom')"
+      @update:model-value="emit('update', 'verticalAlign', 'bottom')"
       ><Icon icon="material-symbols-light:align-end" style="width: 25px; height: 25px"
     /></VkToggle>
   </div>
 </template>
 
 <script setup lang="ts">
-import { VkTextarea, VkToggle,VkLabel } from '@/components/ui'
+import { VkTextarea, VkToggle, VkLabel, VkInputMM } from '@/components/ui'
 import { Icon } from '@iconify/vue'
 import {
   NumberField,
@@ -73,8 +74,8 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from '@/components/ui/number-field'
-const {text,fontSize,align,verticalAlign,fontStyle} = defineProps<{
-  text: string,
+const { text, fontSize, align, verticalAlign, fontStyle } = defineProps<{
+  text: string
   fontSize: number
   align: 'left' | 'center' | 'right' | 'justify'
   verticalAlign: 'top' | 'middle' | 'bottom'
@@ -82,12 +83,8 @@ const {text,fontSize,align,verticalAlign,fontStyle} = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  update:[property:string, value:any]
+  update: [property: string, value: any]
 }>()
-
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

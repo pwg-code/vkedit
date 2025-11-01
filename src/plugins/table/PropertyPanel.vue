@@ -38,9 +38,9 @@
   <div class="pt-4 font-bold">单元格设置</div>
   <div></div>
   <div>
-    <NumberField
+    <Label>行高</Label>
+    <VkInputMM
       :model-value="element.rowsHeight[element.activeRow]"
-      :min="0"
       @update:model-value="
         (value: any) => {
           element.updateProperty(
@@ -52,19 +52,12 @@
           element.updateCells()
         }
       "
-    >
-      <Label>行高</Label>
-      <NumberFieldContent>
-        <NumberFieldDecrement />
-        <NumberFieldInput />
-        <NumberFieldIncrement />
-      </NumberFieldContent>
-    </NumberField>
+    ></VkInputMM>
   </div>
   <div>
-    <NumberField
+    <Label>列宽</Label>
+    <VkInputMM
       :model-value="element.colsWidth[element.activeCol]"
-      :min="0"
       @update:model-value="
         (value: any) => {
           element.updateProperty(
@@ -76,14 +69,7 @@
           element.updateCells()
         }
       "
-    >
-      <Label>列宽</Label>
-      <NumberFieldContent>
-        <NumberFieldDecrement />
-        <NumberFieldInput />
-        <NumberFieldIncrement />
-      </NumberFieldContent>
-    </NumberField>
+    ></VkInputMM>
   </div>
   <div class="flex gap-4 items-center">
     <NumberField v-model="resizeRow">
@@ -111,7 +97,7 @@
     </VkToggle>
 
     <VkToggle
-      :model-value="element.offset(1,0)?.borderUp"
+      :model-value="element.offset(1, 0)?.borderUp"
       @update:model-value="
         (value: any) =>
           updateCellConfig(element.activeRow + 1, element.activeCol, 'borderUp', value)
@@ -127,7 +113,7 @@
     </VkToggle>
 
     <VkToggle
-      :model-value="element.offset(0,1)?.borderLeft"
+      :model-value="element.offset(0, 1)?.borderLeft"
       @update:model-value="
         (value: any) =>
           updateCellConfig(element.activeRow, element.activeCol + 1, 'borderLeft', value)
@@ -145,14 +131,13 @@
     :vertical-align="element.activeCell.verticalAlign"
     @update="updateActiveCellConfig"
   ></TextProperty>
-
 </template>
 
 <script setup lang="ts">
 import { EditorEvents, type IEditorHost } from '@/types'
 import type { CellConfig, TableElement } from './table-plugin'
 import { Label } from '@/components/ui/label'
-import { VkButton, VkInput, VkTextarea, VkToggle } from '@/components/ui'
+import { VkButton, VkInput, VkInputMM, VkTextarea, VkToggle } from '@/components/ui'
 import TextProperty from '@/components/TextProperty.vue'
 import {
   NumberField,
@@ -206,7 +191,7 @@ const updateActiveCellConfig = (prop: string, value: any) => {
 
 // 更新字体对齐
 const updateCellConfig = (row: number, col: number, prop: string, value: any) => {
-  const cell = element.getCell(row,col)
+  const cell = element.getCell(row, col)
   if (!cell) return
   host.executeCommand(
     new UpdatePropertyCommand(

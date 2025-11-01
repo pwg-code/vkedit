@@ -24,3 +24,5 @@ export {
 
 export { Toggle as VkToggle } from './toggle'
 export { Textarea as VkTextarea } from './textarea'
+
+export { InputMM as VkInputMM } from './input-mm'

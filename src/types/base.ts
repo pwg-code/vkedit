@@ -143,9 +143,7 @@ export interface IEditorState {
   showGrid: boolean
   width: number
   height: number
-  dpi: number
-  widthMM: number
-  heightMM: number
+  dpmm: number
 }
 
 // 工具接口

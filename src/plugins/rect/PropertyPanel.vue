@@ -30,6 +30,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from '@/components/ui/number-field'
+import { VkInputMM } from '@/components/ui'
 
 interface Props {
   host: IEditorHost

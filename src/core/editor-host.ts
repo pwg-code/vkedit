@@ -18,11 +18,9 @@ export class EditorHost implements IEditorHost {
     snapToGrid: true,
     showGrid: false,
     // 像素 = （毫米 * DPI）/ 25.4
-    width: (50 * 300) / 25.4,
-    height: (50 * 300) / 25.4,
-    dpi: 300,
-    widthMM: 50,
-    heightMM: 50,
+    width: 400,
+    height: 400,
+    dpmm: 8,
   })
 
   // 发送事件
