@@ -54,7 +54,9 @@ const {
   handleMouseleave,
 } = useStageEvent(props.host)
 
-onMounted(() => {})
+onMounted(() => {
+  props.host.stage = stageRef.value
+})
 </script>
 
 <style scoped></style>

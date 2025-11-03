@@ -39,4 +39,9 @@ export class ElementsPlugin extends BasePlugin {
   getElement(elementId: string): IGraphicElement | undefined {
     return this.elements.get(elementId)
   }
+
+  // 获取所有元素
+  getAllElements(): IGraphicElement[] {
+    return Array.from(this.elements.values())
+  }
 }

@@ -68,7 +68,8 @@ onMounted(() => {
   host.on(EditorEvents.ELEMENTS_ALIGN, updateCanvas)
 
   // 将内容图层赋值给宿主  以便其他插件使用
-  host.layer = contentLayerRef.value
+  host.contentLayer = contentLayerRef.value
+  host.contentGroup = groupRef.value
 })
 </script>
 

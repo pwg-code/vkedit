@@ -101,7 +101,7 @@ export class SelectionPlugin extends BasePlugin {
     // 简化实现：检查元素边界框是否与选择矩形相交
     this.elementsPlugin?.elements.forEach((element) => {
       // 从内容区查找KONVA SHAPE元素 以便获得在画布的绝对坐标
-      const shape = this.host?.layer?.getNode().findOne('#' + element.id)
+      const shape = this.host?.contentLayer?.getNode().findOne('#' + element.id)
       if (shape) {
         const absPos = shape?.getAbsolutePosition()
         const bbox = element.getBoundingBox()

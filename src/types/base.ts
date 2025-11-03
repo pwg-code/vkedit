@@ -1,5 +1,6 @@
 import type { ICommand } from '@/commands/i-command'
 import type { Component } from 'vue'
+import konva from "konva";
 
 export interface Point2D {
   x: number
@@ -108,7 +109,9 @@ export interface IPropertyPanelForGraphics {
 
 // 宿主接口
 export interface IEditorHost {
-  layer: any
+  contentLayer: any // 内容图层
+  contentGroup: any // 内容组
+  stage: any // 舞台
   // 插件管理
   installPlugin(plugin: IEditorPlugin): void
   uninstallPlugin(pluginName: string): void

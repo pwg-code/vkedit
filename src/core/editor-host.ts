@@ -10,7 +10,7 @@ export class EditorHost implements IEditorHost {
   private eventHandlers: Map<string, Function[]> = new Map()
   private commandStack: ICommand[] = []
   private currentCommandIndex: number = -1
-  public layer: Layer | undefined
+  public contentLayer: Layer | undefined
 
   public state = reactive<IEditorState>({
     zoom: 1,
