@@ -11,6 +11,7 @@ import {
   PropertyPanelsPlugin,
   ToolbarPlugin,
   AlignPlugin,
+  ExportPlugin,
 } from './plugins'
 
 export type {
@@ -53,12 +54,14 @@ export function install(app: App) {
 interface IOptions {
   basePropertyPanel?: boolean
   baseCanvasPropertyPanel?: boolean
+  exportPlugin?: boolean
 }
 
 // 创建安装了核心插件的宿主
 export function createEditorHost({
   basePropertyPanel = true,
   baseCanvasPropertyPanel = true,
+  exportPlugin=true
 }: IOptions) {
   const host = new EditorHost()
   host
@@ -76,6 +79,10 @@ export function createEditorHost({
 
   if (baseCanvasPropertyPanel) {
     host.emit(EditorEvents.PROPERTY_PANEL_CANVAS_REGISTERED, CanvasPropertyPanel)
+  }
+
+  if (exportPlugin) {
+    host.installPlugin(new ExportPlugin())
   }
 
   return host
