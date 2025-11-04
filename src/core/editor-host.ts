@@ -20,7 +20,7 @@ export class EditorHost implements IEditorHost {
     // 像素 = （毫米 * DPI）/ 25.4
     width: 400,
     height: 400,
-    dpmm: 8,
+    dpm: 8,
   })
 
   // 发送事件

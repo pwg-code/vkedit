@@ -5,11 +5,11 @@
   <div></div>
   <div>
     <Label>宽度</Label>
-    <VkInputMM v-model="hostState.width" :dpmm="hostState.dpmm"></VkInputMM>
+    <VkInputMM v-model="hostState.width" :dpmm="hostState.dpm"></VkInputMM>
   </div>
   <div>
     <Label>高度</Label>
-    <VkInputMM v-model="hostState.height" :dpmm="hostState.dpmm"></VkInputMM>
+    <VkInputMM v-model="hostState.height" :dpmm="hostState.dpm"></VkInputMM>
   </div>
 </template>
 

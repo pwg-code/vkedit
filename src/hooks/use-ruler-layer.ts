@@ -9,6 +9,8 @@ export default function () {
   const { width, height } = useStage()
 
   const rulerLayerRef = ref()
+  const upRulerShapeRef = ref()
+  const leftRulerShapeRef = ref()
 
   // 标尺图层配置
   const rulerLayerConfig = computed(() => {
@@ -25,5 +27,5 @@ export default function () {
     return { x: 0, y: 0, width: 10, height: height.value, fill: '#6666', listening: false }
   })
 
-  return { rulerLayerRef, rulerLayerConfig, upRulerConfig, leftRulerConfig }
+  return { rulerLayerRef, rulerLayerConfig, upRulerConfig, leftRulerConfig, upRulerShapeRef, leftRulerShapeRef }
 }
