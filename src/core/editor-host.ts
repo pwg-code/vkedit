@@ -11,6 +11,8 @@ export class EditorHost implements IEditorHost {
   private commandStack: ICommand[] = []
   private currentCommandIndex: number = -1
   public contentLayer: Layer | undefined
+  public contentGroup: any
+  public stage: any
 
   public state = reactive<IEditorState>({
     zoom: 1,

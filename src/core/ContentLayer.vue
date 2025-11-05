@@ -16,12 +16,12 @@
         @dragend="handleDragEnd($event, element)"
         @transformend="handleElementTransformEnd($event, element)"
         @transform="handleElementTransform($event, element)"
-        />
-        <!-- @mousedown="(e:any)=>e.cancelBubble = true" -->
-        <!-- @mousemove="(e:any)=>e.cancelBubble = true" -->
-        <!-- @mouseup="(e:any)=>e.cancelBubble = true" -->
-        <!-- @click="(e:any)=>e.cancelBubble = true" -->
-        <!-- @wheel="(e:any)=>e.cancelBubble = true" -->
+      />
+      <!-- @mousedown="(e:any)=>e.cancelBubble = true" -->
+      <!-- @mousemove="(e:any)=>e.cancelBubble = true" -->
+      <!-- @mouseup="(e:any)=>e.cancelBubble = true" -->
+      <!-- @click="(e:any)=>e.cancelBubble = true" -->
+      <!-- @wheel="(e:any)=>e.cancelBubble = true" -->
 
       <v-transformer ref="transformerRef"></v-transformer>
     </v-group>
@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import useContentLayer from '@/hooks/use-content-layer'
+import { useContentLayer } from '@/hooks/use-content-layer'
 import { TextElement, type ElementsPlugin } from '@/plugins'
 import { EditorEvents, type IEditorHost } from '@/types'
 import { onMounted, ref } from 'vue'

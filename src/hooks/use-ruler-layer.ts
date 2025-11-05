@@ -3,9 +3,9 @@
 */
 
 import { computed, ref } from 'vue'
-import useStage from './use-stage'
+import { useStage } from './use-stage'
 
-export default function () {
+export function useRulerLayer() {
   const { width, height } = useStage()
 
   const rulerLayerRef = ref()
@@ -27,5 +27,12 @@ export default function () {
     return { x: 0, y: 0, width: 10, height: height.value, fill: '#6666', listening: false }
   })
 
-  return { rulerLayerRef, rulerLayerConfig, upRulerConfig, leftRulerConfig, upRulerShapeRef, leftRulerShapeRef }
+  return {
+    rulerLayerRef,
+    rulerLayerConfig,
+    upRulerConfig,
+    leftRulerConfig,
+    upRulerShapeRef,
+    leftRulerShapeRef,
+  }
 }

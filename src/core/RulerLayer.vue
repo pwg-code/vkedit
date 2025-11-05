@@ -14,8 +14,8 @@
 
 <script setup lang="ts">
 import { useRulerLayer, useStage, useZoom } from '@/hooks'
-import useHostState from '@/hooks/use-host-state'
-import useScrollbarLayer from '@/hooks/use-scrollbar-layer'
+import { useHostState } from '@/hooks/use-host-state'
+import { useScrollbarLayer } from '@/hooks/use-scrollbar-layer'
 import type { IEditorHost } from '@/types'
 import konva from 'konva'
 import { watch } from 'vue'
@@ -44,7 +44,6 @@ watch(zoom, () => {
   // 触发标尺重绘
   rulerLayerRef.value.getNode().draw()
 })
-
 
 // 获取舞台宽高
 const { width, height } = useStage()

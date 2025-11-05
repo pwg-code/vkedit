@@ -43,11 +43,9 @@ host
 
 function test() {
   host.setState({
-    widthMM: 210,
-    heightMM: 297,
-    dpi: 150,
-    width: (210 * 150) / 25.4,
-    height: (297 * 150) / 25.4,
+    dpm: 8,
+    width: 210 * 8,
+    height: 297 * 8,
     zoom: 0.4,
   })
   const hostState = host.getState()

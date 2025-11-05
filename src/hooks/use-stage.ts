@@ -1,7 +1,7 @@
 import { storeToRefs } from 'pinia'
 import { useStageStore } from '@/stores/use-stage-store'
 
-export default function () {
+export function useStage() {
   const {
     stageRef,
     stageWrapperRef,

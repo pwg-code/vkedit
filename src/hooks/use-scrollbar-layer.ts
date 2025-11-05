@@ -1,10 +1,10 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import useStage from './use-stage'
+import { useStage } from './use-stage'
 import { useZoom } from '@/hooks'
 import { EditorEvents, type IEditorHost } from '@/types'
 
 // 处理缩放相关的逻辑
-export default function (host: IEditorHost) {
+export function useScrollbarLayer(host: IEditorHost) {
   const { width, height, verticalThumbY, horizontalThumbX } = useStage()
   const { contentHeight, contentWidth, contentX, contentY } = useZoom(host)
 
@@ -190,6 +190,6 @@ export default function (host: IEditorHost) {
     handleHorizontalDragMove,
     contentScrollX,
     contentScrollY,
-    handleWheel
+    handleWheel,
   }
 }

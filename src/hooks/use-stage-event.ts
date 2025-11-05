@@ -2,10 +2,9 @@ import type { ElementsPlugin } from '@/plugins'
 import type { IEditorHost, IEditorState, IGraphicElement, Point2D } from '@/types'
 import { EditorEvents } from '@/types/event-types'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import useStage from './use-stage'
-import useHostState from './use-host-state'
+import { useStage, useHostState } from '@/hooks'
 
-export default function (host: IEditorHost) {
+export function useStageEvent(host: IEditorHost) {
   // 画布状态
   const { hostState } = useHostState(host)
   const { width, height, stageWrapperRef } = useStage()

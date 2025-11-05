@@ -20,9 +20,9 @@
 </template>
 
 <script setup lang="ts">
-import useScrollbarLayer from '@/hooks/use-scrollbar-layer'
+import { useScrollbarLayer } from '@/hooks/use-scrollbar-layer'
 import { EditorEvents, type IEditorHost } from '@/types'
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
 
 const { host } = defineProps<{ host: IEditorHost }>()
 
@@ -38,13 +38,12 @@ const {
   showHorizontalScroll,
   handleVerticalDragMove,
   handleHorizontalDragMove,
-  handleWheel
+  handleWheel,
 } = useScrollbarLayer(host)
 
-  onMounted(() => {
-    host.on(EditorEvents.CANVAS_WHEEL, handleWheel)
-  })
-
+onMounted(() => {
+  host.on(EditorEvents.CANVAS_WHEEL, handleWheel)
+})
 </script>
 
 <style scoped></style>

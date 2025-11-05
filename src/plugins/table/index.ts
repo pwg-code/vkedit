@@ -1,0 +1,5 @@
+export { default as TableCellsBorder } from './CellsBorder.vue'
+export { default as TablePropertyPanel } from './PropertyPanel.vue'
+export { default as TableShape } from './Shape.vue'
+export { default as TableTool } from './Tool.vue'
+export * from './table-plugin'

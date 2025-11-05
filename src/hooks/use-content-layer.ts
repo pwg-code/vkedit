@@ -3,13 +3,13 @@
 */
 
 import { computed, onMounted, ref } from 'vue'
-import useZoom from './use-zoom'
+import { useZoom } from './use-zoom'
 import { EditorEvents, type IEditorHost, type IGraphicElement } from '@/types'
 import type { ElementsPlugin, GraphicTypesPlugin } from '@/plugins'
 import { TransformElementCommand } from '@/commands'
-import useScrollbarLayer from './use-scrollbar-layer'
+import { useScrollbarLayer } from './use-scrollbar-layer'
 
-export default function (host: IEditorHost) {
+export function useContentLayer(host: IEditorHost) {
   // 图层
   const contentLayerRef = ref()
 

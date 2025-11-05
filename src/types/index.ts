@@ -1,5 +1,5 @@
-export * from './base'
 export * from './base-graphic-element'
 export * from './base-graphic-type'
 export * from './base-plugin'
+export * from './base'
 export * from './event-types'

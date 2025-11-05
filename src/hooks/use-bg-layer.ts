@@ -3,12 +3,12 @@
 */
 
 import { computed } from 'vue'
-import useStage from './use-stage'
-import useZoom from './use-zoom'
-import useScrollbarLayer from './use-scrollbar-layer'
+import { useStage } from './use-stage'
+import { useZoom } from './use-zoom'
+import { useScrollbarLayer } from './use-scrollbar-layer'
 import type { IEditorHost } from '@/types'
 
-export default function (host:IEditorHost) {
+export function useBgLayer(host: IEditorHost) {
   const { width, height } = useStage()
   // 缩放逻辑hook
   const { contentHeight, contentWidth } = useZoom(host)

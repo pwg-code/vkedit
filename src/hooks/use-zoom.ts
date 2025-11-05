@@ -1,10 +1,9 @@
 import type { IEditorHost } from '@/types'
 import { computed, reactive, ref } from 'vue'
-import useHostState from './use-host-state'
-import useStage from './use-stage'
+import { useHostState, useStage } from '@/hooks'
 
 // 处理缩放相关的逻辑
-export default function (host: IEditorHost) {
+export function useZoom(host: IEditorHost) {
   const { hostState } = useHostState(host)
   const { width, height } = useStage()
 

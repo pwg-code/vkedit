@@ -33,7 +33,6 @@ const { host } = defineProps<{ host: IEditorHost }>()
 // 画布长宽
 const { width, height } = useStage()
 
-
 // 缩放hook
 const { zoom, handleZoomIn, handleZoomOut, handleZoomAuto } = useZoom(host)
 </script>
