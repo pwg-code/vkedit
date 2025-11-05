@@ -10,7 +10,7 @@ import type { Component } from 'vue'
 // 矩形元素实现
 export class RectElement extends BaseGraphicElement {
   [key: string]: any
-  public readonly type = 'rect'
+  public type = 'rect'
   constructor(
     public x: number = 50,
     public y: number = 50,

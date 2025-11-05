@@ -9,7 +9,7 @@ import { EditorEvents } from '@/types/event-types'
 
 // 矩形元素实现
 export class TextElement extends BaseGraphicElement {
-  public readonly type = 'text'
+  public type = 'text'
   constructor(
     public x: number = 50,
     public y: number = 50,

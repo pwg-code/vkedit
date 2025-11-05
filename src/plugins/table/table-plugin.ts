@@ -31,7 +31,7 @@ export interface CellConfig {
 export class TableElement extends BaseGraphicElement {
   // export class TableElement implements IGraphicElement {
   // [key: string]: any
-  public readonly type = 'table'
+  public type = 'table'
   public activeCell: CellConfig
   public activeRow: number = 0
   public activeCol: number = 0
