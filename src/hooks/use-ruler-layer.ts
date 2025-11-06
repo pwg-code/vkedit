@@ -19,12 +19,12 @@ export function useRulerLayer() {
 
   // 上标尺
   const upRulerConfig = computed(() => {
-    return { x: 0, y: 0, width: width.value, height: 10, fill: '#6666', listening: false }
+    return { x: 0, y: 0, width: width.value, height: 25, fill: 'rgba(0, 0, 0, 0.1)', listening: false }
   })
 
   // 左标尺
   const leftRulerConfig = computed(() => {
-    return { x: 0, y: 0, width: 10, height: height.value, fill: '#6666', listening: false }
+    return { x: 0, y: 0, width: 25, height: height.value, fill: 'rgba(0, 0, 0, 0.1)', listening: false }
   })
 
   return {
