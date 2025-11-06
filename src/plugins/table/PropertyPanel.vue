@@ -135,7 +135,7 @@
 
 <script setup lang="ts">
 import { EditorEvents, type IEditorHost } from '@/types'
-import type { CellConfig, TableElement } from './table-plugin'
+import type { CellConfig, TableElement } from './table'
 import { Label } from '@/components/ui/label'
 import { VkButton, VkInput, VkInputMM, VkTextarea, VkToggle } from '@/components/ui'
 import TextProperty from '@/components/TextProperty.vue'

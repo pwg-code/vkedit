@@ -2,7 +2,7 @@ import { ref, reactive, computed } from 'vue'
 import type { IEditorHost, IEditorPlugin, IGraphicElement, IEditorState } from '../types'
 import { EditorEvents, EventUtils } from '../types/event-types'
 import type { ICommand } from '@/commands/i-command'
-import type { ElementsPlugin, GraphicTypesPlugin } from '@/plugins'
+import type { ElementManagerPlugin, GraphicTypeManagerPlugin } from '@/plugins'
 import type { Layer } from 'konva/lib/Layer'
 
 export class EditorHost implements IEditorHost {
@@ -64,12 +64,13 @@ export class EditorHost implements IEditorHost {
     return this
   }
 
-  getPlugin<T = any>(pluginName: string): T | null {
+  getPlugin<T = any>(pluginName: string): T {
     if (this.plugins.has(pluginName)) {
       return this.plugins.get(pluginName) as T
     } else {
-      console.warn('不存在插件' + pluginName)
-      return null
+      throw new Error(
+        `不存在插件: ${pluginName},可用插件有: ${Array.from(this.plugins.keys()).join(',')}`,
+      )
     }
   }
 
@@ -134,7 +135,7 @@ export class EditorHost implements IEditorHost {
   }
 
   toJSON(): string {
-    const elements = this.getPlugin<ElementsPlugin>('elements')?.elements
+    const elements = this.getPlugin<ElementManagerPlugin>('element-manager-plugin')?.elements
     const serializeElements: any[] = []
     if (elements) {
       elements.forEach((value, key) => {
@@ -151,9 +152,11 @@ export class EditorHost implements IEditorHost {
   loadJSON(jsonStr: string): void {
     const data = JSON.parse(jsonStr)
     // 加载编辑器状态
-    const elementsPlugin = this.getPlugin<ElementsPlugin>('elements')
+    const elementsPlugin = this.getPlugin<ElementManagerPlugin>('element-manager-plugin')
     const elements: any[] = data.elements
-    const graphicTypesPlugin = this.getPlugin<GraphicTypesPlugin>('graphic-types')
+    const graphicTypesPlugin = this.getPlugin<GraphicTypeManagerPlugin>(
+      'graphic-type-manager-plugin',
+    )
     if (elementsPlugin && graphicTypesPlugin) {
       elementsPlugin.elements.clear()
       // 加载所有图形元素

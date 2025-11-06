@@ -2,10 +2,10 @@ import { EditorEvents } from '@/types/event-types'
 import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicElement, Point2D } from '../types'
 import { RemoveElementCommand } from '@/commands'
-import type { SelectionPlugin } from './selection-plugin'
+import type { SelectionPlugin } from './selection'
 
 export class KeyDownPlugin extends BasePlugin {
-  public name = 'keydown'
+  public name = 'keydown-plugin'
   public version = '1.0.0'
 
   protected onInstall(): void {
@@ -29,7 +29,7 @@ export class KeyDownPlugin extends BasePlugin {
 
   private deleteSelectionElement(): void {
     if (!this.host) return
-    const selector: SelectionPlugin = this.host.getPlugin('selection') as SelectionPlugin
+    const selector: SelectionPlugin = this.host.getPlugin('selection-plugin') as SelectionPlugin
     selector.selectionElements
     // 删除选中的图形
     selector.selectionElements.forEach((i) => {

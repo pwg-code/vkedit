@@ -1,7 +1,7 @@
 import { BaseCommand } from './base-command'
 import type { IEditorHost, IGraphicElement } from '../types'
 import { EditorEvents } from '@/types/event-types'
-import type { ElementsPlugin } from '@/plugins'
+import type { ElementManagerPlugin } from '@/plugins'
 
 export class AlignElementsCommand extends BaseCommand {
   public name = 'ALIGN_ELEMENTS'
@@ -16,7 +16,9 @@ export class AlignElementsCommand extends BaseCommand {
 
     // 保存原始位置
     this.elementIds.forEach((id) => {
-      const element = this.host.getPlugin<ElementsPlugin>('elements')?.getElement(id)
+      const element = this.host
+        .getPlugin<ElementManagerPlugin>('element-manager-plugin')
+        ?.getElement(id)
       if (element) {
         this.previousPositions.set(id, { x: element.x, y: element.y })
       }
@@ -43,7 +45,9 @@ export class AlignElementsCommand extends BaseCommand {
 
   private alignElements(): void {
     const elements = this.elementIds
-      .map((id) => this.host.getPlugin<ElementsPlugin>('elements')?.getElement(id))
+      .map((id) =>
+        this.host.getPlugin<ElementManagerPlugin>('element-manager-plugin')?.getElement(id),
+      )
       .filter(Boolean) as IGraphicElement[]
 
     if (elements.length === 0) return
@@ -85,7 +89,9 @@ export class AlignElementsCommand extends BaseCommand {
 
   private restorePreviousPositions(): void {
     this.elementIds.forEach((id) => {
-      const element = this.host.getPlugin<ElementsPlugin>('elements')?.getElement(id)
+      const element = this.host
+        .getPlugin<ElementManagerPlugin>('element-manager-plugin')
+        ?.getElement(id)
       const previousPos = this.previousPositions.get(id)
 
       if (element && previousPos) {

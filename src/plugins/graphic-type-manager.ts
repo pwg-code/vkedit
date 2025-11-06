@@ -3,8 +3,8 @@ import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicType, Point2D } from '../types'
 import { AddElementCommand } from '@/commands'
 
-export class GraphicTypesPlugin extends BasePlugin {
-  public name = 'graphic-types'
+export class GraphicTypeManagerPlugin extends BasePlugin {
+  public name = 'graphic-type-manager-plugin'
   public version = '1.0.0'
   public graphicTypes: Map<string, IGraphicType> = new Map()
 

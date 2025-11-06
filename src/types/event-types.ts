@@ -302,6 +302,14 @@ export enum EditorEvents {
   /** 协作操作同步 */
   COLLAB_OPERATION_SYNC = 'collab:operation-sync',
 
+  // ==================== 预览事件 ====================
+  /** 预览开始 */
+  PREVIEW_START = 'preview:start',
+  /** 预览完成 */
+  PREVIEW_COMPLETE = 'preview:complete',
+  /** 预览错误 */
+  PREVIEW_ERROR = 'preview:error',
+
   // ==================== 自定义事件 ====================
   /** 自定义事件前缀（供插件使用） */
   CUSTOM_PREFIX = 'custom:',

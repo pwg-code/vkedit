@@ -1,6 +1,6 @@
 import type { ICommand } from '@/commands/i-command'
 import type { Component } from 'vue'
-import konva from "konva";
+import konva from 'konva'
 
 export interface Point2D {
   x: number
@@ -115,7 +115,7 @@ export interface IEditorHost {
   // 插件管理
   installPlugin(plugin: IEditorPlugin): void
   uninstallPlugin(pluginName: string): void
-  getPlugin<T extends IEditorPlugin>(pluginName: string): T | null
+  getPlugin<T extends IEditorPlugin>(pluginName: string): T
 
   // 事件系统
   on(event: string, handler: Function): void

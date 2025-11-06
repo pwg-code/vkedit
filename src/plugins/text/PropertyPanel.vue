@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
-import type { TextElement } from './text-plugin'
+import type { TextElement } from './text'
 import TextProperty from '@/components/TextProperty.vue'
 import { usePropertyCommand } from '@/hooks'
 

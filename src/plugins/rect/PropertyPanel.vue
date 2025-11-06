@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
-import type { RectElement } from './rect-plugin'
+import type { RectElement } from './rect'
 import { Label } from '@/components/ui/label'
 import {
   NumberField,

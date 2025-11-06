@@ -16,12 +16,14 @@ import type {
   IPropertyPanelForGraphics,
 } from '../types'
 import { EditorEvents } from '@/types/event-types'
-import type { PropertyPanelsPlugin } from '@/plugins/property-panels-plugin'
+import type { PropertyPanelManagerPlugin } from '@/plugins/property-panel-manager'
 const { host } = defineProps<{ host: IEditorHost }>()
 const hostState = ref(host.getState())
 
-const propertyPanelsPlugin = host.getPlugin<PropertyPanelsPlugin>('property-panels')
-const selectionElement = ref<IGraphicElement[]>()
+const propertyPanelsPlugin = host.getPlugin<PropertyPanelManagerPlugin>(
+  'property-panel-manager-plugin',
+)
+const selectionElement = ref<IGraphicElement[]>([])
 const element = ref<IGraphicElement>()
 
 const panels = ref<Component[]>()

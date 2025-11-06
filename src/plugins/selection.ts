@@ -1,10 +1,10 @@
 import { EditorEvents } from '@/types/event-types'
 import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicElement, Point2D } from '../types'
-import type { ElementsPlugin } from './elements-plugin'
+import type { ElementManagerPlugin } from './element-manager'
 
 export class SelectionPlugin extends BasePlugin {
-  public name = 'selection'
+  public name = 'selection-plugin'
   public version = '1.0.0'
 
   public isSelecting: boolean = false
@@ -12,11 +12,11 @@ export class SelectionPlugin extends BasePlugin {
   public selectionEnd: Point2D = { x: 0, y: 0 }
   public selectionElements: Map<string, IGraphicElement> = new Map()
   public mouseDownInElement: IGraphicElement | null = null
-  private elementsPlugin: ElementsPlugin | null = null
+  private elementsPlugin: ElementManagerPlugin | null = null
 
   protected onInstall(): void {
     if (!this.host) return
-    this.elementsPlugin = this.host.getPlugin('elements') as ElementsPlugin
+    this.elementsPlugin = this.host.getPlugin('element-manager-plugin') as ElementManagerPlugin
 
     // 注册事件监听
     this.host.on(EditorEvents.CANVAS_MOUSE_DOWN, this.handleMouseDown.bind(this))
@@ -42,6 +42,7 @@ export class SelectionPlugin extends BasePlugin {
   private handleMouseDown(event: any): void {
     if (!this.host || this.host.getState().currentTool !== 'select') return
     this.selectionStart = event.point
+    this.selectionEnd = event.point
     // 如果点击的是不是元素则开始范围选择
     const clickEl = this.getClickElement(event)
     if (!clickEl) {

@@ -1,4 +1,4 @@
-import type { ElementsPlugin } from '@/plugins'
+import type { ElementManagerPlugin } from '@/plugins'
 import type { IEditorHost, IEditorState, IGraphicElement, Point2D } from '@/types'
 import { EditorEvents } from '@/types/event-types'
 import { computed, onMounted, reactive, ref, watch } from 'vue'

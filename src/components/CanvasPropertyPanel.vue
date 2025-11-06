@@ -5,11 +5,11 @@
   <div></div>
   <div>
     <Label>宽度</Label>
-    <VkInputMM v-model="hostState.width" :dpmm="hostState.dpm"></VkInputMM>
+    <VkInputMM v-model="hostState.width" :dpm="hostState.dpm"></VkInputMM>
   </div>
   <div>
     <Label>高度</Label>
-    <VkInputMM v-model="hostState.height" :dpmm="hostState.dpm"></VkInputMM>
+    <VkInputMM v-model="hostState.height" :dpm="hostState.dpm"></VkInputMM>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ import { VkInputMM } from '@/components/ui'
 
 interface Props {
   host: IEditorHost
-  element: BaseGraphicElement
+  element: BaseGraphicElement | undefined
   selection: BaseGraphicElement[]
 }
 

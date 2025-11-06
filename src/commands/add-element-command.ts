@@ -2,17 +2,17 @@ import { BaseCommand } from './base-command'
 import type { IEditorHost, IGraphicElement } from '../types'
 import { EditorEvents } from '@/types/event-types'
 import type { ICommand } from './i-command'
-import type { ElementsPlugin } from '@/plugins'
+import type { ElementManagerPlugin } from '@/plugins'
 
 export class AddElementCommand extends BaseCommand {
   public name = 'ADD_ELEMENT'
-  private elementsPlugin: ElementsPlugin | null
+  private elementsPlugin: ElementManagerPlugin | null
   constructor(
     private element: IGraphicElement,
     private host: IEditorHost,
   ) {
     super(`添加 ${element.type} 元素`)
-    this.elementsPlugin = this.host.getPlugin<ElementsPlugin>('elements')
+    this.elementsPlugin = this.host.getPlugin<ElementManagerPlugin>('element-manager-plugin')
   }
   execute(): void {
     this.elementsPlugin?.addElement(this.element)

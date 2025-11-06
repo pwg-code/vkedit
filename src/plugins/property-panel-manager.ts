@@ -1,12 +1,12 @@
 import { EditorEvents } from '@/types/event-types'
 import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicElement, IPropertyPanel, IPropertyPanelForGraphics } from '../types'
-import type { SelectionPlugin } from './selection-plugin'
-import type { GraphicTypesPlugin } from './graphic-types-plugin'
+import type { SelectionPlugin } from './selection'
+import type { GraphicTypeManagerPlugin } from './graphic-type-manager'
 import type { Component } from 'vue'
 
-export class PropertyPanelsPlugin extends BasePlugin {
-  public name = 'property-panels'
+export class PropertyPanelManagerPlugin extends BasePlugin {
+  public name = 'property-panel-manager-plugin'
   public version = '1.0.0'
   public propertyPanels: Map<string, IPropertyPanel> = new Map()
   public propertyPanelCanvas: Map<string, IPropertyPanel> = new Map()
@@ -89,7 +89,7 @@ export class PropertyPanelsPlugin extends BasePlugin {
     })
     // 获取图形构造器提供的面板
     const panel = this.host
-      ?.getPlugin<GraphicTypesPlugin>('graphic-types')
+      ?.getPlugin<GraphicTypeManagerPlugin>('graphic-type-manager-plugin')
       ?.getElementPropertyPanel(type)
     if (panel) {
       panels.push(panel)

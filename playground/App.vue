@@ -18,7 +18,7 @@ import {
   EditorEvents,
   BaseElementPropertyPanel,
   CanvasPropertyPanel,
-  ElementsPlugin,
+  ElementManagerPlugin,
   TextElement,
   TableElement,
 } from '@/index'
@@ -50,15 +50,7 @@ function test() {
   })
   const hostState = host.getState()
   const newTable = new TableElement(0, 0, Array(45).fill(20), Array(20).fill(80))
-  host.getPlugin<ElementsPlugin>('elements')?.addElement(newTable)
-
-  // 随机添加文本
-  // for (let i=0;i<5000;i++){
-  //   const x = Math.random() * hostState.width
-  //   const y = Math.random() * hostState.height
-  //   const newText =  new TextElement(x,y)
-  //   host.getPlugin<ElementsPlugin>('elements')?.addElement(newText)
-  // }
+  host.getPlugin<ElementManagerPlugin>('element-manager-plugin')?.addElement(newTable)
 }
 
 onMounted(() => {

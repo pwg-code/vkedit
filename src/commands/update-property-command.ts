@@ -2,7 +2,7 @@ import { BaseCommand } from './base-command'
 import type { IEditorHost, IGraphicElement } from '../types'
 import { EditorEvents } from '@/types/event-types'
 import type { ICommand } from './i-command'
-import type { ElementsPlugin } from '@/plugins'
+import type { ElementManagerPlugin } from '@/plugins'
 
 export class UpdatePropertyCommand extends BaseCommand {
   public name = 'UPDATE_PROPERTY'
@@ -30,7 +30,6 @@ export class UpdatePropertyCommand extends BaseCommand {
   execute(): void {
     this.setProperty(this.propertyPath, this.newValue)
     this.emitPropertyChange()
-
   }
 
   undo(): void {

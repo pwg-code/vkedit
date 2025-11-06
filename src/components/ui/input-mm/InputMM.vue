@@ -3,7 +3,7 @@
     :model-value="valueMM"
     @update:model-value="
       (value: number) => {
-        emit('update:model-value', value * dpmm)
+        emit('update:model-value', value * dpm)
         isEdit = false
       }
     "
@@ -40,9 +40,9 @@ import { round } from 'lodash'
 
 const {
   modelValue,
-  dpmm = 8,
+  dpm = 8,
   step = 0.1,
-} = defineProps<{ modelValue: number; dpmm?: number; step?: number }>()
+} = defineProps<{ modelValue: number; dpm?: number; step?: number }>()
 
 const emit = defineEmits<{
   'update:model-value': [number]
@@ -51,7 +51,7 @@ const emit = defineEmits<{
 const isEdit = ref(false)
 
 const valueMM = computed(() => {
-  return round(modelValue / dpmm, 2)
+  return round(modelValue / dpm, 2)
 })
 
 const inputParentRef = ref<HTMLInputElement | null>(null)

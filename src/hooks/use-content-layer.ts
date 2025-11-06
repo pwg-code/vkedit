@@ -5,7 +5,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useZoom } from './use-zoom'
 import { EditorEvents, type IEditorHost, type IGraphicElement } from '@/types'
-import type { ElementsPlugin, GraphicTypesPlugin } from '@/plugins'
+import type { ElementManagerPlugin, GraphicTypeManagerPlugin } from '@/plugins'
 import { TransformElementCommand } from '@/commands'
 import { useScrollbarLayer } from './use-scrollbar-layer'
 
@@ -17,7 +17,7 @@ export function useContentLayer(host: IEditorHost) {
   const transformerRef = ref()
 
   // 图形类插件
-  const graphicTypesPlugin = host.getPlugin<GraphicTypesPlugin>('graphic-types')
+  const graphicTypesPlugin = host.getPlugin<GraphicTypeManagerPlugin>('graphic-type-manager-plugin')
 
   // 缩放逻辑hook
   const { zoom } = useZoom(host)
@@ -41,7 +41,7 @@ export function useContentLayer(host: IEditorHost) {
   // 所有的图像元素
   const elements = ref<IGraphicElement[]>([])
   const initElements = () => {
-    const a = host.getPlugin<ElementsPlugin>('elements')?.elements.values()
+    const a = host.getPlugin<ElementManagerPlugin>('element-manager-plugin')?.elements.values()
     if (a) {
       elements.value = Array.from(a)
     }

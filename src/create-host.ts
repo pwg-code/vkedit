@@ -1,13 +1,14 @@
 import { EditorHost } from './core/editor-host'
 import {
   AlignPlugin,
-  ElementsPlugin,
+  ElementManagerPlugin,
   ExportPlugin,
-  GraphicTypesPlugin,
+  GraphicTypeManagerPlugin,
   KeyDownPlugin,
-  PropertyPanelsPlugin,
+  PropertyPanelManagerPlugin,
   SelectionPlugin,
-  ToolbarPlugin,
+  ToolbarManagerPlugin,
+  PreviewPlugin,
 } from './plugins'
 import { EditorEvents } from './types'
 import BaseElementPropertyPanel from '@/components/BaseElementPropertyPanel.vue'
@@ -17,6 +18,7 @@ export interface IOptions {
   basePropertyPanel?: boolean
   baseCanvasPropertyPanel?: boolean
   exportPlugin?: boolean
+  previewPlugin?: boolean
 }
 
 // 创建安装了核心插件的宿主
@@ -24,13 +26,14 @@ export function createEditorHost({
   basePropertyPanel = true,
   baseCanvasPropertyPanel = true,
   exportPlugin = true,
+  previewPlugin = true,
 }: IOptions) {
   const host = new EditorHost()
   host
-    .installPlugin(new ToolbarPlugin())
-    .installPlugin(new PropertyPanelsPlugin())
-    .installPlugin(new GraphicTypesPlugin())
-    .installPlugin(new ElementsPlugin())
+    .installPlugin(new ToolbarManagerPlugin())
+    .installPlugin(new PropertyPanelManagerPlugin())
+    .installPlugin(new GraphicTypeManagerPlugin())
+    .installPlugin(new ElementManagerPlugin())
     .installPlugin(new KeyDownPlugin())
     .installPlugin(new SelectionPlugin())
     .installPlugin(new AlignPlugin())
@@ -46,6 +49,8 @@ export function createEditorHost({
   if (exportPlugin) {
     host.installPlugin(new ExportPlugin())
   }
-
+  if (previewPlugin) {
+    host.installPlugin(new PreviewPlugin())
+  }
   return host
 }

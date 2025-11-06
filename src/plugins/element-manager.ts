@@ -2,10 +2,10 @@ import { EditorEvents } from '@/types/event-types'
 import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicElement, Point2D } from '../types'
 import { RemoveElementCommand } from '@/commands'
-import type { SelectionPlugin } from './selection-plugin'
+import type { SelectionPlugin } from './selection'
 
-export class ElementsPlugin extends BasePlugin {
-  public name = 'elements'
+export class ElementManagerPlugin extends BasePlugin {
+  public name = 'element-manager-plugin'
   public version = '1.0.0'
   public elements: Map<string, IGraphicElement> = new Map()
 

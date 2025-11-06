@@ -1,10 +1,10 @@
 import { EditorEvents } from '@/types/event-types'
 import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicElement, Point2D, IToolbar } from '../types'
-import type { ElementsPlugin } from './elements-plugin'
+import type { ElementManagerPlugin } from './element-manager'
 
-export class ToolbarPlugin extends BasePlugin {
-  name = 'toolbar'
+export class ToolbarManagerPlugin extends BasePlugin {
+  name = 'toolbar-manager-plugin'
   version = '1.0.0'
   private toolbars = new Map<string, IToolbar>()
 

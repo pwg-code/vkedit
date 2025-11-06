@@ -33,7 +33,7 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import type { IEditorHost, IEditorState, IToolbar } from '../types'
 import { Button } from '@/components/ui/button'
-import { ToolbarPlugin } from '@/plugins'
+import { ToolbarManagerPlugin } from '@/plugins'
 import { Icon } from '@iconify/vue'
 
 interface Props {
@@ -45,7 +45,7 @@ const { host } = defineProps<Props>()
 const hostState = ref<IEditorState>(host.getState())
 
 // 插件工具
-const toolbarPlugin = host.getPlugin<ToolbarPlugin>('toolbar')
+const toolbarPlugin = host.getPlugin<ToolbarManagerPlugin>('toolbar-manager-plugin')
 
 const tools = ref<IToolbar[]>()
 

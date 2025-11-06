@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import type { TableElement } from './table-plugin'
+import type { TableElement } from './table'
 import konva from 'konva'
 
 const { element } = defineProps<{ element: TableElement }>()
@@ -23,11 +23,11 @@ function sceneFunc(context: konva.Context, shape: konva.Shape) {
   cells.value.forEach((row, i) => {
     row.forEach((c, j) => {
       if (!c.visible) return
-      if (c.borderUp){
+      if (c.borderUp) {
         context.moveTo(c.x, c.y)
         context.lineTo(c.x + c.width, c.y)
       }
-      if (c.borderLeft){
+      if (c.borderLeft) {
         context.moveTo(c.x, c.y)
         context.lineTo(c.x, c.y + c.height)
       }
@@ -39,7 +39,6 @@ function sceneFunc(context: konva.Context, shape: konva.Shape) {
   context.lineTo(element.width, element.height)
   context.moveTo(0, element.height)
   context.lineTo(element.width, element.height)
-
 
   context.closePath()
   context.fillStrokeShape(shape)

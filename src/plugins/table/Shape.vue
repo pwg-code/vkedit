@@ -39,9 +39,9 @@
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
-import type { CellConfig, TableElement } from './table-plugin'
+import type { CellConfig, TableElement } from './table'
 import { computed, ref } from 'vue'
-import type { SelectionPlugin } from '../selection-plugin'
+import type { SelectionPlugin } from '../selection'
 import CellsBorder from './CellsBorder.vue'
 
 interface Props {
@@ -55,15 +55,11 @@ const cells = computed(() => element.cells)
 const activeCell = computed(() => element.activeCell)
 
 // 当前活动单元格
-const handleCellClick = (e:any, cell: CellConfig, row: number, col: number) => {
+const handleCellClick = (e: any, cell: CellConfig, row: number, col: number) => {
   element.activeCell = cell
   element.activeRow = row
   element.activeCol = col
   // 停止事件冒泡
-  e.cancelBubble = true;
-  // 获取选择插件 设置当前元素为选中状态
-  // const selectionPlugin = host.getPlugin<SelectionPlugin>('selection')
-  // selectionPlugin?.selectElement(element)
-
+  e.cancelBubble = true
 }
 </script>

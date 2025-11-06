@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import type { IEditorHost, IGraphicType } from '@/types'
-import { ElementsPlugin, GraphicTypesPlugin } from '@/plugins'
+import { ElementManagerPlugin, GraphicTypeManagerPlugin } from '@/plugins'
 import { onMounted, ref } from 'vue'
 import { AddElementCommand } from '@/commands'
 
@@ -22,10 +22,10 @@ const { host } = defineProps<{
   host: IEditorHost
 }>()
 
-const graphicTypesPlugin = host.getPlugin<GraphicTypesPlugin>('graphic-types')
+const graphicTypesPlugin = host.getPlugin<GraphicTypeManagerPlugin>('graphic-type-manager-plugin')
 
 // 活动元素管理插件
-const elementsPlugin = host.getPlugin<ElementsPlugin>('elements')
+const elementsPlugin = host.getPlugin<ElementManagerPlugin>('element-manager-plugin')
 
 const graphicTypes = ref(graphicTypesPlugin?.getGraphicTypes())
 

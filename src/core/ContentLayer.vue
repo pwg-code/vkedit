@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { useContentLayer } from '@/hooks/use-content-layer'
-import { TextElement, type ElementsPlugin } from '@/plugins'
+import { TextElement, type ElementManagerPlugin } from '@/plugins'
 import { EditorEvents, type IEditorHost } from '@/types'
 import { onMounted, ref } from 'vue'
 

@@ -1,14 +1,10 @@
-/*
-导出功能插件
-*/
-
 import { EditorEvents } from '@/types/event-types'
 import { BasePlugin } from '@/types/base-plugin'
 import type { IToolbar } from '@/types'
-import Export from './Export.vue'
+import Align from './Align.vue'
 
-export class ExportPlugin extends BasePlugin {
-  name = 'export'
+export class AlignPlugin extends BasePlugin {
+  name = 'align-plugin'
   version = '1.0.0'
 
   protected onInstall(): void {
@@ -18,9 +14,9 @@ export class ExportPlugin extends BasePlugin {
 
   private getTool(): IToolbar {
     return {
-      name: 'export',
+      name: 'align-plugin',
       getComponent() {
-        return Export
+        return Align
       },
     }
   }

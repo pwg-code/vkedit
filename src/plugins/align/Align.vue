@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import type { IEditorHost } from '@/types'
-import type { SelectionPlugin } from '../selection-plugin'
+import type { SelectionPlugin } from '../selection'
 import { AlignElementsCommand } from '@/commands'
 import { Icon } from '@iconify/vue'
 import { ButtonGroup } from '@/components/ui/button-group'
@@ -29,7 +29,7 @@ import { Button } from '@/components/ui/button'
 const { host } = defineProps<{ host: IEditorHost }>()
 
 function handleAlign(alignment: 'left' | 'right' | 'top' | 'bottom' | 'centerX' | 'centerY') {
-  const selectionElements = host.getPlugin<SelectionPlugin>('selection')?.selectionElements
+  const selectionElements = host.getPlugin<SelectionPlugin>('selection-plugin')?.selectionElements
   if (!selectionElements) return
   host.executeCommand(
     new AlignElementsCommand(host, alignment, Array.from(selectionElements?.keys())),

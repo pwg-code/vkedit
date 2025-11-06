@@ -8,7 +8,7 @@ export class ClearSelectionCommand extends BaseCommand {
   selectionPlugin: SelectionPlugin | null
   constructor(private host: IEditorHost) {
     super('清空选择')
-    this.selectionPlugin = host.getPlugin<SelectionPlugin>('selection')
+    this.selectionPlugin = host.getPlugin<SelectionPlugin>('selection-plugin')
   }
 
   execute(): void {
