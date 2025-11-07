@@ -34,7 +34,8 @@
       <NumberFieldIncrement />
     </NumberFieldContent>
   </NumberField>
-
+  <VkButton variant="outline" @click="element.addRow(element.activeCell.rowIndex)">插入行</VkButton>
+  <VkButton variant="outline" @click="element.addCol(element.activeCell.colIndex)">插入列</VkButton>
   <div class="pt-4 font-bold">单元格设置</div>
   <div></div>
   <div>
