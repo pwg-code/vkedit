@@ -15,15 +15,15 @@ export function useZoom(host: IEditorHost) {
   const zoom = computed(() => hostState.zoom)
 
   // 放大
-  const handleZoomIn = () => {
-    if (hostState.zoom < 3) {
-      hostState.zoom += 0.1
+  const handleZoomIn = (step: number=0.1) => {
+    if (hostState.zoom < 10) {
+      hostState.zoom += step
     }
   }
   // 缩小
-  const handleZoomOut = () => {
-    if (hostState.zoom > 0.2) {
-      hostState.zoom -= 0.1
+  const handleZoomOut = (step: number=0.1) => {
+    if (hostState.zoom > 0.1) {
+      hostState.zoom -= step
     }
   }
   // 自适应缩放
@@ -35,6 +35,15 @@ export function useZoom(host: IEditorHost) {
     hostState.zoom = Math.min(zoomX, zoomY)
   }
 
+  // 滚轮缩放
+  const handleWheel = (e: any) => {
+    if (e.evt.deltaY < 0) {
+      handleZoomIn(0.05)
+    } else {
+      handleZoomOut(0.05)
+    }
+  }
+
   return {
     contentWidth,
     contentHeight,
@@ -44,5 +53,6 @@ export function useZoom(host: IEditorHost) {
     handleZoomOut,
     handleZoomAuto,
     zoom,
+    handleWheel
   }
 }

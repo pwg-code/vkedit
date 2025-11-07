@@ -42,7 +42,8 @@ const {
 } = useScrollbarLayer(host)
 
 onMounted(() => {
-  host.on(EditorEvents.CANVAS_WHEEL, handleWheel)
+  // 滚轮事件 滚动内容区域
+  // host.on(EditorEvents.CANVAS_WHEEL, handleWheel)
 })
 </script>
 
