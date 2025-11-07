@@ -70,7 +70,8 @@ import { VkTextarea, VkToggle, VkLabel, VkInputMM } from '@/components/ui'
 import { Icon } from '@iconify/vue'
 import { useHostState } from '@/hooks'
 import type { IEditorHost } from '@/types'
-const { text, fontSize, align, verticalAlign, fontStyle } = defineProps<{
+const { text, fontSize, align, verticalAlign, fontStyle, host } = defineProps<{
+  host: IEditorHost
   text: string
   fontSize: number
   align: 'left' | 'center' | 'right' | 'justify'
@@ -80,11 +81,6 @@ const { text, fontSize, align, verticalAlign, fontStyle } = defineProps<{
 
 const emit = defineEmits<{
   update: [property: string, value: any]
-}>()
-
-// 接收host
-const { host } = defineProps<{
-  host: IEditorHost
 }>()
 
 // 获取 hostState 用于 dpm
