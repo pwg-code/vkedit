@@ -173,6 +173,10 @@ export class TableElement extends BaseGraphicElement {
       this.rowsHeight.splice(index, 1)
     }
     this.updateCells()
+    // 如果删除的活动单元格的行  则设置下一个单元格为活动单元格
+    const rowIndex = Math.min(this.activeCell.rowIndex, this.rowCount - 1)
+    const colIndex = Math.min(this.activeCell.colIndex, this.colCount - 1)
+    this.activeCell = this.cells[rowIndex][colIndex]
   }
 
   // 增加一列
@@ -215,6 +219,10 @@ export class TableElement extends BaseGraphicElement {
       this.colsWidth.splice(index, 1)
     }
     this.updateCells()
+    // 如果删除的活动单元格的列  则设置下一个单元格为活动单元格
+    const rowIndex = Math.min(this.activeCell.rowIndex, this.rowCount - 1)
+    const colIndex = Math.min(this.activeCell.colIndex, this.colCount - 1)
+    this.activeCell = this.cells[rowIndex][colIndex]
   }
 
   clone(): IGraphicElement {
