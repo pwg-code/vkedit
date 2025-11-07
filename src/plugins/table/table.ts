@@ -50,13 +50,13 @@ export class TableElement extends BaseGraphicElement {
     this.updateCells()
   }
 
-  private initWidthHeight() {
+  public initWidthHeight() {
     this.width = this.colsWidth.reduce((acc, curr) => acc + curr, 0)
     this.height = this.rowsHeight.reduce((acc, curr) => acc + curr, 0)
   }
 
   // 初始化单元格
-  private initCells() {
+  public initCells() {
     this.cells = this.rowsHeight.map((rowHeight, rowIndex) => {
       return this.colsWidth.map((colWidth, colIndex) => {
         return this.getDefaultCellConfig(rowIndex, colIndex)
@@ -81,7 +81,7 @@ export class TableElement extends BaseGraphicElement {
   }
 
   // 计算x的位置
-  private getCellX(col: number) {
+  public getCellX(col: number) {
     let x = 0
     for (var i = 0; i < col; i++) {
       x = x + this.colsWidth[i]
@@ -90,7 +90,7 @@ export class TableElement extends BaseGraphicElement {
   }
 
   // 计算y的位置
-  private getCellY(row: number) {
+  public getCellY(row: number) {
     let y = 0
     for (var i = 0; i < row; i++) {
       y = y + this.rowsHeight[i]
@@ -99,7 +99,7 @@ export class TableElement extends BaseGraphicElement {
   }
 
   // 计算单元格的宽度
-  private getCellSize = (rowIndex: number, colIndex: number) => {
+  public getCellSize = (rowIndex: number, colIndex: number) => {
     let width = this.colsWidth[colIndex]
     let height = this.rowsHeight[rowIndex]
     let cell = this.cells[rowIndex][colIndex]
@@ -119,7 +119,7 @@ export class TableElement extends BaseGraphicElement {
   }
 
   // 获取默认的单元格配置
-  private getDefaultCellConfig(rowIndex: number, colIndex: number): CellConfig {
+  public getDefaultCellConfig(rowIndex: number, colIndex: number): CellConfig {
     return {
       rowIndex: rowIndex,
       colIndex: colIndex,
