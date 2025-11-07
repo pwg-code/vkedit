@@ -14,6 +14,7 @@
       @mouseup="handleMouseUp"
       @wheel="handleWheel"
       @click="handleClick"
+      @contextmenu="handleContextmenu"
     >
       <BgLayer :host="host"></BgLayer>
       <ContentLayer :host="host"> <SelectionLayer :host="host"></SelectionLayer></ContentLayer>
@@ -52,6 +53,7 @@ const {
   handleWheel,
   handleKeyDown,
   handleMouseleave,
+  handleContextmenu,
 } = useStageEvent(props.host)
 
 onMounted(() => {
