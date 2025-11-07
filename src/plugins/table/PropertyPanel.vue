@@ -41,6 +41,7 @@
     <Label>行高</Label>
     <VkInputMM
       :model-value="element.rowsHeight[element.activeRow]"
+      :dpm="hostState.dpm"
       @update:model-value="
         (value: any) => {
           element.updateProperty(
@@ -57,6 +58,7 @@
   <div>
     <Label>列宽</Label>
     <VkInputMM
+      :dpm="hostState.dpm"
       :model-value="element.colsWidth[element.activeCol]"
       @update:model-value="
         (value: any) => {
@@ -129,6 +131,7 @@
     :align="element.activeCell.align"
     :font-style="element.activeCell.fontStyle"
     :vertical-align="element.activeCell.verticalAlign"
+    :host="host"
     @update="updateActiveCellConfig"
   ></TextProperty>
 </template>
@@ -149,6 +152,7 @@ import {
 import { Icon } from '@iconify/vue'
 import { BatchCommand, UpdatePropertyCommand, type ICommand } from '@/commands'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { useHostState } from '@/hooks'
 
 interface Props {
   host: IEditorHost
@@ -157,6 +161,8 @@ interface Props {
 }
 
 const { host, element, selection } = defineProps<Props>()
+
+const { hostState } = useHostState(host)
 
 // 更新行数
 const updateRows = (value: number) => {

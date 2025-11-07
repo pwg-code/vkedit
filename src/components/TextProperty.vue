@@ -11,6 +11,7 @@
       <VkInputMM
         :model-value="fontSize"
         :min="0"
+        :dpm="hostState.dpm"
         @update:model-value="(value: any) => emit('update', 'fontSize', value)"
       ></VkInputMM>
       <!-- <NumberField
@@ -67,13 +68,8 @@
 <script setup lang="ts">
 import { VkTextarea, VkToggle, VkLabel, VkInputMM } from '@/components/ui'
 import { Icon } from '@iconify/vue'
-import {
-  NumberField,
-  NumberFieldContent,
-  NumberFieldDecrement,
-  NumberFieldIncrement,
-  NumberFieldInput,
-} from '@/components/ui/number-field'
+import { useHostState } from '@/hooks'
+import type { IEditorHost } from '@/types'
 const { text, fontSize, align, verticalAlign, fontStyle } = defineProps<{
   text: string
   fontSize: number
@@ -85,6 +81,14 @@ const { text, fontSize, align, verticalAlign, fontStyle } = defineProps<{
 const emit = defineEmits<{
   update: [property: string, value: any]
 }>()
+
+// 接收host
+const { host } = defineProps<{
+  host: IEditorHost
+}>()
+
+// 获取 hostState 用于 dpm
+const { hostState } = useHostState(host)
 </script>
 
 <style scoped></style>

@@ -8,6 +8,7 @@
       :step="0.1"
       :model-value="element.x"
       :min="0"
+      :dpm="hostState.dpm"
       @update:model-value="
         (value: any) => {
           updateProperty(element, 'x', value)
@@ -21,6 +22,7 @@
       :step="0.1"
       :model-value="element.y"
       :min="0"
+      :dpm="hostState.dpm"
       @update:model-value="
         (value: any) => {
           updateProperty(element, 'y', value)
@@ -33,8 +35,9 @@
     <VkInputMM
       :step="0.1"
       :model-value="element.width"
-      @update:model-value="(value: any) => batchUpdateProperty(selection, 'width', value)"
       :min="0"
+      :dpm="hostState.dpm"
+      @update:model-value="(value: any) => batchUpdateProperty(selection, 'width', value)"
     ></VkInputMM>
   </div>
 
@@ -43,8 +46,8 @@
     <VkInputMM
       :step="0.1"
       :model-value="element.height"
+      :dpm="hostState.dpm"
       @update:model-value="(value: any) => batchUpdateProperty(selection, 'height', value)"
-      :min="0"
     ></VkInputMM>
   </div>
   <div>
@@ -106,7 +109,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from '@/components/ui/number-field'
-import { usePropertyCommand } from '@/hooks'
+import { useHostState, usePropertyCommand } from '@/hooks'
 import { VkInputMM } from './ui'
 
 interface Props {
@@ -116,6 +119,8 @@ interface Props {
 }
 
 const { element, host, selection } = defineProps<Props>()
+
+const { hostState } = useHostState(host)
 
 const { updateProperty, batchUpdateProperty } = usePropertyCommand(host)
 </script>
