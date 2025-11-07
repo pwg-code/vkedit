@@ -43,7 +43,7 @@ export enum EditorEvents {
   /** 画布双击 */
   CANVAS_DOUBLE_CLICK = 'canvas:dblclick',
   /** 画布右键点击 */
-  CANVAS_CONTEXT_MENU = 'canvas:contextmenu',
+  CANVAS_CONTEXTMENU = 'canvas:contextmenu',
   /** 画布鼠标进入 */
   CANVAS_MOUSE_ENTER = 'canvas:mouseenter',
   /** 画布鼠标离开 */

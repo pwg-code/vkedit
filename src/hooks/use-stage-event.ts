@@ -59,6 +59,13 @@ export function useStageEvent(host: IEditorHost) {
     host.emit(EditorEvents.CANVAS_MOUSE_LEAVE, event)
   }
 
+  // 处理上下文菜单事件
+  function handleContextmenu(event: any) {
+    // 阻止默认右键菜单
+    event.evt.preventDefault()
+    host.emit(EditorEvents.CANVAS_CONTEXTMENU, event)
+  }
+
   const getEventPoint = (event: any): Point2D => {
     const stage = event.target.getStage()
     const point = stage.getPointerPosition()
@@ -79,5 +86,6 @@ export function useStageEvent(host: IEditorHost) {
     handleWheel,
     handleKeyDown,
     handleMouseleave,
+    handleContextmenu
   }
 }
