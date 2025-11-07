@@ -6,6 +6,7 @@
     :align="element.align"
     :font-style="element.fontStyle"
     :vertical-align="element.verticalAlign"
+    :host="host"
     @update="(prop, value) => batchUpdateProperty(selection, prop, value)"
   ></TextProperty>
 </template>
