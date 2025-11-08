@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import type { IEditorHost } from '../types'
+import type { EditorHost } from '@/core'
 import { useStageEvent, useStage } from '@/hooks'
 import Zoom from './Zoom.vue'
 import BgLayer from './BgLayer.vue'
@@ -37,7 +37,7 @@ import ContentLayer from './ContentLayer.vue'
 import SelectionLayer from './SelectionLayer.vue'
 
 interface Props {
-  host: IEditorHost
+  host: EditorHost
 }
 
 const props = defineProps<Props>()

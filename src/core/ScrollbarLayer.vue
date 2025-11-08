@@ -21,10 +21,9 @@
 
 <script setup lang="ts">
 import { useScrollbarLayer } from '@/hooks/use-scrollbar-layer'
-import { EditorEvents, type IEditorHost } from '@/types'
-import { onMounted } from 'vue'
+import { type EditorHost } from '@/core'
 
-const { host } = defineProps<{ host: IEditorHost }>()
+const { host } = defineProps<{ host: EditorHost }>()
 
 // 背景
 const {
@@ -41,10 +40,6 @@ const {
   handleWheel,
 } = useScrollbarLayer(host)
 
-onMounted(() => {
-  // 滚轮事件 滚动内容区域
-  // host.on(EditorEvents.CANVAS_WHEEL, handleWheel)
-})
 </script>
 
 <style scoped></style>

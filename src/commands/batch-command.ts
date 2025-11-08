@@ -1,13 +1,12 @@
-import type { IEditorHost } from '@/types'
+import type { EditorHost } from '@/core'
 import { BaseCommand } from './base-command'
 import type { ICommand } from './i-command'
-import { EditorEvents } from '@/types/event-types'
 
 export class BatchCommand extends BaseCommand {
   public name = 'BATCH_COMMAND'
   private commands: ICommand[] = []
   constructor(
-    public host: IEditorHost,
+    public host: EditorHost,
     commands: ICommand[] = [],
     description: string = '批量操作',
   ) {
@@ -16,25 +15,25 @@ export class BatchCommand extends BaseCommand {
   }
 
   execute(): void {
-    this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_START, {
-      timestamp: this.timestamp,description:this.description
+    this.host?.emit('property:batch-update-start', {
+      timestamp: this.timestamp,
+      source: 'batch-command',
     })
 
     this.commands.forEach((command) => {
       command.execute()
     })
 
-    this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_END, {
+    this.host?.emit('property:batch-update-end', {
       timestamp: this.timestamp,
-      commandCount: this.commands.length,
-      description:this.description
+      source: 'batch-command',
     })
   }
 
   undo(): void {
-    this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_START, {
+    this.host?.emit('property:batch-update-start', {
       timestamp: this.timestamp,
-      description:this.description
+      source: 'batch-command-undo',
     })
 
     // 逆序执行撤销
@@ -42,10 +41,9 @@ export class BatchCommand extends BaseCommand {
       command.undo()
     })
 
-    this.host?.emit(EditorEvents.PROPERTY_BATCH_UPDATE_END, {
+    this.host?.emit('property:batch-update-end', {
       timestamp: this.timestamp,
-      commandCount: this.commands.length,
-      description:this.description
+      source: 'batch-command-undo',
     })
   }
 

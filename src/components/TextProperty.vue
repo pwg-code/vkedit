@@ -69,9 +69,9 @@
 import { VkTextarea, VkToggle, VkLabel, VkInputMM } from '@/components/ui'
 import { Icon } from '@iconify/vue'
 import { useHostState } from '@/hooks'
-import type { IEditorHost } from '@/types'
+import type { EditorHost } from '@/core'
 const { text, fontSize, align, verticalAlign, fontStyle, host } = defineProps<{
-  host: IEditorHost
+  host: EditorHost
   text: string
   fontSize: number
   align: 'left' | 'center' | 'right' | 'justify'

@@ -1,6 +1,6 @@
 import { BaseCommand } from './base-command'
-import type { IEditorHost, IGraphicElement } from '../types'
-import { EditorEvents } from '@/types/event-types'
+import type { IGraphicElement } from '../types'
+import { EditorHost } from "@/core";
 import type { ElementManagerPlugin } from '@/plugins'
 
 export class AlignElementsCommand extends BaseCommand {
@@ -8,7 +8,7 @@ export class AlignElementsCommand extends BaseCommand {
   private previousPositions: Map<string, { x: number; y: number }> = new Map()
 
   constructor(
-    private host: IEditorHost,
+    private host: EditorHost,
     private alignment: 'left' | 'right' | 'top' | 'bottom' | 'centerX' | 'centerY',
     private elementIds: string[],
   ) {
@@ -27,19 +27,21 @@ export class AlignElementsCommand extends BaseCommand {
 
   execute(): void {
     this.alignElements()
-    this.host.emit(EditorEvents.ELEMENTS_ALIGN, {
+    this.host.emit('elements:align', {
       alignment: this.alignment,
       elementIds: this.elementIds,
       timestamp: this.timestamp,
+      source: 'AlignElementsCommand',
     })
   }
 
   undo(): void {
     this.restorePreviousPositions()
-    this.host.emit(EditorEvents.ELEMENTS_ALIGN, {
-      alignment: 'undo',
+    this.host.emit('elements:align', {
+      alignment: this.alignment,
       elementIds: this.elementIds,
       timestamp: this.timestamp,
+      source: 'AlignElementsCommand',
     })
   }
 

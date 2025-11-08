@@ -8,10 +8,10 @@
 
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
-import { EditorEvents, type IEditorHost, type Point2D } from '../types'
+import { type EditorHost } from '@/core'
 import { useSelectionLayer } from '@/hooks/use-selection-layer'
 
-const { host } = defineProps<{ host: IEditorHost }>()
+const { host } = defineProps<{ host: EditorHost }>()
 const {
   rectConfig,
   isSelecting,
@@ -23,10 +23,10 @@ const {
 } = useSelectionLayer(host)
 
 onMounted(() => {
-  host.on(EditorEvents.CANVAS_MOUSE_DOWN, handleMouseDown)
-  host.on(EditorEvents.CANVAS_MOUSE_MOVE, handleMouseMove)
-  host.on(EditorEvents.CANVAS_MOUSE_UP, handleMouseUp)
-  host.on(EditorEvents.CANVAS_MOUSE_LEAVE, handlePMouseleave)
+  host.on('stage:mousedown', handleMouseDown)
+  host.on('stage:mousemove', handleMouseMove)
+  host.on('stage:mouseup', handleMouseUp)
+  host.on('stage:mouseleave', handlePMouseleave)
 })
 </script>
 

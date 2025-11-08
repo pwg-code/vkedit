@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { type IEditorHost } from '@/types'
+import { type EditorHost } from '@/core'
 import { Icon } from '@iconify/vue'
 import { Button } from '@/components/ui/button'
 
@@ -49,7 +49,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import type { ExportPlugin } from './export'
 
-const { host } = defineProps<{ host: IEditorHost }>()
+const { host } = defineProps<{ host: EditorHost }>()
 
 const exportPlugin = host.getPlugin<ExportPlugin>('export-plugin')!
 </script>

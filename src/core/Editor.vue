@@ -55,7 +55,7 @@ import Toolbar from './Toolbar.vue' // 顶部区域
 import Toolbox from './Toolbox.vue'
 import StageView from './StageView.vue'
 import PropertyPanel from './PropertyPanel.vue'
-import type { IEditorHost } from '../types'
+import type { EditorHost } from '@/core'
 
 const {
   host,
@@ -63,7 +63,7 @@ const {
   showPropertyPanel = true,
   showToolbar = true,
 } = defineProps<{
-  host: IEditorHost
+  host: EditorHost
   showToolbox?: boolean
   showPropertyPanel?: boolean
   showToolbar?: boolean

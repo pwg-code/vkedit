@@ -1,6 +1,6 @@
 import { BaseCommand } from './base-command'
-import type { IEditorHost, IGraphicElement } from '../types'
-import { EditorEvents } from '@/types/event-types'
+import type { IGraphicElement } from '../types'
+import { EditorHost } from "@/core";
 import type { ICommand } from './i-command'
 import type { ElementManagerPlugin } from '@/plugins'
 
@@ -9,7 +9,7 @@ export class AddElementCommand extends BaseCommand {
   private elementsPlugin: ElementManagerPlugin | null
   constructor(
     private element: IGraphicElement,
-    private host: IEditorHost,
+    private host: EditorHost,
   ) {
     super(`添加 ${element.type} 元素`)
     this.elementsPlugin = this.host.getPlugin<ElementManagerPlugin>('element-manager-plugin')
@@ -20,10 +20,11 @@ export class AddElementCommand extends BaseCommand {
 
   undo(): void {
     this.elementsPlugin?.removeElement(this.element.id)
-    this.host.emit(EditorEvents.ELEMENT_REMOVED, {
+    this.host.emit('element:removed', {
       element: this.element,
       elementId: this.element.id,
       timestamp: this.timestamp,
+      source: 'AddElementCommand',
     })
   }
 

@@ -1,6 +1,5 @@
-import { EditorEvents } from '@/types/event-types'
 import { BasePlugin } from '../types/base-plugin'
-import type { IGraphicElement, Point2D } from '../types'
+import type { IGraphicElement, Point2D, ElementEventData } from '../types'
 import type { ElementManagerPlugin } from './element-manager'
 
 export class SelectionPlugin extends BasePlugin {
@@ -19,24 +18,24 @@ export class SelectionPlugin extends BasePlugin {
     this.elementsPlugin = this.host.getPlugin('element-manager-plugin') as ElementManagerPlugin
 
     // 注册事件监听
-    this.host.on(EditorEvents.CANVAS_MOUSE_DOWN, this.handleMouseDown.bind(this))
-    this.host.on(EditorEvents.CANVAS_MOUSE_MOVE, this.handleMouseMove.bind(this))
-    this.host.on(EditorEvents.CANVAS_MOUSE_UP, this.handleMouseUp.bind(this))
-    this.host.on(EditorEvents.ELEMENT_ADDED, this.handleElementAdded.bind(this))
-    this.host.on(EditorEvents.ELEMENT_REMOVED, this.handleElementRemoved.bind(this))
-    this.host.on(EditorEvents.CANVAS_MOUSE_LEAVE, this.handleMouseUp.bind(this))
+    this.host.on('stage:mousedown', this.handleMouseDown.bind(this))
+    this.host.on('stage:mousemove', this.handleMouseMove.bind(this))
+    this.host.on('stage:mouseup', this.handleMouseUp.bind(this))
+    this.host.on('element:added', this.handleElementAdded.bind(this))
+    this.host.on('element:removed', this.handleElementRemoved.bind(this))
+    this.host.on('stage:mouseleave', this.handleMouseUp.bind(this))
   }
 
   protected onUninstall(): void {
     if (!this.host) return
 
     // 移除事件监听
-    this.host.off(EditorEvents.CANVAS_MOUSE_DOWN, this.handleMouseDown.bind(this))
-    this.host.off(EditorEvents.CANVAS_MOUSE_MOVE, this.handleMouseMove.bind(this))
-    this.host.off(EditorEvents.CANVAS_MOUSE_UP, this.handleMouseUp.bind(this))
-    this.host.off(EditorEvents.ELEMENT_ADDED, this.handleElementAdded.bind(this))
-    this.host.off(EditorEvents.ELEMENT_REMOVED, this.handleElementRemoved.bind(this))
-    this.host.on(EditorEvents.CANVAS_MOUSE_LEAVE, this.handleMouseUp.bind(this))
+    this.host.off('stage:mousedown', this.handleMouseDown.bind(this))
+    this.host.off('stage:mousemove', this.handleMouseMove.bind(this))
+    this.host.off('stage:mouseup', this.handleMouseUp.bind(this))
+    this.host.off('element:added', this.handleElementAdded.bind(this))
+    this.host.off('element:removed', this.handleElementRemoved.bind(this))
+    this.host.on('stage:mouseleave', this.handleMouseUp.bind(this))
   }
 
   private handleMouseDown(event: any): void {
@@ -65,26 +64,38 @@ export class SelectionPlugin extends BasePlugin {
       // 根据框选的范围进行选
       this.selectionElements = this.findElementsInRect(this.selectionStart, this.selectionEnd)
       this.isSelecting = false
-      this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
+      this.host?.emit('selection:changed', {
+        selection: Array.from(this.selectionElements.values()),
+        source: 'selection-plugin',
+        timestamp: Date.now(),
+      })
     } else if (this.mouseDownInElement && !this.selectionElements.has(this.mouseDownInElement.id)) {
       // 点击的是元素且为为选择状态则清空选择后单选该元素
       this.selectionElements.clear()
       this.selectionElements.set(this.mouseDownInElement.id, this.mouseDownInElement)
-      this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
+      this.host?.emit('selection:changed', {
+        selection: Array.from(this.selectionElements.values()),
+        source: 'selection-plugin',
+        timestamp: Date.now(),
+      })
     }
   }
 
-  private handleElementAdded(element: IGraphicElement): void {
+  private handleElementAdded(data: ElementEventData): void {
     // 新添加的元素 默认选中 延迟选中 以便画布刷新
     setTimeout(() => {
       this.selectionElements.clear()
-      this.selectionElements.set(element.id, element)
-      this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
+      this.selectionElements.set(data.element.id, data.element)
+      this.host?.emit('selection:changed', {
+        selection: Array.from(this.selectionElements.values()),
+        source: 'selection-plugin',
+        timestamp: Date.now(),
+      })
     }, 200)
   }
 
-  private handleElementRemoved(element: IGraphicElement): void {
-    this.deselectElement(element.id)
+  private handleElementRemoved(data: ElementEventData): void {
+    this.deselectElement(data.element.id)
   }
 
   private findElementsInRect(start: Point2D, end: Point2D): Map<string, IGraphicElement> {
@@ -137,17 +148,29 @@ export class SelectionPlugin extends BasePlugin {
 
   public selectElement(element: IGraphicElement): void {
     this.selectionElements.set(element.id, element)
-    this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
+    this.host?.emit('selection:changed', {
+        selection: Array.from(this.selectionElements.values()),
+        source: 'selection-plugin',
+        timestamp: Date.now(),
+      })
   }
 
   public deselectElement(elementId: string): void {
     this.selectionElements.delete(elementId)
-    this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
+    this.host?.emit('selection:changed', {
+        selection: Array.from(this.selectionElements.values()),
+        source: 'selection-plugin',
+        timestamp: Date.now(),
+      })
   }
 
   public clearSelection(): void {
     this.selectionElements.clear()
-    this.host?.emit(EditorEvents.SELECTION_CHANGED, this.selectionElements)
+    this.host?.emit('selection:changed', {
+        selection: Array.from(this.selectionElements.values()),
+        source: 'selection-plugin',
+        timestamp: Date.now(),
+      })
   }
 
   public selectElementByIds(ids: string[]): void {

@@ -1,20 +1,19 @@
 import { BaseCommand } from './base-command'
-import type { IEditorHost, IGraphicElement } from '../types'
-import { EditorEvents } from '@/types/event-types'
+import type { IGraphicElement } from '../types'
+import type { EditorHost } from '@/core'
 import type { ICommand } from './i-command'
-import type { ElementManagerPlugin } from '@/plugins'
 
 export class UpdatePropertyCommand extends BaseCommand {
   public name = 'UPDATE_PROPERTY'
   private element: IGraphicElement
-  private host: IEditorHost
+  private host: EditorHost
   private propertyPath: string
   private oldValue: any
   private newValue: any
 
   constructor(
     element: IGraphicElement,
-    host: IEditorHost,
+    host: EditorHost,
     propertyPath: string,
     oldValue: any,
     newValue: any,
@@ -67,19 +66,12 @@ export class UpdatePropertyCommand extends BaseCommand {
   }
 
   private emitPropertyChange(): void {
-    this.host.emit(EditorEvents.PROPERTY_VALUE_CHANGE, {
-      element: this.element,
-      elementId: this.element.id,
-      propertyPath: this.propertyPath,
-      oldValue: this.oldValue,
-      newValue: this.newValue,
-      timestamp: this.timestamp,
-    })
-    this.host.emit(EditorEvents.ELEMENT_UPDATED, {
+    this.host.emit('element:updated', {
       element: this.element,
       elementId: this.element.id,
       updatedProperties: [this.propertyPath],
       timestamp: this.timestamp,
+      source: 'update-property-command',
     })
   }
 

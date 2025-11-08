@@ -11,7 +11,7 @@ import { onMounted } from 'vue'
 
 // 接收host
 const { host } = defineProps<{
-  host: import('@/types').IEditorHost
+  host: import('@/core').EditorHost
 }>()
 </script>
 

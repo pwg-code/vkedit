@@ -1,5 +1,6 @@
 import { UpdatePropertyCommand } from '@/commands'
-import type { IEditorHost, IGraphicElement } from '.'
+import type { IGraphicElement } from '.'
+import type { EditorHost } from '@/core'
 
 export abstract class BaseGraphicElement implements IGraphicElement {
   public abstract type: string
@@ -18,8 +19,7 @@ export abstract class BaseGraphicElement implements IGraphicElement {
   ) {
     this.id = crypto.randomUUID()
   }
-
-  updateProperty(host: IEditorHost, property: string, oldValue: any, newValue: any): void {
+  updateProperty(host: EditorHost, property: string, oldValue: any, newValue: any): void {
     host.executeCommand(new UpdatePropertyCommand(this, host, property, oldValue, newValue))
   }
 
@@ -54,5 +54,29 @@ export abstract class BaseGraphicElement implements IGraphicElement {
       visible: this.visible,
       locked: this.locked,
     }
+  }
+  // 获取转换的属性
+  getTransformAttr(event: any): { oldAttrs: any; newAttrs: any } {
+
+    const eAttrs = event.target.attrs
+    const oldAttrs = {
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+      scaleX: 1,
+      scaleY: 1,
+      rotation: this.rotation,
+    }
+    const newAttrs = {
+      x: eAttrs.x,
+      y: eAttrs.y,
+      width: this.width * eAttrs.scaleX,
+      height: this.height * eAttrs.scaleY,
+      scaleX: 1,
+      scaleY: 1,
+      rotation: eAttrs.rotation,
+    }
+    return { oldAttrs, newAttrs }
   }
 }

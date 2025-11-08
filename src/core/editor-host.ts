@@ -1,16 +1,23 @@
 import { ref, reactive, computed } from 'vue'
-import type { IEditorHost, IEditorPlugin, IGraphicElement, IEditorState } from '../types'
-import { EditorEvents, EventUtils } from '../types/event-types'
+import type {
+  IEditorPlugin,
+  IGraphicElement,
+  IEditorState,
+  EventMap,
+  PluginEventData,
+} from '../types'
+import { EventUtils } from '../types/event-types'
 import type { ICommand } from '@/commands/i-command'
-import type { ElementManagerPlugin, GraphicTypeManagerPlugin } from '@/plugins'
+import type { ElementManagerPlugin } from '@/plugins'
 import type { Layer } from 'konva/lib/Layer'
 
-export class EditorHost implements IEditorHost {
+export class EditorHost<T extends { [K in keyof T]: (payload: any) => void } = EventMap> {
   private plugins: Map<string, IEditorPlugin> = new Map()
-  private eventHandlers: Map<string, Function[]> = new Map()
+  // private events: Map<string, Function[]> = new Map()
+  private events: Partial<{ [K in keyof T]: T[K][] }> = {}
   private commandStack: ICommand[] = []
   private currentCommandIndex: number = -1
-  public contentLayer: Layer | undefined
+  public contentLayer: any
   public contentGroup: any
   public stage: any
 
@@ -25,41 +32,63 @@ export class EditorHost implements IEditorHost {
     dpm: 8,
   })
 
-  // 发送事件
-  private emitEvent(event: EditorEvents, data?: any): void {
-    const eventData = {
-      ...EventUtils.createBaseEventData('host'),
-      ...data,
-    }
-    this.emit(event, eventData)
-  }
+  // 事件系统
 
   // 发送事件
-  emit(event: EditorEvents, ...args: any[]): void {
-    const handlers = this.eventHandlers.get(event)
+  emit<K extends keyof T>(event: K, payload: Parameters<T[K]>[0]): void {
+    const handlers = this.events[event]
     if (handlers) {
-      handlers.forEach((handler) => handler(...args))
+      handlers.forEach((handler) => handler(payload))
     }
+  }
+
+  // 订阅事件
+  on<K extends keyof T>(event: K, handler: T[K]): void {
+    if (!this.events[event]) this.events[event] = []
+    this.events[event].push(handler)
+  }
+
+  // 取消订阅
+  off<K extends keyof T>(event: K, handler: T[K]): void {
+    if (!handler) {
+      delete this.events[event]
+      return
+    }
+    const handlers = this.events[event]
+    if (handlers) this.events[event] = handlers.filter((h) => h !== handler) as any
   }
 
   // 插件管理
-  installPlugin(plugin: IEditorPlugin): EditorHost {
+  installPlugin(plugin: IEditorPlugin): EditorHost<T> {
     if (this.plugins.has(plugin.name)) {
       console.warn(`Plugin ${plugin.name} is already registered`)
       return this
     }
     this.plugins.set(plugin.name, plugin)
-    plugin.install(this)
-    this.emitEvent(EditorEvents.PLUGIN_REGISTERED, { plugin })
+    plugin.install(this as EditorHost<EventMap>)
+    this.emit(
+      'plugin:registered' as keyof T,
+      {
+        ...EventUtils.createBaseEventData('host'),
+        plugin,
+      } as PluginEventData,
+    )
+
     return this
   }
 
-  uninstallPlugin(pluginName: string): EditorHost {
+  uninstallPlugin(pluginName: string): EditorHost<T> {
     const plugin = this.plugins.get(pluginName)
     if (plugin) {
       plugin.uninstall()
       this.plugins.delete(pluginName)
-      this.emitEvent(EditorEvents.PLUGIN_UNREGISTERED, { plugin })
+      this.emit(
+        'plugin:unregistered' as keyof T,
+        {
+          ...EventUtils.createBaseEventData('host'),
+          plugin,
+        } as PluginEventData,
+      )
     }
     return this
   }
@@ -74,26 +103,6 @@ export class EditorHost implements IEditorHost {
     }
   }
 
-  // 事件系统
-  // 订阅事件
-  on(event: string, handler: Function): void {
-    if (!this.eventHandlers.has(event)) {
-      this.eventHandlers.set(event, [])
-    }
-    this.eventHandlers.get(event)!.push(handler)
-  }
-
-  // 取消订阅
-  off(event: string, handler: Function): void {
-    const handlers = this.eventHandlers.get(event)
-    if (handlers) {
-      const index = handlers.indexOf(handler)
-      if (index > -1) {
-        handlers.splice(index, 1)
-      }
-    }
-  }
-
   // 命令系统
   executeCommand(command: ICommand): void {
     // 清楚redo栈
@@ -103,7 +112,7 @@ export class EditorHost implements IEditorHost {
     this.commandStack.push(command)
     this.currentCommandIndex++
     command.execute()
-    this.emitEvent(EditorEvents.COMMAND_EXECUTED, { command })
+    this.emit('command:executed' as keyof T, { ...EventUtils.createBaseEventData('host'), command })
   }
 
   undo(): void {
@@ -111,7 +120,7 @@ export class EditorHost implements IEditorHost {
       const command = this.commandStack[this.currentCommandIndex]
       command.undo()
       this.currentCommandIndex--
-      this.emitEvent(EditorEvents.COMMAND_UNDONE, { command })
+      this.emit('command:undone' as keyof T, { ...EventUtils.createBaseEventData('host'), command })
     }
   }
 
@@ -120,7 +129,7 @@ export class EditorHost implements IEditorHost {
       this.currentCommandIndex++
       const command = this.commandStack[this.currentCommandIndex]
       command.redo()
-      this.emitEvent(EditorEvents.COMMAND_REDONE, { command })
+      this.emit('command:redone' as keyof T, { ...EventUtils.createBaseEventData('host'), command })
     }
   }
 
@@ -131,7 +140,10 @@ export class EditorHost implements IEditorHost {
 
   setState(newState: Partial<IEditorState>): void {
     Object.assign(this.state, newState)
-    this.emitEvent(EditorEvents.STATE_CHANGED, { state: this.state })
+    this.emit('state:changed' as keyof T, {
+      ...EventUtils.createBaseEventData('host'),
+      state: this.state,
+    })
   }
 
   toJSON(): string {
@@ -154,19 +166,13 @@ export class EditorHost implements IEditorHost {
     // 加载编辑器状态
     const elementsPlugin = this.getPlugin<ElementManagerPlugin>('element-manager-plugin')
     const elements: any[] = data.elements
-    const graphicTypesPlugin = this.getPlugin<GraphicTypeManagerPlugin>(
-      'graphic-type-manager-plugin',
-    )
-    if (elementsPlugin && graphicTypesPlugin) {
+    if (elementsPlugin) {
       elementsPlugin.elements.clear()
       // 加载所有图形元素
       elements.forEach((value) => {
-        const graphicType = graphicTypesPlugin.getGraphicType(value.type)
-        if (graphicType) {
-          const e = graphicType.createElement(0, 0)
-          e.deserialize(value)
-          elementsPlugin.addElement(e)
-        }
+        const e = elementsPlugin.createElement(value.type) // 先创建实例
+        e.deserialize(value)
+        elementsPlugin.addElement(e)
       })
       Object.assign(this.state, data.state)
     }

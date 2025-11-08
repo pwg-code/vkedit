@@ -1,4 +1,5 @@
-import type { IEditorHost, IEditorPlugin } from '.'
+import type { IEditorPlugin } from '.'
+import { type EditorHost } from "@/core";
 
 export abstract class BasePlugin implements IEditorPlugin {
   [key: string]: any
@@ -6,10 +7,10 @@ export abstract class BasePlugin implements IEditorPlugin {
   public abstract name: string
   public abstract version: string
 
-  protected host: IEditorHost | null = null
+  protected host: EditorHost | null = null
   protected isActivate: boolean = false
 
-  install(host: IEditorHost): void {
+  install(host: EditorHost): void {
     this.host = host
     this.onInstall()
   }

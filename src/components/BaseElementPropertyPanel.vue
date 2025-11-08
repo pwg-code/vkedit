@@ -99,7 +99,8 @@
 </template>
 
 <script setup lang="ts">
-import type { BaseGraphicElement, IEditorHost } from '@/types'
+import type { BaseGraphicElement } from '@/types'
+import type { EditorHost } from '@/core'
 import { Label } from '@/components/ui/label'
 
 import {
@@ -113,7 +114,7 @@ import { useHostState, usePropertyCommand } from '@/hooks'
 import { VkInputMM } from './ui'
 
 interface Props {
-  host: IEditorHost
+  host: EditorHost
   element: BaseGraphicElement
   selection: BaseGraphicElement[]
 }

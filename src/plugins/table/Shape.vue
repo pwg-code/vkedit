@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IEditorHost } from '@/types'
+import type { EditorHost } from '@/core'
 import type { CellConfig, TableElement } from './table'
 import { computed, ref } from 'vue'
 import type { SelectionPlugin } from '../selection'
@@ -53,7 +53,7 @@ import { VkButton } from "@/components/ui";
 
 interface Props {
   element: TableElement
-  host: IEditorHost
+  host: EditorHost
 }
 
 const { element, host } = defineProps<Props>()

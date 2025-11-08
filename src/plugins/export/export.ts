@@ -2,7 +2,6 @@
 导出功能插件
 */
 
-import { EditorEvents } from '@/types/event-types'
 import { BasePlugin } from '@/types/base-plugin'
 import type { IToolbar } from '@/types'
 import Export from './Export.vue'
@@ -16,53 +15,50 @@ export class ExportPlugin extends BasePlugin {
 
   protected onInstall(): void {
     if (!this.host) return
-    this.host?.emit(EditorEvents.TOOL_REGISTERED, this.getTool())
+    this.host?.emit('tool:registered', {
+      toolName: 'export',
+      render: () => Export,
+      source: 'export-plugin-on-install',
+      timestamp: Date.now(),
+    })
   }
 
-  private getTool(): IToolbar {
-    return {
-      name: 'export-plugin',
-      getComponent() {
-        return Export
-      },
-    }
-  }
 
   // 处理导出图片
   handleExportImage() {
-    this.host?.emit(EditorEvents.EXPORT_START, { format: 'png' })
+    this.host?.emit("export:start", { format: 'png' })
     try {
       this.exportImage()
     } catch (error) {
       // 发送导出失败事件
-      this.host?.emit(EditorEvents.EXPORT_ERROR, { format: 'png', error })
+      this.host?.emit("export:error", { format: 'png', error })
       return
     }
-    this.host?.emit(EditorEvents.EXPORT_COMPLETE, { format: 'png' })
+    this.host?.emit("export:complete", { format: 'png' })
   }
 
   // 处理导出 JSON
   handleExportJSON() {
-    this.host?.emit(EditorEvents.EXPORT_START, { format: 'json' })
+    this.host?.emit("export:start", { format: 'json' })
     try {
       this.exportJSON()
     } catch (error) {
-      this.host?.emit(EditorEvents.EXPORT_ERROR, { format: 'json', error })
+      this.host?.emit('export:error', { format: 'json', error })
       return
     }
-    this.host?.emit(EditorEvents.EXPORT_COMPLETE, { format: 'json' })
+    this.host?.emit('export:complete', { format: 'json' })
   }
 
   // 处理导出 PDF
   handleExportPdf() {
-    this.host?.emit(EditorEvents.EXPORT_START, { format: 'pdf' })
+    this.host?.emit("export:start", { format: 'pdf' })
     try {
       this.exportPdf()
     } catch (error) {
-      this.host?.emit(EditorEvents.EXPORT_ERROR, { format: 'pdf', error })
+      this.host?.emit("export:error", { format: 'pdf', error })
       return
     }
-    this.host?.emit(EditorEvents.EXPORT_COMPLETE, { format: 'pdf' })
+    this.host?.emit("export:complete", { format: 'pdf' })
   }
 
   // 导出图片

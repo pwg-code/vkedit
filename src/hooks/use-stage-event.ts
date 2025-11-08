@@ -1,69 +1,98 @@
-import type { ElementManagerPlugin } from '@/plugins'
-import type { IEditorHost, IEditorState, IGraphicElement, Point2D } from '@/types'
-import { EditorEvents } from '@/types/event-types'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import type { Point2D } from '@/types'
+import type { EditorHost } from '@/core'
+import { ref } from 'vue'
 import { useStage, useHostState } from '@/hooks'
 
-export function useStageEvent(host: IEditorHost) {
+export function useStageEvent(host: EditorHost) {
   // 画布状态
   const { hostState } = useHostState(host)
-  const { width, height, stageWrapperRef } = useStage()
+  const { stageWrapperRef } = useStage()
 
-  const scrollContainer = ref<HTMLElement | null>(null)
   const transformOrigin = ref({ x: 0, y: 0 })
 
   // 鼠标按下
   const handleClick = (event: any) => {
     const point = getEventPoint(event)
-    host.emit(EditorEvents.CANVAS_CLICK, { point, ...event })
+    host.emit('stage:click', { point, ...event, source: 'use-stage-event', timestamp: Date.now() })
   }
 
   // 鼠标按下
   const handleMouseDown = (event: any) => {
     const point = getEventPoint(event)
-    host.emit(EditorEvents.CANVAS_MOUSE_DOWN, { point, ...event })
+    host.emit('stage:mousedown', {
+      point,
+      ...event,
+      source: 'use-stage-event',
+      timestamp: Date.now(),
+    })
   }
 
   const handleMouseMove = (event: any) => {
     const point = getEventPoint(event)
-    host.emit(EditorEvents.CANVAS_MOUSE_MOVE, { point, ...event })
+    host.emit('stage:mousemove', {
+      point,
+      ...event,
+      source: 'use-stage-event',
+      timestamp: Date.now(),
+    })
   }
 
   const handleMouseUp = (event: any) => {
     const point = getEventPoint(event)
-    host.emit(EditorEvents.CANVAS_MOUSE_UP, { point, ...event })
+    host.emit('stage:mouseup', {
+      point,
+      ...event,
+      source: 'use-stage-event',
+      timestamp: Date.now(),
+    })
   }
 
-  function handleWheel(e: WheelEvent) {
-    host.emit(EditorEvents.CANVAS_WHEEL, e)
+  function handleWheel(e: any) {
+    host.emit('stage:wheel', { ...e, source: 'use-stage-event', timestamp: Date.now() })
   }
 
   // 键盘事件
   function handleKeyDown(event: any) {
-    host.emit(EditorEvents.CANVAS_KEYDOWN, event)
+    host.emit('stage:keydown', { evt: event, source: 'use-stage-event', timestamp: Date.now() })
     if (event.code == 'Delete') {
-      host.emit(EditorEvents.CANVAS_KEYDOWN_DELETE, event)
+      host.emit('stage:keydown-delete', {
+        evt: event,
+        source: 'use-stage-event',
+        timestamp: Date.now(),
+      })
     } else if (event.code == 'ArrowLeft') {
-      host.emit(EditorEvents.CANVAS_KEYDOWN_LEFT, event)
+      host.emit('stage:keydown-left', {
+        evt: event,
+        source: 'use-stage-event',
+        timestamp: Date.now(),
+      })
     } else if (event.code == 'ArrowRight') {
-      host.emit(EditorEvents.CANVAS_KEYDOWN_RIGHT, event)
+      host.emit('stage:keydown-right', {
+        evt: event,
+        source: 'use-stage-event',
+        timestamp: Date.now(),
+      })
     } else if (event.code == 'ArrowUp') {
-      host.emit(EditorEvents.CANVAS_KEYDOWN_UP, event)
+      host.emit('stage:keydown-up', { ...event, source: 'use-stage-event', timestamp: Date.now() })
     } else if (event.code == 'ArrowDown') {
-      host.emit(EditorEvents.CANVAS_KEYDOWN_DOWN, event)
+      host.emit('stage:keydown-down', {
+        evt: event,
+        source: 'use-stage-event',
+        timestamp: Date.now(),
+      })
     }
   }
 
   // 鼠标离开舞台
   function handleMouseleave(event: any) {
-    host.emit(EditorEvents.CANVAS_MOUSE_LEAVE, event)
+    host.emit('stage:mouseleave', { ...event, source: 'use-stage-event', timestamp: Date.now() })
   }
 
   // 处理上下文菜单事件
   function handleContextmenu(event: any) {
     // 阻止默认右键菜单
     event.evt.preventDefault()
-    host.emit(EditorEvents.CANVAS_CONTEXTMENU, event)
+    host.emit('stage:contextmenu', { ...event, source: 'use-stage-event', timestamp: Date.now() })
   }
 
   const getEventPoint = (event: any): Point2D => {
@@ -86,6 +115,6 @@ export function useStageEvent(host: IEditorHost) {
     handleWheel,
     handleKeyDown,
     handleMouseleave,
-    handleContextmenu
+    handleContextmenu,
   }
 }

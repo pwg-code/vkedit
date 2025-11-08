@@ -14,13 +14,14 @@
 </template>
 
 <script setup lang="ts">
-import type { BaseGraphicElement, IEditorHost } from '@/types'
+import type { BaseGraphicElement } from '@/types'
+import type { EditorHost } from '@/core'
 import { ref } from 'vue'
 import { Label } from '@/components/ui/label'
 import { VkInputMM } from '@/components/ui'
 
 interface Props {
-  host: IEditorHost
+  host: EditorHost
   element: BaseGraphicElement | undefined
   selection: BaseGraphicElement[]
 }

@@ -15,7 +15,6 @@ import {
   TextPlugin,
   TablePlugin,
   Vkedit,
-  EditorEvents,
   BaseElementPropertyPanel,
   CanvasPropertyPanel,
   ElementManagerPlugin,
@@ -30,7 +29,6 @@ import {
 //   TextPlugin,
 //   TablePlugin,
 //   Vkedit,
-//   EditorEvents,
 //   BaseElementPropertyPanel,
 //   CanvasPropertyPanel,
 // } from 'vkedit'
@@ -54,8 +52,6 @@ function test() {
 }
 
 onMounted(() => {
-  // host.emit(EditorEvents.PROPERTY_PANEL_PUBLIC_REGISTERED, BaseElementPropertyPanel)
-  // host.emit(EditorEvents.PROPERTY_PANEL_CANVAS_REGISTERED, CanvasPropertyPanel)
   // test()
 })
 </script>

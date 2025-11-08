@@ -146,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-import { EditorEvents, type IEditorHost } from '@/types'
+import { type EditorHost } from '@/core'
 import type { CellConfig, TableElement } from './table'
 import { Label } from '@/components/ui/label'
 import { VkButton, VkInput, VkInputMM, VkTextarea, VkToggle } from '@/components/ui'
@@ -164,7 +164,7 @@ import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useHostState } from '@/hooks'
 
 interface Props {
-  host: IEditorHost
+  host: EditorHost
   element: TableElement
   selection: TableElement[]
 }
@@ -309,20 +309,13 @@ const mergeCell = () => {
 
 onMounted(() => {
   // 为使用命令更新的属性触发更新单元格
-  host.on(EditorEvents.PROPERTY_BATCH_UPDATE_END, (e: any) => {
+  host.on('property:batch-update-end', (e: any) => {
     if (e.description === 'updateCells') {
       element.updateCells()
     }
   })
 })
 
-onUnmounted(() => {
-  host.off(EditorEvents.PROPERTY_BATCH_UPDATE_END, (e: any) => {
-    if (e.description === 'updateCells') {
-      element.updateCells()
-    }
-  })
-})
 </script>
 
 <style scoped></style>

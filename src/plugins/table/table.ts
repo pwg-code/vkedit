@@ -4,7 +4,6 @@ import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Tool from './Tool.vue'
 import { BaseGraphicElement } from '@/types/base-graphic-element'
-import { EditorEvents } from '@/types/event-types'
 import type { Component } from 'vue'
 
 export interface CellConfig {
@@ -269,28 +268,41 @@ export class TableElement extends BaseGraphicElement {
   }
 }
 
-export class TableGraphicType extends BaseGraphicType {
-  type: string = 'table'
-  render(): Component {
-    return Shape
-  }
-  renderPropertyPanel(): Component {
-    return PropertyPanel
-  }
-  renderTool(): Component {
-    return Tool
-  }
-  createElement(x: number, y: number): IGraphicElement {
-    return new TableElement()
-  }
-}
 
 export class TablePlugin extends BasePlugin {
   public name = 'table-plugin'
   public version = '1.0.0'
   protected onInstall(): void {
     if (!this.host) return
-    // 注册表格图形类型
-    this.host.emit(EditorEvents.GRAPHIC_TYPE_REGISTERED, new TableGraphicType())
+    // 图形工具
+    this.host.emit('graphic-tool:registered', {
+      type: 'table',
+      render: () => Tool,
+      source: 'table-plugin-on-install',
+      timestamp: Date.now(),
+    })
+    // 注册图形
+    this.host.emit('graphic:registered', {
+      type: 'table',
+      render: () => Shape,
+      source: 'table-plugin-on-install',
+      timestamp: Date.now(),
+    })
+    // 注册属性面板
+    this.host.emit('property-panel:registered', {
+      graphicTypes: ['table'],
+      render: () => PropertyPanel,
+      source: 'table-plugin-on-install',
+      timestamp: Date.now(),
+      isCanvas: false,
+      isPublic: false,
+    })
+    // 注册元素构造器
+    this.host.emit('element:registered', {
+      type: 'table',
+      createElement: () => new TableElement(),
+      source: 'table-plugin-on-install',
+      timestamp: Date.now(),
+    })
   }
 }

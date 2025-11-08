@@ -1,6 +1,5 @@
-import type { ICommand } from '@/commands/i-command'
 import type { Component } from 'vue'
-import konva from 'konva'
+import type { EditorHost } from '@/core'
 
 export interface Point2D {
   x: number
@@ -43,14 +42,15 @@ export interface IGraphicElement {
   clone(): IGraphicElement
   serialize(): any
   deserialize(data: any): void
-  updateProperty(host: IEditorHost, property: string, oldValue: any, newValue: any): void
+  updateProperty(host: EditorHost, property: string, oldValue: any, newValue: any): void
+  getTransformAttr?(event: any): { oldAttrs: any; newAttrs: any }
 }
 
 // 插件接口
 export interface IEditorPlugin {
   name: string
   version: string
-  install(host: IEditorHost): void
+  install(host: EditorHost): void
   uninstall(): void
   activate?(): void
   deactivate?(): void
@@ -72,70 +72,6 @@ export interface IGraphicType {
   renderTool(): Component // 工具按钮
   renderPropertyPanel(): Component // 属性面板
   createElement(x: number, y: number): IGraphicElement // 实例化图形元素
-  // 变换器属性
-  getTransformAttr(
-    event: any,
-    element: any,
-  ): { oldAttrs: { [key: string]: any }; newAttrs: { [key: string]: any } }
-}
-
-// export interface IGraphicType {
-//   type: string
-//   name: string
-//   icon: string
-//   defaultProps?: any
-//   getComponent(): Component
-//   createElement(x: number, y: number): IGraphicElement
-//   getTransformAttr?(
-//     event: any,
-//     element: any,
-//   ): { oldAttrs: { [key: string]: any }; newAttrs: { [key: string]: any } }
-// }
-
-// 属性面板
-export interface IPropertyPanel {
-  type: string
-  // forGraphicTypes?: string[] // 用于哪些图形类型
-  title: string
-  getComponent(): Component
-}
-
-// 属性面板(多个图形共用的)
-export interface IPropertyPanelForGraphics {
-  title: string
-  forGraphics: string[] // 用于哪些图形类型
-  getComponent(): Component
-}
-
-// 宿主接口
-export interface IEditorHost {
-  contentLayer: any // 内容图层
-  contentGroup: any // 内容组
-  stage: any // 舞台
-  // 插件管理
-  installPlugin(plugin: IEditorPlugin): void
-  uninstallPlugin(pluginName: string): void
-  getPlugin<T extends IEditorPlugin>(pluginName: string): T
-
-  // 事件系统
-  on(event: string, handler: Function): void
-  off(event: string, handler: Function): void
-  emit(event: string, ...args: any[]): void
-
-  // 命令系统
-  executeCommand(command: ICommand): void
-  undo(): void
-  redo(): void
-
-  // 状态管理
-  getState(): IEditorState
-  setState(state: Partial<IEditorState>): void
-
-  // 导出json
-  toJSON(): string
-
-  // 从JSON加载
-  loadJSON(jsonStr: string): void
 }
 
 // 编辑器状态

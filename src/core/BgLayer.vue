@@ -11,11 +11,11 @@
 
 <script setup lang="ts">
 import { useBgLayer } from '@/hooks'
-import type { IEditorHost } from '@/types'
+import type { EditorHost } from '@/core'
 import { ref } from 'vue'
 import konva from 'konva'
 
-const { host } = defineProps<{ host: IEditorHost }>()
+const { host } = defineProps<{ host: EditorHost }>()
 // 背景
 const { bgConfig, bgLayerConfig, contentBgConfig } = useBgLayer(host)
 

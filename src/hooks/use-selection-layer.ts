@@ -4,10 +4,10 @@
 
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useStage } from '@/hooks'
-import type { IEditorHost, Point2D } from '@/types'
-import { EditorEvents } from '@/types'
+import type { Point2D } from '@/types'
+import type { EditorHost } from '@/core'
 
-export function useSelectionLayer(host: IEditorHost) {
+export function useSelectionLayer(host: EditorHost) {
   const { width, height } = useStage()
   const isSelecting = ref(false)
   const selectionStart = ref<Point2D>({ x: 0, y: 0 })

@@ -1,13 +1,12 @@
 import { BaseCommand } from './base-command'
-import type { IEditorHost, IGraphicElement } from '../types'
-import { EditorEvents } from '@/types/event-types'
+import type { EditorHost } from '@/core'
 
 export class ChangeLayerOrderCommand extends BaseCommand {
   public name = 'CHANGE_LAYER_ORDER'
   private previousOrder: Map<string, number> = new Map()
 
   constructor(
-    private host: IEditorHost,
+    private host: EditorHost,
     private elementId: string,
     private direction: 'up' | 'down' | 'top' | 'bottom',
   ) {
@@ -21,20 +20,22 @@ export class ChangeLayerOrderCommand extends BaseCommand {
     // 执行图层顺序调整
     this.changeLayerOrder()
 
-    this.host.emit(EditorEvents.ELEMENTS_LAYER, {
+    this.host.emit('elements:layer', {
       elementId: this.elementId,
       direction: this.direction,
       timestamp: this.timestamp,
+      source: 'ChangeLayerOrderCommand',
     })
   }
 
   undo(): void {
     // 恢复之前的顺序
     this.restorePreviousOrder()
-    this.host.emit(EditorEvents.ELEMENTS_LAYER, {
+    this.host.emit('elements:layer', {
       elementId: this.elementId,
       direction: this.getReverseDirection(),
       timestamp: this.timestamp,
+      source: 'ChangeLayerOrderCommand',
     })
   }
 
@@ -53,7 +54,7 @@ export class ChangeLayerOrderCommand extends BaseCommand {
     // 简化实现
   }
 
-  private getReverseDirection(): string {
+  private getReverseDirection(): 'up' | 'down' | 'top' | 'bottom' {
     const reverseMap: { [key: string]: string } = {
       up: 'down',
       down: 'up',
@@ -61,6 +62,6 @@ export class ChangeLayerOrderCommand extends BaseCommand {
       bottom: 'top',
     }
 
-    return reverseMap[this.direction] || this.direction
+    return (reverseMap[this.direction] || this.direction) as 'up' | 'down' | 'top' | 'bottom'
   }
 }

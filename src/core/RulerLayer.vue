@@ -16,12 +16,12 @@
 import { useRulerLayer, useStage, useZoom } from '@/hooks'
 import { useHostState } from '@/hooks/use-host-state'
 import { useScrollbarLayer } from '@/hooks/use-scrollbar-layer'
-import type { IEditorHost } from '@/types'
+import type { EditorHost } from '@/core'
 import konva from 'konva'
 import { computed, watch } from 'vue'
 import { round } from 'lodash'
 
-const { host } = defineProps<{ host: IEditorHost }>()
+const { host } = defineProps<{ host: EditorHost }>()
 
 // 标尺hook
 const {

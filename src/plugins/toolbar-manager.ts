@@ -1,27 +1,25 @@
-import { EditorEvents } from '@/types/event-types'
 import { BasePlugin } from '../types/base-plugin'
-import type { IGraphicElement, Point2D, IToolbar } from '../types'
-import type { ElementManagerPlugin } from './element-manager'
+import type { ToolEventData } from '../types'
 
 export class ToolbarManagerPlugin extends BasePlugin {
   name = 'toolbar-manager-plugin'
   version = '1.0.0'
-  private toolbars = new Map<string, IToolbar>()
+  private toolbars = new Map<string, ToolEventData>()
 
   protected onInstall(): void {
     if (!this.host) return
-    this.host.on(EditorEvents.TOOL_REGISTERED, this.handleRegistered.bind(this))
+    this.host.on('tool:registered', this.handleRegistered.bind(this))
   }
   protected onUninstall(): void {
     if (!this.host) return
-    this.host.off(EditorEvents.TOOL_REGISTERED, this.handleRegistered.bind(this))
+    this.host.off('tool:unregistered', this.handleRegistered.bind(this))
   }
 
-  private handleRegistered(toolbar: IToolbar) {
-    this.toolbars.set(toolbar.name, toolbar)
+  private handleRegistered(toolbar: ToolEventData): void {
+    this.toolbars.set(toolbar.toolName, toolbar)
   }
 
-  public getTools(): IToolbar[] {
+  public getTools(): ToolEventData[] {
     return Array.from(this.toolbars.values())
   }
 }

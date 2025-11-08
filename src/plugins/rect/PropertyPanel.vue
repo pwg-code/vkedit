@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IEditorHost } from '@/types'
+import type { EditorHost } from '@/core'
 import type { RectElement } from './rect'
 import { Label } from '@/components/ui/label'
 import {
@@ -33,7 +33,7 @@ import {
 import { VkInputMM } from '@/components/ui'
 
 interface Props {
-  host: IEditorHost
+  host: EditorHost
   element: RectElement
   selection: RectElement[]
 }

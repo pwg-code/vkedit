@@ -12,13 +12,13 @@
 </template>
 
 <script setup lang="ts">
-import type { IEditorHost } from '@/types'
+import type { EditorHost } from '@/core'
 import type { TextElement } from './text'
 import TextProperty from '@/components/TextProperty.vue'
 import { usePropertyCommand } from '@/hooks'
 
 interface Props {
-  host: IEditorHost
+  host: EditorHost
   element: TextElement
   selection: TextElement[]
 }

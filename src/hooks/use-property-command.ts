@@ -1,8 +1,9 @@
 import { BatchCommand, UpdatePropertyCommand, type ICommand } from '@/commands'
-import type { IEditorHost, IGraphicElement } from '@/types'
+import type { IGraphicElement } from '@/types'
+import type { EditorHost } from '@/core'
 import { get } from 'lodash'
 
-export function usePropertyCommand(host: IEditorHost) {
+export function usePropertyCommand(host: EditorHost) {
   const updateProperty = (element: IGraphicElement, propertyPath: string, newValue: any) => {
     const oldValue = get(element, propertyPath)
     if (oldValue === newValue) return

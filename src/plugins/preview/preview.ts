@@ -2,7 +2,7 @@
 预览插件
 */
 
-import { BasePlugin, EditorEvents, type IToolbar } from '@/types'
+import { BasePlugin } from '@/types'
 import { ExportPlugin } from '@/plugins'
 import PreviewButton from './PreviewButton.vue'
 
@@ -13,29 +13,25 @@ export class PreviewPlugin extends BasePlugin {
   protected onInstall(): void {
     // 向工具栏注册预览按钮
     if (!this.host) return
-    this.host.emit(EditorEvents.TOOL_REGISTERED, this.getTool())
-  }
-
-  private getTool(): IToolbar {
-    return {
-      name: 'preview-plugin',
-      getComponent() {
-        return PreviewButton
-      },
-    }
+    this.host.emit('tool:registered', {
+      toolName: 'preview',
+      render: () => PreviewButton,
+      source: 'preview-plugin-on-install',
+      timestamp: Date.now(),
+    })
   }
 
   // 预览
   handlePreview() {
     if (!this.host) return
-    this.host.emit(EditorEvents.PREVIEW_START)
+    this.host.emit('preview:start', { source: '', timestamp: Date.now() })
     try {
       this.preview()
     } catch (error) {
-      this.host.emit(EditorEvents.PREVIEW_ERROR, { error })
+      this.host.emit('preview:error', { source: '', timestamp: Date.now(), error })
       return
     }
-    this.host.emit(EditorEvents.PREVIEW_COMPLETE)
+    this.host.emit('preview:complete', { source: '', timestamp: Date.now() })
   }
 
   // 预览实现函数
@@ -54,14 +50,14 @@ export class PreviewPlugin extends BasePlugin {
   // 打印预览
   handlePrintPreview() {
     if (!this.host) return
-    this.host.emit(EditorEvents.PREVIEW_START)
+    this.host.emit('preview:start', { source: '', timestamp: Date.now() })
     try {
       this.printPreview()
     } catch (error) {
-      this.host.emit(EditorEvents.PREVIEW_ERROR, { error })
+      this.host.emit('preview:error', { source: '', timestamp: Date.now(), error })
       return
     }
-    this.host.emit(EditorEvents.PREVIEW_COMPLETE)
+    this.host.emit('preview:complete', { source: '', timestamp: Date.now() })
   }
 
   // 打印预览实现函数

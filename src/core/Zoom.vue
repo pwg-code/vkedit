@@ -25,11 +25,11 @@
 
 <script setup lang="ts">
 import { useStage, useZoom } from '@/hooks'
-import { EditorEvents, type IEditorHost } from '@/types'
+import { type EditorHost } from '@/core'
 import { Icon } from '@iconify/vue'
 import { onMounted } from 'vue';
 
-const { host } = defineProps<{ host: IEditorHost }>()
+const { host } = defineProps<{ host: EditorHost }>()
 
 // 画布长宽
 const { width, height } = useStage()
@@ -39,7 +39,7 @@ const { zoom, handleZoomIn, handleZoomOut, handleZoomAuto, handleWheel } = useZo
 
 onMounted(() => {
   // 监听滚轮事件 实现缩放
-  host.on(EditorEvents.CANVAS_WHEEL, handleWheel)
+  host.on('stage:wheel', handleWheel)
 })
 
 </script>

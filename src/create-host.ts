@@ -3,14 +3,14 @@ import {
   AlignPlugin,
   ElementManagerPlugin,
   ExportPlugin,
-  GraphicTypeManagerPlugin,
   KeyDownPlugin,
   PropertyPanelManagerPlugin,
   SelectionPlugin,
   ToolbarManagerPlugin,
   PreviewPlugin,
+  GraphicToolManagerPlugin,
+  GraphicManagerPlugin
 } from './plugins'
-import { EditorEvents } from './types'
 import BaseElementPropertyPanel from '@/components/BaseElementPropertyPanel.vue'
 import CanvasPropertyPanel from '@/components/CanvasPropertyPanel.vue'
 
@@ -31,19 +31,34 @@ export function createEditorHost({
   const host = new EditorHost()
   host
     .installPlugin(new ToolbarManagerPlugin())
+    .installPlugin(new GraphicToolManagerPlugin())
+    .installPlugin(new GraphicManagerPlugin())
     .installPlugin(new PropertyPanelManagerPlugin())
-    .installPlugin(new GraphicTypeManagerPlugin())
     .installPlugin(new ElementManagerPlugin())
     .installPlugin(new KeyDownPlugin())
     .installPlugin(new SelectionPlugin())
     .installPlugin(new AlignPlugin())
 
   if (basePropertyPanel) {
-    host.emit(EditorEvents.PROPERTY_PANEL_PUBLIC_REGISTERED, BaseElementPropertyPanel)
+    host.emit('property-panel:registered', {
+      render: () => BaseElementPropertyPanel,
+      graphicTypes: [],
+      isPublic: true,
+      isCanvas: false,
+      timestamp: Date.now(),
+      source: 'createEditorHost',
+    })
   }
 
   if (baseCanvasPropertyPanel) {
-    host.emit(EditorEvents.PROPERTY_PANEL_CANVAS_REGISTERED, CanvasPropertyPanel)
+    host.emit('property-panel:registered', {
+      render: () => CanvasPropertyPanel,
+      graphicTypes: [],
+      isPublic: false,
+      isCanvas: true,
+      timestamp: Date.now(),
+      source: 'createEditorHost',
+    })
   }
 
   if (exportPlugin) {

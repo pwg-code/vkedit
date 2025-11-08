@@ -1,6 +1,5 @@
-import { EditorEvents } from '@/types/event-types'
 import { BasePlugin } from '../types/base-plugin'
-import type { IGraphicElement, Point2D } from '../types'
+import type { StageKeyboardEventData} from '../types'
 import { RemoveElementCommand } from '@/commands'
 import type { SelectionPlugin } from './selection'
 
@@ -11,18 +10,18 @@ export class KeyDownPlugin extends BasePlugin {
   protected onInstall(): void {
     if (!this.host) return
     // 监听画布键盘事件
-    this.host.on(EditorEvents.CANVAS_KEYDOWN, this.handleKeyDown.bind(this))
+    this.host.on('stage:keydown', this.handleKeyDown.bind(this))
   }
 
   protected onUninstall(): void {
     if (!this.host) return
     // 移除事件监听
-    this.host.off(EditorEvents.CANVAS_KEYDOWN, this.handleKeyDown.bind(this))
+    this.host.off('stage:keydown', this.handleKeyDown.bind(this))
   }
 
-  private handleKeyDown(event: any): void {
+  private handleKeyDown(event: StageKeyboardEventData): void {
     if (!this.host) return
-    if (event.code == 'Delete') {
+    if (event.evt.code == 'Delete') {
       this.deleteSelectionElement()
     }
   }

@@ -16,7 +16,7 @@
         ></Button>
       </div>
       <template v-for="item in tools">
-        <component :is="item.getComponent()" :host="host"></component>
+        <component :is="item.render()" :host="host"></component>
       </template>
       <slot name="center" :host="host"></slot>
     </div>
@@ -31,13 +31,14 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
-import type { IEditorHost, IEditorState, IToolbar } from '../types'
+import type { IEditorState, ToolEventData } from '../types'
+import type { EditorHost } from '@/core'
 import { Button } from '@/components/ui/button'
 import { ToolbarManagerPlugin } from '@/plugins'
 import { Icon } from '@iconify/vue'
 
 interface Props {
-  host: IEditorHost
+  host: EditorHost
 }
 
 const { host } = defineProps<Props>()
@@ -47,7 +48,7 @@ const hostState = ref<IEditorState>(host.getState())
 // 插件工具
 const toolbarPlugin = host.getPlugin<ToolbarManagerPlugin>('toolbar-manager-plugin')
 
-const tools = ref<IToolbar[]>()
+const tools = ref<ToolEventData[]>()
 
 const initTools = () => {
   if (toolbarPlugin?.getTools) {

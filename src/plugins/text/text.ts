@@ -5,7 +5,6 @@ import type { Component } from 'vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
 import Tool from './Tool.vue'
-import { EditorEvents } from '@/types/event-types'
 
 // 矩形元素实现
 export class TextElement extends BaseGraphicElement {
@@ -34,28 +33,40 @@ export class TextElement extends BaseGraphicElement {
   }
 }
 
-export class TextGraphicType extends BaseGraphicType {
-  type: string = 'text'
-  render(): Component {
-    return Shape
-  }
-  renderPropertyPanel(): Component {
-    return PropertyPanel
-  }
-  renderTool(): Component {
-    return Tool
-  }
-  createElement(x: number, y: number): IGraphicElement {
-    return new TextElement()
-  }
-}
-
 export class TextPlugin extends BasePlugin {
   public name = 'text-plugin'
   public version = '1.0.0'
   protected onInstall(): void {
     if (!this.host) return
-    // 注册矩形图形类型
-    this.host.emit(EditorEvents.GRAPHIC_TYPE_REGISTERED, new TextGraphicType())
+    // 图形工具
+    this.host.emit('graphic-tool:registered', {
+      type: 'text',
+      render: () => Tool,
+      source: 'text-plugin-on-install',
+      timestamp: Date.now(),
+    })
+    // 注册图形
+    this.host.emit('graphic:registered', {
+      type: 'text',
+      render: () => Shape,
+      source: 'text-plugin-on-install',
+      timestamp: Date.now(),
+    })
+    // 注册属性面板
+    this.host.emit('property-panel:registered', {
+      graphicTypes: ['text'],
+      render: () => PropertyPanel,
+      source: 'text-plugin-on-install',
+      timestamp: Date.now(),
+      isCanvas: false,
+      isPublic: false,
+    })
+    // 注册元素构造器
+    this.host.emit('element:registered', {
+      type: 'text',
+      createElement: () => new TextElement(),
+      source: 'text-plugin-on-install',
+      timestamp: Date.now(),
+    })
   }
 }

@@ -4,20 +4,18 @@
 
 import { computed, onMounted, ref } from 'vue'
 import { useZoom } from './use-zoom'
-import { EditorEvents, type IEditorHost, type IGraphicElement } from '@/types'
-import type { ElementManagerPlugin, GraphicTypeManagerPlugin } from '@/plugins'
+import { type IGraphicElement } from '@/types'
+import { type EditorHost } from '@/core'
+import type { ElementManagerPlugin } from '@/plugins'
 import { TransformElementCommand } from '@/commands'
 import { useScrollbarLayer } from './use-scrollbar-layer'
 
-export function useContentLayer(host: IEditorHost) {
+export function useContentLayer(host: EditorHost) {
   // 图层
   const contentLayerRef = ref()
 
   // 转换器
   const transformerRef = ref()
-
-  // 图形类插件
-  const graphicTypesPlugin = host.getPlugin<GraphicTypeManagerPlugin>('graphic-type-manager-plugin')
 
   // 缩放逻辑hook
   const { zoom } = useZoom(host)
@@ -53,7 +51,7 @@ export function useContentLayer(host: IEditorHost) {
   }
 
   // 更新选中元素
-  const updateTransformerNodes = (selection: Map<string, IGraphicElement>) => {
+  const updateTransformerNodes = (selection: IGraphicElement[]) => {
     const nodes: any[] = []
     if (!contentLayerRef.value) return
     selection.forEach((e) => {
@@ -75,11 +73,9 @@ export function useContentLayer(host: IEditorHost) {
   let isTransforming = false
 
   // 图形变换更改属性
-  const handleElementTransform = (event: any, element: any) => {
-    // 如果图形元素没有提供getTransformAttr则使用默认
-    const graphicType = graphicTypesPlugin?.getGraphicType(element.type)
-    if (graphicType?.getTransformAttr) {
-      const { oldAttrs, newAttrs } = graphicType.getTransformAttr(event, element)
+  const handleElementTransform = (event: any, element: IGraphicElement) => {
+    if (element?.getTransformAttr) {
+      const { oldAttrs, newAttrs } = element.getTransformAttr(event)
       command = new TransformElementCommand(element, host, oldAttrs, newAttrs)
     } else {
       const { oldAttrs, newAttrs } = getTransformAttr(event, element)
@@ -143,7 +139,6 @@ export function useContentLayer(host: IEditorHost) {
     contentLayerConfig,
     contentGroupConfig,
     elements,
-    graphicTypesPlugin,
     initElements,
     handleDragEnd,
     handleElementTransform,

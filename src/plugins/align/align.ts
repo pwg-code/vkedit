@@ -1,6 +1,4 @@
-import { EditorEvents } from '@/types/event-types'
 import { BasePlugin } from '@/types/base-plugin'
-import type { IToolbar } from '@/types'
 import Align from './Align.vue'
 
 export class AlignPlugin extends BasePlugin {
@@ -9,15 +7,11 @@ export class AlignPlugin extends BasePlugin {
 
   protected onInstall(): void {
     if (!this.host) return
-    this.host.emit(EditorEvents.TOOL_REGISTERED, this.getTool())
-  }
-
-  private getTool(): IToolbar {
-    return {
-      name: 'align-plugin',
-      getComponent() {
-        return Align
-      },
-    }
+    this.host.emit('tool:registered', {
+      toolName:'align',
+      render:()=>Align,
+      source:"align-plugin-on-install",
+      timestamp:Date.now()
+    })
   }
 }
