@@ -9,7 +9,8 @@ import {
   ToolbarManagerPlugin,
   PreviewPlugin,
   GraphicToolManagerPlugin,
-  GraphicManagerPlugin
+  GraphicManagerPlugin,
+  ContextMenuManager
 } from './plugins'
 import BaseElementPropertyPanel from '@/components/BaseElementPropertyPanel.vue'
 import CanvasPropertyPanel from '@/components/CanvasPropertyPanel.vue'
@@ -38,6 +39,7 @@ export function createEditorHost({
     .installPlugin(new KeyDownPlugin())
     .installPlugin(new SelectionPlugin())
     .installPlugin(new AlignPlugin())
+    .installPlugin(new ContextMenuManager())
 
   if (basePropertyPanel) {
     host.emit('property-panel:registered', {

@@ -22,6 +22,7 @@
       <ScrollbarLayer :host="host"></ScrollbarLayer>
     </v-stage>
     <Zoom :host="host"></Zoom>
+    <ContextMenu :host="host"></ContextMenu>
   </div>
 </template>
 
@@ -35,6 +36,7 @@ import RulerLayer from './RulerLayer.vue'
 import ScrollbarLayer from './ScrollbarLayer.vue'
 import ContentLayer from './ContentLayer.vue'
 import SelectionLayer from './SelectionLayer.vue'
+import ContextMenu from './ContextMenu.vue'
 
 interface Props {
   host: EditorHost

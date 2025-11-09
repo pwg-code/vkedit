@@ -19,7 +19,8 @@ import type {
   StageKeyboardEventData,
   GraphicRegisteredEventData,
   GraphicToolRegisteredEventData,
-  ElementRegisteredEventData
+  ElementRegisteredEventData,
+  ContextMenuRegisteredEventData
 } from './event-data'
 
 /**
@@ -203,6 +204,10 @@ export interface EventMap {
   'preview:start': (payload: BaseEventData) => void
   'preview:complete': (payload: BaseEventData) => void
   'preview:error': (payload: ErrorEventData) => void
+
+  // 上下文菜单注册
+  'context-menu:registered': (payload: ContextMenuRegisteredEventData) => void
+  'context-menu:unregistered': (payload: ContextMenuRegisteredEventData) => void
 
   // 自定义（插件）
   'custom:': (...args: any[]) => any

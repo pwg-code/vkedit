@@ -39,6 +39,9 @@ export class SelectionPlugin extends BasePlugin {
   }
 
   private handleMouseDown(event: any): void {
+    // 如果按下的不是左键则不做任何操作
+    if (event.evt.button !== 0) return
+
     if (!this.host || this.host.getState().currentTool !== 'select') return
     this.selectionStart = event.point
     this.selectionEnd = event.point
@@ -181,5 +184,10 @@ export class SelectionPlugin extends BasePlugin {
         this.selectionElements.set(element.id, element)
       }
     })
+  }
+
+  // 获取当前选中的元素
+  public getSelectionElements(): IGraphicElement[] {
+    return Array.from(this.selectionElements.values())
   }
 }

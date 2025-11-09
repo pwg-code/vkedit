@@ -5,6 +5,7 @@ import type { Component } from 'vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
 import Tool from './Tool.vue'
+import TextContextMenu from './TextContextMenu.vue'
 
 // 矩形元素实现
 export class TextElement extends BaseGraphicElement {
@@ -65,6 +66,15 @@ export class TextPlugin extends BasePlugin {
     this.host.emit('element:registered', {
       type: 'text',
       createElement: () => new TextElement(),
+      source: 'text-plugin-on-install',
+      timestamp: Date.now(),
+    })
+    // 注册一个上下文菜单
+    this.host.emit('context-menu:registered', {
+      graphicTypes: ['text'],
+      render: () => TextContextMenu,
+      isPublic: false,
+      isCanvas: false,
       source: 'text-plugin-on-install',
       timestamp: Date.now(),
     })

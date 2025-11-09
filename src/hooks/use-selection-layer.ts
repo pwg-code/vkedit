@@ -37,6 +37,8 @@ export function useSelectionLayer(host: EditorHost) {
 
   // 鼠标按下
   const handleMouseDown = (event: any) => {
+    // 只响应左键
+    if (event.evt.button !== 0) return
     const point = event.point
     if (host.getState().currentTool === 'select') {
       isSelecting.value = true

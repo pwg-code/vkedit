@@ -1,4 +1,5 @@
 export * from './align';
+export * from './context-menu-manager';
 export * from './element-manager';
 export * from './export';
 export * from './graphic-manager';

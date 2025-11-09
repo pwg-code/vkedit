@@ -151,7 +151,13 @@ export interface GraphicToolRegisteredEventData extends BaseEventData {
   render: () => Component
 }
 
-
+// 上下文菜单注册数据类型
+export interface ContextMenuRegisteredEventData extends BaseEventData {
+  render: () => Component
+  graphicTypes: string[]
+  isPublic: boolean
+  isCanvas: boolean
+}
 
 
 /**
