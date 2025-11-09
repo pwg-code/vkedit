@@ -36,7 +36,13 @@ export class ContextMenuManager extends BasePlugin {
     const selection = this.host?.getPlugin<SelectionPlugin>('selection-plugin').getSelectionElements()
     // 公共菜单和画布菜单始终显示
     this.contextMenus.forEach(menu => {
-      if (menu.isPublic || menu.isCanvas) {
+      // 如果没有选择则显示画布菜单
+      if (selection.length === 0 && menu.isCanvas) {
+        menus.push(menu)
+        return
+      }
+      // 如果是公共菜单且有选中图形则显示
+      if (menu.isPublic && selection.length > 0) {
         menus.push(menu)
       } else {
         // 否则根据选中图形类型过滤

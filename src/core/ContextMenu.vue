@@ -1,12 +1,13 @@
 <template>
   <!-- 上下文菜单  根据右键鼠标位置显示 -->
   <div
-    v-if="isShow"
-    class="flex items-center absolute rounded-xl p-2 shadow-lg"
+    v-if="isShow && contextMenus.length > 0"
+    class="grid grid-cols-1 items-center absolute rounded shadow-lg border border-border bg-white w-[120px]"
     :style="{
       top: position.y + 'px',
       left: position.x + 'px',
     }"
+    @click="isShow=false"
   >
     <!-- 动态渲染上下文菜单 -->
     <component v-for="(menu, i) in contextMenus" :is="menu.render()" :key="i" :host="host" />
