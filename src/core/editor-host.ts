@@ -6,7 +6,7 @@ import type {
   EventMap,
   PluginEventData,
 } from '../types'
-import { EventUtils } from '../types/event-types'
+import { EventUtils } from '../types/event-data'
 import type { ICommand } from '@/commands/i-command'
 import type { ElementManagerPlugin } from '@/plugins'
 import type { Layer } from 'konva/lib/Layer'

@@ -20,7 +20,7 @@ import type {
   GraphicRegisteredEventData,
   GraphicToolRegisteredEventData,
   ElementRegisteredEventData
-} from './event-types'
+} from './event-data'
 
 /**
  *

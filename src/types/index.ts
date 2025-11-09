@@ -2,5 +2,5 @@ export * from './base-graphic-element';
 export * from './base-graphic-type';
 export * from './base-plugin';
 export * from './base';
-export * from './event-types';
+export * from './event-data';
 export * from './event-map';

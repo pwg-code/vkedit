@@ -57,10 +57,10 @@ export class ElementManagerPlugin extends BasePlugin {
   }
 
   // 创建元素实例
-  createElement(type: string, ...args: any[]): IGraphicElement {
+  createElement(type: string): IGraphicElement {
     const constructor = this.elementConstructors.get(type)
     if (constructor) {
-      return constructor.createElement(...args)
+      return constructor.createElement()
     }
     throw new Error(`Element type ${type} is not registered.`)
   }
