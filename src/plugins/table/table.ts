@@ -4,7 +4,7 @@ import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Tool from './Tool.vue'
 import { BaseGraphicElement } from '@/types/base-graphic-element'
-import type { Component } from 'vue'
+import ContextMenu from './ContextMenu.vue'
 
 export interface CellConfig {
   rowIndex: number
@@ -117,6 +117,13 @@ export class TableElement extends BaseGraphicElement {
     return { width, height }
   }
 
+  // 更新活动单元格
+  public setActiveCell(rowIndex: number, colIndex: number) {
+    this.activeCell = this.cells[rowIndex][colIndex]
+    this.activeRow = rowIndex
+    this.activeCol = colIndex
+  }
+
   // 获取默认的单元格配置
   public getDefaultCellConfig(rowIndex: number, colIndex: number): CellConfig {
     return {
@@ -173,9 +180,9 @@ export class TableElement extends BaseGraphicElement {
     }
     this.updateCells()
     // 如果删除的活动单元格的行  则设置下一个单元格为活动单元格
-    const rowIndex = Math.min(this.activeCell.rowIndex, this.rowCount - 1)
-    const colIndex = Math.min(this.activeCell.colIndex, this.colCount - 1)
-    this.activeCell = this.cells[rowIndex][colIndex]
+    const rowIndex = Math.min(this.activeRow, this.rowCount - 1)
+    const colIndex = Math.min(this.activeCol, this.colCount - 1)
+    this.setActiveCell(rowIndex, colIndex)
   }
 
   // 增加一列
@@ -219,9 +226,9 @@ export class TableElement extends BaseGraphicElement {
     }
     this.updateCells()
     // 如果删除的活动单元格的列  则设置下一个单元格为活动单元格
-    const rowIndex = Math.min(this.activeCell.rowIndex, this.rowCount - 1)
-    const colIndex = Math.min(this.activeCell.colIndex, this.colCount - 1)
-    this.activeCell = this.cells[rowIndex][colIndex]
+    const rowIndex = Math.min(this.activeRow, this.rowCount - 1)
+    const colIndex = Math.min(this.activeCol, this.colCount - 1)
+    this.setActiveCell(rowIndex, colIndex)
   }
 
   clone(): IGraphicElement {
@@ -268,7 +275,6 @@ export class TableElement extends BaseGraphicElement {
   }
 }
 
-
 export class TablePlugin extends BasePlugin {
   public name = 'table-plugin'
   public version = '1.0.0'
@@ -301,6 +307,15 @@ export class TablePlugin extends BasePlugin {
     this.host.emit('element:registered', {
       type: 'table',
       createElement: () => new TableElement(),
+      source: 'table-plugin-on-install',
+      timestamp: Date.now(),
+    })
+    // 注册上下文菜单
+    this.host.emit('context-menu:registered', {
+      graphicTypes: ['table'],
+      isCanvas: false,
+      isPublic: false,
+      render: () => ContextMenu,
       source: 'table-plugin-on-install',
       timestamp: Date.now(),
     })

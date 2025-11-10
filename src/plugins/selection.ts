@@ -152,28 +152,28 @@ export class SelectionPlugin extends BasePlugin {
   public selectElement(element: IGraphicElement): void {
     this.selectionElements.set(element.id, element)
     this.host?.emit('selection:changed', {
-        selection: Array.from(this.selectionElements.values()),
-        source: 'selection-plugin',
-        timestamp: Date.now(),
-      })
+      selection: Array.from(this.selectionElements.values()),
+      source: 'selection-plugin',
+      timestamp: Date.now(),
+    })
   }
 
   public deselectElement(elementId: string): void {
     this.selectionElements.delete(elementId)
     this.host?.emit('selection:changed', {
-        selection: Array.from(this.selectionElements.values()),
-        source: 'selection-plugin',
-        timestamp: Date.now(),
-      })
+      selection: Array.from(this.selectionElements.values()),
+      source: 'selection-plugin',
+      timestamp: Date.now(),
+    })
   }
 
   public clearSelection(): void {
     this.selectionElements.clear()
     this.host?.emit('selection:changed', {
-        selection: Array.from(this.selectionElements.values()),
-        source: 'selection-plugin',
-        timestamp: Date.now(),
-      })
+      selection: Array.from(this.selectionElements.values()),
+      source: 'selection-plugin',
+      timestamp: Date.now(),
+    })
   }
 
   public selectElementByIds(ids: string[]): void {
@@ -189,5 +189,14 @@ export class SelectionPlugin extends BasePlugin {
   // 获取当前选中的元素
   public getSelectionElements(): IGraphicElement[] {
     return Array.from(this.selectionElements.values())
+  }
+
+  // 获取当前选中的元素 返回第一个
+  public getCurrentElement(): IGraphicElement | null {
+    const elements = Array.from(this.selectionElements.values())
+    if (elements.length > 0) {
+      return elements[0]
+    }
+    return null
   }
 }

@@ -7,10 +7,17 @@
       top: position.y + 'px',
       left: position.x + 'px',
     }"
-    @click="isShow=false"
+    @click="isShow = false"
   >
     <!-- 动态渲染上下文菜单 -->
-    <component v-for="(menu, i) in contextMenus" :is="menu.render()" :key="i" :host="host" />
+    <component
+      v-for="(menu, i) in contextMenus"
+      :is="menu.render()"
+      :key="i"
+      :host="host"
+      :element="element"
+      :selection="selection"
+    />
   </div>
 </template>
 
@@ -18,8 +25,8 @@
 import { onMounted, ref } from 'vue'
 import type { EditorHost } from '@/core'
 import { VkButton } from '@/components'
-import type { ContextMenuRegisteredEventData } from '@/types'
-import type { ContextMenuManager } from '@/plugins';
+import type { ContextMenuRegisteredEventData, IGraphicElement } from '@/types'
+import type { ContextMenuManager, SelectionPlugin } from '@/plugins'
 
 const { host } = defineProps<{
   host: EditorHost
@@ -27,6 +34,12 @@ const { host } = defineProps<{
 
 // 当前上下文菜单
 const contextMenus = ref<ContextMenuRegisteredEventData[]>([])
+
+// 获取选择插件
+const selectionPlugin = host.getPlugin<SelectionPlugin>('selection-plugin')
+
+const element = ref<IGraphicElement | null>(null)
+const selection = ref<IGraphicElement[]>([])
 
 // 当前显示的位置
 const position = ref({ x: 0, y: 0 })
@@ -38,9 +51,12 @@ onMounted(() => {
   // 监听上下文事件
   host.on('stage:contextmenu', (event) => {
     contextMenus.value = host
-      .getPlugin<ContextMenuManager>('contextmenu-manager-plugin').getContextMenus()
+      .getPlugin<ContextMenuManager>('contextmenu-manager-plugin')
+      .getContextMenus()
     position.value = { x: event.evt.layerX, y: event.evt.layerY }
     isShow.value = true
+    selection.value = selectionPlugin.getSelectionElements()
+    element.value = selectionPlugin.getCurrentElement()
   })
   // 监听点击事件 隐藏菜单
   host.on('stage:click', (event) => {

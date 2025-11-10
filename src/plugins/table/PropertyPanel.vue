@@ -34,14 +34,6 @@
       <NumberFieldIncrement />
     </NumberFieldContent>
   </NumberField>
-  <VkButton variant="outline" @click="element.addRow(element.activeCell.rowIndex)">插入行</VkButton>
-  <VkButton variant="outline" @click="element.addCol(element.activeCell.colIndex)">插入列</VkButton>
-  <VkButton variant="outline" @click="element.removeRow(element.activeCell.rowIndex)"
-    >删除行</VkButton
-  >
-  <VkButton variant="outline" @click="element.removeCol(element.activeCell.colIndex)"
-    >删除列</VkButton
-  >
   <div class="pt-4 font-bold">
     单元格设置 ({{ element.activeCell.rowIndex + 1 }},{{ element.activeCell.colIndex + 1 }})
   </div>
@@ -315,7 +307,6 @@ onMounted(() => {
     }
   })
 })
-
 </script>
 
 <style scoped></style>
