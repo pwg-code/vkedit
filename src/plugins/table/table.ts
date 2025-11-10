@@ -7,8 +7,6 @@ import { BaseGraphicElement } from '@/types/base-graphic-element'
 import ContextMenu from './ContextMenu.vue'
 
 export interface CellConfig {
-  rowIndex: number
-  colIndex: number
   x: number
   y: number
   width: number
@@ -127,8 +125,6 @@ export class TableElement extends BaseGraphicElement {
   // 获取默认的单元格配置
   public getDefaultCellConfig(rowIndex: number, colIndex: number): CellConfig {
     return {
-      rowIndex: rowIndex,
-      colIndex: colIndex,
       x: 0,
       y: 0,
       width: 0,

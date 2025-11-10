@@ -35,7 +35,7 @@
     </NumberFieldContent>
   </NumberField>
   <div class="pt-4 font-bold">
-    单元格设置 ({{ element.activeCell.rowIndex + 1 }},{{ element.activeCell.colIndex + 1 }})
+    单元格设置 ({{ element.activeRow + 1 }},{{ element.activeCol + 1 }})
   </div>
   <div></div>
   <div>
@@ -229,7 +229,7 @@ const handleDissolve = () => {
           new UpdatePropertyCommand(
             element,
             host,
-            `cells.${cell.rowIndex}.${cell.colIndex}.mergeLeft`,
+            `cells.${element.activeRow + rowI}.${element.activeCol + colI}.mergeLeft`,
             cell.mergeLeft,
             false,
           ),
@@ -238,7 +238,7 @@ const handleDissolve = () => {
           new UpdatePropertyCommand(
             element,
             host,
-            `cells.${cell.rowIndex}.${cell.colIndex}.mergeUp`,
+            `cells.${element.activeRow + rowI}.${element.activeCol + colI}.mergeUp`,
             cell.mergeUp,
             false,
           ),
@@ -274,7 +274,7 @@ const mergeCell = () => {
             new UpdatePropertyCommand(
               element,
               host,
-              `cells.${cell.rowIndex}.${cell.colIndex}.mergeLeft`,
+              `cells.${element.activeRow + i - 1}.${element.activeCol + j - 1}.mergeLeft`,
               cell.mergeLeft,
               true,
             ),
@@ -285,7 +285,7 @@ const mergeCell = () => {
             new UpdatePropertyCommand(
               element,
               host,
-              `cells.${cell.rowIndex}.${cell.colIndex}.mergeUp`,
+              `cells.${element.activeRow + i - 1}.${element.activeCol + j - 1}.mergeUp`,
               cell.mergeUp,
               true,
             ),
