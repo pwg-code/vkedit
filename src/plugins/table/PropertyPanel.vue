@@ -51,7 +51,6 @@
             element.rowsHeight[element.activeRow],
             value,
           )
-          element.updateCells()
         }
       "
     ></VkInputMM>
@@ -69,7 +68,6 @@
             element.colsWidth[element.activeCol],
             value,
           )
-          element.updateCells()
         }
       "
     ></VkInputMM>
@@ -248,7 +246,7 @@ const handleDissolve = () => {
       }
     }
   }
-  host.executeCommand(new BatchCommand(host, comms, 'updateCells'))
+  host.executeCommand(new BatchCommand(host, comms))
 }
 
 const resizeRow = ref(1)
@@ -296,14 +294,24 @@ const mergeCell = () => {
       }
     }
   }
-  host.executeCommand(new BatchCommand(host, comms, 'updateCells'))
+  host.executeCommand(new BatchCommand(host, comms))
 }
 
+//
 onMounted(() => {
-  // 为使用命令更新的属性触发更新单元格
-  host.on('property:batch-update-end', (e: any) => {
-    if (e.description === 'updateCells') {
-      element.updateCells()
+  // 监听属性更新命令  如果设计表格线条相关 则重绘表格线
+  host.on('element:updated', (e) => {
+    if (e.elementId === element.id) {
+      e.updatedProperties.forEach((prop) => {
+        if (
+          prop.includes('rowsHeight') ||
+          prop.includes('colsWidth') ||
+          prop.includes('merge') ||
+          prop.includes('border')
+        ) {
+          element.updateCells()
+        }
+      })
     }
   })
 })
