@@ -1,4 +1,5 @@
 export { default as TextPropertyPanel } from './PropertyPanel.vue'
 export { default as TextShape } from './Shape.vue'
 export { default as TextTool } from './Tool.vue'
+export { default as TextContextMenu } from './TextContextMenu.vue'
 export * from './text'
