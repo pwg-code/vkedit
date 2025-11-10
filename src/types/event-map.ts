@@ -20,7 +20,8 @@ import type {
   GraphicRegisteredEventData,
   GraphicToolRegisteredEventData,
   ElementRegisteredEventData,
-  ContextMenuRegisteredEventData
+  ContextMenuRegisteredEventData,
+  ExportEventData,
 } from './event-data'
 
 /**
@@ -183,10 +184,10 @@ export interface EventMap {
   'render:performance': (payload: PerformanceEventData) => void
 
   // 导出
-  'export:start': (payload: BaseEventData) => void
-  'export:complete': (payload: BaseEventData) => void
-  'export:error': (payload: ErrorEventData) => void
-  'export:progress': (payload: BaseEventData) => void
+  'export:start': (payload: ExportEventData) => void
+  'export:complete': (payload: ExportEventData) => void
+  'export:error': (payload: ExportEventData) => void
+  'export:progress': (payload: ExportEventData) => void
 
   // 导入
   'import:start': (payload: BaseEventData) => void
@@ -213,7 +214,6 @@ export interface EventMap {
   'custom:': (...args: any[]) => any
 }
 
-
 /** 类型安全的事件总线实现示例，基于上面的 EventMap */
 export class EventBus<T extends { [K in keyof T]: (payload: any) => void }> {
   private events: Partial<{ [K in keyof T]: T[K][] }> = {}
@@ -225,7 +225,7 @@ export class EventBus<T extends { [K in keyof T]: (payload: any) => void }> {
 
   emit<K extends keyof T>(event: K, payload: Parameters<T[K]>[0]): void {
     const callbacks = this.events[event]
-    if (callbacks) callbacks.forEach(cb => cb(payload))
+    if (callbacks) callbacks.forEach((cb) => cb(payload))
   }
 
   off<K extends keyof T>(event: K, callback?: T[K]): void {
@@ -234,10 +234,9 @@ export class EventBus<T extends { [K in keyof T]: (payload: any) => void }> {
       return
     }
     const callbacks = this.events[event]
-    if (callbacks) this.events[event] = callbacks.filter(cb => cb !== callback) as any
+    if (callbacks) this.events[event] = callbacks.filter((cb) => cb !== callback) as any
   }
 }
-
 
 // 导出默认映射名，方便其他模块按需使用
 // 注意：EventMap 是类型接口（非运行时值），因此不做默认导出。

@@ -3,7 +3,6 @@
 */
 
 import { BasePlugin } from '@/types/base-plugin'
-import type { IToolbar } from '@/types'
 import Export from './Export.vue'
 import jsPDF from 'jspdf'
 import { ElementManagerPlugin } from '@/plugins'
@@ -12,6 +11,10 @@ import konva from 'konva'
 export class ExportPlugin extends BasePlugin {
   name = 'export-plugin'
   version = '1.0.0'
+  constructor(pixelRatio: number = 2) {
+    super()
+    this.pixelRatio = pixelRatio // 导出图片的像素比
+  }
 
   protected onInstall(): void {
     if (!this.host) return
@@ -23,42 +26,80 @@ export class ExportPlugin extends BasePlugin {
     })
   }
 
-
   // 处理导出图片
   handleExportImage() {
-    this.host?.emit("export:start", { format: 'png' })
+    this.host?.emit('export:start', {
+      timestamp: Date.now(),
+      source: 'export-plugin',
+      format: 'png',
+    })
     try {
       this.exportImage()
     } catch (error) {
       // 发送导出失败事件
-      this.host?.emit("export:error", { format: 'png', error })
+      this.host?.emit('export:error', {
+        format: 'png',
+        error,
+        timestamp: Date.now(),
+        source: 'export-plugin',
+      })
       return
     }
-    this.host?.emit("export:complete", { format: 'png' })
+    this.host?.emit('export:complete', {
+      format: 'png',
+      timestamp: Date.now(),
+      source: 'export-plugin',
+    })
   }
 
   // 处理导出 JSON
   handleExportJSON() {
-    this.host?.emit("export:start", { format: 'json' })
+    this.host?.emit('export:start', {
+      format: 'json',
+      timestamp: Date.now(),
+      source: 'export-plugin',
+    })
     try {
       this.exportJSON()
     } catch (error) {
-      this.host?.emit('export:error', { format: 'json', error })
+      this.host?.emit('export:error', {
+        format: 'json',
+        error,
+        timestamp: Date.now(),
+        source: 'export-plugin',
+      })
       return
     }
-    this.host?.emit('export:complete', { format: 'json' })
+    this.host?.emit('export:complete', {
+      format: 'json',
+      timestamp: Date.now(),
+      source: 'export-plugin',
+    })
   }
 
   // 处理导出 PDF
   handleExportPdf() {
-    this.host?.emit("export:start", { format: 'pdf' })
+    this.host?.emit('export:start', {
+      format: 'pdf',
+      timestamp: Date.now(),
+      source: 'export-plugin',
+    })
     try {
       this.exportPdf()
     } catch (error) {
-      this.host?.emit("export:error", { format: 'pdf', error })
+      this.host?.emit('export:error', {
+        format: 'pdf',
+        error,
+        timestamp: Date.now(),
+        source: 'export-plugin',
+      })
       return
     }
-    this.host?.emit("export:complete", { format: 'pdf' })
+    this.host?.emit('export:complete', {
+      format: 'pdf',
+      timestamp: Date.now(),
+      source: 'export-plugin',
+    })
   }
 
   // 导出图片
@@ -107,7 +148,7 @@ export class ExportPlugin extends BasePlugin {
   }
 
   // 将所以元素移动到临时舞台 并获取图片数据 再移动回原舞台
-  elementsToDataURL(pixelRatio: number = 1): string {
+  elementsToDataURL(): string {
     const hostState = this.host?.getState()
     if (!hostState) return ''
     // 先获取到所以元素
@@ -136,7 +177,7 @@ export class ExportPlugin extends BasePlugin {
       }
     })
     // 将临时stage导出为图片
-    const dataUrl = stage.toDataURL({ pixelRatio: pixelRatio })
+    const dataUrl = stage.toDataURL({ pixelRatio: this.pixelRatio })
     // 将元素移回原来的 group
     elements.forEach((element) => {
       const konvaNode = layer.findOne(`#${element.id}`)

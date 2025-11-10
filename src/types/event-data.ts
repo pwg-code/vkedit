@@ -1,5 +1,5 @@
-import type { Component } from "vue"
-import type { IEditorState, IGraphicElement, IGraphicType, Point2D } from "./base"
+import type { Component } from 'vue'
+import type { IEditorState, IGraphicElement, IGraphicType, Point2D } from './base'
 
 /**
  * 事件数据接口定义
@@ -30,7 +30,7 @@ export interface SelectionEventData extends BaseEventData {
 export interface TransformEventData extends ElementEventData {
   oldState: any
   newState: any
-  transformType: "move" | "rotate" | "scale" | "skew" | "resize" | "transform"
+  transformType: 'move' | 'rotate' | 'scale' | 'skew' | 'resize' | 'transform'
 }
 
 /* 元素更新 */
@@ -41,7 +41,7 @@ export interface ElementUpdateEventData extends ElementEventData {
 // 工具事件数据
 export interface ToolEventData extends BaseEventData {
   toolName: string
-  render:()=>Component
+  render: () => Component
 }
 
 // 插件事件数据
@@ -123,9 +123,9 @@ export interface LayerOrderEventData extends BaseEventData {
 export interface BaseStageEventData extends BaseEventData {
   point: Point2D
   target: any
-  currentTarget:any
-  pointerId:number
-  type:string
+  currentTarget: any
+  pointerId: number
+  type: string
 }
 
 // Stage鼠标事件数据
@@ -137,7 +137,6 @@ export interface StageMouseEventData extends BaseStageEventData {
 export interface StageKeyboardEventData extends BaseEventData {
   evt: KeyboardEvent
 }
-
 
 // 图形注册事件数据类型
 export interface GraphicRegisteredEventData extends BaseEventData {
@@ -159,6 +158,11 @@ export interface ContextMenuRegisteredEventData extends BaseEventData {
   isCanvas: boolean
 }
 
+// 导出事件数据
+export interface ExportEventData extends BaseEventData {
+  format: 'png' | 'jpeg' | 'pdf' | 'json' | 'excel' | string
+  error?: any
+}
 
 /**
  * 事件工具函数

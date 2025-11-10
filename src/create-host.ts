@@ -10,11 +10,11 @@ import {
   PreviewPlugin,
   GraphicToolManagerPlugin,
   GraphicManagerPlugin,
-  ContextMenuManager
+  ContextMenuManager,
 } from './plugins'
 import BaseElementPropertyPanel from '@/components/BaseElementPropertyPanel.vue'
 import CanvasPropertyPanel from '@/components/CanvasPropertyPanel.vue'
-import ContextMenuDelete from "@/components/ContextMenuDelete.vue";
+import ContextMenuDelete from '@/components/ContextMenuDelete.vue'
 
 export interface IOptions {
   basePropertyPanel?: boolean
@@ -76,7 +76,7 @@ export function createEditorHost({
     graphicTypes: [],
     isPublic: true,
     isCanvas: false,
-    render:()=> ContextMenuDelete,
+    render: () => ContextMenuDelete,
     timestamp: Date.now(),
     source: 'create-editor-host',
   })
