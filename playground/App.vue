@@ -33,7 +33,7 @@ import {
 //   CanvasPropertyPanel,
 // } from 'vkedit'
 
-const host = createEditorHost({})
+const host = createEditorHost({ basePropertyPanel: true, baseCanvasPropertyPanel: true })
 host
   .installPlugin(new RectPlugin())
   .installPlugin(new TextPlugin())

@@ -1,8 +1,5 @@
 import { BasePlugin } from '../types/base-plugin'
-import type {
-  IGraphicElement,
-  PropertyRegisteredPanelEventData,
-} from '../types'
+import type { IGraphicElement, PropertyRegisteredPanelEventData } from '../types'
 import type { Component } from 'vue'
 
 export class PropertyPanelManagerPlugin extends BasePlugin {
@@ -42,7 +39,7 @@ export class PropertyPanelManagerPlugin extends BasePlugin {
 
     // 遍历所有注册的面板
     this.propertyPanels.forEach((panel) => {
-      if (panel.graphicTypes.includes(type)) {
+      if (panel.isPublic || panel.graphicTypes.includes(type)) {
         panels.push(panel.render())
       }
     })
@@ -69,6 +66,8 @@ export class PropertyPanelManagerPlugin extends BasePlugin {
 
   // 获取画布的属性面板
   getCanvasPanels(): Component[] {
-    return Array.from(this.propertyPanels.values()).filter(p=>p.isCanvas).map(p=>p.render())
+    return Array.from(this.propertyPanels.values())
+      .filter((p) => p.isCanvas)
+      .map((p) => p.render())
   }
 }
