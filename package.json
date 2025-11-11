@@ -1,6 +1,6 @@
 {
   "name": "vkedit",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "private": true,
   "type": "module",
   "engines": {
@@ -11,6 +11,13 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./style.css": "./src/styles/index.css"
+  },
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "vite",
