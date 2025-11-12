@@ -10,6 +10,7 @@ import { EventUtils } from '../types/event-data'
 import type { ICommand } from '@/commands/i-command'
 import type { ElementManagerPlugin } from '@/plugins'
 import type { Layer } from 'konva/lib/Layer'
+import { timestamp } from '@vueuse/core'
 
 export class EditorHost<T extends { [K in keyof T]: (payload: any) => void } = EventMap> {
   private plugins: Map<string, IEditorPlugin> = new Map()
@@ -147,34 +148,58 @@ export class EditorHost<T extends { [K in keyof T]: (payload: any) => void } = E
   }
 
   toJSON(): string {
-    const elements = this.getPlugin<ElementManagerPlugin>('element-manager-plugin')?.elements
-    const serializeElements: any[] = []
-    if (elements) {
-      elements.forEach((value, key) => {
-        serializeElements.push(value.serialize())
+    // 发送事件
+    this.emit('host:to-json:start' as keyof T, { timestamp: timestamp(), source: 'host' })
+    try {
+      const elements = this.getPlugin<ElementManagerPlugin>('element-manager-plugin')?.elements
+      const serializeElements: any[] = []
+      if (elements) {
+        elements.forEach((value, key) => {
+          serializeElements.push(value.serialize())
+        })
+      }
+      return JSON.stringify({
+        state: this.state,
+        elements: serializeElements,
       })
+    } catch (error) {
+      this.emit('host:to-json:error' as keyof T, {
+        timestamp: timestamp(),
+        source: 'host',
+        error: error as Error,
+      })
+      return ''
+    } finally {
+      this.emit('host:to-json:complete' as keyof T, { timestamp: timestamp(), source: 'host' })
     }
-
-    return JSON.stringify({
-      state: this.state,
-      elements: serializeElements,
-    })
   }
 
   loadJSON(jsonStr: string): void {
-    const data = JSON.parse(jsonStr)
-    // 加载编辑器状态
-    const elementsPlugin = this.getPlugin<ElementManagerPlugin>('element-manager-plugin')
-    const elements: any[] = data.elements
-    if (elementsPlugin) {
-      elementsPlugin.elements.clear()
-      // 加载所有图形元素
-      elements.forEach((value) => {
-        const e = elementsPlugin.createElement(value.type) // 先创建实例
-        e.deserialize(value)
-        elementsPlugin.addElement(e)
+    // 发送事件
+    this.emit('host:load-json:start' as keyof T, { timestamp: timestamp(), source: 'host' })
+    try {
+      const data = JSON.parse(jsonStr)
+      // 加载编辑器状态
+      const elementsPlugin = this.getPlugin<ElementManagerPlugin>('element-manager-plugin')
+      const elements: any[] = data.elements
+      if (elementsPlugin) {
+        elementsPlugin.elements.clear()
+        // 加载所有图形元素
+        elements.forEach((value) => {
+          const e = elementsPlugin.createElement(value.type) // 先创建实例
+          e.deserialize(value)
+          elementsPlugin.addElement(e)
+        })
+        Object.assign(this.state, data.state)
+      }
+    } catch (error) {
+      this.emit('host:load-json:error' as keyof T, {
+        timestamp: timestamp(),
+        source: 'host',
+        error: error as Error,
       })
-      Object.assign(this.state, data.state)
+      return
     }
+    this.emit('host:load-json:complete' as keyof T, { timestamp: timestamp(), source: 'host' })
   }
 }

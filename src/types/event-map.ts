@@ -189,6 +189,15 @@ export interface EventMap {
   'export:error': (payload: ExportEventData) => void
   'export:progress': (payload: ExportEventData) => void
 
+  // host 加载json和导出json
+  'host:load-json:start': (payload: BaseEventData) => void
+  'host:load-json:complete': (payload: BaseEventData) => void
+  'host:load-json:error': (payload: ErrorEventData) => void
+
+  'host:to-json:start': (payload: BaseEventData) => void
+  'host:to-json:complete': (payload: BaseEventData) => void
+  'host:to-json:error': (payload: ErrorEventData) => void
+
   // 导入
   'import:start': (payload: BaseEventData) => void
   'import:complete': (payload: BaseEventData) => void
