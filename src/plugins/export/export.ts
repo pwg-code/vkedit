@@ -26,6 +26,16 @@ export class ExportPlugin extends BasePlugin {
     })
   }
 
+  // 导出excel
+  handleExportExcel() {
+    // 这里不实现具体逻辑 只发送事件
+    this.host?.emit('export:start', {
+      timestamp: Date.now(),
+      source: 'export-plugin',
+      format: 'excel',
+    })
+  }
+
   // 处理导出图片
   handleExportImage() {
     this.host?.emit('export:start', {

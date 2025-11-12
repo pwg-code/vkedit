@@ -13,6 +13,9 @@
         <DropdownMenuLabel>导出文件</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <DropdownMenuItem @click="exportPlugin.handleExportExcel()">
+            <span>Excel</span>
+          </DropdownMenuItem>
           <DropdownMenuItem @click="exportPlugin.handleExportPdf()">
             <span>PDF</span>
           </DropdownMenuItem>
