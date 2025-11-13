@@ -11,6 +11,7 @@ import {
   GraphicToolManagerPlugin,
   GraphicManagerPlugin,
   ContextMenuManager,
+  ImportPlugin,
 } from './plugins'
 import BaseElementPropertyPanel from '@/components/BaseElementPropertyPanel.vue'
 import CanvasPropertyPanel from '@/components/CanvasPropertyPanel.vue'
@@ -21,6 +22,7 @@ export interface IOptions {
   baseCanvasPropertyPanel?: boolean
   exportPlugin?: boolean
   previewPlugin?: boolean
+  importPlugin?: boolean
 }
 
 // 创建安装了核心插件的宿主
@@ -29,6 +31,7 @@ export function createEditorHost({
   baseCanvasPropertyPanel = true,
   exportPlugin = true,
   previewPlugin = true,
+  importPlugin = true,
 }: IOptions) {
   const host = new EditorHost()
   host
@@ -64,6 +67,9 @@ export function createEditorHost({
     })
   }
 
+  if (importPlugin) {
+    host.installPlugin(new ImportPlugin())
+  }
   if (exportPlugin) {
     host.installPlugin(new ExportPlugin())
   }

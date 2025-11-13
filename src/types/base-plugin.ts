@@ -1,9 +1,7 @@
 import type { IEditorPlugin } from '.'
-import { type EditorHost } from "@/core";
+import { type EditorHost } from '@/core'
 
 export abstract class BasePlugin implements IEditorPlugin {
-  [key: string]: any
-
   public abstract name: string
   public abstract version: string
 
