@@ -12,7 +12,7 @@ export class RemoveElementCommand extends BaseCommand {
     private host: EditorHost,
   ) {
     super('删除元素')
-    this.elementsPlugin = host.getPlugin<ElementManagerPlugin>('element-manager-plugin')
+    this.elementsPlugin = host.getPlugin('element-manager-plugin')
     this.element = element
   }
 

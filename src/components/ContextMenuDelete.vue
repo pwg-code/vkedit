@@ -1,7 +1,6 @@
 <!-- 删除元素上下文菜单 -->
 <template>
-  <VkButton variant="ghost" @click="handleDelete" size="xs">删除
-  </VkButton>
+  <VkButton variant="ghost" @click="handleDelete" size="xs">删除 </VkButton>
 </template>
 
 <script setup lang="ts">
@@ -16,7 +15,7 @@ const { host } = defineProps<{
 
 function handleDelete() {
   // 删除选中的元素
-  const selection = host.getPlugin<SelectionPlugin>('selection-plugin').getSelectionElements()
+  const selection = host.getPlugin('selection-plugin').getSelectionElements()
 
   // 创建批量删除命令并执行
   const batchCommand = new BatchCommand(

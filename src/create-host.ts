@@ -10,8 +10,8 @@ import {
   PreviewPlugin,
   GraphicToolManagerPlugin,
   GraphicManagerPlugin,
-  ContextMenuManager,
   ImportPlugin,
+  ContextMenuManagerPlugin,
 } from './plugins'
 import BaseElementPropertyPanel from '@/components/BaseElementPropertyPanel.vue'
 import CanvasPropertyPanel from '@/components/CanvasPropertyPanel.vue'
@@ -35,15 +35,15 @@ export function createEditorHost({
 }: IOptions) {
   const host = new EditorHost()
   host
-    .installPlugin(new ToolbarManagerPlugin())
-    .installPlugin(new GraphicToolManagerPlugin())
-    .installPlugin(new GraphicManagerPlugin())
-    .installPlugin(new PropertyPanelManagerPlugin())
-    .installPlugin(new ElementManagerPlugin())
-    .installPlugin(new KeyDownPlugin())
-    .installPlugin(new SelectionPlugin())
-    .installPlugin(new AlignPlugin())
-    .installPlugin(new ContextMenuManager())
+    .installPlugin('toolbar-manager-plugin', new ToolbarManagerPlugin())
+    .installPlugin('graphic-tool-manager-plugin', new GraphicToolManagerPlugin())
+    .installPlugin('graphic-manager-plugin', new GraphicManagerPlugin())
+    .installPlugin('property-panel-manager-plugin', new PropertyPanelManagerPlugin())
+    .installPlugin('element-manager-plugin', new ElementManagerPlugin())
+    .installPlugin('keydown-plugin', new KeyDownPlugin())
+    .installPlugin('selection-plugin', new SelectionPlugin())
+    .installPlugin('align-plugin', new AlignPlugin())
+    .installPlugin('context-menu-manager-plugin', new ContextMenuManagerPlugin())
 
   if (basePropertyPanel) {
     host.emit('property-panel:registered', {
@@ -68,13 +68,13 @@ export function createEditorHost({
   }
 
   if (importPlugin) {
-    host.installPlugin(new ImportPlugin())
+    host.installPlugin('import-plugin', new ImportPlugin())
   }
   if (exportPlugin) {
-    host.installPlugin(new ExportPlugin())
+    host.installPlugin('export-plugin', new ExportPlugin())
   }
   if (previewPlugin) {
-    host.installPlugin(new PreviewPlugin())
+    host.installPlugin('preview-plugin', new PreviewPlugin())
   }
 
   // 注册删除元素上下文菜单

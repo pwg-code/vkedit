@@ -1,6 +1,6 @@
 import { BaseCommand } from './base-command'
 import type { IGraphicElement } from '../types'
-import { EditorHost } from "@/core";
+import { EditorHost } from '@/core'
 import type { ICommand } from './i-command'
 import type { ElementManagerPlugin } from '@/plugins'
 
@@ -12,7 +12,7 @@ export class AddElementCommand extends BaseCommand {
     private host: EditorHost,
   ) {
     super(`添加 ${element.type} 元素`)
-    this.elementsPlugin = this.host.getPlugin<ElementManagerPlugin>('element-manager-plugin')
+    this.elementsPlugin = this.host.getPlugin('element-manager-plugin')
   }
   execute(): void {
     this.elementsPlugin?.addElement(this.element)

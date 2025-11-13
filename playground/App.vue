@@ -35,9 +35,9 @@ import {
 
 const host = createEditorHost({ basePropertyPanel: true, baseCanvasPropertyPanel: true })
 host
-  .installPlugin(new RectPlugin())
-  .installPlugin(new TextPlugin())
-  .installPlugin(new TablePlugin())
+  .installPlugin('rect-plugin', new RectPlugin())
+  .installPlugin('text-plugin', new TextPlugin())
+  .installPlugin('table-plugin', new TablePlugin())
 
 function test() {
   host.setState({
@@ -48,7 +48,7 @@ function test() {
   })
   const hostState = host.getState()
   const newTable = new TableElement(0, 0, Array(45).fill(20), Array(20).fill(80))
-  host.getPlugin<ElementManagerPlugin>('element-manager-plugin')?.addElement(newTable)
+  host.getPlugin('element-manager-plugin')?.addElement(newTable)
 }
 
 onMounted(() => {

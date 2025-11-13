@@ -1,5 +1,5 @@
 import { BasePlugin } from '../types/base-plugin'
-import type { StageKeyboardEventData} from '../types'
+import type { StageKeyboardEventData } from '../types'
 import { RemoveElementCommand } from '@/commands'
 import type { SelectionPlugin } from './selection'
 
@@ -29,9 +29,8 @@ export class KeyDownPlugin extends BasePlugin {
   private deleteSelectionElement(): void {
     if (!this.host) return
     const selector: SelectionPlugin = this.host.getPlugin('selection-plugin') as SelectionPlugin
-    selector.selectionElements
     // 删除选中的图形
-    selector.selectionElements.forEach((i) => {
+    selector.getSelectionElements().forEach((i) => {
       if (this.host) {
         this.host.executeCommand(new RemoveElementCommand(i, this.host))
       }

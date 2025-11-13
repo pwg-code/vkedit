@@ -209,6 +209,11 @@ export class SelectionPlugin extends BasePlugin {
     return this.getSelectedElements()
   }
 
+  // 获取当前选中的元素ID
+  public getSelectionElementIds(): string[] {
+    return this.selectionIds.values() ? Array.from(this.selectionIds.values()) : []
+  }
+
   // 获取当前选中的元素 返回第一个
   public getCurrentElement(): IGraphicElement | null {
     const elements = this.getSelectedElements()

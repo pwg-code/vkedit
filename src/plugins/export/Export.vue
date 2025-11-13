@@ -54,7 +54,7 @@ import type { ExportPlugin } from './export'
 
 const { host } = defineProps<{ host: EditorHost }>()
 
-const exportPlugin = host.getPlugin<ExportPlugin>('export-plugin')!
+const exportPlugin = host.getPlugin('export-plugin')!
 </script>
 
 <style scoped></style>

@@ -1,20 +1,13 @@
-import { ref, reactive, computed } from 'vue'
-import type {
-  IEditorPlugin,
-  IGraphicElement,
-  IEditorState,
-  EventMap,
-  PluginEventData,
-} from '../types'
+import { reactive } from 'vue'
+import type { IEditorPlugin, IEditorState, EventMap, PluginEventData, PluginMap } from '../types'
 import { EventUtils } from '../types/event-data'
 import type { ICommand } from '@/commands/i-command'
-import type { ElementManagerPlugin } from '@/plugins'
-import type { Layer } from 'konva/lib/Layer'
-import { timestamp } from '@vueuse/core'
 
-export class EditorHost<T extends { [K in keyof T]: (payload: any) => void } = EventMap> {
-  private plugins: Map<string, IEditorPlugin> = new Map()
-  // private events: Map<string, Function[]> = new Map()
+export class EditorHost<
+  T extends { [K in keyof T]: (payload: any) => void } = EventMap,
+  U extends { [K in keyof U]: IEditorPlugin } = PluginMap,
+> {
+  private plugins: Map<keyof U, U[keyof U]> = new Map()
   private events: Partial<{ [K in keyof T]: T[K][] }> = {}
   private commandStack: ICommand[] = []
   private currentCommandIndex: number = -1
@@ -60,13 +53,13 @@ export class EditorHost<T extends { [K in keyof T]: (payload: any) => void } = E
   }
 
   // 插件管理
-  installPlugin(plugin: IEditorPlugin): EditorHost<T> {
-    if (this.plugins.has(plugin.name)) {
-      console.warn(`Plugin ${plugin.name} is already registered`)
+  installPlugin<K extends keyof U>(name: K, plugin: U[K]): EditorHost<T, U> {
+    if (this.plugins.has(name)) {
+      console.warn(`Plugin ${name as string} is already registered`)
       return this
     }
-    this.plugins.set(plugin.name, plugin)
-    plugin.install(this as EditorHost<EventMap>)
+    this.plugins.set(name, plugin)
+    plugin.install(this as unknown as EditorHost<any, any>)
     this.emit(
       'plugin:registered' as keyof T,
       {
@@ -78,7 +71,7 @@ export class EditorHost<T extends { [K in keyof T]: (payload: any) => void } = E
     return this
   }
 
-  uninstallPlugin(pluginName: string): EditorHost<T> {
+  uninstallPlugin<K extends keyof U>(pluginName: K): EditorHost<T, U> {
     const plugin = this.plugins.get(pluginName)
     if (plugin) {
       plugin.uninstall()
@@ -94,12 +87,12 @@ export class EditorHost<T extends { [K in keyof T]: (payload: any) => void } = E
     return this
   }
 
-  getPlugin<T = any>(pluginName: string): T {
+  getPlugin<K extends keyof U>(pluginName: K): U[K] {
     if (this.plugins.has(pluginName)) {
-      return this.plugins.get(pluginName) as T
+      return this.plugins.get(pluginName) as U[typeof pluginName]
     } else {
       throw new Error(
-        `不存在插件: ${pluginName},可用插件有: ${Array.from(this.plugins.keys()).join(',')}`,
+        `不存在插件: ${pluginName as string},可用插件有: ${Array.from(this.plugins.keys()).join(',')}`,
       )
     }
   }
@@ -149,12 +142,13 @@ export class EditorHost<T extends { [K in keyof T]: (payload: any) => void } = E
 
   toJSON(): string {
     // 发送事件
-    this.emit('host:to-json:start' as keyof T, { timestamp: timestamp(), source: 'host' })
+    this.emit('host:to-json:start' as keyof T, { timestamp: Date.now(), source: 'host' })
     try {
-      const elements = this.getPlugin<ElementManagerPlugin>('element-manager-plugin')?.elements
+      const elementsPlugin = this.plugins.get('element-manager-plugin' as keyof U)
+      const elements = elementsPlugin?.getAllElements()
       const serializeElements: any[] = []
       if (elements) {
-        elements.forEach((value, key) => {
+        elements.forEach((value: any, key: any) => {
           serializeElements.push(value.serialize())
         })
       }
@@ -164,23 +158,23 @@ export class EditorHost<T extends { [K in keyof T]: (payload: any) => void } = E
       })
     } catch (error) {
       this.emit('host:to-json:error' as keyof T, {
-        timestamp: timestamp(),
+        timestamp: Date.now(),
         source: 'host',
         error: error as Error,
       })
       return ''
     } finally {
-      this.emit('host:to-json:complete' as keyof T, { timestamp: timestamp(), source: 'host' })
+      this.emit('host:to-json:complete' as keyof T, { timestamp: Date.now(), source: 'host' })
     }
   }
 
   loadJSON(jsonStr: string): void {
     // 发送事件
-    this.emit('host:load-json:start' as keyof T, { timestamp: timestamp(), source: 'host' })
+    this.emit('host:load-json:start' as keyof T, { timestamp: Date.now(), source: 'host' })
     try {
       const data = JSON.parse(jsonStr)
       // 加载编辑器状态
-      const elementsPlugin = this.getPlugin<ElementManagerPlugin>('element-manager-plugin')
+      const elementsPlugin = this.getPlugin('element-manager-plugin' as keyof U)
       const elements: any[] = data.elements
       if (elementsPlugin) {
         elementsPlugin.elements.clear()
@@ -194,12 +188,12 @@ export class EditorHost<T extends { [K in keyof T]: (payload: any) => void } = E
       }
     } catch (error) {
       this.emit('host:load-json:error' as keyof T, {
-        timestamp: timestamp(),
+        timestamp: Date.now(),
         source: 'host',
         error: error as Error,
       })
       return
     }
-    this.emit('host:load-json:complete' as keyof T, { timestamp: timestamp(), source: 'host' })
+    this.emit('host:load-json:complete' as keyof T, { timestamp: Date.now(), source: 'host' })
   }
 }

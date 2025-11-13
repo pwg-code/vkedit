@@ -46,7 +46,7 @@ const { host } = defineProps<Props>()
 const hostState = ref<IEditorState>(host.getState())
 
 // 插件工具
-const toolbarPlugin = host.getPlugin<ToolbarManagerPlugin>('toolbar-manager-plugin')
+const toolbarPlugin = host.getPlugin('toolbar-manager-plugin')
 
 const tools = ref<ToolEventData[]>()
 

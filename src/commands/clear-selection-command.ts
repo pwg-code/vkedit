@@ -4,16 +4,16 @@ import { type EditorHost } from '@/core'
 import type { SelectionPlugin } from '@/plugins'
 export class ClearSelectionCommand extends BaseCommand {
   public name = 'CLEAR_SELECTION'
-  private previousSelection: Map<string, IGraphicElement> = new Map()
+  private previousSelectionIds: string[] = []
   selectionPlugin: SelectionPlugin | null
   constructor(private host: EditorHost) {
     super('清空选择')
-    this.selectionPlugin = host.getPlugin<SelectionPlugin>('selection-plugin')
+    this.selectionPlugin = host.getPlugin('selection-plugin')
   }
 
   execute(): void {
-    this.previousSelection = new Map(this.selectionPlugin?.selectionElements)
-    this.selectionPlugin?.selectionElements.clear()
+    this.previousSelectionIds = this.selectionPlugin?.getSelectionElementIds() || []
+    this.selectionPlugin?.clearSelection()
     this.host.emit('selection:changed', {
       selection: [],
       timestamp: Date.now(),
@@ -23,9 +23,9 @@ export class ClearSelectionCommand extends BaseCommand {
 
   undo(): void {
     if (this.selectionPlugin) {
-      this.selectionPlugin.selectionElements = new Map(this.previousSelection)
+      this.selectionPlugin.selectElementByIds(this.previousSelectionIds)
       this.host.emit('selection:changed', {
-        selection: Array.from(this.selectionPlugin.selectionElements.values()),
+        selection: this.selectionPlugin.getSelectionElements(),
         timestamp: Date.now(),
         source: 'clear-selection-command-undo',
       })

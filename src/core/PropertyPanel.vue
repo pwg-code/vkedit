@@ -9,16 +9,12 @@
 
 <script setup lang="ts">
 import { markRaw, onMounted, ref, type Component } from 'vue'
-import type {
-  IGraphicElement,
-} from '@/types'
+import type { IGraphicElement } from '@/types'
 import type { PropertyPanelManagerPlugin } from '@/plugins/property-panel-manager'
-import type { EditorHost } from '@/core';
+import type { EditorHost } from '@/core'
 const { host } = defineProps<{ host: EditorHost }>()
 
-const propertyPanelsPlugin = host.getPlugin<PropertyPanelManagerPlugin>(
-  'property-panel-manager-plugin',
-)
+const propertyPanelsPlugin = host.getPlugin('property-panel-manager-plugin')
 const selectionElement = ref<IGraphicElement[]>([])
 const element = ref<IGraphicElement>()
 

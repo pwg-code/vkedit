@@ -39,7 +39,7 @@ export function useContentLayer(host: EditorHost) {
   // 所有的图像元素
   const elements = ref<IGraphicElement[]>([])
   const initElements = () => {
-    const a = host.getPlugin<ElementManagerPlugin>('element-manager-plugin')?.elements.values()
+    const a = host.getPlugin('element-manager-plugin')?.elements.values()
     if (a) {
       elements.value = Array.from(a)
     }

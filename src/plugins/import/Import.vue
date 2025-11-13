@@ -48,7 +48,7 @@ import type { ImportPlugin } from './import'
 
 const { host } = defineProps<{ host: EditorHost }>()
 
-const importPlugin = host.getPlugin<ImportPlugin>('import-plugin')
+const importPlugin = host.getPlugin('import-plugin')
 </script>
 
 <style scoped></style>

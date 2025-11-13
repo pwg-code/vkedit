@@ -26,7 +26,6 @@ import { onMounted, ref } from 'vue'
 import type { EditorHost } from '@/core'
 import { VkButton } from '@/components'
 import type { ContextMenuRegisteredEventData, IGraphicElement } from '@/types'
-import type { ContextMenuManager, SelectionPlugin } from '@/plugins'
 
 const { host } = defineProps<{
   host: EditorHost
@@ -36,7 +35,7 @@ const { host } = defineProps<{
 const contextMenus = ref<ContextMenuRegisteredEventData[]>([])
 
 // 获取选择插件
-const selectionPlugin = host.getPlugin<SelectionPlugin>('selection-plugin')
+const selectionPlugin = host.getPlugin('selection-plugin')
 
 const element = ref<IGraphicElement | null>(null)
 const selection = ref<IGraphicElement[]>([])
@@ -50,9 +49,7 @@ const isShow = ref(false)
 onMounted(() => {
   // 监听上下文事件
   host.on('stage:contextmenu', (event) => {
-    contextMenus.value = host
-      .getPlugin<ContextMenuManager>('contextmenu-manager-plugin')
-      .getContextMenus()
+    contextMenus.value = host.getPlugin('context-menu-manager-plugin').getContextMenus()
     position.value = { x: event.evt.layerX, y: event.evt.layerY }
     isShow.value = true
     selection.value = selectionPlugin.getSelectionElements()

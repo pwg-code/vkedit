@@ -29,11 +29,9 @@ import { Button } from '@/components/ui/button'
 const { host } = defineProps<{ host: EditorHost }>()
 
 function handleAlign(alignment: 'left' | 'right' | 'top' | 'bottom' | 'centerX' | 'centerY') {
-  const selectionElements = host.getPlugin<SelectionPlugin>('selection-plugin')?.selectionElements
-  if (!selectionElements) return
-  host.executeCommand(
-    new AlignElementsCommand(host, alignment, Array.from(selectionElements?.keys())),
-  )
+  const ids = host.getPlugin('selection-plugin').getSelectionElementIds()
+  if (!ids) return
+  host.executeCommand(new AlignElementsCommand(host, alignment, ids))
 }
 </script>
 

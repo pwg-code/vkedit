@@ -1,11 +1,8 @@
-import { BasePlugin, type ContextMenuRegisteredEventData } from "@/types"
-import type { SelectionPlugin } from "./selection"
+import { BasePlugin, type ContextMenuRegisteredEventData } from '@/types'
+import type { SelectionPlugin } from './selection'
 
-
-
-export class ContextMenuManager extends BasePlugin {
-
-  public name = 'contextmenu-manager-plugin'
+export class ContextMenuManagerPlugin extends BasePlugin {
+  public name = 'context-menu-manager-plugin'
   public version = '1.0.0'
   // 上下文菜单列表
   public contextMenus: ContextMenuRegisteredEventData[] = []
@@ -32,10 +29,10 @@ export class ContextMenuManager extends BasePlugin {
   public getContextMenus(): ContextMenuRegisteredEventData[] {
     if (!this.host) return []
     // 根据当前选中的图形类型过滤菜单
-    const menus:ContextMenuRegisteredEventData[] = []
-    const selection = this.host?.getPlugin<SelectionPlugin>('selection-plugin').getSelectionElements()
+    const menus: ContextMenuRegisteredEventData[] = []
+    const selection = this.host?.getPlugin('selection-plugin').getSelectionElements()
     // 公共菜单和画布菜单始终显示
-    this.contextMenus.forEach(menu => {
+    this.contextMenus.forEach((menu) => {
       // 如果没有选择则显示画布菜单
       if (selection.length === 0 && menu.isCanvas) {
         menus.push(menu)
@@ -47,8 +44,8 @@ export class ContextMenuManager extends BasePlugin {
       } else {
         // 否则根据选中图形类型过滤
         if (selection && selection.length > 0) {
-          const selectedTypes = new Set(selection.map(el => el.type))
-          const intersect = menu.graphicTypes.filter(type => selectedTypes.has(type))
+          const selectedTypes = new Set(selection.map((el) => el.type))
+          const intersect = menu.graphicTypes.filter((type) => selectedTypes.has(type))
           if (intersect.length > 0) {
             menus.push(menu)
           }
@@ -57,5 +54,4 @@ export class ContextMenuManager extends BasePlugin {
     })
     return menus
   }
-
 }

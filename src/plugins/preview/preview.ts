@@ -38,7 +38,7 @@ export class PreviewPlugin extends BasePlugin {
   preview() {
     // 使用导出插件获得图片数据
     if (!this.host) return
-    const exportPlugin = this.host.getPlugin<ExportPlugin>('export-plugin')
+    const exportPlugin = this.host.getPlugin('export-plugin')
     const dataURL = exportPlugin.elementsToDataURL()
     // 使用image dataURL进行预览展示的逻辑
     const img = document.createElement('img')
@@ -64,7 +64,7 @@ export class PreviewPlugin extends BasePlugin {
   printPreview() {
     // 使用导出插件获得图片数据
     if (!this.host) return
-    const exportPlugin = this.host.getPlugin<ExportPlugin>('export-plugin')
+    const exportPlugin = this.host.getPlugin('export-plugin')
     const dataURL = exportPlugin.elementsToDataURL()
     // 使用image dataURL进行打印预览展示的逻辑
     const img = document.createElement('img')

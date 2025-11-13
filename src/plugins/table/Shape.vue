@@ -64,7 +64,7 @@ const handleCellClick = (e: any, cell: CellConfig, row: number, col: number) => 
   element.activeRow = row
   element.activeCol = col
   // 主动将选中状态同步到选择插件
-  const selectionPlugin = host.getPlugin<SelectionPlugin>('selection-plugin')
+  const selectionPlugin = host.getPlugin('selection-plugin')
 
   selectionPlugin.selectElement(element)
   // 停止事件冒泡
