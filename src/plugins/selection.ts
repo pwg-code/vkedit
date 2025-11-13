@@ -9,13 +9,21 @@ export class SelectionPlugin extends BasePlugin {
   public isSelecting: boolean = false
   public selectionStart: Point2D = { x: 0, y: 0 }
   public selectionEnd: Point2D = { x: 0, y: 0 }
-  public selectionElements: Map<string, IGraphicElement> = new Map()
-  public mouseDownInElement: IGraphicElement | null = null
+  // public selectionElements: Map<string, IGraphicElement> = new Map()
+  // 私有属性 选中的元素ids
+  private selectionIds: Set<string> = new Set()
+  // 鼠标按下时按下的元素ID
+  private mouseDownId: string | null = null
+  // 元素管理插件
   private elementsPlugin: ElementManagerPlugin | null = null
 
   protected onInstall(): void {
     if (!this.host) return
     this.elementsPlugin = this.host.getPlugin('element-manager-plugin') as ElementManagerPlugin
+    // 如果没获取到元素管理插件 则报错
+    if (!this.elementsPlugin) {
+      throw new Error('SelectionPlugin requires ElementManagerPlugin to be installed first.')
+    }
 
     // 注册事件监听
     this.host.on('stage:mousedown', this.handleMouseDown.bind(this))
@@ -46,12 +54,9 @@ export class SelectionPlugin extends BasePlugin {
     this.selectionStart = event.point
     this.selectionEnd = event.point
     // 如果点击的是不是元素则开始范围选择
-    const clickEl = this.getClickElement(event)
-    if (!clickEl) {
+    this.mouseDownId = this.getClickElementId(event)
+    if (!this.mouseDownId) {
       this.isSelecting = true
-      this.mouseDownInElement = null
-    } else {
-      this.mouseDownInElement = clickEl
     }
   }
 
@@ -65,32 +70,44 @@ export class SelectionPlugin extends BasePlugin {
     // 如果开始范围选择 则框选
     if (this.isSelecting) {
       // 根据框选的范围进行选
-      this.selectionElements = this.findElementsInRect(this.selectionStart, this.selectionEnd)
+      this.selectionIds = this.findElementsInRect(this.selectionStart, this.selectionEnd)
       this.isSelecting = false
       this.host?.emit('selection:changed', {
-        selection: Array.from(this.selectionElements.values()),
+        selection: this.getSelectedElements(),
         source: 'selection-plugin',
         timestamp: Date.now(),
       })
-    } else if (this.mouseDownInElement && !this.selectionElements.has(this.mouseDownInElement.id)) {
+    } else if (this.mouseDownId && !this.selectionIds.has(this.mouseDownId)) {
       // 点击的是元素且为为选择状态则清空选择后单选该元素
-      this.selectionElements.clear()
-      this.selectionElements.set(this.mouseDownInElement.id, this.mouseDownInElement)
+      this.selectionIds.clear()
+      this.selectionIds.add(this.mouseDownId)
       this.host?.emit('selection:changed', {
-        selection: Array.from(this.selectionElements.values()),
+        selection: this.getSelectedElements(),
         source: 'selection-plugin',
         timestamp: Date.now(),
       })
     }
   }
 
+  // 根据id集合返回选中的元素数组
+  private getSelectedElements(): IGraphicElement[] {
+    const elements: IGraphicElement[] = []
+    this.selectionIds.forEach((id) => {
+      const element = this.elementsPlugin?.getElement(id)
+      if (element) {
+        elements.push(element)
+      }
+    })
+    return elements
+  }
+
   private handleElementAdded(data: ElementEventData): void {
     // 新添加的元素 默认选中 延迟选中 以便画布刷新
     setTimeout(() => {
-      this.selectionElements.clear()
-      this.selectionElements.set(data.element.id, data.element)
+      this.selectionIds.clear()
+      this.selectionIds.add(data.element.id)
       this.host?.emit('selection:changed', {
-        selection: Array.from(this.selectionElements.values()),
+        selection: [data.element],
         source: 'selection-plugin',
         timestamp: Date.now(),
       })
@@ -101,11 +118,11 @@ export class SelectionPlugin extends BasePlugin {
     this.deselectElement(data.element.id)
   }
 
-  private findElementsInRect(start: Point2D, end: Point2D): Map<string, IGraphicElement> {
+  private findElementsInRect(start: Point2D, end: Point2D): Set<string> {
     // 实现框选逻辑
-    if (!this.host) return new Map()
+    if (!this.host) return new Set()
 
-    const elements: Map<string, IGraphicElement> = new Map()
+    const elementIds: Set<string> = new Set()
     const rect = {
       x: Math.min(start.x, end.x),
       y: Math.min(start.y, end.y),
@@ -115,28 +132,29 @@ export class SelectionPlugin extends BasePlugin {
 
     // 简化实现：检查元素边界框是否与选择矩形相交
     this.elementsPlugin?.elements.forEach((element) => {
+      if (this.host?.contentLayer === undefined) return
       // 从内容区查找KONVA SHAPE元素 以便获得在画布的绝对坐标
-      const shape = this.host?.contentLayer?.getNode().findOne('#' + element.id)
+      const shape = this.host.contentLayer.getNode().findOne('#' + element.id)
       if (shape) {
         const absPos = shape?.getAbsolutePosition()
         const bbox = element.getBoundingBox()
         bbox.x = absPos.x
         bbox.y = absPos.y
         if (!element.locked && element.visible && this.rectIntersect(rect, bbox)) {
-          elements.set(element.id, element)
+          elementIds.add(element.id)
         }
       }
     })
-    return elements
+    return elementIds
   }
 
   /* 获取点击的元素 */
-  private getClickElement(event: any): IGraphicElement | undefined {
+  private getClickElementId(event: any): string | null {
     const elementId = event.target.attrs.id
     if (elementId) {
-      return this.elementsPlugin?.getElement(elementId)
+      return elementId
     }
-    return undefined
+    return null
   }
 
   // 识别两个矩形是否相交 暂不考虑角度
@@ -150,50 +168,50 @@ export class SelectionPlugin extends BasePlugin {
   }
 
   public selectElement(element: IGraphicElement): void {
-    this.selectionElements.set(element.id, element)
+    this.selectionIds.add(element.id)
     this.host?.emit('selection:changed', {
-      selection: Array.from(this.selectionElements.values()),
+      selection: this.getSelectedElements(),
       source: 'selection-plugin',
       timestamp: Date.now(),
     })
   }
 
   public deselectElement(elementId: string): void {
-    this.selectionElements.delete(elementId)
+    this.selectionIds.delete(elementId)
     this.host?.emit('selection:changed', {
-      selection: Array.from(this.selectionElements.values()),
+      selection: this.getSelectedElements(),
       source: 'selection-plugin',
       timestamp: Date.now(),
     })
   }
 
   public clearSelection(): void {
-    this.selectionElements.clear()
+    this.selectionIds.clear()
     this.host?.emit('selection:changed', {
-      selection: Array.from(this.selectionElements.values()),
+      selection: this.getSelectedElements(),
       source: 'selection-plugin',
       timestamp: Date.now(),
     })
   }
 
   public selectElementByIds(ids: string[]): void {
-    this.selectionElements.clear()
+    this.selectionIds.clear()
     ids.forEach((id) => {
       const element = this.elementsPlugin?.getElement(id)
       if (element) {
-        this.selectionElements.set(element.id, element)
+        this.selectionIds.add(element.id)
       }
     })
   }
 
   // 获取当前选中的元素
   public getSelectionElements(): IGraphicElement[] {
-    return Array.from(this.selectionElements.values())
+    return this.getSelectedElements()
   }
 
   // 获取当前选中的元素 返回第一个
   public getCurrentElement(): IGraphicElement | null {
-    const elements = Array.from(this.selectionElements.values())
+    const elements = this.getSelectedElements()
     if (elements.length > 0) {
       return elements[0]
     }
