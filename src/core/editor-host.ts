@@ -162,6 +162,8 @@ export class EditorHost<
         source: 'host',
         error: error as Error,
       })
+      // 抛出错误日志
+      console.error('Export JSON failed:', error)
       return ''
     } finally {
       this.emit('host:to-json:complete' as keyof T, { timestamp: Date.now(), source: 'host' })
@@ -192,6 +194,7 @@ export class EditorHost<
         source: 'host',
         error: error as Error,
       })
+      console.error('Load JSON failed:', error)
       return
     }
     this.emit('host:load-json:complete' as keyof T, { timestamp: Date.now(), source: 'host' })

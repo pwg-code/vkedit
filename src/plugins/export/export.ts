@@ -70,6 +70,7 @@ export class ExportPlugin extends BasePlugin {
       timestamp: Date.now(),
       source: 'export-plugin',
     })
+
     try {
       this.exportJSON()
     } catch (error) {
@@ -79,6 +80,7 @@ export class ExportPlugin extends BasePlugin {
         timestamp: Date.now(),
         source: 'export-plugin',
       })
+      console.error('Export JSON failed:', error)
       return
     }
     this.host?.emit('export:complete', {

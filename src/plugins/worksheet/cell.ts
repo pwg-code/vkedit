@@ -183,4 +183,23 @@ export class Cell {
   public get verticalAlign(): IVerticalAlign {
     return (this.alignment.vertical || 'middle') as IVerticalAlign
   }
+
+  // 反序列化
+  public deserialize(data: any): void {
+    Object.assign(this, data)
+  }
+
+  // 序列化
+  public serialize() {
+    return {
+      value: this.value,
+      font: this.font,
+      alignment: this.alignment,
+      border: this.border,
+      fill: this.fill,
+      visible: this.visible,
+      master: this.master,
+      mergedCells: this.mergedCells,
+    }
+  }
 }

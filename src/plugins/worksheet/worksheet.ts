@@ -219,12 +219,27 @@ export class WorksheetElement extends BaseGraphicElement {
     return newElement
   }
 
+  deserialize(data: any): void {
+    super.deserialize(data)
+    this.cells = data.cells.map((rowData: any[]) =>
+      rowData.map((cellData) => {
+        const cell = new Cell(this)
+        cell.deserialize(cellData)
+        return cell
+      }),
+    )
+    this.rowsHeight = data.rowsHeight
+    this.colsWidth = data.colsWidth
+    this.updateCellsRenderData()
+    this.updateWidthHeight()
+  }
+
   serialize() {
     return {
       ...super.serialize(),
       rowsHeight: this.rowsHeight,
       colsWidth: this.colsWidth,
-      cells: this.cells,
+      cells: this.cells.map(row=>row.map(c=>c.serialize())),
     }
   }
 
