@@ -27,7 +27,7 @@ export interface IOptions {
 
 // 创建安装了核心插件的宿主
 export function createEditorHost({
-  basePropertyPanel = true,
+  basePropertyPanel = false,
   baseCanvasPropertyPanel = true,
   exportPlugin = true,
   previewPlugin = true,

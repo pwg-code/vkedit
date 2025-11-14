@@ -1,6 +1,6 @@
 {
   "name": "vkedit",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -75,6 +75,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^14.0.0",
+    "exceljs": "^4.4.0",
     "jspdf": "^3.0.3",
     "lodash": "^4.17.21"
   },

@@ -14,6 +14,7 @@ import type {
   PropertyPanelManagerPlugin,
   SelectionPlugin,
   ToolbarManagerPlugin,
+  WorksheetPlugin,
 } from '@/plugins'
 
 import type { IEditorPlugin } from './base'
@@ -40,6 +41,7 @@ export interface PluginMap {
   'table-plugin': TablePlugin
   'text-plugin': TextPlugin
   'toolbar-manager-plugin': ToolbarManagerPlugin
+  'worksheet-plugin': WorksheetPlugin
 }
 
 class Test<T extends { [K in keyof T]: IEditorPlugin }> {

@@ -7,33 +7,42 @@
     ></VkTextarea>
   </div>
   <div class="col-span-full flex">
-    <div class="min-w-[100px]">
+    <div class="min-w-[150px]">
       <VkInputMM
         :model-value="fontSize"
         :min="0"
         :dpm="hostState.dpm"
         @update:model-value="(value: any) => emit('update', 'fontSize', value)"
       ></VkInputMM>
-      <!-- <NumberField
-        :model-value="fontSize"
-        :min="0"
-        @update:model-value="(value: any) => emit('update','fontSize',value)"
-      >
-        <NumberFieldContent>
-          <NumberFieldDecrement />
-          <NumberFieldInput />
-          <NumberFieldIncrement />
-        </NumberFieldContent>
-      </NumberField> -->
     </div>
     <VkToggle
-      :model-value="fontStyle == 'bold'"
+      :model-value="fontStyle?.includes('bold')"
       @update:model-value="
-        (value: boolean) => emit('update', 'fontStyle', value ? 'bold' : 'normal')
+        (value: boolean) =>
+          emit(
+            'update',
+            'fontStyle',
+            value ? `${fontStyle} bold` : fontStyle?.replace('bold', '').trim(),
+          )
       "
     >
       <Icon icon="material-symbols-light:format-bold" style="width: 25px; height: 25px"></Icon>
     </VkToggle>
+    <VkToggle
+      :model-value="fontStyle?.includes('italic')"
+      @update:model-value="
+        (value: boolean) =>
+          emit(
+            'update',
+            'fontStyle',
+            value ? `italic ${fontStyle}` : fontStyle?.replace('italic', '').trim(),
+          )
+      "
+    >
+      <Icon icon="material-symbols-light:format-italic" style="width: 25px; height: 25px"></Icon>
+    </VkToggle>
+  </div>
+  <div class="col-span-full flex">
     <VkToggle :model-value="align == 'left'" @update:model-value="emit('update', 'align', 'left')"
       ><Icon
         icon="material-symbols-light:align-justify-flex-start"
@@ -70,13 +79,14 @@ import { VkTextarea, VkToggle, VkLabel, VkInputMM } from '@/components/ui'
 import { Icon } from '@iconify/vue'
 import { useHostState } from '@/hooks'
 import type { EditorHost } from '@/core'
+import type { IAlign, IFontStyle, IVerticalAlign } from '@/types'
 const { text, fontSize, align, verticalAlign, fontStyle, host } = defineProps<{
   host: EditorHost
   text: string
   fontSize: number
-  align: 'left' | 'center' | 'right' | 'justify'
-  verticalAlign: 'top' | 'middle' | 'bottom'
-  fontStyle?: 'normal' | 'italic' | 'bold' | '500' | 'italic bold' // 文字加粗
+  align: IAlign
+  verticalAlign: IVerticalAlign
+  fontStyle?: IFontStyle // 文字加粗
 }>()
 
 const emit = defineEmits<{

@@ -26,8 +26,6 @@ export interface CellConfig {
 
 // 元素实现
 export class TableElement extends BaseGraphicElement {
-  // export class TableElement implements IGraphicElement {
-  // [key: string]: any
   public type = 'table'
   public activeCell: CellConfig
   public activeRow: number = 0
