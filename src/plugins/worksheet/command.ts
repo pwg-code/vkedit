@@ -24,12 +24,10 @@ export class InsertRowCommand extends BaseCommand {
 
   execute(): void {
     this.worksheetElement.addRow(this.afterIndex)
-    this.worksheetElement.updateWidthHeight()
   }
 
   undo(): void {
     this.worksheetElement.removeRow(this.insertedIndex)
-    this.worksheetElement.updateWidthHeight()
   }
 }
 
@@ -51,12 +49,10 @@ export class InsertColumnCommand extends BaseCommand {
 
   execute(): void {
     this.worksheetElement.addCol(this.afterIndex)
-    this.worksheetElement.updateWidthHeight()
   }
 
   undo(): void {
     this.worksheetElement.removeCol(this.insertedIndex)
-    this.worksheetElement.updateWidthHeight()
   }
 }
 
@@ -84,7 +80,6 @@ export class RemoveRowCommand extends BaseCommand {
 
   execute(): void {
     this.worksheetElement.removeRow(this.index)
-    this.worksheetElement.updateWidthHeight()
   }
 
   undo(): void {
@@ -98,8 +93,6 @@ export class RemoveRowCommand extends BaseCommand {
       this.worksheetElement.cells.splice(this.removedIndex, 0, this.removedCells)
       this.worksheetElement.rowsHeight.splice(this.removedIndex, 0, this.removedRowHeight)
     }
-    this.worksheetElement.updateCellsRenderData()
-    this.worksheetElement.updateWidthHeight()
   }
 }
 
@@ -127,7 +120,6 @@ export class RemoveColumnCommand extends BaseCommand {
 
   execute(): void {
     this.worksheetElement.removeCol(this.index)
-    this.worksheetElement.updateWidthHeight()
   }
 
   undo(): void {
@@ -145,7 +137,5 @@ export class RemoveColumnCommand extends BaseCommand {
       })
       this.worksheetElement.colsWidth.splice(this.removedIndex, 0, this.removedColWidth)
     }
-    this.worksheetElement.updateCellsRenderData()
-    this.worksheetElement.updateWidthHeight()
   }
 }
