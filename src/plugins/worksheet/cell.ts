@@ -99,9 +99,20 @@ export class Cell {
   public fill: CellFill
   public visible: boolean
   // 合并单元格的主单元格引用
-  public master?: { row: number; col: number }
+  public masterInfo?: { row: number; col: number }
   // 合并的范围
   public mergedCells?: MergedCellInfo
+
+  // 缓存相关的私有属性
+  private _cachedGeometry: {
+    x: number
+    y: number
+    width: number
+    height: number
+    row: number
+    col: number
+  } | null = null
+  private _geometryValid: boolean = false
 
   constructor(public table: WorksheetElement) {
     this.value = ''
@@ -115,16 +126,111 @@ export class Cell {
     this.visible = true
   }
 
-  // 获取合并单元格的主单元格
-  public getMasterCell(): Cell | null {
-    if (this.master) {
-      return this.table.cells[this.master.row][this.master.col]
+  // 使几何缓存失效的方法
+  public invalidateGeometry(): void {
+    this._geometryValid = false
+    this._cachedGeometry = null
+  }
+
+  // 计算当前单元格的几何信息
+  private calculateGeometry(): {
+    x: number
+    y: number
+    width: number
+    height: number
+    row: number
+    col: number
+  } | null {
+    // 在 worksheet 的 cells 数组中找到当前 cell 的位置
+    for (let row = 0; row < this.table.cells.length; row++) {
+      for (let col = 0; col < this.table.cells[row].length; col++) {
+        if (this.table.cells[row][col] === this) {
+          // 计算位置
+          const x = this.table.colsWidth.slice(0, col).reduce((sum, width) => sum + width, 0)
+          const y = this.table.rowsHeight.slice(0, row).reduce((sum, height) => sum + height, 0)
+
+          // 计算尺寸（考虑合并单元格）
+          let width = this.table.colsWidth[col]
+          let height = this.table.rowsHeight[row]
+
+          if (this.mergedCells) {
+            const { masterRow, masterCol, rowSpan, colSpan } = this.mergedCells
+            width = this.table.colsWidth
+              .slice(masterCol, masterCol + colSpan)
+              .reduce((sum, w) => sum + w, 0)
+            height = this.table.rowsHeight
+              .slice(masterRow, masterRow + rowSpan)
+              .reduce((sum, h) => sum + h, 0)
+          }
+
+          return { x, y, width, height, row, col }
+        }
+      }
     }
     return null
   }
 
+  // 获取缓存的几何信息，如果缓存失效则重新计算
+  private getCachedGeometry(): {
+    x: number
+    y: number
+    width: number
+    height: number
+    row: number
+    col: number
+  } | null {
+    if (!this._geometryValid || !this._cachedGeometry) {
+      this._cachedGeometry = this.calculateGeometry()
+      this._geometryValid = true
+    }
+    return this._cachedGeometry
+  }
+
+  // 只读属性的 getter
+  public get x(): number {
+    const geometry = this.getCachedGeometry()
+    return geometry?.x ?? 0
+  }
+
+  public get y(): number {
+    const geometry = this.getCachedGeometry()
+    return geometry?.y ?? 0
+  }
+
+  public get width(): number {
+    const geometry = this.getCachedGeometry()
+    return geometry?.width ?? 0
+  }
+
+  public get height(): number {
+    const geometry = this.getCachedGeometry()
+    return geometry?.height ?? 0
+  }
+
+  public get row(): number {
+    const geometry = this.getCachedGeometry()
+    return geometry?.row ?? -1
+  }
+
+  public get col(): number {
+    const geometry = this.getCachedGeometry()
+    return geometry?.col ?? -1
+  }
+
+  // 获取几何信息
+  public getGeometry(): {
+    x: number
+    y: number
+    width: number
+    height: number
+    row: number
+    col: number
+  } | null {
+    return this.getCachedGeometry()
+  }
+
   // 获取合并的单元格
-  public getMergedCells(): { cell: Cell; row: number; col: number }[] {
+  public getMergedCells(): Cell[] {
     if (!this.mergedCells) return []
     return this.table.getCellsInRange(
       this.mergedCells.masterRow,
@@ -132,6 +238,15 @@ export class Cell {
       this.mergedCells.masterRow + this.mergedCells.rowSpan - 1,
       this.mergedCells.masterCol + this.mergedCells.colSpan - 1,
     )
+  }
+
+  // 获取主单元格
+  public getMaster(): { cell: Cell; row: number; col: number } {
+    if (this.masterInfo) {
+      const cell = this.table.cells[this.masterInfo.row][this.masterInfo.col]
+      return { cell, row: this.masterInfo.row, col: this.masterInfo.col }
+    }
+    return { cell: this, row: this.row, col: this.col }
   }
 
   // set cell text
@@ -187,6 +302,7 @@ export class Cell {
   // 反序列化
   public deserialize(data: any): void {
     Object.assign(this, data)
+    this.invalidateGeometry() // 反序列化后失效缓存
   }
 
   // 序列化
@@ -198,7 +314,7 @@ export class Cell {
       border: this.border,
       fill: this.fill,
       visible: this.visible,
-      master: this.master,
+      masterInfo: this.masterInfo,
       mergedCells: this.mergedCells,
     }
   }
