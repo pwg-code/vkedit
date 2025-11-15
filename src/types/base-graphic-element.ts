@@ -3,13 +3,25 @@ import type { IGraphicElement } from '.'
 import type { EditorHost } from '@/core'
 
 export abstract class BaseGraphicElement implements IGraphicElement {
+  public get height(): number {
+    return this._height
+  }
+  public set height(value: number) {
+    this._height = value
+  }
+  public get width(): number {
+    return this._width
+  }
+  public set width(value: number) {
+    this._width = value
+  }
   public abstract type: string
   id: string
   constructor(
     public x: number = 50,
     public y: number = 50,
-    public width: number = 300,
-    public height: number = 80,
+    private _width: number = 300,
+    private _height: number = 80,
     public rotation: number = 0,
     public scaleX: number = 1,
     public scaleY: number = 1,
@@ -57,7 +69,6 @@ export abstract class BaseGraphicElement implements IGraphicElement {
   }
   // 获取转换的属性
   getTransformAttr(event: any): { oldAttrs: any; newAttrs: any } {
-
     const eAttrs = event.target.attrs
     const oldAttrs = {
       x: this.x,
