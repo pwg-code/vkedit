@@ -4,7 +4,7 @@
 
 import { BaseCommand } from '@/commands'
 import { WorksheetElement } from './worksheet'
-import { Cell } from './cell'
+import { Cell, type MergedRegion } from './cell'
 
 /**
  * 插入行命令
@@ -61,9 +61,9 @@ export class InsertColumnCommand extends BaseCommand {
  */
 export class RemoveRowCommand extends BaseCommand {
   public name = 'remove-row'
-  private removedRowHeight: number
-  private removedCells: Cell[]
-  private removedIndex: number
+  private removedRowHeight: number | null = null
+  private removedCells: Cell[] | null = null
+  private removedIndex: number | null = null
 
   constructor(
     private worksheetElement: WorksheetElement,
@@ -71,27 +71,25 @@ export class RemoveRowCommand extends BaseCommand {
     description?: string,
   ) {
     super(description || '删除行')
-    this.removedIndex = index === -1 ? worksheetElement.rowCount - 1 : index
-
-    // 保存要删除的行数据以便撤销
-    this.removedRowHeight = worksheetElement.rowsHeight[this.removedIndex]
-    this.removedCells = [...worksheetElement.cells[this.removedIndex]]
   }
 
   execute(): void {
-    this.worksheetElement.removeRow(this.index)
+    const { removedCells, removedRowHeight, removeIndex } = this.worksheetElement.removeRow(
+      this.index,
+    )
+    this.removedCells = removedCells
+    this.removedRowHeight = removedRowHeight
+    this.removedIndex = removeIndex
   }
 
   undo(): void {
     // 恢复删除的行
-    if (this.removedIndex >= this.worksheetElement.rowCount) {
-      // 在末尾添加
-      this.worksheetElement.cells.push(this.removedCells)
-      this.worksheetElement.rowsHeight.push(this.removedRowHeight)
-    } else {
-      // 在指定位置插入
-      this.worksheetElement.cells.splice(this.removedIndex, 0, this.removedCells)
-      this.worksheetElement.rowsHeight.splice(this.removedIndex, 0, this.removedRowHeight)
+    if (
+      this.removedIndex !== null &&
+      this.removedCells !== null &&
+      this.removedRowHeight !== null
+    ) {
+      this.worksheetElement.addRow(this.removedIndex - 1, this.removedCells, this.removedRowHeight)
     }
   }
 }
@@ -101,9 +99,9 @@ export class RemoveRowCommand extends BaseCommand {
  */
 export class RemoveColumnCommand extends BaseCommand {
   public name = 'remove-column'
-  private removedColWidth: number
-  private removedCells: Cell[]
-  private removedIndex: number
+  private removedColWidth: number | null = null
+  private removedCells: Cell[] | null = null
+  private removedIndex: number | null = null
 
   constructor(
     private worksheetElement: WorksheetElement,
@@ -111,31 +109,170 @@ export class RemoveColumnCommand extends BaseCommand {
     description?: string,
   ) {
     super(description || '删除列')
-    this.removedIndex = index === -1 ? worksheetElement.colCount - 1 : index
-
-    // 保存要删除的列数据以便撤销
-    this.removedColWidth = worksheetElement.colsWidth[this.removedIndex]
-    this.removedCells = worksheetElement.cells.map((row) => row[this.removedIndex])
   }
 
   execute(): void {
-    this.worksheetElement.removeCol(this.index)
+    const { removedCells, removedColWidth, removeIndex } = this.worksheetElement.removeCol(
+      this.index,
+    )
+    this.removedCells = removedCells
+    this.removedColWidth = removedColWidth
+    this.removedIndex = removeIndex
   }
 
   undo(): void {
     // 恢复删除的列
-    if (this.removedIndex >= this.worksheetElement.colCount) {
-      // 在末尾添加
-      this.worksheetElement.cells.forEach((row, rowIndex) => {
-        row.push(this.removedCells[rowIndex])
-      })
-      this.worksheetElement.colsWidth.push(this.removedColWidth)
-    } else {
-      // 在指定位置插入
-      this.worksheetElement.cells.forEach((row, rowIndex) => {
-        row.splice(this.removedIndex, 0, this.removedCells[rowIndex])
-      })
-      this.worksheetElement.colsWidth.splice(this.removedIndex, 0, this.removedColWidth)
+    if (this.removedIndex !== null && this.removedCells !== null && this.removedColWidth !== null) {
+      this.worksheetElement.addCol(this.removedIndex - 1, this.removedCells, this.removedColWidth)
+    }
+  }
+}
+
+/**
+ * 合并单元格命令
+ */
+export class MergeCellsCommand extends BaseCommand {
+  public name = 'merge-cells'
+  private mergedRegionId: string | null = null
+  // private originalCells: Array<{
+  //   row: number
+  //   col: number
+  //   value: string
+  //   mergedRegionId?: string
+  // }> = []
+
+  constructor(
+    private worksheetElement: WorksheetElement,
+    private startRow: number,
+    private startCol: number,
+    private endRow: number,
+    private endCol: number,
+    description?: string,
+  ) {
+    super(description || '合并单元格')
+
+    // // 保存原始单元格数据以便撤销
+    // for (let r = startRow; r <= endRow; r++) {
+    //   for (let c = startCol; c <= endCol; c++) {
+    //     const cell = this.worksheetElement.getCell(r, c)
+    //     if (cell) {
+    //       this.originalCells.push({
+    //         row: r,
+    //         col: c,
+    //         value: cell.value || '',
+    //         mergedRegionId: cell.mergedRegionId,
+    //       })
+    //     }
+    //   }
+    // }
+  }
+
+  execute(): void {
+    try {
+      this.mergedRegionId = this.worksheetElement.createMergedRegion(
+        this.startRow,
+        this.startCol,
+        this.endRow,
+        this.endCol,
+      )
+    } catch (error) {
+      throw new Error(`合并单元格失败: ${error}`)
+    }
+  }
+
+  undo(): void {
+    if (this.mergedRegionId) {
+      // 删除合并区域
+      this.worksheetElement.removeMergedRegion(this.mergedRegionId)
+
+      // // 恢复原始单元格数据
+      // this.originalCells.forEach((cellData) => {
+      //   const cell = this.worksheetElement.getCell(cellData.row, cellData.col)
+      //   if (cell) {
+      //     cell.value = cellData.value
+      //     cell.mergedRegionId = cellData.mergedRegionId
+      //   }
+      // })
+
+      this.mergedRegionId = null
+    }
+  }
+}
+
+/**
+ * 取消合并单元格命令
+ */
+export class UnmergeCellsCommand extends BaseCommand {
+  public name = 'unmerge-cells'
+  private removedRegion: MergedRegion | null = null
+  // private originalCells: Array<{
+  //   row: number
+  //   col: number
+  //   value: string
+  //   mergedRegionId: string
+  // }> = []
+
+  constructor(
+    private worksheetElement: WorksheetElement,
+    private regionId: string,
+    description?: string,
+  ) {
+    super(description || '取消合并单元格')
+
+    // 保存要删除的合并区域信息
+    const region = this.worksheetElement.mergedRegions.get(regionId)
+    if (region) {
+      this.removedRegion = { ...region }
+
+      // // 保存原始单元格数据以便撤销
+      // for (let r = region.startRow; r <= region.endRow; r++) {
+      //   for (let c = region.startCol; c <= region.endCol; c++) {
+      //     const cell = this.worksheetElement.getCell(r, c)
+      //     if (cell && cell.mergedRegionId === regionId) {
+      //       this.originalCells.push({
+      //         row: r,
+      //         col: c,
+      //         value: cell.value || '',
+      //         mergedRegionId: regionId,
+      //       })
+      //     }
+      //   }
+      // }
+    }
+  }
+
+  execute(): void {
+    if (this.removedRegion) {
+      this.worksheetElement.removeMergedRegion(this.removedRegion.id)
+    }
+  }
+
+  undo(): void {
+    if (this.removedRegion) {
+      // 重新创建合并区域
+      const newRegionId = this.worksheetElement.createMergedRegion(
+        this.removedRegion.startRow,
+        this.removedRegion.startCol,
+        this.removedRegion.endRow,
+        this.removedRegion.endCol,
+      )
+
+      // // 恢复原始单元格数据
+      // this.originalCells.forEach((cellData) => {
+      //   const cell = this.worksheetElement.getCell(cellData.row, cellData.col)
+      //   if (cell) {
+      //     cell.value = cellData.value
+      //     cell.mergedRegionId = newRegionId
+      //   }
+      // })
+
+      // // 如果合并区域有值，设置到合并区域
+      // if (this.removedRegion.value) {
+      //   const region = this.worksheetElement.mergedRegions.get(newRegionId)
+      //   if (region) {
+      //     region.value = this.removedRegion.value
+      //   }
+      // }
     }
   }
 }

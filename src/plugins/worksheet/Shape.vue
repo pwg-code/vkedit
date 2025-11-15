@@ -1,24 +1,24 @@
 <template>
   <v-group :config="element" v-bind="$attrs">
     <CellsBorder :element="element"></CellsBorder>
-    <template v-for="(row, rowIndex) in cellsRenderData" :key="`row-${rowIndex}`">
-      <template v-for="(renderData, colIndex) in row" :key="`cell-${rowIndex}-${colIndex}`">
+    <template v-for="(row, rowIndex) in cells" :key="`row-${rowIndex}`">
+      <template v-for="(cell, colIndex) in row" :key="`cell-${rowIndex}-${colIndex}`">
         <!-- 如果单元格已经是合并状态则不渲染 -->
-        <template v-if="renderData.cell.visible && !renderData.cell.master">
+        <template v-if="cell.visible">
           <!-- 单元格内容 文本 -->
           <v-text
             :config="{
-              x: renderData.x + 2,
-              y: renderData.y + 2,
-              width: renderData.width - 4,
-              height: renderData.height - 4,
-              text: renderData.cell.text,
-              fontSize: renderData.cell.fontSize,
-              align: renderData.cell.align,
-              verticalAlign: renderData.cell.verticalAlign,
-              fontStyle: renderData.cell.fontStyle,
+              x: cell.x + 2,
+              y: cell.y + 2,
+              width: cell.width - 4,
+              height: cell.height - 4,
+              text: cell.text,
+              fontSize: cell.fontSize,
+              align: cell.align,
+              verticalAlign: cell.verticalAlign,
+              fontStyle: cell.fontStyle,
             }"
-            @click="handleCellClick($event, renderData, rowIndex, colIndex)"
+            @click="handleCellClick($event, cell, rowIndex, colIndex)"
           />
         </template>
       </template>
@@ -31,9 +31,10 @@
 
 <script setup lang="ts">
 import type { EditorHost } from '@/core'
-import type { CellRenderData, WorksheetElement } from './worksheet'
-import { computed, onMounted, ref } from 'vue'
+import type { WorksheetElement } from './worksheet'
+import { computed, onMounted, ref, watch } from 'vue'
 import CellsBorder from './CellsBorder.vue'
+import type { Cell } from './cell'
 
 interface Props {
   element: WorksheetElement
@@ -42,7 +43,7 @@ interface Props {
 
 const { element, host } = defineProps<Props>()
 
-const cellsRenderData = computed(() => element.cellsRenderData)
+const cells = computed(() => element.cells)
 const activeCell = computed(() => element.activeCell || null)
 
 // 高亮单元格配置
@@ -59,7 +60,7 @@ const highlightConfig = computed(() => {
 })
 
 // 当前活动单元格
-const handleCellClick = (e: any, cell: CellRenderData, row: number, col: number) => {
+const handleCellClick = (e: any, cell: Cell, row: number, col: number) => {
   element.activeCell = cell
   // 主动将选中状态同步到选择插件
   const selectionPlugin = host.getPlugin('selection-plugin')

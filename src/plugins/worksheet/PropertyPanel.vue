@@ -88,11 +88,11 @@
   </div>
 
   <TextProperty
-    :text="activeCell ? activeCell.cell.text : ''"
-    :font-size="activeCell ? activeCell.cell.fontSize : 12"
-    :align="activeCell ? activeCell.cell.align : 'left'"
-    :font-style="activeCell ? activeCell.cell.fontStyle : 'normal'"
-    :vertical-align="activeCell ? activeCell.cell.verticalAlign : 'top'"
+    :text="activeCell ? activeCell.text : ''"
+    :font-size="activeCell ? activeCell.fontSize : 12"
+    :align="activeCell ? activeCell.align : 'left'"
+    :font-style="activeCell ? activeCell.fontStyle : 'normal'"
+    :vertical-align="activeCell ? activeCell.verticalAlign : 'top'"
     :host="host"
     @update="updateActiveCellConfig"
   ></TextProperty>
@@ -115,6 +115,7 @@ import { Icon } from '@iconify/vue'
 import { BatchCommand, UpdatePropertyCommand, type ICommand } from '@/commands'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useHostState } from '@/hooks'
+import { MergeCellsCommand, UnmergeCellsCommand } from './command'
 
 interface Props {
   host: EditorHost
@@ -143,7 +144,7 @@ const updateBorder = (side: 'top' | 'bottom' | 'left' | 'right', value: boolean)
       element,
       host,
       `cells.${row}.${col}.${prop}`,
-      activeCell.value.cell.border?.[side]?.style,
+      activeCell.value.border?.[side]?.style,
       style,
     ),
   )
@@ -203,7 +204,7 @@ const updateBorder = (side: 'top' | 'bottom' | 'left' | 'right', value: boolean)
 // 是否有边框
 const hasBorder = (side: 'top' | 'bottom' | 'left' | 'right') => {
   if (!activeCell.value) return false
-  const borderStyle = activeCell.value.cell.border?.[side]?.style
+  const borderStyle = activeCell.value.border?.[side]?.style
   if (borderStyle === 'thin') return true
   // 还需要检查相邻单元格的边框
   if (side === 'left' && activeCell.value.col > 0) {
@@ -256,34 +257,8 @@ const updateCellConfig = (row: number, col: number, prop: string, value: any) =>
 
 // 解除单元格合并
 const handleDissolve = () => {
-  const comms = []
-  const cell = activeCell.value?.cell
-  if (!cell || !cell.mergedCells) return
-  comms.push(
-    new UpdatePropertyCommand(
-      element,
-      host,
-      `cells.${activeCell.value?.row}.${activeCell.value?.col}.mergedCells`,
-      cell.mergedCells,
-      undefined,
-    ),
-  )
-  // 把合并范围内的其他单元格的master 也清除
-  const mergedCells = cell.getMergedCells()
-  if (!mergedCells) return
-  mergedCells.forEach((c) => {
-    comms.push(
-      new UpdatePropertyCommand(
-        element,
-        host,
-        `cells.${c.row}.${c.col}.master`,
-        c.cell.master,
-        undefined,
-      ),
-    )
-  })
-
-  host.executeCommand(new BatchCommand(host, comms))
+  if (!activeCell.value || !activeCell.value.mergedRegionId) return
+  host.executeCommand(new UnmergeCellsCommand(element, activeCell.value.mergedRegionId))
 }
 
 // 调整合并范围
@@ -307,46 +282,17 @@ watch(resizeCol, (v) => {
 // 合并单元格
 const mergeCell = () => {
   if (!activeCell.value) return
-  const mergedCells = {
-    masterRow: activeCell.value.row,
-    masterCol: activeCell.value.col,
-    rowSpan: resizeRow.value,
-    colSpan: resizeCol.value,
-  }
-  const comms = []
-  // 设置主单元格的合并范围
-  comms.push(
-    new UpdatePropertyCommand(
+  host.executeCommand(
+    new MergeCellsCommand(
       element,
-      host,
-      `cells.${activeCell.value.row}.${activeCell.value.col}.mergedCells`,
-      activeCell.value.cell.mergedCells,
-      mergedCells,
+      activeCell.value.row,
+      activeCell.value.col,
+      activeCell.value.row + resizeRow.value - 1,
+      activeCell.value.col + resizeCol.value - 1,
     ),
   )
-  // 设置其他单元格的master
-  const range = element.getCellsInRange(
-    activeCell.value.row,
-    activeCell.value.col,
-    activeCell.value.row + resizeRow.value - 1,
-    activeCell.value.col + resizeCol.value - 1,
-  )
-
-  range.forEach((c) => {
-    // 跳过主单元格
-    if (c.row === activeCell.value?.row && c.col === activeCell.value?.col) return
-
-    comms.push(
-      new UpdatePropertyCommand(element, host, `cells.${c.row}.${c.col}.master`, c.cell.master, {
-        row: activeCell.value!.row,
-        col: activeCell.value!.col,
-      }),
-    )
-  })
-  host.executeCommand(new BatchCommand(host, comms))
 }
 
-//
 onMounted(() => {
   // 监听属性更新命令  如果设计表格线条相关 则重绘表格线
   host.on('element:updated', (e) => {
@@ -358,10 +304,10 @@ onMounted(() => {
           prop.includes('colsWidth') ||
           prop.includes('merge') ||
           prop.includes('border') ||
-          prop.includes('master') ||
           prop.includes('visible')
         ) {
-          element.updateCellsRenderData()
+          // // 使缓存失效 并重新计算
+          element.invalidateGeometry()
         }
       })
     }

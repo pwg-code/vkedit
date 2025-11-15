@@ -84,11 +84,26 @@ export interface CellFill {
   bgColor?: { argb: string }
 }
 
-export interface MergedCellInfo {
-  masterRow: number
-  masterCol: number
-  rowSpan: number
-  colSpan: number
+// 合并区域定义
+export interface MergedRegion {
+  id: string // 唯一标识符
+  startRow: number
+  startCol: number
+  endRow: number // 包含边界
+  endCol: number // 包含边界
+  value?: string // 合并后的值
+}
+
+// 缓存数据接口
+export interface CachedGeometry {
+  x: number
+  y: number
+  width: number
+  height: number
+  row: number
+  col: number
+  master: Cell
+  visible: boolean
 }
 
 export class Cell {
@@ -97,24 +112,13 @@ export class Cell {
   public alignment: CellAlignment
   public border: CellBorder
   public fill: CellFill
-  public visible: boolean
-  // 合并单元格的主单元格引用
-  public masterInfo?: { row: number; col: number }
-  // 合并的范围
-  public mergedCells?: MergedCellInfo
+  public mergedRegionId?: string // 如果属于合并区域，记录区域ID
 
   // 缓存相关的私有属性
-  private _cachedGeometry: {
-    x: number
-    y: number
-    width: number
-    height: number
-    row: number
-    col: number
-  } | null = null
+  private _cachedGeometry: CachedGeometry | null = null
   private _geometryValid: boolean = false
 
-  constructor(public table: WorksheetElement) {
+  constructor(public sheet: WorksheetElement) {
     this.value = ''
     this.font = {}
     this.alignment = {}
@@ -123,7 +127,6 @@ export class Cell {
       top: { style: 'thin' },
     }
     this.fill = {}
-    this.visible = true
   }
 
   // 使几何缓存失效的方法
@@ -133,37 +136,29 @@ export class Cell {
   }
 
   // 计算当前单元格的几何信息
-  private calculateGeometry(): {
-    x: number
-    y: number
-    width: number
-    height: number
-    row: number
-    col: number
-  } | null {
+  private calculateGeometry(): CachedGeometry | null {
     // 在 worksheet 的 cells 数组中找到当前 cell 的位置
-    for (let row = 0; row < this.table.cells.length; row++) {
-      for (let col = 0; col < this.table.cells[row].length; col++) {
-        if (this.table.cells[row][col] === this) {
+    for (let row = 0; row < this.sheet.cells.length; row++) {
+      for (let col = 0; col < this.sheet.cells[row].length; col++) {
+        if (this.sheet.cells[row][col] === this) {
           // 计算位置
-          const x = this.table.colsWidth.slice(0, col).reduce((sum, width) => sum + width, 0)
-          const y = this.table.rowsHeight.slice(0, row).reduce((sum, height) => sum + height, 0)
+          const x = this.sheet.colsWidth.slice(0, col).reduce((sum, width) => sum + width, 0)
+          const y = this.sheet.rowsHeight.slice(0, row).reduce((sum, height) => sum + height, 0)
 
           // 计算尺寸（考虑合并单元格）
-          let width = this.table.colsWidth[col]
-          let height = this.table.rowsHeight[row]
-
-          if (this.mergedCells) {
-            const { masterRow, masterCol, rowSpan, colSpan } = this.mergedCells
-            width = this.table.colsWidth
-              .slice(masterCol, masterCol + colSpan)
-              .reduce((sum, w) => sum + w, 0)
-            height = this.table.rowsHeight
-              .slice(masterRow, masterRow + rowSpan)
-              .reduce((sum, h) => sum + h, 0)
+          let width = this.sheet.colsWidth[col]
+          let height = this.sheet.rowsHeight[row]
+          const mergedRegion = this.getMergedRegion()
+          if (mergedRegion) {
+            const { endRow, endCol } = mergedRegion
+            width = this.sheet.colsWidth.slice(col, endCol + 1).reduce((sum, w) => sum + w, 0)
+            height = this.sheet.rowsHeight.slice(row, endRow + 1).reduce((sum, h) => sum + h, 0)
           }
-
-          return { x, y, width, height, row, col }
+          const master = mergedRegion
+            ? this.sheet.cells[mergedRegion.startRow][mergedRegion.startCol]
+            : this
+          const visible = master === this
+          return { x, y, width, height, row, col, master, visible }
         }
       }
     }
@@ -171,14 +166,7 @@ export class Cell {
   }
 
   // 获取缓存的几何信息，如果缓存失效则重新计算
-  private getCachedGeometry(): {
-    x: number
-    y: number
-    width: number
-    height: number
-    row: number
-    col: number
-  } | null {
+  private getCachedGeometry(): CachedGeometry | null {
     if (!this._geometryValid || !this._cachedGeometry) {
       this._cachedGeometry = this.calculateGeometry()
       this._geometryValid = true
@@ -217,6 +205,17 @@ export class Cell {
     return geometry?.col ?? -1
   }
 
+  // 获取主单元格
+  public get master(): Cell {
+    const geometry = this.getCachedGeometry()
+    return geometry?.master ?? this
+  }
+  // 获取主单元格
+  public get visible(): boolean {
+    const geometry = this.getCachedGeometry()
+    return geometry?.visible ?? false
+  }
+
   // 获取几何信息
   public getGeometry(): {
     x: number
@@ -231,22 +230,26 @@ export class Cell {
 
   // 获取合并的单元格
   public getMergedCells(): Cell[] {
-    if (!this.mergedCells) return []
-    return this.table.getCellsInRange(
-      this.mergedCells.masterRow,
-      this.mergedCells.masterCol,
-      this.mergedCells.masterRow + this.mergedCells.rowSpan - 1,
-      this.mergedCells.masterCol + this.mergedCells.colSpan - 1,
-    )
+    const cells: Cell[] = []
+    const region = this.getMergedRegion()
+    if (region) {
+      for (let r = region.startRow; r <= region.endRow; r++) {
+        for (let c = region.startCol; c <= region.endCol; c++) {
+          cells.push(this.sheet.cells[r][c])
+        }
+      }
+    } else {
+      cells.push(this)
+    }
+    return cells
   }
 
-  // 获取主单元格
-  public getMaster(): { cell: Cell; row: number; col: number } {
-    if (this.masterInfo) {
-      const cell = this.table.cells[this.masterInfo.row][this.masterInfo.col]
-      return { cell, row: this.masterInfo.row, col: this.masterInfo.col }
+  // 获取合并区域信息
+  public getMergedRegion(): MergedRegion | null {
+    if (this.mergedRegionId) {
+      return this.sheet.mergedRegions.get(this.mergedRegionId) || null
     }
-    return { cell: this, row: this.row, col: this.col }
+    return null
   }
 
   // set cell text
@@ -313,9 +316,7 @@ export class Cell {
       alignment: this.alignment,
       border: this.border,
       fill: this.fill,
-      visible: this.visible,
-      masterInfo: this.masterInfo,
-      mergedCells: this.mergedCells,
+      mergedRegionId: this.mergedRegionId,
     }
   }
 }

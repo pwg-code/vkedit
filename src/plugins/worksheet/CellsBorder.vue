@@ -9,7 +9,7 @@ import konva from 'konva'
 
 const { element } = defineProps<{ element: WorksheetElement }>()
 
-const cellsRenderData = computed(() => element.cellsRenderData)
+const cells = computed(() => element.cells)
 
 const config = ref<konva.ShapeConfig>({
   stroke: 'black',
@@ -20,37 +20,37 @@ const config = ref<konva.ShapeConfig>({
 // 绘制函数
 function sceneFunc(context: konva.Context, shape: konva.Shape) {
   context.beginPath()
-  cellsRenderData.value.forEach((row, i) => {
+  cells.value.forEach((row, i) => {
     row.forEach((c, j) => {
-      if (!c.cell.visible || c.cell.master) return
+      if (!c.visible) return
       // 绘制左侧边框
-      if (c.cell.border?.left?.style === 'thin') {
-        drawLine(context, c.x, c.y, c.x, c.y + c.height, c.cell.border.left.color?.argb || 'black')
+      if (c.border?.left?.style === 'thin') {
+        drawLine(context, c.x, c.y, c.x, c.y + c.height, c.border.left.color?.argb || 'black')
       }
       // 绘制右侧边框
-      if (c.cell.border?.right?.style === 'thin') {
+      if (c.border?.right?.style === 'thin') {
         drawLine(
           context,
           c.x + c.width,
           c.y,
           c.x + c.width,
           c.y + c.height,
-          c.cell.border.right.color?.argb || 'black',
+          c.border.right.color?.argb || 'black',
         )
       }
       // 绘制顶部边框
-      if (c.cell.border?.top?.style === 'thin') {
-        drawLine(context, c.x, c.y, c.x + c.width, c.y, c.cell.border.top.color?.argb || 'black')
+      if (c.border?.top?.style === 'thin') {
+        drawLine(context, c.x, c.y, c.x + c.width, c.y, c.border.top.color?.argb || 'black')
       }
       // 绘制底部边框
-      if (c.cell.border?.bottom?.style === 'thin') {
+      if (c.border?.bottom?.style === 'thin') {
         drawLine(
           context,
           c.x,
           c.y + c.height,
           c.x + c.width,
           c.y + c.height,
-          c.cell.border.bottom.color?.argb || 'black',
+          c.border.bottom.color?.argb || 'black',
         )
       }
     })
