@@ -140,6 +140,9 @@ export class SelectionPlugin extends BasePlugin {
         const bbox = element.getBoundingBox()
         bbox.x = absPos.x
         bbox.y = absPos.y
+        const hostZoom = this.host.getState().zoom
+        bbox.width = bbox.width * hostZoom
+        bbox.height = bbox.height * hostZoom
         if (!element.locked && element.visible && this.rectIntersect(rect, bbox)) {
           elementIds.add(element.id)
         }
