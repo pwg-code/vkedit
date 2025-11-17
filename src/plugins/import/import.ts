@@ -5,6 +5,7 @@
 import { BasePlugin } from '@/types/base-plugin'
 import Import from './Import.vue'
 import { ElementManagerPlugin } from '@/plugins'
+// ImportEventData moved to separate types.d.ts
 
 export class ImportPlugin extends BasePlugin {
   name = 'import-plugin'
@@ -75,3 +76,5 @@ declare module '@/types' {
     'import-plugin': ImportPlugin
   }
 }
+
+// EventMap augmentation for import plugin is defined in src/plugins/import/types.d.ts

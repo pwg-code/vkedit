@@ -138,31 +138,7 @@ export interface StageKeyboardEventData extends BaseEventData {
   evt: KeyboardEvent
 }
 
-// 图形注册事件数据类型
-export interface GraphicRegisteredEventData extends BaseEventData {
-  type: string
-  render: () => Component
-}
-
-// 图形工具注册数据类型
-export interface GraphicToolRegisteredEventData extends BaseEventData {
-  type: string
-  render: () => Component
-}
-
-// 上下文菜单注册数据类型
-export interface ContextMenuRegisteredEventData extends BaseEventData {
-  render: () => Component
-  graphicTypes: string[]
-  isPublic: boolean
-  isCanvas: boolean
-}
-
-// 导出事件数据
-export interface ExportEventData extends BaseEventData {
-  format: 'png' | 'jpeg' | 'pdf' | 'json' | 'excel' | string
-  error?: any
-}
+// (plugin-specific event payload types moved to their plugin's types.d.ts files)
 
 /**
  * 事件工具函数

@@ -1,5 +1,6 @@
 import { BasePlugin } from '../types/base-plugin'
-import type { GraphicRegisteredEventData, IGraphicElement } from '../types'
+import type { GraphicRegisteredEventData } from '@/plugins/graphic-manager/types'
+import type { IGraphicElement } from '../types'
 import type { Component } from 'vue'
 
 export class GraphicManagerPlugin extends BasePlugin {

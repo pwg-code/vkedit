@@ -1,4 +1,5 @@
-import { BasePlugin, type ContextMenuRegisteredEventData } from '@/types'
+import { BasePlugin } from '@/types'
+import type { ContextMenuRegisteredEventData } from '@/plugins/context-menu-manager/types'
 import type { SelectionPlugin } from './selection'
 
 export class ContextMenuManagerPlugin extends BasePlugin {
@@ -45,7 +46,7 @@ export class ContextMenuManagerPlugin extends BasePlugin {
         // 否则根据选中图形类型过滤
         if (selection && selection.length > 0) {
           const selectedTypes = new Set(selection.map((el) => el.type))
-          const intersect = menu.graphicTypes.filter((type) => selectedTypes.has(type))
+          const intersect = menu.graphicTypes.filter((t: string) => selectedTypes.has(t))
           if (intersect.length > 0) {
             menus.push(menu)
           }

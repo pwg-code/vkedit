@@ -7,6 +7,7 @@ import Export from './Export.vue'
 import jsPDF from 'jspdf'
 import { ElementManagerPlugin } from '@/plugins'
 import konva from 'konva'
+import type { ExportEventData } from './types'
 
 export class ExportPlugin extends BasePlugin {
   name = 'export-plugin'
@@ -209,5 +210,15 @@ export class ExportPlugin extends BasePlugin {
 declare module '@/types' {
   interface PluginMap {
     'export-plugin': ExportPlugin
+  }
+}
+
+// 将导出相关的事件添加到 EventMap（仅类型信息）
+declare module '@/types' {
+  interface EventMap {
+    'export:start': (payload: ExportEventData) => void
+    'export:complete': (payload: ExportEventData) => void
+    'export:error': (payload: ExportEventData) => void
+    'export:progress': (payload: ExportEventData) => void
   }
 }

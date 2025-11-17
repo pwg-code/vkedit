@@ -17,18 +17,28 @@ import type {
   ElementUpdateEventData,
   StageMouseEventData,
   StageKeyboardEventData,
-  GraphicRegisteredEventData,
-  GraphicToolRegisteredEventData,
+
   ElementRegisteredEventData,
-  ContextMenuRegisteredEventData,
-  ExportEventData,
+
 } from './event-data'
 
 /**
- *
- * 说明：event-types.ts 中只定义了有限的几类事件数据接口。
- * 对于没有专用接口的事件，我们使用 BaseEventData 作为默认类型。
- */
+ * 编辑器事件映射接口
+ * @description 定义编辑器中所有可能的事件及其对应的负载类型。
+ * 每个事件名称映射到一个函数类型，该函数接受特定的事件数据作为参数。
+ * 通过使用此接口，可以实现类型安全的事件处理机制，确保在触发和监听事件时使用正确的数据类型。
+ * 拓展示例：
+ * @example
+ * ```typescript
+ * declare module '@/types' {
+ *  interface EventMap {
+ *    yourType: (payload: YourEventData) => void
+ *  }}
+ * - 然后你就可以这样使用它了：
+ * - host.emit(yourType,(evt)=>{}) // evt 的类型被推断为 YourEventData
+ * ```
+ * */
+
 export interface EventMap {
   // 生命周期
   'editor:ready': (payload: BaseEventData) => void
@@ -132,10 +142,7 @@ export interface EventMap {
   'plugin:loaded': (payload: PluginEventData) => void
   'plugin:error': (payload: ErrorEventData) => void
 
-  'graphic:registered': (payload: GraphicRegisteredEventData) => void
-  'graphic:unregistered': (payload: GraphicRegisteredEventData) => void
-  'graphic-tool:registered': (payload: GraphicToolRegisteredEventData) => void
-  'graphic-tool:unregistered': (payload: GraphicToolRegisteredEventData) => void
+  // graphic events moved to graphic-manager plugin types
 
   // 创建策略
   'create-strategy:registered': (payload: BaseEventData) => void
@@ -143,8 +150,7 @@ export interface EventMap {
   'create-strategy:needs-register': (payload: BaseEventData) => void
 
   // 属性面板
-  'property-panel:registered': (payload: PropertyRegisteredPanelEventData) => void
-  'property-panel:unregistered': (payload: PropertyRegisteredPanelEventData) => void
+  // property-panel events moved to property-panel-manager plugin types
   'property:value-change': (payload: BaseEventData) => void
   'property:batch-update-start': (payload: BaseEventData) => void
   'property:batch-update-end': (payload: BaseEventData) => void
@@ -183,11 +189,7 @@ export interface EventMap {
   'memory:warning': (payload: PerformanceEventData) => void
   'render:performance': (payload: PerformanceEventData) => void
 
-  // 导出
-  'export:start': (payload: ExportEventData) => void
-  'export:complete': (payload: ExportEventData) => void
-  'export:error': (payload: ExportEventData) => void
-  'export:progress': (payload: ExportEventData) => void
+  // 导出  —— 由导出插件在其实现中通过模块声明合并补充到 EventMap
 
   // host 加载json和导出json
   'host:load-json:start': (payload: BaseEventData) => void
@@ -199,10 +201,7 @@ export interface EventMap {
   'host:to-json:error': (payload: ErrorEventData) => void
 
   // 导入
-  'import:start': (payload: BaseEventData) => void
-  'import:complete': (payload: BaseEventData) => void
-  'import:error': (payload: ErrorEventData) => void
-  'import:progress': (payload: BaseEventData) => void
+  // import events moved to import plugin via module augmentation
 
   // 协作
   'collab:connected': (payload: BaseEventData) => void
@@ -210,14 +209,9 @@ export interface EventMap {
   'collab:data-received': (payload: BaseEventData) => void
   'collab:operation-sync': (payload: BaseEventData) => void
 
-  // 预览
-  'preview:start': (payload: BaseEventData) => void
-  'preview:complete': (payload: BaseEventData) => void
-  'preview:error': (payload: ErrorEventData) => void
+  // preview events moved to preview plugin types
 
-  // 上下文菜单注册
-  'context-menu:registered': (payload: ContextMenuRegisteredEventData) => void
-  'context-menu:unregistered': (payload: ContextMenuRegisteredEventData) => void
+  // context-menu events moved to context-menu-manager plugin types
 
   // 自定义（插件）
   'custom:': (...args: any[]) => any
