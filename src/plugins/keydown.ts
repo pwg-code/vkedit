@@ -40,3 +40,10 @@ export class KeyDownPlugin extends BasePlugin {
   // 左移
   private toLeft(): void {}
 }
+
+// 将 KeyDownPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'keydown-plugin': KeyDownPlugin
+  }
+}

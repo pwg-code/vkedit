@@ -55,3 +55,10 @@ export class ContextMenuManagerPlugin extends BasePlugin {
     return menus
   }
 }
+
+// 将 ContextMenuManagerPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'context-menu-manager-plugin': ContextMenuManagerPlugin
+  }
+}

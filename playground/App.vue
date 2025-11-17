@@ -19,8 +19,6 @@ import {
   CanvasPropertyPanel,
   ElementManagerPlugin,
   TextElement,
-  WorksheetElement,
-  WorksheetPlugin,
 } from '@/index'
 // import '@/styles/tailwind-base.css' // 手动导入样式
 
@@ -39,7 +37,7 @@ host
   .installPlugin('rect-plugin', new RectPlugin())
   .installPlugin('text-plugin', new TextPlugin())
   .installPlugin('table-plugin', new TablePlugin())
-  .installPlugin('worksheet-plugin', new WorksheetPlugin())
+  // .installPlugin('worksheet-plugin', new WorksheetPlugin())
 
 function test() {
   host.setState({
@@ -49,8 +47,8 @@ function test() {
     zoom: 0.4,
   })
   const hostState = host.getState()
-  const newTable = new WorksheetElement(0, 0, Array(45).fill(20), Array(20).fill(80))
-  host.getPlugin('element-manager-plugin')?.addElement(newTable)
+  // const newTable = new WorksheetElement(0, 0, Array(45).fill(20), Array(20).fill(80))
+  // host.getPlugin('element-manager-plugin')?.addElement(newTable)
 }
 
 onMounted(() => {

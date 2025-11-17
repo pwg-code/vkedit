@@ -322,3 +322,10 @@ declare module '@/types' {
     table: TableElement
   }
 }
+
+// 将 TablePlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'table-plugin': TablePlugin
+  }
+}

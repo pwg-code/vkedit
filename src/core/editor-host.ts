@@ -2,12 +2,14 @@ import { reactive } from 'vue'
 import type { IEditorPlugin, IEditorState, EventMap, PluginEventData, PluginMap } from '../types'
 import { EventUtils } from '../types/event-data'
 import type { ICommand } from '@/commands/i-command'
+import type { RectPlugin, TextPlugin } from '@/plugins'
 
 export class EditorHost<
   T extends { [K in keyof T]: (payload: any) => void } = EventMap,
   U extends { [K in keyof U]: IEditorPlugin } = PluginMap,
 > {
-  private plugins: Map<keyof U, U[keyof U]> = new Map()
+  // 运行时用一个通用 Map 存储插件实例（键为 string），编译时通过重载和泛型保证类型推断
+  private plugins: Map<string, IEditorPlugin> = new Map()
   private events: Partial<{ [K in keyof T]: T[K][] }> = {}
   private commandStack: ICommand[] = []
   private currentCommandIndex: number = -1
@@ -53,7 +55,12 @@ export class EditorHost<
   }
 
   // 插件管理
-  installPlugin<K extends keyof U>(name: K, plugin: U[K]): EditorHost<T, U> {
+  // installPlugin 支持两种用法：
+  // 1) 通过 PluginMap 推断： installPlugin('rect-plugin', rectPlugin)
+  // 2) 显式泛型以覆盖或在未知映射时指定类型： installPlugin<'my-plugin'>(name, plugin)
+  installPlugin<K extends keyof PluginMap>(name: K, plugin: PluginMap[K]): EditorHost<T, U>
+  installPlugin(name: string, plugin: IEditorPlugin): EditorHost<T, U>
+  installPlugin(name: string, plugin: IEditorPlugin): EditorHost<T, U> {
     if (this.plugins.has(name)) {
       console.warn(`Plugin ${name as string} is already registered`)
       return this
@@ -71,7 +78,10 @@ export class EditorHost<
     return this
   }
 
-  uninstallPlugin<K extends keyof U>(pluginName: K): EditorHost<T, U> {
+  // uninstallPlugin 支持按映射键名或任意字符串调用
+  uninstallPlugin<K extends keyof PluginMap>(pluginName: K): EditorHost<T, U>
+  uninstallPlugin(pluginName: string): EditorHost<T, U>
+  uninstallPlugin(pluginName: string): EditorHost<T, U> {
     const plugin = this.plugins.get(pluginName)
     if (plugin) {
       plugin.uninstall()
@@ -87,9 +97,14 @@ export class EditorHost<
     return this
   }
 
-  getPlugin<K extends keyof U>(pluginName: K): U[K] {
+  // getPlugin 支持两种用法：
+  // 1) 通过 PluginMap 推断返回类型： getPlugin('rect-plugin') -> RectPlugin
+  // 2) 显式泛型： getPlugin<MyPlugin>('my-plugin')
+  getPlugin<K extends keyof PluginMap>(pluginName: K): PluginMap[K]
+  getPlugin<T extends IEditorPlugin = IEditorPlugin>(pluginName: string): T
+  getPlugin(pluginName: string): IEditorPlugin {
     if (this.plugins.has(pluginName)) {
-      return this.plugins.get(pluginName) as U[typeof pluginName]
+      return this.plugins.get(pluginName) as IEditorPlugin
     } else {
       throw new Error(
         `不存在插件: ${pluginName as string},可用插件有: ${Array.from(this.plugins.keys()).join(',')}`,
@@ -144,11 +159,17 @@ export class EditorHost<
     // 发送事件
     this.emit('host:to-json:start' as keyof T, { timestamp: Date.now(), source: 'host' })
     try {
-      const elementsPlugin = this.plugins.get('element-manager-plugin' as keyof U)
-      const elements = elementsPlugin?.getAllElements()
+      // 尝试通过 getPlugin 获取已安装的 element-manager-plugin（getPlugin 会在不存在时抛出）
+      let elements: any[] | undefined
+      try {
+        const elementsPlugin = this.getPlugin('element-manager-plugin' as keyof PluginMap)
+        elements = (elementsPlugin as any).getAllElements()
+      } catch {
+        elements = undefined
+      }
       const serializeElements: any[] = []
       if (elements) {
-        elements.forEach((value: any, key: any) => {
+        elements.forEach((value: any) => {
           serializeElements.push(value.serialize())
         })
       }
@@ -176,7 +197,7 @@ export class EditorHost<
     try {
       const data = JSON.parse(jsonStr)
       // 加载编辑器状态
-      const elementsPlugin = this.getPlugin('element-manager-plugin' as keyof U)
+      const elementsPlugin = this.getPlugin('element-manager-plugin')
       const elements: any[] = data.elements
       if (elementsPlugin) {
         elementsPlugin.elements.clear()
@@ -199,4 +220,16 @@ export class EditorHost<
     }
     this.emit('host:load-json:complete' as keyof T, { timestamp: Date.now(), source: 'host' })
   }
+}
+
+
+declare module '@/types' {
+  interface PluginMap {
+    ttt: RectPlugin
+  }
+}
+function test() {
+  const host = new EditorHost()
+  const p = host.getPlugin('keydown-plugin')
+  const t = host.getPlugin('selection-plugin')
 }

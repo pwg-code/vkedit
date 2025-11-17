@@ -15,3 +15,10 @@ export class AlignPlugin extends BasePlugin {
     })
   }
 }
+
+// 将 AlignPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'align-plugin': AlignPlugin
+  }
+}

@@ -28,3 +28,10 @@ export class GraphicManagerPlugin extends BasePlugin {
     throw new Error(`未找到类型为 ${type} 的图形组件`)
   }
 }
+
+// 将 GraphicManagerPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'graphic-manager-plugin': GraphicManagerPlugin
+  }
+}

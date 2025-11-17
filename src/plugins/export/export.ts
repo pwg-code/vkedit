@@ -204,3 +204,10 @@ export class ExportPlugin extends BasePlugin {
     return dataUrl
   }
 }
+
+// 将 ExportPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'export-plugin': ExportPlugin
+  }
+}

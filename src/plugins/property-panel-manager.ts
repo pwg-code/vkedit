@@ -71,3 +71,10 @@ export class PropertyPanelManagerPlugin extends BasePlugin {
       .map((p) => p.render())
   }
 }
+
+// 将 PropertyPanelManagerPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'property-panel-manager-plugin': PropertyPanelManagerPlugin
+  }
+}

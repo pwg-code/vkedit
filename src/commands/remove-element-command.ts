@@ -1,7 +1,7 @@
 import { BaseCommand } from './base-command'
 import type { IGraphicElement } from '../types'
 import { type EditorHost } from '@/core'
-import type { ElementManagerPlugin, GraphicTypeManagerPlugin } from '@/plugins'
+import type { ElementManagerPlugin } from '@/plugins'
 export class RemoveElementCommand extends BaseCommand {
   public name = 'REMOVE_ELEMENT'
   private elementData: any

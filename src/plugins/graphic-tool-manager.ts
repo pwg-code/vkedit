@@ -34,3 +34,10 @@ export class GraphicToolManagerPlugin extends BasePlugin {
     throw new Error(`未找到类型为 ${type} 的图形工具组件`)
   }
 }
+
+// 将 GraphicToolManagerPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'graphic-tool-manager-plugin': GraphicToolManagerPlugin
+  }
+}

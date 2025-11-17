@@ -68,3 +68,10 @@ export class ImportPlugin extends BasePlugin {
     this.host?.emit('import:start', this.createEventData('excel'))
   }
 }
+
+// 将 ImportPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'import-plugin': ImportPlugin
+  }
+}

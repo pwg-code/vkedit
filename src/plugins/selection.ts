@@ -226,3 +226,10 @@ export class SelectionPlugin extends BasePlugin {
     return null
   }
 }
+
+// 将 SelectionPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'selection-plugin': SelectionPlugin
+  }
+}

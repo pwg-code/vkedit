@@ -23,3 +23,10 @@ export class ToolbarManagerPlugin extends BasePlugin {
     return Array.from(this.toolbars.values())
   }
 }
+
+// 将 ToolbarManagerPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'toolbar-manager-plugin': ToolbarManagerPlugin
+  }
+}

@@ -87,3 +87,10 @@ declare module '@/types' {
     text: TextElement
   }
 }
+
+// 将 TextPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'text-plugin': TextPlugin
+  }
+}

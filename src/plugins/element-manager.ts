@@ -90,3 +90,10 @@ export class ElementManagerPlugin extends BasePlugin {
     throw new Error(`Element type ${type} is not registered.`)
   }
 }
+
+// 将 ElementManagerPlugin 注册到可扩展的 PluginMap（仅类型信息）
+declare module '@/types' {
+  interface PluginMap {
+    'element-manager-plugin': ElementManagerPlugin
+  }
+}
