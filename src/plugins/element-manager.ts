@@ -1,7 +1,5 @@
 import { BasePlugin } from '../types/base-plugin'
-import type { ElementRegisteredEventData, IGraphicElement } from '../types'
-import { RemoveElementCommand, AddElementCommand } from '@/commands'
-import type { Component } from 'vue'
+import type { ElementRegisteredEventData, IGraphicElement, ElementTypeMap } from '../types'
 
 export class ElementManagerPlugin extends BasePlugin {
   public name = 'element-manager-plugin'
@@ -47,16 +45,43 @@ export class ElementManagerPlugin extends BasePlugin {
     }
   }
 
-  getElement(elementId: string): IGraphicElement | undefined {
-    return this.elements.get(elementId)
+
+
+  // 获取单个元素（支持按 type 过滤并进行类型推断）
+  // 使用 ElementTypeMap 自动推断： getElement(id, 'rect') -> RectElement
+  getElement<K extends keyof ElementTypeMap>(elementId: string, type: K): ElementTypeMap[K]
+  // 显式泛型： getElement<RectElement>(id)
+  getElement<T extends IGraphicElement = IGraphicElement>(elementId: string): T
+  getElement(elementId: string, type?: string): IGraphicElement {
+    const el = this.elements.get(elementId)
+    if (!el){
+      // 元素不存在 抛出异常
+      throw new Error(`Element with ID ${elementId} does not exist.`)
+    }
+    return el as any
   }
 
-  // 获取所有元素
-  getAllElements(): IGraphicElement[] {
-    return Array.from(this.elements.values())
+  // 获取所有元素（支持按 type 过滤并进行类型推断）
+  // 使用 ElementTypeMap 自动推断： getAllElements('rect') -> RectElement[]
+  getAllElements<K extends keyof ElementTypeMap>(type: K): ElementTypeMap[K][]
+  // 显式泛型： getAllElements<RectElement>()
+  getAllElements<T extends IGraphicElement = IGraphicElement>(): T[]
+  getAllElements(type?: string): IGraphicElement[] {
+    const arr = Array.from(this.elements.values())
+    if (type) {
+      return arr.filter((e) => e.type === type) as any
+    }
+    return arr as any
   }
 
-  // 创建元素实例
+  // 创建元素实例（支持两种方式：）
+  // 1) 通过可扩展的 ElementTypeMap 自动推断： createElement('rect') -> RectElement
+  //    插件可以通过模块声明合并 (declare module '@/types') 来扩展 ElementTypeMap。
+  // 2) 显式泛型调用以手动指定返回类型： createElement<RectElement>('rect')
+  // 重载签名：先匹配映射，再匹配显式泛型，再回退到通用签名
+  createElement<K extends keyof ElementTypeMap>(type: K): ElementTypeMap[K]
+  createElement<T extends IGraphicElement = IGraphicElement>(type: string): T
+  createElement(type: string): IGraphicElement
   createElement(type: string): IGraphicElement {
     const constructor = this.elementConstructors.get(type)
     if (constructor) {

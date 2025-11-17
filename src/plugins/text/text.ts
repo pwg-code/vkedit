@@ -80,3 +80,10 @@ export class TextPlugin extends BasePlugin {
     })
   }
 }
+
+// 将 TextElement 注册到可扩展的 ElementTypeMap（仅类型信息）
+declare module '@/types' {
+  interface ElementTypeMap {
+    text: TextElement
+  }
+}

@@ -315,3 +315,10 @@ export class TablePlugin extends BasePlugin {
     })
   }
 }
+
+// 将 TableElement 注册到可扩展的 ElementTypeMap（仅类型信息）
+declare module '@/types' {
+  interface ElementTypeMap {
+    table: TableElement
+  }
+}

@@ -75,3 +75,10 @@ export class RectPlugin extends BasePlugin {
     })
   }
 }
+
+// 将 RectElement 注册到可扩展的 ElementTypeMap（仅类型信息）
+declare module '@/types' {
+  interface ElementTypeMap {
+    rect: RectElement
+  }
+}
