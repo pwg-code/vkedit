@@ -11,15 +11,12 @@ import type {
   CreationEventData,
   ErrorEventData,
   PerformanceEventData,
-  PropertyRegisteredPanelEventData,
   AlignEventData,
   LayerOrderEventData,
   ElementUpdateEventData,
   StageMouseEventData,
   StageKeyboardEventData,
-
   ElementRegisteredEventData,
-
 } from './event-data'
 
 /**

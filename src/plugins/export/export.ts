@@ -5,9 +5,7 @@
 import { BasePlugin } from '@/types/base-plugin'
 import Export from './Export.vue'
 import jsPDF from 'jspdf'
-import { ElementManagerPlugin } from '@/plugins'
 import konva from 'konva'
-import type { ExportEventData } from './types'
 
 export class ExportPlugin extends BasePlugin {
   name = 'export-plugin'
@@ -221,4 +219,11 @@ declare module '@/types' {
     'export:error': (payload: ExportEventData) => void
     'export:progress': (payload: ExportEventData) => void
   }
+}
+
+import type { BaseEventData } from '@/types'
+
+export interface ExportEventData extends BaseEventData {
+  format: 'png' | 'jpeg' | 'pdf' | 'json' | 'excel' | string
+  error?: any
 }

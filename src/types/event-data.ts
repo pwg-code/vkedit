@@ -96,17 +96,6 @@ export interface StateEventData extends BaseEventData {
   state: IEditorState
 }
 
-// 属性面板事件数据
-export interface PropertyRegisteredPanelEventData extends BaseEventData {
-  // 给哪些类型的图形显示
-  graphicTypes: string[]
-  //是否为公用面板
-  isPublic: boolean
-  // 是否为画布面板
-  isCanvas: boolean
-  render: () => Component
-}
-
 // 对其分布事件数据
 export interface AlignEventData extends BaseEventData {
   alignment: 'left' | 'right' | 'top' | 'bottom' | 'centerX' | 'centerY'

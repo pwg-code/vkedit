@@ -37,8 +37,7 @@ host
   .installPlugin('rect-plugin', new RectPlugin())
   .installPlugin('text-plugin', new TextPlugin())
   .installPlugin('table-plugin', new TablePlugin())
-  // .installPlugin('worksheet-plugin', new WorksheetPlugin())
-
+// .installPlugin('worksheet-plugin', new WorksheetPlugin())
 function test() {
   host.setState({
     dpm: 8,

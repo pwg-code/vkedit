@@ -4,8 +4,6 @@
 
 import { BasePlugin } from '@/types/base-plugin'
 import Import from './Import.vue'
-import { ElementManagerPlugin } from '@/plugins'
-// ImportEventData moved to separate types.d.ts
 
 export class ImportPlugin extends BasePlugin {
   name = 'import-plugin'
@@ -77,4 +75,18 @@ declare module '@/types' {
   }
 }
 
-// EventMap augmentation for import plugin is defined in src/plugins/import/types.d.ts
+import type { BaseEventData } from '@/types'
+
+export interface ImportEventData extends BaseEventData {
+  format: 'json' | 'excel' | string
+  error?: any
+}
+
+declare module '@/types' {
+  interface EventMap {
+    'import:start': (payload: ImportEventData) => void
+    'import:complete': (payload: ImportEventData) => void
+    'import:error': (payload: ImportEventData) => void
+    'import:progress': (payload: ImportEventData) => void
+  }
+}

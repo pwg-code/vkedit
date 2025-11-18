@@ -1,6 +1,4 @@
 import { BasePlugin } from '@/types'
-import type { ContextMenuRegisteredEventData } from '@/plugins/context-menu-manager/types'
-import type { SelectionPlugin } from './selection'
 
 export class ContextMenuManagerPlugin extends BasePlugin {
   public name = 'context-menu-manager-plugin'
@@ -61,5 +59,22 @@ export class ContextMenuManagerPlugin extends BasePlugin {
 declare module '@/types' {
   interface PluginMap {
     'context-menu-manager-plugin': ContextMenuManagerPlugin
+  }
+}
+
+import type { Component } from 'vue'
+import type { BaseEventData } from '@/types'
+
+export interface ContextMenuRegisteredEventData extends BaseEventData {
+  render: () => Component
+  graphicTypes: string[]
+  isPublic: boolean
+  isCanvas: boolean
+}
+
+declare module '@/types' {
+  interface EventMap {
+    'context-menu:registered': (payload: ContextMenuRegisteredEventData) => void
+    'context-menu:unregistered': (payload: ContextMenuRegisteredEventData) => void
   }
 }

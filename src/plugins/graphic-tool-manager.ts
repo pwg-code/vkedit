@@ -1,13 +1,11 @@
 import { BasePlugin } from '../types/base-plugin'
-import type { GraphicToolRegisteredEventData } from '@/plugins/graphic-manager/types'
-import type { IGraphicElement } from '../types'
 import type { Component } from 'vue'
+import type { GraphicToolRegisteredEventData } from './graphic-manager'
 
 export class GraphicToolManagerPlugin extends BasePlugin {
   public name = 'graphic-tool-manager-plugin'
   public version = '1.0.0'
   public tools: Map<string, GraphicToolRegisteredEventData> = new Map()
-
 
   protected onInstall(): void {
     if (!this.host) return

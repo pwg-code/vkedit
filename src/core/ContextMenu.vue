@@ -24,9 +24,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import type { EditorHost } from '@/core'
-import { VkButton } from '@/components'
-import type { ContextMenuRegisteredEventData } from '@/plugins/context-menu-manager/types'
 import type { IGraphicElement } from '@/types'
+import type { ContextMenuRegisteredEventData } from '@/plugins'
 
 const { host } = defineProps<{
   host: EditorHost

@@ -1,6 +1,4 @@
-import { BasePlugin } from '../types/base-plugin'
-import type { GraphicRegisteredEventData } from '@/plugins/graphic-manager/types'
-import type { IGraphicElement } from '../types'
+import { BasePlugin } from '../../types/base-plugin'
 import type { Component } from 'vue'
 
 export class GraphicManagerPlugin extends BasePlugin {
@@ -21,7 +19,7 @@ export class GraphicManagerPlugin extends BasePlugin {
   }
 
   // 根据元素类型渲染组件
-  getElementComponent(type: string):Component {
+  getElementComponent(type: string): Component {
     const graphic = this.graphics.get(type)
     if (graphic) {
       return graphic.render()
@@ -34,5 +32,27 @@ export class GraphicManagerPlugin extends BasePlugin {
 declare module '@/types' {
   interface PluginMap {
     'graphic-manager-plugin': GraphicManagerPlugin
+  }
+}
+
+import type { BaseEventData, IGraphicElement } from '@/types'
+
+// Graphic events payloads (moved from central event-data)
+export interface GraphicRegisteredEventData extends BaseEventData {
+  type: string
+  render: () => Component
+}
+
+export interface GraphicToolRegisteredEventData extends BaseEventData {
+  type: string
+  render: () => Component
+}
+
+declare module '@/types' {
+  interface EventMap {
+    'graphic:registered': (payload: GraphicRegisteredEventData) => void
+    'graphic:unregistered': (payload: GraphicRegisteredEventData) => void
+    'graphic-tool:registered': (payload: GraphicToolRegisteredEventData) => void
+    'graphic-tool:unregistered': (payload: GraphicToolRegisteredEventData) => void
   }
 }
