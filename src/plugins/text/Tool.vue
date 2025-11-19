@@ -14,7 +14,7 @@ const { host } = defineProps<{
 function handleClick() {
   if (!host) return
   // 创建文本元素实例
-  const text = new TextElement(50, 50)
+  const text = new TextElement({ x: 50, y: 50, host })
   // 使用命令添加元素
   host.executeCommand(new AddElementCommand(text, host))
 }

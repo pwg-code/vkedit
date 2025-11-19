@@ -3,8 +3,18 @@ import { type IGraphicElement, BaseGraphicType } from '../../types'
 import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Tool from './Tool.vue'
-import { BaseGraphicElement } from '@/types/base-graphic-element'
+import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import ContextMenu from './ContextMenu.vue'
+
+export interface TableOptions extends BaseGraphicElementOptions {
+  x?: number
+  y?: number
+  rowsHeight?: number[]
+  colsWidth?: number[]
+  cells?: any[][]
+  xmm?: number
+  ymm?: number
+}
 
 export interface CellConfig {
   x: number
@@ -30,16 +40,30 @@ export class TableElement extends BaseGraphicElement {
   public activeCell: CellConfig
   public activeRow: number = 0
   public activeCol: number = 0
-  constructor(
-    x: number = 50,
-    y: number = 50,
-    public rowsHeight: number[] = [48, 48, 48, 48], // 行高
-    public colsWidth: number[] = [168, 168, 168, 168, 168, 168], // 列宽
-    public cells: CellConfig[][] = [], // 单元格配置
-  ) {
-    super(x, y)
+  public rowsHeight: number[] = [48, 48, 48, 48] // 行高
+  public colsWidth: number[] = [168, 168, 168, 168, 168, 168] // 列宽
+  public cells: CellConfig[][] = [] // 单元格配置
+
+  constructor(options: Partial<TableOptions> = {}) {
+    super({
+      xmm: options.xmm ?? options.x ?? 50,
+      ymm: options.ymm ?? options.y ?? 50,
+      wmm: options.wmm,
+      hmm: options.hmm,
+      rotation: options.rotation,
+      scaleX: options.scaleX,
+      scaleY: options.scaleY,
+      visible: options.visible,
+      locked: options.locked,
+      draggable: options.draggable,
+      transferable: options.transferable,
+      host: options.host,
+    })
+    this.rowsHeight = options.rowsHeight ?? this.rowsHeight
+    this.colsWidth = options.colsWidth ?? this.colsWidth
+    this.cells = options.cells ?? this.cells
     // 如果没有提供单元格数据则 初始化单元格
-    if (cells.length === 0) this.initCells()
+    if (this.cells.length === 0) this.initCells()
     this.activeCell = this.cells[0][0]
     // 计算隐藏的单元格
     this.updateCells()

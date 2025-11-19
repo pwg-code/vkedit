@@ -46,8 +46,6 @@ function test() {
     zoom: 0.4,
   })
   const hostState = host.getState()
-  // const newTable = new WorksheetElement(0, 0, Array(45).fill(20), Array(20).fill(80))
-  // host.getPlugin('element-manager-plugin')?.addElement(newTable)
 }
 
 onMounted(() => {

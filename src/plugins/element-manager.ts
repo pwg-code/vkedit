@@ -74,7 +74,7 @@ export class ElementManagerPlugin extends BasePlugin {
     return arr as any
   }
 
-  // 创建元素实例（支持两种方式：）
+  // 创建元素实例并加入编辑器（支持两种方式：）
   // 1) 通过可扩展的 ElementTypeMap 自动推断： createElement('rect') -> RectElement
   //    插件可以通过模块声明合并 (declare module '@/types') 来扩展 ElementTypeMap。
   // 2) 显式泛型调用以手动指定返回类型： createElement<RectElement>('rect')
@@ -85,7 +85,9 @@ export class ElementManagerPlugin extends BasePlugin {
   createElement(type: string): IGraphicElement {
     const constructor = this.elementConstructors.get(type)
     if (constructor) {
-      return constructor.createElement()
+      const newElement =  constructor.createElement()
+      this.addElement(newElement)
+      return newElement
     }
     throw new Error(`Element type ${type} is not registered.`)
   }

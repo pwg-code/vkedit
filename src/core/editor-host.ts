@@ -203,9 +203,8 @@ export class EditorHost<
         elementsPlugin.elements.clear()
         // 加载所有图形元素
         elements.forEach((value) => {
-          const e = elementsPlugin.createElement(value.type) // 先创建实例
+          const e = elementsPlugin.createElement(value.type) // 先创建实例并加入管理器
           e.deserialize(value)
-          elementsPlugin.addElement(e)
         })
         Object.assign(this.state, data.state)
       }

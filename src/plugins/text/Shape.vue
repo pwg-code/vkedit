@@ -1,5 +1,5 @@
 <template>
-  <v-text v-bind="$attrs" :config="element" @click="handleClick" />
+  <v-text v-bind="$attrs" :config="element.config" @click="handleClick" />
 </template>
 
 <script setup lang="ts">

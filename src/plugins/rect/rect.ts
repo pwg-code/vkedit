@@ -3,22 +3,54 @@ import { type IGraphicElement, BaseGraphicType } from '../../types'
 import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Tool from './Tool.vue'
-import { BaseGraphicElement } from '@/types/base-graphic-element'
+import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import type { Component } from 'vue'
+
+export interface RectOptions extends BaseGraphicElementOptions {
+  x?: number
+  y?: number
+  fill?: string
+  stroke?: string
+  strokeWidth?: number
+  xmm?: number
+  ymm?: number
+}
 
 // 矩形元素实现
 export class RectElement extends BaseGraphicElement {
-  [key: string]: any
   public type = 'rect'
-  constructor(
-    public x: number = 50,
-    public y: number = 50,
-    public fill: string = '',
-    public stroke: string = '#000000',
-    public strokeWidth: number = 2,
-    public cornerRadius: number = 0,
-  ) {
-    super(x, y)
+  public fill: string = ''
+  public stroke: string = 'black'
+  public strokeWidth: number = 2
+
+  constructor(options: Partial<RectOptions> = {}) {
+    // 支持传入 xmm/ymm 或 x/y
+    super({
+      xmm: options.xmm ?? options.x ?? 5,
+      ymm: options.ymm ?? options.y ?? 5,
+      wmm: options.wmm,
+      hmm: options.hmm,
+      rotation: options.rotation,
+      scaleX: options.scaleX,
+      scaleY: options.scaleY,
+      visible: options.visible,
+      locked: options.locked,
+      draggable: options.draggable,
+      transferable: options.transferable,
+      host: options.host,
+    })
+    this.fill = options.fill ?? this.fill
+    this.stroke = options.stroke ?? this.stroke
+    this.strokeWidth = options.strokeWidth ?? this.strokeWidth
+  }
+
+  public get config() {
+    return {
+      ...super.config,
+      fill: this.fill,
+      stroke: this.stroke,
+      strokeWidth: this.strokeWidth,
+    }
   }
 
   clone(): IGraphicElement {
@@ -33,7 +65,6 @@ export class RectElement extends BaseGraphicElement {
       fill: this.fill,
       stroke: this.stroke,
       strokeWidth: this.strokeWidth,
-      cornerRadius: this.cornerRadius,
     }
   }
 }
@@ -69,7 +100,7 @@ export class RectPlugin extends BasePlugin {
     // 注册元素构造器
     this.host.emit('element:registered', {
       type: 'rect',
-      createElement: () => new RectElement(),
+      createElement: () => new RectElement({ host: this.host ,xmm:10, ymm:10 ,wmm:50, hmm:30 }),
       source: 'rect-plugin-on-install',
       timestamp: Date.now(),
     })
