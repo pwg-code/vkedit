@@ -56,10 +56,10 @@ export function useContentLayer(host: EditorHost) {
     if (!contentLayerRef.value) return
     selection.forEach((e) => {
       const node = contentLayerRef.value.getNode().findOne('#' + e.id)
-      if (node) {
+      if (node && e.transferable) {
         nodes.push(node)
       } else {
-        console.warn('找不到节点', e.id)
+        console.warn('找不到节点或节点不允许转换操作', e.id)
       }
     })
 

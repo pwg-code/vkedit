@@ -28,6 +28,7 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     public visible: boolean = true,
     public locked: boolean = false,
     public draggable: boolean = true,
+    public transferable: boolean = true,
   ) {
     this.id = crypto.randomUUID()
   }

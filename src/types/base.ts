@@ -38,6 +38,8 @@ export interface IGraphicElement {
   scaleY: number
   visible: boolean
   locked: boolean
+  draggable: boolean
+  transferable: boolean
   getBoundingBox(): BoundingBox
   clone(): IGraphicElement
   serialize(): any
