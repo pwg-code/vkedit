@@ -10,7 +10,7 @@ import konva from 'konva'
 export class ExportPlugin extends BasePlugin {
   name = 'export-plugin'
   version = '1.0.0'
-  private pixelRatio: number = 2 // 导出图片的像素比
+  public pixelRatio: number = 2 // 导出图片的像素比
   constructor(pixelRatio: number = 2) {
     super()
     this.pixelRatio = pixelRatio // 导出图片的像素比
