@@ -5,6 +5,7 @@ import PropertyPanel from './PropertyPanel.vue'
 import Tool from './Tool.vue'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import ContextMenu from './ContextMenu.vue'
+import type { EditorHost } from '@/core'
 
 export interface TableOptions extends BaseGraphicElementOptions {
   x?: number
@@ -44,8 +45,8 @@ export class TableElement extends BaseGraphicElement {
   public colsWidth: number[] = [168, 168, 168, 168, 168, 168] // 列宽
   public cells: CellConfig[][] = [] // 单元格配置
 
-  constructor(options: Partial<TableOptions> = {}) {
-    super({
+  constructor(host:EditorHost ,options: Partial<TableOptions> = {}) {
+    super(host,{
       xmm: options.xmm ?? options.x ?? 50,
       ymm: options.ymm ?? options.y ?? 50,
       wmm: options.wmm,
@@ -57,7 +58,6 @@ export class TableElement extends BaseGraphicElement {
       locked: options.locked,
       draggable: options.draggable,
       transferable: options.transferable,
-      host: options.host,
     })
     this.rowsHeight = options.rowsHeight ?? this.rowsHeight
     this.colsWidth = options.colsWidth ?? this.colsWidth
@@ -250,7 +250,7 @@ export class TableElement extends BaseGraphicElement {
   }
 
   clone(): IGraphicElement {
-    const newElement = new TableElement()
+    const newElement = new TableElement(this.host)
     newElement.deserialize(this)
     return newElement
   }
@@ -324,7 +324,7 @@ export class TablePlugin extends BasePlugin {
     // 注册元素构造器
     this.host.emit('element:registered', {
       type: 'table',
-      createElement: () => new TableElement(),
+      createElement: () => new TableElement(this.host),
       source: 'table-plugin-on-install',
       timestamp: Date.now(),
     })

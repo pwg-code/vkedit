@@ -5,11 +5,14 @@ export abstract class BasePlugin implements IEditorPlugin {
   public abstract name: string
   public abstract version: string
 
-  protected host?: EditorHost
+  protected host: EditorHost
   protected isActivate: boolean = false
 
-  install(host: EditorHost): void {
+  constructor(host: EditorHost) {
     this.host = host
+  }
+
+  install(): void {
     this.onInstall()
   }
 
@@ -18,7 +21,6 @@ export abstract class BasePlugin implements IEditorPlugin {
     if (this.isActivate) {
       this.deactivate()
     }
-    this.host = undefined
   }
 
   activate(): void {

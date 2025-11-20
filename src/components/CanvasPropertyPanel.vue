@@ -7,7 +7,7 @@
     <Label>dpm(点/毫米)</Label>
     <VkNumberField
       :model-value="hostState.dpm"
-      @update:model-value="(value) => host.setState({ dpm: value })"
+      @update:model-value="(value) => host.setStatus({ dpm: value })"
     >
       <VkNumberFieldContent>
         <VkNumberFieldDecrement slot="decrement" />
@@ -22,7 +22,7 @@
       :model-value="hostState.width"
       @update:model-value="
         (value) => {
-          host.setState({ width: value })
+          host.setStatus({ width: value })
         }
       "
       :dpm="hostState.dpm"
@@ -34,7 +34,7 @@
       :model-value="hostState.height"
       @update:model-value="
         (value) => {
-          host.setState({ height: value })
+          host.setStatus({ height: value })
         }
       "
       :dpm="hostState.dpm"
@@ -63,7 +63,7 @@ interface Props {
 }
 
 const { host } = defineProps<Props>()
-const hostState = ref(host.getState())
+const hostState = ref(host.status)
 </script>
 
 <style scoped></style>

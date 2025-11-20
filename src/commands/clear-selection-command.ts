@@ -6,8 +6,8 @@ export class ClearSelectionCommand extends BaseCommand {
   public name = 'CLEAR_SELECTION'
   private previousSelectionIds: string[] = []
   selectionPlugin: SelectionPlugin | null
-  constructor(private host: EditorHost) {
-    super('清空选择')
+  constructor(host: EditorHost) {
+    super(host, '清空选择')
     this.selectionPlugin = host.getPlugin('selection-plugin')
   }
 

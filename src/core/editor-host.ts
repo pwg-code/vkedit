@@ -17,18 +17,18 @@ export class EditorHost<
   public contentGroup: any
   public stage: any
 
-  public state = reactive<IEditorState>({
+  private _status: IEditorState = {
     zoom: 1,
     currentTool: 'select',
     snapToGrid: true,
     showGrid: false,
-    // 像素 = （毫米 * DPI）/ 25.4
+    // 像素 = 毫米 * DPM
     width: 400,
     height: 400,
     wmm: 50,
     hmm: 50,
     dpm: 8,
-  })
+  }
 
   // 事件系统
 
@@ -60,20 +60,22 @@ export class EditorHost<
   // installPlugin 支持两种用法：
   // 1) 通过 PluginMap 推断： installPlugin('rect-plugin', rectPlugin)
   // 2) 显式泛型以覆盖或在未知映射时指定类型： installPlugin<'my-plugin'>(name, plugin)
-  installPlugin<K extends keyof PluginMap>(name: K, plugin: PluginMap[K]): EditorHost<T, U>
-  installPlugin(name: string, plugin: IEditorPlugin): EditorHost<T, U>
-  installPlugin(name: string, plugin: IEditorPlugin): EditorHost<T, U> {
+  installPlugin<K extends keyof PluginMap>(name: K, pluginClass: PluginMap[K] | (new (...args: any[]) => PluginMap[K])): EditorHost<T, U>
+  installPlugin(name: string, pluginClass: IEditorPlugin | (new (...args: any[]) => IEditorPlugin)): EditorHost<T, U>
+  installPlugin(name: string, pluginClass: any): EditorHost<T, U> {
     if (this.plugins.has(name)) {
       console.warn(`Plugin ${name as string} is already registered`)
       return this
     }
-    this.plugins.set(name, plugin)
-    plugin.install(this as unknown as EditorHost<any, any>)
+    // pluginClass 必须是一个类
+    const pluginInstance: IEditorPlugin = new pluginClass(this as EditorHost<any, any>)
+    this.plugins.set(name, pluginInstance)
+    pluginInstance.install(this as unknown as EditorHost<any, any>)
     this.emit(
       'plugin:registered' as keyof T,
       {
         ...EventUtils.createBaseEventData('host'),
-        plugin,
+        plugin: pluginInstance,
       } as PluginEventData,
     )
 
@@ -144,37 +146,33 @@ export class EditorHost<
     }
   }
 
-  // 状态管理
-  getState(): IEditorState {
-    return this.state
+  public get status(): IEditorState {
+    return this._status
   }
 
-  setState(newState: Partial<IEditorState>): void {
-    Object.assign(this.state, newState)
-    // 更新状态属性
-    // 如果更新宽高 则需要重新计算毫米尺寸
-    if (newState.width) {
-      newState.wmm = newState.width / this.state.dpm
+  setStatus(newStatus: Partial<IEditorState>) {
+    Object.assign(this._status, newStatus)
+    if (newStatus.width) {
+      newStatus.wmm = newStatus.width / this.status.dpm
     }
-    if (newState.height) {
-      newState.hmm = newState.height / this.state.dpm
+    if (newStatus.height) {
+      newStatus.hmm = newStatus.height / this.status.dpm
     }
     // 如果更新毫米尺寸 则需要重新计算像素宽高
-    if (newState.wmm) {
-      newState.width = newState.wmm * this.state.dpm
+    if (newStatus.wmm) {
+      newStatus.width = newStatus.wmm * this.status.dpm
     }
-    if (newState.hmm) {
-      newState.height = newState.hmm * this.state.dpm
+    if (newStatus.hmm) {
+      newStatus.height = newStatus.hmm * this.status.dpm
     }
     // 如果更新dpm 则需要重新计算宽高
-    if (newState.dpm) {
-      newState.width = this.state.wmm * newState.dpm
-      newState.height = this.state.hmm * newState.dpm
+    if (newStatus.dpm) {
+      newStatus.width = this.status.wmm * newStatus.dpm
+      newStatus.height = this.status.hmm * newStatus.dpm
     }
-    // 发送状态变更事件
     this.emit('state:changed' as keyof T, {
       ...EventUtils.createBaseEventData('host'),
-      state: this.state,
+      status: this._status,
     })
   }
 
@@ -197,7 +195,7 @@ export class EditorHost<
         })
       }
       return JSON.stringify({
-        state: this.state,
+        state: this.status,
         elements: serializeElements,
       })
     } catch (error) {
@@ -229,7 +227,7 @@ export class EditorHost<
           const e = elementsPlugin.createElement(value.type) // 先创建实例并加入管理器
           e.deserialize(value)
         })
-        Object.assign(this.state, data.state)
+        Object.assign(this.status, data.state)
       }
     } catch (error) {
       this.emit('host:load-json:error' as keyof T, {

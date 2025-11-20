@@ -17,6 +17,7 @@ import type {
   StageMouseEventData,
   StageKeyboardEventData,
   ElementRegisteredEventData,
+  StatusEventData,
 } from './event-data'
 
 /**
@@ -171,9 +172,9 @@ export interface EventMap {
   'clipboard:clear': (payload: BaseEventData) => void
 
   // 状态管理
-  'state:changed': (payload: BaseEventData) => void
-  'state:saved': (payload: BaseEventData) => void
-  'state:restored': (payload: BaseEventData) => void
+  'status:changed': (payload: StatusEventData) => void
+  'status:saved': (payload: StatusEventData) => void
+  'status:restored': (payload: StatusEventData) => void
 
   // 错误
   'editor:error': (payload: ErrorEventData) => void

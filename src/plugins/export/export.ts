@@ -11,8 +11,8 @@ export class ExportPlugin extends BasePlugin {
   name = 'export-plugin'
   version = '1.0.0'
   public pixelRatio: number = 2 // 导出图片的像素比
-  constructor(pixelRatio: number = 2) {
-    super()
+  constructor(host:EditorHost, pixelRatio: number = 2) {
+    super(host)
     this.pixelRatio = pixelRatio // 导出图片的像素比
   }
 
@@ -144,7 +144,7 @@ export class ExportPlugin extends BasePlugin {
 
   // 处理 PDF 导出
   exportPdf() {
-    const hostState = this.host?.getState()
+    const hostState = this.host?.status
     if (!hostState) return
     // 获取元素的 DataURL
     const dataUrl = this.elementsToDataURL()
@@ -161,7 +161,7 @@ export class ExportPlugin extends BasePlugin {
 
   // 将所以元素移动到临时舞台 并获取图片数据 再移动回原舞台
   elementsToDataURL(): string {
-    const hostState = this.host?.getState()
+    const hostState = this.host?.status
     if (!hostState) return ''
     // 先获取到所以元素
     const elementsPlugin = this.host?.getPlugin('element-manager-plugin')
@@ -222,6 +222,7 @@ declare module '@/types' {
 }
 
 import type { BaseEventData } from '@/types'
+import type { EditorHost } from '@/core'
 
 export interface ExportEventData extends BaseEventData {
   format: 'png' | 'jpeg' | 'pdf' | 'json' | 'excel' | string

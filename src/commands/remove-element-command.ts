@@ -8,10 +8,10 @@ export class RemoveElementCommand extends BaseCommand {
   private elementsPlugin: ElementManagerPlugin | null
 
   constructor(
+    host: EditorHost,
     private element: IGraphicElement,
-    private host: EditorHost,
   ) {
-    super('删除元素')
+    super(host, '删除元素')
     this.elementsPlugin = host.getPlugin('element-manager-plugin')
     this.element = element
   }

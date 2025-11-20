@@ -13,7 +13,7 @@ const { host } = defineProps<{
 }>()
 
 function handleClick() {
-  host.executeCommand(new AddElementCommand(new TableElement(), host))
+  host.executeCommand(new AddElementCommand(host ,new TableElement(host)))
 }
 </script>
 

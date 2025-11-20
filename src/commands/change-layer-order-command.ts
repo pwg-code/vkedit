@@ -6,11 +6,11 @@ export class ChangeLayerOrderCommand extends BaseCommand {
   private previousOrder: Map<string, number> = new Map()
 
   constructor(
-    private host: EditorHost,
+    host: EditorHost,
     private elementId: string,
     private direction: 'up' | 'down' | 'top' | 'bottom',
   ) {
-    super(`调整图层顺序: ${direction}`)
+    super(host, `调整图层顺序: ${direction}`)
   }
 
   execute(): void {

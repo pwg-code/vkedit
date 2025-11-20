@@ -34,18 +34,16 @@ import {
 
 const host = createEditorHost({ basePropertyPanel: false, baseCanvasPropertyPanel: true })
 host
-  .installPlugin('rect-plugin', new RectPlugin())
-  .installPlugin('text-plugin', new TextPlugin())
-  .installPlugin('table-plugin', new TablePlugin())
-// .installPlugin('worksheet-plugin', new WorksheetPlugin())
+  .installPlugin('rect-plugin', RectPlugin)
+  .installPlugin('text-plugin', TextPlugin)
+  .installPlugin('table-plugin', TablePlugin)
 function test() {
-  host.setState({
+  host.setStatus({
     dpm: 8,
     width: 210 * 8,
     height: 297 * 8,
     zoom: 0.4,
   })
-  const hostState = host.getState()
 }
 
 onMounted(() => {

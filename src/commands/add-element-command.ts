@@ -8,10 +8,10 @@ export class AddElementCommand extends BaseCommand {
   public name = 'ADD_ELEMENT'
   private elementsPlugin: ElementManagerPlugin | null
   constructor(
+    host: EditorHost,
     private element: IGraphicElement,
-    private host: EditorHost,
   ) {
-    super(`添加 ${element.type} 元素`)
+    super(host, `添加 ${element.type} 元素`)
     this.elementsPlugin = this.host.getPlugin('element-manager-plugin')
   }
   execute(): void {

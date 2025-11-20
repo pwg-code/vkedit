@@ -8,11 +8,11 @@ export class AlignElementsCommand extends BaseCommand {
   private previousPositions: Map<string, { x: number; y: number }> = new Map()
 
   constructor(
-    private host: EditorHost,
+    host: EditorHost,
     private alignment: 'left' | 'right' | 'top' | 'bottom' | 'centerX' | 'centerY',
     private elementIds: string[],
   ) {
-    super(`对齐元素: ${alignment}`)
+    super(host,`对齐元素: ${alignment}`)
 
     // 保存原始位置
     this.elementIds.forEach((id) => {

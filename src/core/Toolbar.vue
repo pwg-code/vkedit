@@ -43,7 +43,7 @@ interface Props {
 
 const { host } = defineProps<Props>()
 
-const hostState = ref<IEditorState>(host.getState())
+const hostState = ref<IEditorState>(host.status)
 
 // 插件工具
 const toolbarPlugin = host.getPlugin('toolbar-manager-plugin')

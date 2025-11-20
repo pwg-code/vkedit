@@ -20,7 +20,7 @@ function handleDelete() {
   // 创建批量删除命令并执行
   const batchCommand = new BatchCommand(
     host,
-    selection.map((el) => new RemoveElementCommand(el, host)),
+    selection.map((el) => new RemoveElementCommand(host, el)),
   )
   host.executeCommand(batchCommand)
 }

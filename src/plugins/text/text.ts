@@ -6,6 +6,7 @@ import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
 import Tool from './Tool.vue'
 import TextContextMenu from './TextContextMenu.vue'
+import type { EditorHost } from '@/core'
 
 export interface TextOptions extends BaseGraphicElementOptions {
   x?: number
@@ -28,8 +29,8 @@ export class TextElement extends BaseGraphicElement {
   public verticalAlign: 'top' | 'middle' | 'bottom' = 'bottom'
   public fontStyle: 'normal' | 'italic' | 'bold' | '500' | 'italic bold' = 'normal'
 
-  constructor(options: Partial<TextOptions> = {}) {
-    super({
+  constructor(host:EditorHost,options: Partial<TextOptions> = {}) {
+    super(host,{
       xmm: options.xmm ?? 5,
       ymm: options.ymm ?? 5,
       wmm: options.wmm ?? 20,
@@ -41,7 +42,6 @@ export class TextElement extends BaseGraphicElement {
       locked: options.locked,
       draggable: options.draggable,
       transferable: options.transferable,
-      host: options.host,
     })
     this.text = options.text ?? this.text
     this.fontSize = options.fontSize ?? this.fontSize
@@ -104,7 +104,7 @@ export class TextPlugin extends BasePlugin {
     // 注册元素构造器
     this.host.emit('element:registered', {
       type: 'text',
-      createElement: () => new TextElement({ host: this.host }),
+      createElement: () => new TextElement( this.host),
       source: 'text-plugin-on-install',
       timestamp: Date.now(),
     })

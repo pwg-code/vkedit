@@ -6,12 +6,11 @@ import type { ICommand } from './i-command'
 export class TransformElementCommand extends BaseCommand {
   public name = 'TRANSFORM_ELEMENT'
   private element: IGraphicElement
-  private host: EditorHost
   private oldState: any
   private newState: any
   private transformType: "move" | "rotate" | "scale" | "skew" | "resize" | "transform"
-  constructor(element: IGraphicElement, host: EditorHost, oldState: any, newState: any) {
-    super('变换元素')
+  constructor(host: EditorHost, element: IGraphicElement,  oldState: any, newState: any) {
+    super(host, '变换元素')
     this.element = element
     this.host = host
     this.oldState = { ...oldState }
@@ -101,6 +100,6 @@ export class TransformElementCommand extends BaseCommand {
   }
 
   mergeWith(command: TransformElementCommand): ICommand {
-    return new TransformElementCommand(this.element, this.host, this.oldState, command.newState)
+    return new TransformElementCommand(this.host, this.element,  this.oldState, command.newState)
   }
 }

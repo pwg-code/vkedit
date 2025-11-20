@@ -6,11 +6,11 @@ export class BatchCommand extends BaseCommand {
   public name = 'BATCH_COMMAND'
   private commands: ICommand[] = []
   constructor(
-    public host: EditorHost,
+    host: EditorHost,
     commands: ICommand[] = [],
     description: string = '批量操作',
   ) {
-    super(description)
+    super(host, description)
     this.commands = [...commands]
   }
 

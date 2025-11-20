@@ -5,6 +5,7 @@ import PropertyPanel from './PropertyPanel.vue'
 import Tool from './Tool.vue'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import type { Component } from 'vue'
+import type { EditorHost } from '@/core'
 
 export interface RectOptions extends BaseGraphicElementOptions {
   x?: number
@@ -23,9 +24,9 @@ export class RectElement extends BaseGraphicElement {
   public stroke: string = 'black'
   public strokeWidth: number = 2
 
-  constructor(options: Partial<RectOptions> = {}) {
+  constructor(host:EditorHost ,options: Partial<RectOptions> = {}) {
     // 支持传入 xmm/ymm 或 x/y
-    super({
+    super(host,{
       xmm: options.xmm ?? options.x ?? 5,
       ymm: options.ymm ?? options.y ?? 5,
       wmm: options.wmm,
@@ -37,7 +38,6 @@ export class RectElement extends BaseGraphicElement {
       locked: options.locked,
       draggable: options.draggable,
       transferable: options.transferable,
-      host: options.host,
     })
     this.fill = options.fill ?? this.fill
     this.stroke = options.stroke ?? this.stroke
@@ -54,7 +54,7 @@ export class RectElement extends BaseGraphicElement {
   }
 
   clone(): IGraphicElement {
-    const newElement = new RectElement()
+    const newElement = new RectElement(this.host)
     newElement.deserialize(this)
     return newElement
   }
@@ -100,7 +100,7 @@ export class RectPlugin extends BasePlugin {
     // 注册元素构造器
     this.host.emit('element:registered', {
       type: 'rect',
-      createElement: () => new RectElement({ host: this.host ,xmm:10, ymm:10 ,wmm:50, hmm:30 }),
+      createElement: () => new RectElement(this.host, {xmm:10, ymm:10 ,wmm:50, hmm:30 }),
       source: 'rect-plugin-on-install',
       timestamp: Date.now(),
     })

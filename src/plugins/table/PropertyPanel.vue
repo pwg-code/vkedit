@@ -200,8 +200,8 @@ const updateCellConfig = (row: number, col: number, prop: string, value: any) =>
   if (!cell) return
   host.executeCommand(
     new UpdatePropertyCommand(
-      element,
       host,
+      element,
       `cells.${row}.${col}.${prop}`,
       cell[prop as keyof typeof cell],
       value,
@@ -227,8 +227,8 @@ const handleDissolve = () => {
       if (cell) {
         comms.push(
           new UpdatePropertyCommand(
-            element,
             host,
+            element,
             `cells.${element.activeRow + rowI}.${element.activeCol + colI}.mergeLeft`,
             cell.mergeLeft,
             false,
@@ -236,8 +236,8 @@ const handleDissolve = () => {
         )
         comms.push(
           new UpdatePropertyCommand(
-            element,
             host,
+            element,
             `cells.${element.activeRow + rowI}.${element.activeCol + colI}.mergeUp`,
             cell.mergeUp,
             false,
@@ -272,8 +272,8 @@ const mergeCell = () => {
         if (j > 1) {
           comms.push(
             new UpdatePropertyCommand(
-              element,
               host,
+              element,
               `cells.${element.activeRow + i - 1}.${element.activeCol + j - 1}.mergeLeft`,
               cell.mergeLeft,
               true,
@@ -283,8 +283,8 @@ const mergeCell = () => {
         if (i > 1) {
           comms.push(
             new UpdatePropertyCommand(
-              element,
               host,
+              element,
               `cells.${element.activeRow + i - 1}.${element.activeCol + j - 1}.mergeUp`,
               cell.mergeUp,
               true,

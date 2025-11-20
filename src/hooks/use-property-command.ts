@@ -7,7 +7,7 @@ export function usePropertyCommand(host: EditorHost) {
   const updateProperty = (element: IGraphicElement, propertyPath: string, newValue: any) => {
     const oldValue = get(element, propertyPath)
     if (oldValue === newValue) return
-    host.executeCommand(new UpdatePropertyCommand(element, host, propertyPath, oldValue, newValue))
+    host.executeCommand(new UpdatePropertyCommand(host, element, propertyPath, oldValue, newValue))
   }
 
   // 批量更新属性
@@ -23,7 +23,7 @@ export function usePropertyCommand(host: EditorHost) {
     elements.forEach((e) => {
       let oldValue = get(e, propertyPath)
       if (oldValue !== newValue) {
-        comms.push(new UpdatePropertyCommand(e, host, propertyPath, oldValue, newValue))
+        comms.push(new UpdatePropertyCommand(host, e, propertyPath, oldValue, newValue))
       }
     })
     host.executeCommand(new BatchCommand(host, comms))

@@ -32,7 +32,7 @@ export class KeyDownPlugin extends BasePlugin {
     // 删除选中的图形
     selector.getSelectionElements().forEach((i) => {
       if (this.host) {
-        this.host.executeCommand(new RemoveElementCommand(i, this.host))
+        this.host.executeCommand(new RemoveElementCommand(this.host, i))
       }
     })
   }

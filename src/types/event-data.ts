@@ -127,6 +127,13 @@ export interface StageKeyboardEventData extends BaseEventData {
   evt: KeyboardEvent
 }
 
+// status changed event data
+export interface StatusEventData extends BaseEventData {
+  status: IEditorState
+}
+
+
+
 // (plugin-specific event payload types moved to their plugin's types.d.ts files)
 
 /**

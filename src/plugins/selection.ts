@@ -50,7 +50,7 @@ export class SelectionPlugin extends BasePlugin {
     // 如果按下的不是左键则不做任何操作
     if (event.evt.button !== 0) return
 
-    if (!this.host || this.host.getState().currentTool !== 'select') return
+    if (!this.host || this.host.status.currentTool !== 'select') return
     this.selectionStart = event.point
     this.selectionEnd = event.point
     // 如果点击的是不是元素则开始范围选择
@@ -140,7 +140,7 @@ export class SelectionPlugin extends BasePlugin {
         const bbox = element.getBoundingBox()
         bbox.x = absPos.x
         bbox.y = absPos.y
-        const hostZoom = this.host.getState().zoom
+        const hostZoom = this.host.status.zoom
         bbox.width = bbox.width * hostZoom
         bbox.height = bbox.height * hostZoom
         if (!element.locked && element.visible && this.rectIntersect(rect, bbox)) {

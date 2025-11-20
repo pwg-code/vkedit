@@ -74,10 +74,10 @@ export function useContentLayer(host: EditorHost) {
   const handleElementTransform = (event: any, element: IGraphicElement) => {
     if (element?.getTransformAttr) {
       const { oldAttrs, newAttrs } = element.getTransformAttr(event)
-      command = new TransformElementCommand(element, host, oldAttrs, newAttrs)
+      command = new TransformElementCommand(host, element, oldAttrs, newAttrs)
     } else {
       const { oldAttrs, newAttrs } = getTransformAttr(event, element)
-      command = new TransformElementCommand(element, host, oldAttrs, newAttrs)
+      command = new TransformElementCommand(host, element, oldAttrs, newAttrs)
     }
 
     // 首次转换入栈
@@ -103,7 +103,7 @@ export function useContentLayer(host: EditorHost) {
     const newAttrs = { x: eAttrs.x, y: eAttrs.y }
     const oldAttrs = { x: element.x, y: element.y }
     // 使用命令更改属性
-    const command = new TransformElementCommand(element, host, oldAttrs, newAttrs)
+    const command = new TransformElementCommand(host, element, oldAttrs, newAttrs)
     host.executeCommand(command)
   }
 

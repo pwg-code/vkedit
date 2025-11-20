@@ -40,7 +40,7 @@ export function useSelectionLayer(host: EditorHost) {
     // 只响应左键
     if (event.evt.button !== 0) return
     const point = event.point
-    if (host.getState().currentTool === 'select') {
+    if (host.status.currentTool === 'select') {
       isSelecting.value = true
       selectionStart.value = event.point
       selectionEnd.value = point

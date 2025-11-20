@@ -6,19 +6,18 @@ import type { ICommand } from './i-command'
 export class UpdatePropertyCommand extends BaseCommand {
   public name = 'UPDATE_PROPERTY'
   private element: IGraphicElement
-  private host: EditorHost
   private propertyPath: string
   private oldValue: any
   private newValue: any
 
   constructor(
-    element: IGraphicElement,
     host: EditorHost,
+    element: IGraphicElement,
     propertyPath: string,
     oldValue: any,
     newValue: any,
   ) {
-    super(`更新属性 ${propertyPath}`)
+    super(host, `更新属性 ${propertyPath}`)
     this.element = element
     this.host = host
     this.propertyPath = propertyPath
@@ -101,8 +100,8 @@ export class UpdatePropertyCommand extends BaseCommand {
 
   mergeWith(command: UpdatePropertyCommand): ICommand {
     return new UpdatePropertyCommand(
-      this.element,
       this.host,
+      this.element,
       this.propertyPath,
       this.oldValue,
       command.newValue,

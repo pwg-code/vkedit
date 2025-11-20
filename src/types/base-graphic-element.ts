@@ -14,7 +14,6 @@ export interface BaseGraphicElementOptions {
   locked?: boolean
   draggable?: boolean
   transferable?: boolean
-  host?: EditorHost
 }
 
 export abstract class BaseGraphicElement implements IGraphicElement {
@@ -23,54 +22,55 @@ export abstract class BaseGraphicElement implements IGraphicElement {
       // 报错
       throw new Error('Host is undefined. Cannot compute x position without host context.')
     }
-    return this.xmm * this.host.state.dpm
+    return this.xmm * this.host.status.dpm
   }
   public set x(value: number) {
     if (this.host === undefined) {
       throw new Error('Host is undefined. Cannot compute x position without host context.')
     }
-    this.xmm = value / this.host.state.dpm
+    this.xmm = value / this.host.status.dpm
   }
 
   public get y(): number {
     if (this.host === undefined) {
       throw new Error('Host is undefined. Cannot compute y position without host context.')
     }
-    return this.ymm * this.host.state.dpm
+    return this.ymm * this.host.status.dpm
   }
   public set y(value: number) {
     if (this.host === undefined) {
       throw new Error('Host is undefined. Cannot compute y position without host context.')
     }
-    this.ymm = value / this.host.state.dpm
+    this.ymm = value / this.host.status.dpm
   }
 
   public get height(): number {
     if (this.host === undefined) {
       throw new Error('Host is undefined. Cannot compute height without host context.')
     }
-    return this.hmm * this.host.state.dpm
+    return this.hmm * this.host.status.dpm
   }
   public set height(value: number) {
     if (this.host === undefined) {
       throw new Error('Host is undefined. Cannot compute height without host context.')
     }
-    this.hmm = value / this.host.state.dpm
+    this.hmm = value / this.host.status.dpm
   }
 
   public get width(): number {
     if (this.host === undefined) {
       throw new Error('Host is undefined. Cannot compute width without host context.')
     }
-    return this.wmm * this.host.state.dpm
+    return this.wmm * this.host.status.dpm
   }
   public set width(value: number) {
     if (this.host === undefined) {
       throw new Error('Host is undefined. Cannot compute width without host context.')
     }
-    this.wmm = value / this.host.state.dpm
+    this.wmm = value / this.host.status.dpm
   }
   public abstract type: string
+  public host: EditorHost
   id: string
   // 改为在类上声明属性，构造函数接收单个 options 对象（支持部分传入）
   public xmm: number = 5
@@ -85,9 +85,8 @@ export abstract class BaseGraphicElement implements IGraphicElement {
   public draggable: boolean = true
   public transferable: boolean = true
   // host 在元素未加入 editor 时可能不存在，保持可选
-  public host?: EditorHost
 
-  constructor(options: Partial<BaseGraphicElementOptions> = {}) {
+  constructor(host:EditorHost, options: Partial<BaseGraphicElementOptions> = {}) {
     // 位置记录的是mm 单位 对外暴露的根据dpm 转换px
     this.xmm = options.xmm ?? 5
     this.ymm = options.ymm ?? 5
@@ -100,11 +99,11 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     this.locked = options.locked ?? false
     this.draggable = options.draggable ?? true
     this.transferable = options.transferable ?? true
-    this.host = options.host
+    this.host = host
     this.id = crypto.randomUUID()
   }
   updateProperty(host: EditorHost, property: string, oldValue: any, newValue: any): void {
-    host.executeCommand(new UpdatePropertyCommand(this, host, property, oldValue, newValue))
+    host.executeCommand(new UpdatePropertyCommand(host, this,  property, oldValue, newValue))
   }
 
   clone(): IGraphicElement {

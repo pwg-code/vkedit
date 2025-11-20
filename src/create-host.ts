@@ -35,15 +35,15 @@ export function createEditorHost({
 }: IOptions) {
   const host = new EditorHost()
   host
-    .installPlugin('toolbar-manager-plugin', new ToolbarManagerPlugin())
-    .installPlugin('graphic-tool-manager-plugin', new GraphicToolManagerPlugin())
-    .installPlugin('graphic-manager-plugin', new GraphicManagerPlugin())
-    .installPlugin('property-panel-manager-plugin', new PropertyPanelManagerPlugin())
-    .installPlugin('element-manager-plugin', new ElementManagerPlugin())
-    .installPlugin('keydown-plugin', new KeyDownPlugin())
-    .installPlugin('selection-plugin', new SelectionPlugin())
-    .installPlugin('align-plugin', new AlignPlugin())
-    .installPlugin('context-menu-manager-plugin', new ContextMenuManagerPlugin())
+    .installPlugin('toolbar-manager-plugin', ToolbarManagerPlugin)
+    .installPlugin('graphic-tool-manager-plugin', GraphicToolManagerPlugin)
+    .installPlugin('graphic-manager-plugin', GraphicManagerPlugin)
+    .installPlugin('property-panel-manager-plugin', PropertyPanelManagerPlugin)
+    .installPlugin('element-manager-plugin', ElementManagerPlugin)
+    .installPlugin('keydown-plugin', KeyDownPlugin)
+    .installPlugin('selection-plugin', SelectionPlugin)
+    .installPlugin('align-plugin', AlignPlugin)
+    .installPlugin('context-menu-manager-plugin', ContextMenuManagerPlugin)
 
   if (basePropertyPanel) {
     host.emit('property-panel:registered', {
@@ -68,13 +68,13 @@ export function createEditorHost({
   }
 
   if (importPlugin) {
-    host.installPlugin('import-plugin', new ImportPlugin())
+  host.installPlugin('import-plugin', ImportPlugin)
   }
   if (exportPlugin) {
-    host.installPlugin('export-plugin', new ExportPlugin())
+  host.installPlugin('export-plugin', ExportPlugin)
   }
   if (previewPlugin) {
-    host.installPlugin('preview-plugin', new PreviewPlugin())
+  host.installPlugin('preview-plugin', PreviewPlugin)
   }
 
   // 注册删除元素上下文菜单
