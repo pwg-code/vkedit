@@ -19,31 +19,56 @@ export interface BaseGraphicElementOptions {
 
 export abstract class BaseGraphicElement implements IGraphicElement {
   public get x(): number {
-    return this.xmm * (this.host?.state.dpm ?? 8)
+    if (this.host === undefined) {
+      // 报错
+      throw new Error('Host is undefined. Cannot compute x position without host context.')
+    }
+    return this.xmm * this.host.state.dpm
   }
   public set x(value: number) {
-    this.xmm = value / (this.host?.state.dpm ?? 8)
+    if (this.host === undefined) {
+      throw new Error('Host is undefined. Cannot compute x position without host context.')
+    }
+    this.xmm = value / this.host.state.dpm
   }
 
   public get y(): number {
-    return this.ymm * (this.host?.state.dpm ?? 8)
+    if (this.host === undefined) {
+      throw new Error('Host is undefined. Cannot compute y position without host context.')
+    }
+    return this.ymm * this.host.state.dpm
   }
   public set y(value: number) {
-    this.ymm = value / (this.host?.state.dpm ?? 8)
+    if (this.host === undefined) {
+      throw new Error('Host is undefined. Cannot compute y position without host context.')
+    }
+    this.ymm = value / this.host.state.dpm
   }
 
   public get height(): number {
-    return this.hmm * (this.host?.state.dpm ?? 8)
+    if (this.host === undefined) {
+      throw new Error('Host is undefined. Cannot compute height without host context.')
+    }
+    return this.hmm * this.host.state.dpm
   }
   public set height(value: number) {
-    this.hmm = value / (this.host?.state.dpm ?? 8)
+    if (this.host === undefined) {
+      throw new Error('Host is undefined. Cannot compute height without host context.')
+    }
+    this.hmm = value / this.host.state.dpm
   }
 
   public get width(): number {
-    return this.wmm * (this.host?.state.dpm ?? 8)
+    if (this.host === undefined) {
+      throw new Error('Host is undefined. Cannot compute width without host context.')
+    }
+    return this.wmm * this.host.state.dpm
   }
   public set width(value: number) {
-    this.wmm = value / (this.host?.state.dpm ?? 8)
+    if (this.host === undefined) {
+      throw new Error('Host is undefined. Cannot compute width without host context.')
+    }
+    this.wmm = value / this.host.state.dpm
   }
   public abstract type: string
   id: string
@@ -168,5 +193,4 @@ export abstract class BaseGraphicElement implements IGraphicElement {
       locked: this.locked,
     }
   }
-
 }

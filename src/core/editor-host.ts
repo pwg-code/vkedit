@@ -150,6 +150,7 @@ export class EditorHost<
   }
 
   setState(newState: Partial<IEditorState>): void {
+    Object.assign(this.state, newState)
     // 更新状态属性
     // 如果更新宽高 则需要重新计算毫米尺寸
     if (newState.width) {
@@ -170,7 +171,6 @@ export class EditorHost<
       newState.width = this.state.wmm * newState.dpm
       newState.height = this.state.hmm * newState.dpm
     }
-    Object.assign(this.state, newState)
     // 发送状态变更事件
     this.emit('state:changed' as keyof T, {
       ...EventUtils.createBaseEventData('host'),
