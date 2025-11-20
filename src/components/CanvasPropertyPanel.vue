@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import type { BaseGraphicElement } from '@/types'
 import type { EditorHost } from '@/core'
-import { ref } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { Label } from '@/components/ui/label'
 import {
   VkInputMM,
@@ -63,7 +63,8 @@ interface Props {
 }
 
 const { host } = defineProps<Props>()
-const hostState = ref(host.status)
+const hostState = computed(() => host.status)
+
 </script>
 
 <style scoped></style>

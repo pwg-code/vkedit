@@ -28,13 +28,15 @@ export class KeyDownPlugin extends BasePlugin {
 
   private deleteSelectionElement(): void {
     if (!this.host) return
-    const selector: SelectionPlugin = this.host.getPlugin('selection-plugin') as SelectionPlugin
+    const selector = this.host.getPlugin('selection-plugin')
     // 删除选中的图形
     selector.getSelectionElements().forEach((i) => {
       if (this.host) {
         this.host.executeCommand(new RemoveElementCommand(this.host, i))
       }
     })
+    // 清空选择
+    selector.clearSelection()
   }
 
   // 左移

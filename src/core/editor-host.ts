@@ -17,7 +17,7 @@ export class EditorHost<
   public contentGroup: any
   public stage: any
 
-  private _status: IEditorState = {
+  private _status = reactive<IEditorState>({
     zoom: 1,
     currentTool: 'select',
     snapToGrid: true,
@@ -28,7 +28,7 @@ export class EditorHost<
     wmm: 50,
     hmm: 50,
     dpm: 8,
-  }
+  })
 
   // 事件系统
 
@@ -153,23 +153,24 @@ export class EditorHost<
   setStatus(newStatus: Partial<IEditorState>) {
     Object.assign(this._status, newStatus)
     if (newStatus.width) {
-      newStatus.wmm = newStatus.width / this.status.dpm
+      this._status.wmm = newStatus.width / this._status.dpm
     }
     if (newStatus.height) {
-      newStatus.hmm = newStatus.height / this.status.dpm
+      this._status.hmm = newStatus.height / this._status.dpm
     }
     // 如果更新毫米尺寸 则需要重新计算像素宽高
     if (newStatus.wmm) {
-      newStatus.width = newStatus.wmm * this.status.dpm
+      this._status.width = newStatus.wmm * this._status.dpm
     }
     if (newStatus.hmm) {
-      newStatus.height = newStatus.hmm * this.status.dpm
+      this._status.height = newStatus.hmm * this._status.dpm
     }
     // 如果更新dpm 则需要重新计算宽高
     if (newStatus.dpm) {
-      newStatus.width = this.status.wmm * newStatus.dpm
-      newStatus.height = this.status.hmm * newStatus.dpm
+      this._status.width = this.status.wmm * newStatus.dpm
+      this._status.height = this.status.hmm * newStatus.dpm
     }
+
     this.emit('state:changed' as keyof T, {
       ...EventUtils.createBaseEventData('host'),
       status: this._status,

@@ -79,7 +79,6 @@ const handleRedo = () => {
 }
 
 function handleSave() {
-  console.log(host.toJSON())
 }
 
 function handleLoadByJSON() {

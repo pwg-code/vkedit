@@ -11,8 +11,6 @@ interface Props {
 
 const { element } = defineProps<Props>()
 
-console.log(element)
-
 const handleClick = (event: any) => {
   // event.cancelBubble = true
 }
@@ -53,7 +51,5 @@ class A {
 }
 
 const a = new A()
-
-console.log(a);
 
 </script>
