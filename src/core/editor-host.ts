@@ -25,6 +25,8 @@ export class EditorHost<
     // 像素 = （毫米 * DPI）/ 25.4
     width: 400,
     height: 400,
+    wmm: 50,
+    hmm: 50,
     dpm: 8,
   })
 
@@ -148,7 +150,28 @@ export class EditorHost<
   }
 
   setState(newState: Partial<IEditorState>): void {
+    // 更新状态属性
+    // 如果更新宽高 则需要重新计算毫米尺寸
+    if (newState.width) {
+      newState.wmm = newState.width / this.state.dpm
+    }
+    if (newState.height) {
+      newState.hmm = newState.height / this.state.dpm
+    }
+    // 如果更新毫米尺寸 则需要重新计算像素宽高
+    if (newState.wmm) {
+      newState.width = newState.wmm * this.state.dpm
+    }
+    if (newState.hmm) {
+      newState.height = newState.hmm * this.state.dpm
+    }
+    // 如果更新dpm 则需要重新计算宽高
+    if (newState.dpm) {
+      newState.width = this.state.wmm * newState.dpm
+      newState.height = this.state.hmm * newState.dpm
+    }
     Object.assign(this.state, newState)
+    // 发送状态变更事件
     this.emit('state:changed' as keyof T, {
       ...EventUtils.createBaseEventData('host'),
       state: this.state,
@@ -220,7 +243,6 @@ export class EditorHost<
     this.emit('host:load-json:complete' as keyof T, { timestamp: Date.now(), source: 'host' })
   }
 }
-
 
 declare module '@/types' {
   interface PluginMap {

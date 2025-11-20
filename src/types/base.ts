@@ -84,6 +84,8 @@ export interface IEditorState {
   showGrid: boolean
   width: number
   height: number
+  wmm: number
+  hmm: number
   dpm: number
 }
 
