@@ -8,6 +8,9 @@
     <VkNumberField
       :model-value="hostState.dpm"
       @update:model-value="(value) => host.setStatus({ dpm: value })"
+      :min="1"
+      :step="0.01"
+      :max="24"
     >
       <VkNumberFieldContent>
         <VkNumberFieldDecrement slot="decrement" />
@@ -64,7 +67,6 @@ interface Props {
 
 const { host } = defineProps<Props>()
 const hostState = computed(() => host.status)
-
 </script>
 
 <style scoped></style>
