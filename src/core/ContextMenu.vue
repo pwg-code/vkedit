@@ -7,7 +7,6 @@
       top: position.y + 'px',
       left: position.x + 'px',
     }"
-    @click="isShow = false"
   >
     <!-- 动态渲染上下文菜单 -->
     <component
@@ -17,6 +16,8 @@
       :host="host"
       :element="element"
       :selection="selection"
+      @close="isShow = false"
+      @open="isShow = true"
     />
   </div>
 </template>
