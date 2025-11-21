@@ -172,9 +172,9 @@ export interface EventMap {
   'clipboard:clear': (payload: BaseEventData) => void
 
   // 状态管理
-  'status:changed': (payload: StatusEventData) => void
-  'status:saved': (payload: StatusEventData) => void
-  'status:restored': (payload: StatusEventData) => void
+  'host:status-changed': (payload: StatusEventData) => void
+  'host:status-saved': (payload: StatusEventData) => void
+  'host:status-restored': (payload: StatusEventData) => void
 
   // 错误
   'editor:error': (payload: ErrorEventData) => void

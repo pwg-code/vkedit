@@ -2,15 +2,12 @@ import { reactive } from 'vue'
 import type { IEditorPlugin, IEditorState, EventMap, PluginEventData, PluginMap } from '../types'
 import { EventUtils } from '../types/event-data'
 import type { ICommand } from '@/commands/i-command'
-import type { RectPlugin, TextPlugin } from '@/plugins'
+import { RectPlugin, TextPlugin } from '@/plugins'
 
-export class EditorHost<
-  T extends { [K in keyof T]: (payload: any) => void } = EventMap,
-  U extends { [K in keyof U]: IEditorPlugin } = PluginMap,
-> {
+export class EditorHost {
   // 运行时用一个通用 Map 存储插件实例（键为 string），编译时通过重载和泛型保证类型推断
   private plugins: Map<string, IEditorPlugin> = new Map()
-  private events: Partial<{ [K in keyof T]: T[K][] }> = {}
+  private events: Map<string, Function[]> = new Map()
   private commandStack: ICommand[] = []
   private currentCommandIndex: number = -1
   public contentLayer: any
@@ -33,70 +30,74 @@ export class EditorHost<
   // 事件系统
 
   // 发送事件
-  emit<K extends keyof T>(event: K, payload: Parameters<T[K]>[0]): void {
-    const handlers = this.events[event]
+  emit<K extends keyof EventMap>(event: K, payload: Parameters<EventMap[K]>[0]): void {
+    const handlers = this.events.get(event)
     if (handlers) {
       handlers.forEach((handler) => handler(payload))
     }
   }
 
   // 订阅事件
-  on<K extends keyof T>(event: K, handler: T[K]): void {
-    if (!this.events[event]) this.events[event] = []
-    this.events[event].push(handler)
+  on<K extends keyof EventMap>(event: K, handler: EventMap[K]): void {
+    if (!this.events.has(event)) this.events.set(event, [])
+    this.events.get(event)!.push(handler)
   }
 
   // 取消订阅
-  off<K extends keyof T>(event: K, handler: T[K]): void {
+  off<K extends keyof EventMap>(event: K, handler: EventMap[K]): void {
     if (!handler) {
-      delete this.events[event]
+      this.events.delete(event)
       return
     }
-    const handlers = this.events[event]
-    if (handlers) this.events[event] = handlers.filter((h) => h !== handler) as any
+    const handlers = this.events.get(event)
+    if (handlers)
+      this.events.set(
+        event,
+        handlers.filter((h) => h !== handler),
+      )
   }
 
   // 插件管理
   // installPlugin 支持两种用法：
   // 1) 通过 PluginMap 推断： installPlugin('rect-plugin', rectPlugin)
   // 2) 显式泛型以覆盖或在未知映射时指定类型： installPlugin<'my-plugin'>(name, plugin)
-  installPlugin<K extends keyof PluginMap>(name: K, pluginClass: PluginMap[K] | (new (...args: any[]) => PluginMap[K])): EditorHost<T, U>
-  installPlugin(name: string, pluginClass: IEditorPlugin | (new (...args: any[]) => IEditorPlugin)): EditorHost<T, U>
-  installPlugin(name: string, pluginClass: any): EditorHost<T, U> {
+  installPlugin<K extends keyof PluginMap>(
+    name: K,
+    pluginClass: PluginMap[K] | (new (...args: any[]) => PluginMap[K]),
+  ): EditorHost
+  installPlugin(
+    name: string,
+    pluginClass: IEditorPlugin | (new (...args: any[]) => IEditorPlugin),
+  ): EditorHost
+  installPlugin(name: string, pluginClass: any): EditorHost {
     if (this.plugins.has(name)) {
-      console.warn(`Plugin ${name as string} is already registered`)
+      console.warn(`Plugin ${name} is already registered`)
       return this
     }
     // pluginClass 必须是一个类
-    const pluginInstance: IEditorPlugin = new pluginClass(this as EditorHost<any, any>)
+    const pluginInstance: IEditorPlugin = new pluginClass(this)
     this.plugins.set(name, pluginInstance)
-    pluginInstance.install(this as unknown as EditorHost<any, any>)
-    this.emit(
-      'plugin:registered' as keyof T,
-      {
-        ...EventUtils.createBaseEventData('host'),
-        plugin: pluginInstance,
-      } as PluginEventData,
-    )
+    pluginInstance.install(this)
+    this.emit('plugin:registered', {
+      ...EventUtils.createBaseEventData('host'),
+      plugin: pluginInstance,
+    })
 
     return this
   }
 
   // uninstallPlugin 支持按映射键名或任意字符串调用
-  uninstallPlugin<K extends keyof PluginMap>(pluginName: K): EditorHost<T, U>
-  uninstallPlugin(pluginName: string): EditorHost<T, U>
-  uninstallPlugin(pluginName: string): EditorHost<T, U> {
+  uninstallPlugin<K extends keyof PluginMap>(pluginName: K): EditorHost
+  uninstallPlugin(pluginName: string): EditorHost
+  uninstallPlugin(pluginName: string): EditorHost {
     const plugin = this.plugins.get(pluginName)
     if (plugin) {
       plugin.uninstall()
       this.plugins.delete(pluginName)
-      this.emit(
-        'plugin:unregistered' as keyof T,
-        {
-          ...EventUtils.createBaseEventData('host'),
-          plugin,
-        } as PluginEventData,
-      )
+      this.emit('plugin:unregistered', {
+        ...EventUtils.createBaseEventData('host'),
+        plugin,
+      })
     }
     return this
   }
@@ -107,11 +108,12 @@ export class EditorHost<
   getPlugin<K extends keyof PluginMap>(pluginName: K): PluginMap[K]
   getPlugin<T extends IEditorPlugin = IEditorPlugin>(pluginName: string): T
   getPlugin(pluginName: string): IEditorPlugin {
-    if (this.plugins.has(pluginName)) {
-      return this.plugins.get(pluginName) as IEditorPlugin
+    const p = this.plugins.get(pluginName)
+    if (p) {
+      return p
     } else {
       throw new Error(
-        `不存在插件: ${pluginName as string},可用插件有: ${Array.from(this.plugins.keys()).join(',')}`,
+        `不存在插件: ${pluginName},可用插件有: ${Array.from(this.plugins.keys()).join(',')}`,
       )
     }
   }
@@ -125,7 +127,7 @@ export class EditorHost<
     this.commandStack.push(command)
     this.currentCommandIndex++
     command.execute()
-    this.emit('command:executed' as keyof T, { ...EventUtils.createBaseEventData('host'), command })
+    this.emit('command:executed', { ...EventUtils.createBaseEventData('host'), command })
   }
 
   undo(): void {
@@ -133,7 +135,7 @@ export class EditorHost<
       const command = this.commandStack[this.currentCommandIndex]
       command.undo()
       this.currentCommandIndex--
-      this.emit('command:undone' as keyof T, { ...EventUtils.createBaseEventData('host'), command })
+      this.emit('command:undone', { ...EventUtils.createBaseEventData('host'), command })
     }
   }
 
@@ -142,7 +144,7 @@ export class EditorHost<
       this.currentCommandIndex++
       const command = this.commandStack[this.currentCommandIndex]
       command.redo()
-      this.emit('command:redone' as keyof T, { ...EventUtils.createBaseEventData('host'), command })
+      this.emit('command:redone', { ...EventUtils.createBaseEventData('host'), command })
     }
   }
 
@@ -171,7 +173,7 @@ export class EditorHost<
       this._status.height = this.status.hmm * newStatus.dpm
     }
 
-    this.emit('state:changed' as keyof T, {
+    this.emit('host:status-changed', {
       ...EventUtils.createBaseEventData('host'),
       status: this._status,
     })
@@ -179,13 +181,13 @@ export class EditorHost<
 
   toJSON(): string {
     // 发送事件
-    this.emit('host:to-json:start' as keyof T, { timestamp: Date.now(), source: 'host' })
+    this.emit('host:to-json:start', { timestamp: Date.now(), source: 'host' })
     try {
       // 尝试通过 getPlugin 获取已安装的 element-manager-plugin（getPlugin 会在不存在时抛出）
       let elements: any[] | undefined
       try {
-        const elementsPlugin = this.getPlugin('element-manager-plugin' as keyof PluginMap)
-        elements = (elementsPlugin as any).getAllElements()
+        const elementsPlugin = this.getPlugin('element-manager-plugin')
+        elements = elementsPlugin.getAllElements()
       } catch {
         elements = undefined
       }
@@ -200,7 +202,7 @@ export class EditorHost<
         elements: serializeElements,
       })
     } catch (error) {
-      this.emit('host:to-json:error' as keyof T, {
+      this.emit('host:to-json:error', {
         timestamp: Date.now(),
         source: 'host',
         error: error as Error,
@@ -209,13 +211,13 @@ export class EditorHost<
       console.error('Export JSON failed:', error)
       return ''
     } finally {
-      this.emit('host:to-json:complete' as keyof T, { timestamp: Date.now(), source: 'host' })
+      this.emit('host:to-json:complete', { timestamp: Date.now(), source: 'host' })
     }
   }
 
   loadJSON(jsonStr: string): void {
     // 发送事件
-    this.emit('host:load-json:start' as keyof T, { timestamp: Date.now(), source: 'host' })
+    this.emit('host:load-json:start', { timestamp: Date.now(), source: 'host' })
     try {
       const data = JSON.parse(jsonStr)
       // 加载编辑器状态
@@ -231,7 +233,7 @@ export class EditorHost<
         Object.assign(this.status, data.state)
       }
     } catch (error) {
-      this.emit('host:load-json:error' as keyof T, {
+      this.emit('host:load-json:error', {
         timestamp: Date.now(),
         source: 'host',
         error: error as Error,
@@ -239,7 +241,7 @@ export class EditorHost<
       console.error('Load JSON failed:', error)
       return
     }
-    this.emit('host:load-json:complete' as keyof T, { timestamp: Date.now(), source: 'host' })
+    this.emit('host:load-json:complete', { timestamp: Date.now(), source: 'host' })
   }
 }
 
@@ -248,8 +250,11 @@ declare module '@/types' {
     ttt: RectPlugin
   }
 }
+
 function test() {
   const host = new EditorHost()
   const p = host.getPlugin('keydown-plugin')
   const t = host.getPlugin('selection-plugin')
+  host.installPlugin('456', TextPlugin)
+  host.uninstallPlugin('456')
 }
