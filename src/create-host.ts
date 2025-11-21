@@ -77,14 +77,14 @@ export function createEditorHost({
   host.installPlugin('preview-plugin', PreviewPlugin)
   }
 
-  // 注册删除元素上下文菜单
-  host.emit('context-menu:registered', {
-    graphicTypes: [],
-    isPublic: true,
-    isCanvas: false,
-    render: () => ContextMenuDelete,
-    timestamp: Date.now(),
-    source: 'create-editor-host',
-  })
+  // // 注册删除元素上下文菜单
+  // host.emit('context-menu:registered', {
+  //   graphicTypes: [],
+  //   isPublic: true,
+  //   isCanvas: false,
+  //   render: () => ContextMenuDelete,
+  //   timestamp: Date.now(),
+  //   source: 'create-editor-host',
+  // })
   return host
 }
