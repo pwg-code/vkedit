@@ -45,8 +45,6 @@ export class ElementManagerPlugin extends BasePlugin {
     }
   }
 
-
-
   // 获取单个元素（支持按 type 过滤并进行类型推断）
   // 使用 ElementTypeMap 自动推断： getElement(id, 'rect') -> RectElement
   getElement<K extends keyof ElementTypeMap>(elementId: string, type: K): ElementTypeMap[K]
@@ -54,7 +52,7 @@ export class ElementManagerPlugin extends BasePlugin {
   getElement<T extends IGraphicElement = IGraphicElement>(elementId: string): T
   getElement(elementId: string, type?: string): IGraphicElement {
     const el = this.elements.get(elementId)
-    if (!el){
+    if (!el) {
       // 元素不存在 抛出异常
       throw new Error(`Element with ID ${elementId} does not exist.`)
     }
@@ -85,8 +83,7 @@ export class ElementManagerPlugin extends BasePlugin {
   createElement(type: string): IGraphicElement {
     const constructor = this.elementConstructors.get(type)
     if (constructor) {
-      const newElement =  constructor.createElement()
-      this.addElement(newElement)
+      const newElement = constructor.createElement()
       return newElement
     }
     throw new Error(`Element type ${type} is not registered.`)
