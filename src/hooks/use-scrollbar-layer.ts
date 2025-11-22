@@ -10,7 +10,7 @@ export function useScrollbarLayer(host: EditorHost) {
 
   const scrollbarLayerConfig = reactive({})
 
-  const margin = 30
+  const margin = 500
 
   // 可见高度
   const visibleHeight = computed(() => height.value - margin)
@@ -33,7 +33,7 @@ export function useScrollbarLayer(host: EditorHost) {
   // 监控 垂直滚动块的高度 设置滚动位置  使其始终保存在中间
   watch(verticalThumbHeight, (v) => {
     if (!showVerticalScroll.value) {
-      verticalThumbY.value = (verticalTrackHeight.value - v) / 2
+      verticalThumbY.value = (verticalTrackHeight.value - v) / 2 + margin / 2
     }
   })
 
@@ -51,11 +51,11 @@ export function useScrollbarLayer(host: EditorHost) {
   // 垂直滚动条轨道的配置
   const verticalTrackConfig = computed(() => {
     return {
-      x: width.value - 10,
+      x: width.value - 15,
       y: 0,
-      width: 10,
+      width: 15,
       height: height.value,
-      fill: '#ffff',
+      fill: 'rgb(220,220,220,0.5)',
       listening: false,
     }
   })
@@ -63,9 +63,9 @@ export function useScrollbarLayer(host: EditorHost) {
   // 垂直滚动条滑块的配置
   const verticalThumbConfig = computed(() => {
     return {
-      x: width.value - 10,
+      x: width.value - 15,
       y: verticalThumbY.value,
-      width: 10,
+      width: 15,
       height: verticalThumbHeight.value,
       fill: '#6666',
       draggable: true,
@@ -103,15 +103,15 @@ export function useScrollbarLayer(host: EditorHost) {
   // 水平轨道的宽度
   const horizontalTrackWidth = computed(() => visibleWidth.value)
 
-  // 水平滚动块的高度
+  // 水平滚动块的宽度
   const horizontalThumbWidth = computed(() => {
     return (visibleWidth.value / contentWidth.value) * horizontalTrackWidth.value
   })
 
-  // 监控 水平滚动块的高度 设置滚动位置  使其始终保存在中间
+  // 监控 水平滚动块的宽度 设置滚动位置  使其始终保存在中间
   watch(horizontalThumbWidth, (v) => {
     if (!showHorizontalScroll.value) {
-      horizontalThumbX.value = (horizontalTrackWidth.value - v) / 2
+      horizontalThumbX.value = (horizontalTrackWidth.value - v) / 2 + margin / 2
     }
   })
 
@@ -130,10 +130,10 @@ export function useScrollbarLayer(host: EditorHost) {
   const horizontalTrackConfig = computed(() => {
     return {
       x: 0,
-      y: height.value - 10,
+      y: height.value - 15,
       width: width.value,
-      height: 10,
-      fill: '#ffff',
+      height: 15,
+      fill: 'rgb(220,220,220,0.5)',
       listening: false,
     }
   })
@@ -142,9 +142,9 @@ export function useScrollbarLayer(host: EditorHost) {
   const horizontalThumbConfig = computed(() => {
     return {
       x: horizontalThumbX.value,
-      y: height.value - 10,
+      y: height.value - 15,
       width: horizontalThumbWidth.value,
-      height: 10,
+      height: 15,
       fill: '#6666',
       draggable: true,
     }
@@ -177,6 +177,28 @@ export function useScrollbarLayer(host: EditorHost) {
     )
   }
 
+  // 使滚动条在最佳位置
+  // 将内容的左上角定位到可见区域的左上角
+  function resetScrollbarPosition() {
+    // 垂直方向:将滑块设置到顶部,使内容从顶部开始显示
+    if (showVerticalScroll.value) {
+      verticalThumbY.value = margin / 2
+    } else {
+      // 不需要滚动时,滑块居中
+      verticalThumbY.value =
+        (verticalTrackHeight.value - verticalThumbHeight.value) / 2 + margin / 2
+    }
+
+    // 水平方向:将滑块设置到左侧,使内容从左侧开始显示
+    if (showHorizontalScroll.value) {
+      horizontalThumbX.value = margin / 2
+    } else {
+      // 不需要滚动时,滑块居中
+      horizontalThumbX.value =
+        (horizontalTrackWidth.value - horizontalThumbWidth.value) / 2 + margin / 2
+    }
+  }
+
   return {
     scrollbarLayerRef,
     scrollbarLayerConfig,
@@ -191,5 +213,8 @@ export function useScrollbarLayer(host: EditorHost) {
     contentScrollX,
     contentScrollY,
     handleWheel,
+    verticalThumbY,
+    horizontalThumbX,
+    resetScrollbarPosition,
   }
 }

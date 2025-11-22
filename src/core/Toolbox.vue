@@ -9,7 +9,6 @@
 
 <script setup lang="ts">
 import type { EditorHost } from '@/core'
-import { GraphicToolManagerPlugin } from '@/plugins'
 
 const { host } = defineProps<{
   host: EditorHost

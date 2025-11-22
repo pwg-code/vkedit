@@ -1,6 +1,6 @@
 import type { EditorHost } from '@/core'
 import { computed, reactive, ref } from 'vue'
-import { useHostState, useStage } from '@/hooks'
+import { useHostState, useScrollbarLayer, useStage } from '@/hooks'
 
 // 处理缩放相关的逻辑
 export function useZoom(host: EditorHost) {
@@ -15,13 +15,13 @@ export function useZoom(host: EditorHost) {
   const zoom = computed(() => hostState.zoom)
 
   // 放大
-  const handleZoomIn = (step: number=0.1) => {
+  const handleZoomIn = (step: number = 0.1) => {
     if (hostState.zoom < 10) {
       hostState.zoom += step
     }
   }
   // 缩小
-  const handleZoomOut = (step: number=0.1) => {
+  const handleZoomOut = (step: number = 0.1) => {
     if (hostState.zoom > 0.1) {
       hostState.zoom -= step
     }
@@ -53,6 +53,6 @@ export function useZoom(host: EditorHost) {
     handleZoomOut,
     handleZoomAuto,
     zoom,
-    handleWheel
+    handleWheel,
   }
 }
