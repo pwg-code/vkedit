@@ -11,7 +11,7 @@ export class ExportPlugin extends BasePlugin {
   name = 'export-plugin'
   version = '1.0.0'
   public pixelRatio: number = 2 // 导出图片的像素比
-  constructor(host:EditorHost, pixelRatio: number = 2) {
+  constructor(host: EditorHost, pixelRatio: number = 2) {
     super(host)
     this.pixelRatio = pixelRatio // 导出图片的像素比
   }
@@ -28,21 +28,41 @@ export class ExportPlugin extends BasePlugin {
 
   // 导出excel
   handleExportExcel() {
-    // 这里不实现具体逻辑 只发送事件
+    let prevented = false
     this.host?.emit('export:start', {
       timestamp: Date.now(),
       source: 'export-plugin',
       format: 'excel',
+      prevent: () => {
+        prevented = true
+      },
     })
+
+    // 如果被阻止,则不执行导出
+    if (prevented) {
+      return
+    }
+
+    // 这里不实现具体逻辑 只发送事件
   }
 
   // 处理导出图片
   handleExportImage() {
+    let prevented = false
     this.host?.emit('export:start', {
       timestamp: Date.now(),
       source: 'export-plugin',
       format: 'png',
+      prevent: () => {
+        prevented = true
+      },
     })
+
+    // 如果被阻止,则不执行导出
+    if (prevented) {
+      return
+    }
+
     try {
       this.exportImage()
     } catch (error) {
@@ -64,11 +84,20 @@ export class ExportPlugin extends BasePlugin {
 
   // 处理导出 JSON
   handleExportJSON() {
+    let prevented = false
     this.host?.emit('export:start', {
       format: 'json',
       timestamp: Date.now(),
       source: 'export-plugin',
+      prevent: () => {
+        prevented = true
+      },
     })
+
+    // 如果被阻止,则不执行导出
+    if (prevented) {
+      return
+    }
 
     try {
       this.exportJSON()
@@ -91,11 +120,21 @@ export class ExportPlugin extends BasePlugin {
 
   // 处理导出 PDF
   handleExportPdf() {
+    let prevented = false
     this.host?.emit('export:start', {
       format: 'pdf',
       timestamp: Date.now(),
       source: 'export-plugin',
+      prevent: () => {
+        prevented = true
+      },
     })
+
+    // 如果被阻止,则不执行导出
+    if (prevented) {
+      return
+    }
+
     try {
       this.exportPdf()
     } catch (error) {
@@ -227,4 +266,6 @@ import type { EditorHost } from '@/core'
 export interface ExportEventData extends BaseEventData {
   format: 'png' | 'jpeg' | 'pdf' | 'json' | 'excel' | string
   error?: any
+  // 阻止导出
+  prevent?: () => void
 }
