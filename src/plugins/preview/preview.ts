@@ -23,7 +23,9 @@ export class PreviewPlugin extends BasePlugin {
   // 预览
   handlePreview() {
     if (!this.host) return
-    this.host.emit('preview:start', { source: '', timestamp: Date.now() })
+    let prevented = false
+    this.host.emit('preview:start', { source: '', timestamp: Date.now() , prevent: () => { prevented = true }   })
+    if (prevented) return
     try {
       this.preview()
     } catch (error) {
@@ -49,7 +51,9 @@ export class PreviewPlugin extends BasePlugin {
   // 打印预览
   handlePrintPreview() {
     if (!this.host) return
-    this.host.emit('preview:start', { source: '', timestamp: Date.now() })
+    let prevented = false
+    this.host.emit('preview:start', { source: '', timestamp: Date.now() , prevent: () => { prevented = true }   })
+    if (prevented) return
     try {
       this.printPreview()
     } catch (error) {
@@ -93,6 +97,8 @@ import type { BaseEventData } from '@/types'
 export interface PreviewEventData extends BaseEventData {
   // currently same as BaseEventData; kept for future extensions
   error?: any
+  // 阻止预览的默认行为
+  prevent?: () => void
 }
 
 declare module '@/types' {
