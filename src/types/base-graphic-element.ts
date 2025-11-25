@@ -1,6 +1,7 @@
 import { UpdatePropertyCommand } from '@/commands'
 import type { IGraphicElement } from '.'
 import type { EditorHost } from '@/core'
+import { v4 as uuidv4 } from 'uuid'
 
 export interface BaseGraphicElementOptions {
   xmm?: number
@@ -86,7 +87,7 @@ export abstract class BaseGraphicElement implements IGraphicElement {
   public transferable: boolean = true
   // host 在元素未加入 editor 时可能不存在，保持可选
 
-  constructor(host:EditorHost, options: Partial<BaseGraphicElementOptions> = {}) {
+  constructor(host: EditorHost, options: Partial<BaseGraphicElementOptions> = {}) {
     // 位置记录的是mm 单位 对外暴露的根据dpm 转换px
     this.xmm = options.xmm ?? 5
     this.ymm = options.ymm ?? 5
@@ -100,10 +101,10 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     this.draggable = options.draggable ?? true
     this.transferable = options.transferable ?? true
     this.host = host
-    this.id = crypto.randomUUID()
+    this.id = uuidv4()
   }
   updateProperty(host: EditorHost, property: string, oldValue: any, newValue: any): void {
-    host.executeCommand(new UpdatePropertyCommand(host, this,  property, oldValue, newValue))
+    host.executeCommand(new UpdatePropertyCommand(host, this, property, oldValue, newValue))
   }
 
   clone(): IGraphicElement {
