@@ -12,40 +12,50 @@ export function useScrollbarLayer(host: EditorHost) {
 
   const margin = 500
 
-  // 可见高度
-  const visibleHeight = computed(() => height.value - margin)
+  // 可见高度（实际用于显示内容的区域）
+  const visibleHeight = computed(() => height.value)
 
-  // 可见高度
-  const visibleWidth = computed(() => width.value - margin)
+  // 可见宽度（实际用于显示内容的区域）
+  const visibleWidth = computed(() => width.value)
 
   const scrollbarLayerRef = ref()
+
+  // 扩展内容区域为2倍，使边缘内容可以滚动到屏幕中间
+  const extendedContentHeight = computed(() => contentHeight.value * 2)
+  const extendedContentWidth = computed(() => contentWidth.value * 2)
+
   // 显示垂直滚动条
-  const showVerticalScroll = computed(() => contentHeight.value > visibleHeight.value)
+  const showVerticalScroll = computed(() => extendedContentHeight.value > visibleHeight.value)
 
   // 垂直轨道的高度
-  const verticalTrackHeight = computed(() => visibleHeight.value)
+  const verticalTrackHeight = computed(() => height.value)
 
-  // 垂直滚动块的高度
+  // 垂直滚动块的高度（保持合理的最小高度）
   const verticalThumbHeight = computed(() => {
-    return (visibleHeight.value / contentHeight.value) * verticalTrackHeight.value
+    if (!showVerticalScroll.value) return verticalTrackHeight.value
+    const calculatedHeight =
+      (visibleHeight.value / extendedContentHeight.value) * verticalTrackHeight.value
+    return Math.max(30, calculatedHeight) // 最小30px
   })
 
   // 监控 垂直滚动块的高度 设置滚动位置  使其始终保存在中间
   watch(verticalThumbHeight, (v) => {
     if (!showVerticalScroll.value) {
-      verticalThumbY.value = (verticalTrackHeight.value - v) / 2 + margin / 2
+      verticalThumbY.value = (verticalTrackHeight.value - v) / 2
     }
   })
 
   // 内容滚动的Y位置
   const contentScrollY = computed(() => {
     if (!showVerticalScroll.value) return contentY.value
-    return (
-      -(
-        (verticalThumbY.value / (verticalTrackHeight.value - verticalThumbHeight.value)) *
-        (contentHeight.value - visibleHeight.value)
-      ) + margin
-    )
+    // 计算滚动比例
+    const scrollableTrackHeight = verticalTrackHeight.value - verticalThumbHeight.value
+    const scrollableContentHeight = extendedContentHeight.value - visibleHeight.value
+    if (scrollableTrackHeight <= 0 || scrollableContentHeight <= 0) return contentHeight.value / 2
+
+    const scrollRatio = verticalThumbY.value / scrollableTrackHeight
+    // 偏移量让内容可以滚动到中心，起始位置在内容的1/4处（因为扩展了2倍）
+    return -(scrollRatio * scrollableContentHeight) + contentHeight.value / 2
   })
 
   // 垂直滚动条轨道的配置
@@ -98,32 +108,37 @@ export function useScrollbarLayer(host: EditorHost) {
   }
 
   // 显示水平滚动条
-  const showHorizontalScroll = computed(() => contentWidth.value > visibleWidth.value)
+  const showHorizontalScroll = computed(() => extendedContentWidth.value > visibleWidth.value)
 
   // 水平轨道的宽度
-  const horizontalTrackWidth = computed(() => visibleWidth.value)
+  const horizontalTrackWidth = computed(() => width.value)
 
-  // 水平滚动块的宽度
+  // 水平滚动块的宽度（保持合理的最小宽度）
   const horizontalThumbWidth = computed(() => {
-    return (visibleWidth.value / contentWidth.value) * horizontalTrackWidth.value
+    if (!showHorizontalScroll.value) return horizontalTrackWidth.value
+    const calculatedWidth =
+      (visibleWidth.value / extendedContentWidth.value) * horizontalTrackWidth.value
+    return Math.max(30, calculatedWidth) // 最小30px
   })
 
   // 监控 水平滚动块的宽度 设置滚动位置  使其始终保存在中间
   watch(horizontalThumbWidth, (v) => {
     if (!showHorizontalScroll.value) {
-      horizontalThumbX.value = (horizontalTrackWidth.value - v) / 2 + margin / 2
+      horizontalThumbX.value = (horizontalTrackWidth.value - v) / 2
     }
   })
 
   // 内容滚动的X位置
   const contentScrollX = computed(() => {
     if (!showHorizontalScroll.value) return contentX.value
-    return (
-      -(
-        (horizontalThumbX.value / (horizontalTrackWidth.value - horizontalThumbWidth.value)) *
-        (contentWidth.value - visibleWidth.value)
-      ) + margin
-    )
+    // 计算滚动比例
+    const scrollableTrackWidth = horizontalTrackWidth.value - horizontalThumbWidth.value
+    const scrollableContentWidth = extendedContentWidth.value - visibleWidth.value
+    if (scrollableTrackWidth <= 0 || scrollableContentWidth <= 0) return contentWidth.value / 2
+
+    const scrollRatio = horizontalThumbX.value / scrollableTrackWidth
+    // 偏移量让内容可以滚动到中心，起始位置在内容的1/4处（因为扩展了2倍）
+    return -(scrollRatio * scrollableContentWidth) + contentWidth.value / 2
   })
 
   // 水平滚动条轨道的配置
@@ -178,25 +193,15 @@ export function useScrollbarLayer(host: EditorHost) {
   }
 
   // 使滚动条在最佳位置
-  // 将内容的左上角定位到可见区域的左上角
+  // 将内容区域定位到可见区域的正中间
   function resetScrollbarPosition() {
-    // 垂直方向:将滑块设置到顶部,使内容从顶部开始显示
-    if (showVerticalScroll.value) {
-      verticalThumbY.value = margin / 2
-    } else {
-      // 不需要滚动时,滑块居中
-      verticalThumbY.value =
-        (verticalTrackHeight.value - verticalThumbHeight.value) / 2 + margin / 2
-    }
+    // 垂直方向:将滑块设置到中间位置,使内容居中显示
+    const scrollableTrackHeight = verticalTrackHeight.value - verticalThumbHeight.value
+    verticalThumbY.value = scrollableTrackHeight / 2
 
-    // 水平方向:将滑块设置到左侧,使内容从左侧开始显示
-    if (showHorizontalScroll.value) {
-      horizontalThumbX.value = margin / 2
-    } else {
-      // 不需要滚动时,滑块居中
-      horizontalThumbX.value =
-        (horizontalTrackWidth.value - horizontalThumbWidth.value) / 2 + margin / 2
-    }
+    // 水平方向:将滑块设置到中间位置,使内容居中显示
+    const scrollableTrackWidth = horizontalTrackWidth.value - horizontalThumbWidth.value
+    horizontalThumbX.value = scrollableTrackWidth / 2
   }
 
   return {
