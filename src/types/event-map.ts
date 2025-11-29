@@ -75,6 +75,9 @@ export interface EventMap {
   'stage:keydown-up': (payload: StageKeyboardEventData) => void
   'stage:keydown-down': (payload: StageKeyboardEventData) => void
 
+  // 舞台重绘
+  'stage:redraw': (payload: BaseEventData) => void
+
   // 工具
   'tool:changed': (payload: ToolEventData) => void
   'tool:activated': (payload: ToolEventData) => void

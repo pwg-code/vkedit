@@ -32,7 +32,7 @@
 
       <!-- 中间内容区（可滚动） -->
       <div class="basis-7/12 flex-auto flex relative overflow-hidden">
-        <StageView :host="host" />
+        <StageView :host="host" :key="stageKey" />
       </div>
 
       <!-- 右侧属性栏 -->
@@ -56,6 +56,7 @@ import Toolbox from './Toolbox.vue'
 import StageView from './StageView.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import type { EditorHost } from '@/core'
+import { onMounted, ref } from 'vue'
 
 const {
   host,
@@ -68,6 +69,16 @@ const {
   showPropertyPanel?: boolean
   showToolbar?: boolean
 }>()
+
+const stageKey = ref(`stage-${Date.now()}`)
+
+// 绑定舞台重绘事件
+onMounted(() => {
+  host.on('stage:redraw', () => {
+    // 强制更改key 以触发StageView重绘
+    stageKey.value = `stage-${Date.now()}`
+  })
+})
 </script>
 
 <style scoped></style>

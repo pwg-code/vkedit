@@ -7,8 +7,8 @@ import type { IEditorState, IGraphicElement, IGraphicType, Point2D } from './bas
 
 // 基础事件数据
 export interface BaseEventData {
-  timestamp: number
-  source: string
+  timestamp?: number
+  source?: string
 }
 
 // 元素相关事件数据
@@ -131,8 +131,6 @@ export interface StageKeyboardEventData extends BaseEventData {
 export interface StatusEventData extends BaseEventData {
   status: IEditorState
 }
-
-
 
 // (plugin-specific event payload types moved to their plugin's types.d.ts files)
 

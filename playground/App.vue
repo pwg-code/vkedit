@@ -5,6 +5,7 @@
     :show-property-panel="true"
     :show-toolbar="true"
   ></Vkedit>
+  <button @click="redraw">测试舞台重绘</button>
 </template>
 
 <script setup lang="ts">
@@ -44,6 +45,11 @@ function test() {
     height: 297 * 8,
     zoom: 0.4,
   })
+}
+
+// 测试舞台重绘
+function redraw() {
+  host.emit('stage:redraw', {})
 }
 
 onMounted(() => {

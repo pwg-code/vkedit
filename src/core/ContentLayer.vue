@@ -45,6 +45,7 @@ const {
 } = useContentLayer(host)
 
 onMounted(() => {
+  initElements()
   // 添加或删除图形时触发更新elements
   host.on('element:removed', initElements)
   host.on('element:added', initElements)
