@@ -178,7 +178,15 @@ export abstract class BaseGraphicElement implements IGraphicElement {
   }
 
   // 返回配置 供konva 使用
-  public get config() {
+  public get config(): {
+    id: string
+    x: number
+    y: number
+    visible: boolean
+    draggable: boolean
+    locked: boolean
+    [key: string]: any
+  } {
     return {
       id: this.id,
       x: this.x,
