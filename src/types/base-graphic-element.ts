@@ -136,7 +136,17 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     this.transferable = data.transferable
   }
 
-  serialize() {
+  serialize(): {
+    id: string
+    type: string
+    xmm: number
+    ymm: number
+    visible: boolean
+    locked: boolean
+    draggable: boolean
+    transferable: boolean
+    [key: string]: any
+  } {
     return {
       type: this.type,
       id: this.id,
@@ -184,7 +194,6 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     y: number
     visible: boolean
     draggable: boolean
-    locked: boolean
     [key: string]: any
   } {
     return {
@@ -198,7 +207,6 @@ export abstract class BaseGraphicElement implements IGraphicElement {
       scaleY: this.scaleY,
       visible: this.visible,
       draggable: this.draggable,
-      locked: this.locked,
     }
   }
 }
