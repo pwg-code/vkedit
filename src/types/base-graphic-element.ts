@@ -125,8 +125,8 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     this.id = data.id
     this.xmm = data.xmm
     this.ymm = data.ymm
-    this.wmm = data.width
-    this.hmm = data.height
+    this.wmm = data.wmm
+    this.hmm = data.hmm
     this.rotation = data.rotation
     this.scaleX = data.scaleX
     this.scaleY = data.scaleY
@@ -141,6 +141,11 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     type: string
     xmm: number
     ymm: number
+    wmm: number
+    hmm: number
+    rotation: number
+    scaleX: number
+    scaleY: number
     visible: boolean
     locked: boolean
     draggable: boolean
@@ -192,6 +197,11 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     id: string
     x: number
     y: number
+    width: number
+    height: number
+    rotation: number
+    scaleX: number
+    scaleY: number
     visible: boolean
     draggable: boolean
     [key: string]: any
