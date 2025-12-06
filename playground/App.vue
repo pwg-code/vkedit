@@ -15,6 +15,7 @@ import {
   RectPlugin,
   TextPlugin,
   TablePlugin,
+  QrPlugin,
   Vkedit,
   BaseElementPropertyPanel,
   CanvasPropertyPanel,
@@ -38,6 +39,7 @@ host
   .installPlugin('rect-plugin', RectPlugin)
   .installPlugin('text-plugin', TextPlugin)
   .installPlugin('table-plugin', TablePlugin)
+  .installPlugin('qr-plugin', QrPlugin)
 function test() {
   host.setStatus({
     dpm: 8,
