@@ -8,7 +8,7 @@ import Tool from './Tool.vue'
 import type { EditorHost } from '@/core'
 // import { useImage } from 'vue-konva';
 
-export interface QrOptions extends BaseGraphicElementOptions {
+export interface QrcodeOptions extends BaseGraphicElementOptions {
   x?: number
   y?: number
   content?: string
@@ -16,14 +16,14 @@ export interface QrOptions extends BaseGraphicElementOptions {
   background?: string
 }
 
-export class QrElement extends BaseGraphicElement {
+export class QrcodeElement extends BaseGraphicElement {
   public type = 'qr'
   public content: string = 'https://example.com'
   public foreground: string = '#000000'
   public background: string = '#ffffff'
   // public image = useImage('')[0]
 
-  constructor(host: EditorHost, options: Partial<QrOptions> = {}) {
+  constructor(host: EditorHost, options: Partial<QrcodeOptions> = {}) {
     super(host, {
       xmm: options.xmm ?? 5,
       ymm: options.ymm ?? 5,
@@ -41,14 +41,6 @@ export class QrElement extends BaseGraphicElement {
     this.foreground = options.foreground ?? this.foreground
     this.background = options.background ?? this.background
   }
-
-  // public get config() {
-  //   return {
-  //     ...super.config,
-  //     image:this.image,
-  //   }
-  // }
-
 
 
   deserialize(data: any): void {
@@ -68,7 +60,7 @@ export class QrElement extends BaseGraphicElement {
   }
 }
 
-export class QrPlugin extends BasePlugin {
+export class QrcodePlugin extends BasePlugin {
   public name = 'qr-plugin'
   public version = '1.0.0'
   protected onInstall(): void {
@@ -99,7 +91,7 @@ export class QrPlugin extends BasePlugin {
 
     this.host.emit('element:registered', {
       type: 'qr',
-      createElement: () => new QrElement(this.host),
+      createElement: () => new QrcodeElement(this.host),
       source: 'qr-plugin-on-install',
       timestamp: Date.now(),
     })
@@ -108,12 +100,12 @@ export class QrPlugin extends BasePlugin {
 
 declare module '@/types' {
   interface ElementTypeMap {
-    qr: QrElement
+    qr: QrcodeElement
   }
 }
 
 declare module '@/types' {
   interface PluginMap {
-    'qr-plugin': QrPlugin
+    'qr-plugin': QrcodePlugin
   }
 }

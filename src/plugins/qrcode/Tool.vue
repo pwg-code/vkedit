@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 import { AddElementCommand } from '@/commands'
-import { QrElement } from './qr'
+import { QrcodeElement } from './qrcode'
 
 const { host } = defineProps<{
   host: import('@/core').EditorHost
@@ -13,7 +13,7 @@ const { host } = defineProps<{
 
 function handleClick() {
   if (!host) return
-  const el = new QrElement(host, { x: 50, y: 50 })
+  const el = new QrcodeElement(host, { x: 50, y: 50 })
   host.executeCommand(new AddElementCommand(host, el))
 }
 </script>

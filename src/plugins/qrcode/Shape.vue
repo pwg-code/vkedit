@@ -10,14 +10,14 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue'
-import type { QrElement } from './qr'
+import type { QrcodeElement } from './qrcode'
 import QRCode from 'qrcode'
 import type { EditorHost } from '@/core'
 import { useImage } from 'vue-konva'
 
 interface Props {
   host: EditorHost
-  element: QrElement
+  element: QrcodeElement
 }
 
 const { host, element } = defineProps<Props>()

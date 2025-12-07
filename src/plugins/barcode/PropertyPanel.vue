@@ -1,13 +1,23 @@
 <template>
-  <div class="col-span-full">二维码属性</div>
+  <div class="col-span-full">条码属性</div>
   <div class="space-y-3">
     <div>
       <label class="block text-sm text-gray-600">内容</label>
       <input class="w-full border rounded px-2 py-1" v-model="content" @change="onContentChange" />
     </div>
     <div>
-      <label class="block text-sm text-gray-600">宽度(px)</label>
-      <input type="number" class="w-full border rounded px-2 py-1" v-model.number="widthPx" @change="onSizeChange" />
+      <label class="block text-sm text-gray-600">格式</label>
+      <select class="w-full border rounded px-2 py-1" v-model="format" @change="onFormatChange">
+        <option value="CODE128">CODE128</option>
+        <option value="EAN13">EAN13</option>
+        <option value="UPC">UPC</option>
+        <option value="CODE39">CODE39</option>
+        <option value="ITF">ITF</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-sm text-gray-600">高度(px)</label>
+      <input type="number" class="w-full border rounded px-2 py-1" v-model.number="heightPx" @change="onSizeChange" />
     </div>
     <div class="grid grid-cols-2 gap-2">
       <div>
@@ -25,20 +35,21 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { EditorHost } from '@/core'
-import type { QrElement } from './qr'
+import type { BarcodeElement } from './barcode'
 import { usePropertyCommand } from '@/hooks'
 
 interface Props {
   host: EditorHost
-  element: QrElement
-  selection: QrElement[]
+  element: BarcodeElement
+  selection: BarcodeElement[]
 }
 
 const { host, element, selection } = defineProps<Props>()
 const { batchUpdateProperty } = usePropertyCommand(host)
 
 const content = ref(element.content)
-const widthPx = ref(Math.round(element.width))
+const format = ref(element.format)
+const heightPx = ref(Math.round(element.height))
 const foreground = ref(element.foreground)
 const background = ref(element.background)
 
@@ -46,10 +57,13 @@ function onContentChange() {
   batchUpdateProperty(selection, 'content', content.value)
 }
 
+function onFormatChange() {
+  batchUpdateProperty(selection, 'format', format.value)
+}
+
 function onSizeChange() {
-  const wmm = widthPx.value / host.status.dpm
-  batchUpdateProperty(selection, 'wmm', wmm)
-  batchUpdateProperty(selection, 'hmm', wmm)
+  const hmm = heightPx.value / host.status.dpm
+  batchUpdateProperty(selection, 'hmm', hmm)
 }
 
 function onColorChange() {
