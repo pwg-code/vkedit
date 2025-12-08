@@ -5,18 +5,19 @@ import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
 import Tool from './Tool.vue'
 import type { EditorHost } from '@/core'
+import type { EChartsOption } from 'echarts'
 
 export interface ChartOptions extends BaseGraphicElementOptions {
   x?: number
   y?: number
   chartType?: 'bar' | 'line' | 'pie' | 'scatter' | 'candlestick'
   chartData?: any
-  chartOptions?: any
+  chartOptions?: EChartsOption
 }
 
 export class ChartElement extends BaseGraphicElement {
   public type = 'chart'
-  public chartOptions: any = {
+  public chartOptions: EChartsOption = {
     xAxis: {
       type: 'category',
       data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],

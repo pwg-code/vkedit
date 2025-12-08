@@ -1,6 +1,6 @@
 <template>
   <div class="col-span-full">图表属性</div>
-  <div class="space-y-3">
+  <div class="col-span-full space-y-3">
     <div>
       <label class="block text-sm text-gray-600">宽度(mm)</label>
       <input
@@ -24,7 +24,7 @@
     <div>
       <label class="block text-sm text-gray-600">图表选项(JSON)</label>
       <textarea
-        class="w-full border rounded px-2 py-1 font-mono text-xs"
+        class="w-full border rounded px-2 py-1 font-mono text-xs h-48"
         rows="3"
         v-model="chartOptionsJson"
         @change="onOptionsChange"

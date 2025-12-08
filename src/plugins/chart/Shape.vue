@@ -27,20 +27,15 @@ const renderChart = async () => {
   echartsDiv.style.width = width + 'px'
   echartsDiv.style.height = height + 'px'
   document.body.appendChild(echartsDiv)
-
-  const echartInstance = echarts.init(echartsDiv)
-  echartInstance.setOption(element.chartOptions)
-
-  // 使用 Promise 阻塞，等待 finished 事件
-  await new Promise<void>((resolve) => {
-    const onFinished = () => {
-      chartImage.value = echartInstance.renderToCanvas()
-      echartInstance.dispose()
-      document.body.removeChild(echartsDiv)
-      resolve()
-    }
-    echartInstance.on('finished', onFinished)
+  const echartInstance = echarts.init(echartsDiv, null, {
+    renderer: 'canvas',
+    width,
+    height
   })
+  echartInstance.setOption({ ...element.chartOptions, animation: false})
+  chartImage.value = echartInstance.renderToCanvas()
+  echartInstance.dispose()
+  document.body.removeChild(echartsDiv)
 }
 
 onMounted(() => {
