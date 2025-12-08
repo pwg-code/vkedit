@@ -48,7 +48,9 @@ watch(
   [zoom, hostState, contentScrollX, contentScrollY],
   () => {
     // 触发标尺重绘
-    rulerLayerRef.value.getNode().draw()
+    const node = rulerLayerRef.value?.getNode()
+    if (!node) return
+    node.draw()
   },
   { deep: true },
 )
