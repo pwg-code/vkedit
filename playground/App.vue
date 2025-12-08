@@ -17,6 +17,7 @@ import {
   TablePlugin,
   QrcodePlugin,
   BarcodePlugin,
+  ChartPlugin,
   Vkedit,
   BaseElementPropertyPanel,
   CanvasPropertyPanel,
@@ -42,6 +43,7 @@ host
   .installPlugin('table-plugin', TablePlugin)
   .installPlugin('qr-plugin', QrcodePlugin)
   .installPlugin('barcode-plugin', BarcodePlugin)
+  .installPlugin('chart-plugin', ChartPlugin)
 function test() {
   host.setStatus({
     dpm: 8,
