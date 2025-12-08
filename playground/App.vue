@@ -15,6 +15,8 @@ import {
   RectPlugin,
   TextPlugin,
   TablePlugin,
+  QrcodePlugin,
+  BarcodePlugin,
   Vkedit,
   BaseElementPropertyPanel,
   CanvasPropertyPanel,
@@ -38,6 +40,8 @@ host
   .installPlugin('rect-plugin', RectPlugin)
   .installPlugin('text-plugin', TextPlugin)
   .installPlugin('table-plugin', TablePlugin)
+  .installPlugin('qr-plugin', QrcodePlugin)
+  .installPlugin('barcode-plugin', BarcodePlugin)
 function test() {
   host.setStatus({
     dpm: 8,
