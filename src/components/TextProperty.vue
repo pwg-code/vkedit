@@ -1,11 +1,4 @@
 <template>
-  <div class="col-span-full">
-    <VkLabel>内容</VkLabel>
-    <VkTextarea
-      :model-value="text"
-      @update:model-value="(value: any) => emit('update', 'text', value)"
-    ></VkTextarea>
-  </div>
   <div class="col-span-full flex">
     <div class="min-w-[150px]">
       <VkInputMM
@@ -80,9 +73,8 @@ import { Icon } from '@iconify/vue'
 import { useHostState } from '@/hooks'
 import type { EditorHost } from '@/core'
 import type { IAlign, IFontStyle, IVerticalAlign } from '@/types'
-const { text, fontSize, align, verticalAlign, fontStyle, host } = defineProps<{
+const { fontSize, align, verticalAlign, fontStyle, host } = defineProps<{
   host: EditorHost
-  text: string
   fontSize: number
   align: IAlign
   verticalAlign: IVerticalAlign

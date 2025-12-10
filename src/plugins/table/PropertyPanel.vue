@@ -125,7 +125,6 @@
   </div>
 
   <TextProperty
-    :text="element.activeCell.text"
     :font-size="element.activeCell.fontSize"
     :align="element.activeCell.align"
     :font-style="element.activeCell.fontStyle"

@@ -1,7 +1,6 @@
 <template>
   <div class="text-xl font-bold py-2">文本属性</div>
   <TextProperty
-    :text="element.text"
     :font-size="element.fontSize"
     :align="element.align"
     :font-style="element.fontStyle"
