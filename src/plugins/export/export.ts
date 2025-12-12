@@ -154,13 +154,14 @@ export class ExportPlugin extends BasePlugin {
   }
 
   // 导出图片
-  exportImage() {
-    const dataUrl = this.elementsToDataURL()
+  exportImage(mimeType: 'image/png' | 'image/jpeg' = 'image/png', background?: string) {
+    const dataUrl = this.elementsToDataURL(mimeType, background)
     if (!dataUrl) return
     // 创建下载链接
     const link = document.createElement('a')
     link.href = dataUrl
-    link.download = `canvas-${Date.now()}.png`
+    link.download =
+      mimeType == 'image/png' ? `canvas-${Date.now()}.png` : `canvas-${Date.now()}.jpg`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -200,7 +201,10 @@ export class ExportPlugin extends BasePlugin {
   }
 
   // 将所以元素移动到临时舞台 并获取图片数据 再移动回原舞台
-  elementsToDataURL(): string {
+  elementsToDataURL(
+    mimeType: 'image/png' | 'image/jpeg' = 'image/png',
+    background?: string,
+  ): string {
     const hostState = this.host?.status
     if (!hostState) return ''
     // 先获取到所以元素
@@ -219,7 +223,16 @@ export class ExportPlugin extends BasePlugin {
     })
     const layer = new konva.Layer()
     stage.add(layer)
-
+    // 根据background设置背景
+    if (background) {
+      layer.add(
+        new konva.Rect({
+          fill: background,
+          width: hostState.width,
+          height: hostState.height,
+        }),
+      )
+    }
     // 将所有元素添加到临时的 Layer 中
     elements.forEach((element) => {
       const konvaNode = this.host?.contentGroup.getNode().findOne(`#${element.id}`)
@@ -229,7 +242,7 @@ export class ExportPlugin extends BasePlugin {
       }
     })
     // 将临时stage导出为图片
-    const dataUrl = stage.toDataURL({ pixelRatio: this.pixelRatio })
+    const dataUrl = stage.toDataURL({ pixelRatio: this.pixelRatio, mimeType: mimeType })
     // 将元素移回原来的 group
     elements.forEach((element) => {
       const konvaNode = layer.findOne(`#${element.id}`)
