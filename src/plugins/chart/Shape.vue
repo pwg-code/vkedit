@@ -1,6 +1,7 @@
 <template>
   <v-group :config="element.config">
     <v-image v-if="chartImage" :config="{ image: chartImage }" />
+    <v-slot></v-slot>
   </v-group>
 </template>
 
@@ -30,9 +31,9 @@ const renderChart = async () => {
   const echartInstance = echarts.init(echartsDiv, null, {
     renderer: 'canvas',
     width,
-    height
+    height,
   })
-  echartInstance.setOption({ ...element.chartOptions, animation: false})
+  echartInstance.setOption({ ...element.chartOptions, animation: false })
   chartImage.value = echartInstance.renderToCanvas()
   echartInstance.dispose()
   document.body.removeChild(echartsDiv)
