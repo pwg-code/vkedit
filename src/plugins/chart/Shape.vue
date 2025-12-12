@@ -1,7 +1,7 @@
 <template>
   <v-group :config="element.config">
     <v-image v-if="chartImage" :config="{ image: chartImage }" />
-    <v-slot></v-slot>
+    <slot></slot>
   </v-group>
 </template>
 
