@@ -191,6 +191,7 @@ export class ExportPlugin extends BasePlugin {
 
     // 创建jsPDF实例 长宽为host内容区尺寸
     const pdf = new jsPDF({
+      orientation: 'landscape',
       unit: 'px',
       format: [hostState.width, hostState.height],
     })
