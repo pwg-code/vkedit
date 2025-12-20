@@ -4,6 +4,8 @@
     :config="{
       ...element.config,
       image: image,
+      width: image.width,
+      height: image.height,
     }"
   />
 </template>

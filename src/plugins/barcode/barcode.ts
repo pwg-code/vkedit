@@ -32,7 +32,7 @@ export class BarcodeElement extends BaseGraphicElement {
     super(host, {
       xmm: options.xmm ?? 5,
       ymm: options.ymm ?? 5,
-      wmm: options.wmm ?? 40,
+      wmm: options.wmm ?? 0.2,
       hmm: options.hmm ?? 20,
       rotation: options.rotation,
       scaleX: options.scaleX,
@@ -83,6 +83,7 @@ export class BarcodeElement extends BaseGraphicElement {
   }
   async renderBarcode(): Promise<HTMLCanvasElement> {
     const heightPx = Math.max(1, Math.round(this.height))
+    const widthPx = Math.max(1, Math.round(this.width))
     const canvas = document.createElement('canvas')
     try {
       // width option controls bar width; keep it small to fit
@@ -91,6 +92,7 @@ export class BarcodeElement extends BaseGraphicElement {
         lineColor: this.foreground ?? '#000',
         background: this.background ?? '#fff',
         height: heightPx,
+        width: widthPx,
         displayValue: this.displayValue,
         fontSize: this.fontSize,
         fontOptions: 'bold',
@@ -102,6 +104,10 @@ export class BarcodeElement extends BaseGraphicElement {
       console.error('JsBarcode render error', e)
     }
     return canvas
+  }
+
+  override getBoundingBox(): { x: number; y: number; width: number; height: number } {
+    return { x: this.x, y: this.y, width: this.width, height: this.height + this.fontSize + 10 }
   }
 }
 

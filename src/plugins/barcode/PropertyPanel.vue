@@ -27,7 +27,18 @@
   </div>
   <div>
     <label class="block text-sm text-gray-600">高度</label>
-    <VkInputNumberMM :model-value="element.hmm" @update:model-value="onSizeChange" />
+    <VkInputNumberMM
+      :model-value="element.hmm"
+      @update:model-value="(value) => batchUpdateProperty(selection, 'hmm', value)"
+    />
+  </div>
+  <div>
+    <label class="block text-sm text-gray-600">宽度</label>
+    <VkInputNumberMM
+      :model-value="element.wmm"
+      :step="0.01"
+      @update:model-value="(value) => batchUpdateProperty(selection, 'wmm', value)"
+    />
   </div>
   <div>
     <VkLabel>角度</VkLabel>
@@ -88,9 +99,6 @@ function onFormatChange(value: any) {
   batchUpdateProperty(selection, 'format', value)
 }
 
-function onSizeChange(value: any) {
-  batchUpdateProperty(selection, 'hmm', value)
-}
 function onFontSizeMMUpdate(value: any) {
   batchUpdateProperty(selection, 'fontSizeMM', value)
 }

@@ -94,7 +94,7 @@ export class QrcodeElement extends BaseGraphicElement {
         light: this.background ?? '#fff',
       },
       width: sizePx,
-      margin: this.margin,
+      height: this.height,
     }
     return await QRCode.toCanvas(this.content ?? '', opts)
   }
