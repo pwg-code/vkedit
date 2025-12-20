@@ -28,7 +28,9 @@ export class BarcodeElement extends BaseGraphicElement {
   public fontSizeMM: number = 3
   public marginMM: number = 0.2
   // 存储渲染后的二维码宽度
-  public boundingWidth = 0
+  public barcodeHeightMM = 8
+  // 条码的条纹宽度
+  public barcodeWidthMM = 0.2
 
   constructor(host: EditorHost, options: Partial<BarcodeOptions> = {}) {
     super(host, {
@@ -59,6 +61,12 @@ export class BarcodeElement extends BaseGraphicElement {
   public get margin() {
     return Math.round(this.marginMM * this.host.status.dpm)
   }
+  public get barcodeHeight() {
+    return Math.round(this.barcodeHeightMM * this.host.status.dpm)
+  }
+  public get barcodeWidth() {
+    return Math.round(this.barcodeWidthMM * this.host.status.dpm)
+  }
 
   deserialize(data: any): void {
     super.deserialize(data)
@@ -69,6 +77,8 @@ export class BarcodeElement extends BaseGraphicElement {
     this.displayValue = data.displayValue
     this.fontSizeMM = data.fontSizeMM
     this.marginMM = data.marginMM
+    this.barcodeHeightMM = data.barcodeHeightMM
+    this.barcodeWidthMM = data.barcodeWidthMM
   }
 
   serialize() {
@@ -81,11 +91,11 @@ export class BarcodeElement extends BaseGraphicElement {
       displayValue: this.displayValue,
       fontSizeMM: this.fontSizeMM,
       marginMM: this.marginMM,
+      barcodeHeightMM: this.barcodeHeightMM,
+      barcodeWidthMM: this.barcodeWidthMM,
     }
   }
   async renderBarcode(): Promise<HTMLCanvasElement> {
-    const heightPx = Math.max(1, Math.round(this.height))
-    const widthPx = Math.max(1, Math.round(this.width))
     const canvas = document.createElement('canvas')
     try {
       // width option controls bar width; keep it small to fit
@@ -93,30 +103,22 @@ export class BarcodeElement extends BaseGraphicElement {
         format: (this.format as any) ?? 'CODE128',
         lineColor: this.foreground ?? '#000',
         background: this.background ?? '#fff',
-        height: heightPx,
-        width: widthPx,
+        height: this.barcodeHeight,
+        width: this.barcodeWidth,
         displayValue: this.displayValue,
         fontSize: this.fontSize,
         fontOptions: 'bold',
         margin: this.margin,
         font: 'OCR-B',
       })
-      // 每一次渲染将宽度保存
-      this.boundingWidth = canvas.width
+      // 渲染后将宽高存储
+      this.width = canvas.width
+      this.height = canvas.height
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('JsBarcode render error', e)
     }
     return canvas
-  }
-
-  override getBoundingBox(): { x: number; y: number; width: number; height: number } {
-    return {
-      x: this.x,
-      y: this.y,
-      width: this.boundingWidth,
-      height: this.height + this.fontSize + 10,
-    }
   }
 }
 

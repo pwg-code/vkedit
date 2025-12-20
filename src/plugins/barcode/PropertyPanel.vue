@@ -28,16 +28,16 @@
   <div>
     <label class="block text-sm text-gray-600">高度</label>
     <VkInputNumberMM
-      :model-value="element.hmm"
-      @update:model-value="(value) => batchUpdateProperty(selection, 'hmm', value)"
+      :model-value="element.barcodeHeightMM"
+      @update:model-value="(value) => batchUpdateProperty(selection, 'barcodeHeightMM', value)"
     />
   </div>
   <div>
     <label class="block text-sm text-gray-600">宽度(条纹)</label>
     <VkInputNumberMM
-      :model-value="element.wmm"
+      :model-value="element.barcodeWidthMM"
       :step="0.01"
-      @update:model-value="(value) => batchUpdateProperty(selection, 'wmm', value)"
+      @update:model-value="(value) => batchUpdateProperty(selection, 'barcodeWidthMM', value)"
     />
   </div>
   <div>
@@ -53,7 +53,7 @@
     <VkInputNumberMM
       :min="0"
       :model-value="element.marginMM"
-      @update:model-value="onMarginMMUpdate"
+      @update:model-value="(value) => batchUpdateProperty(selection, 'marginMM', value)"
     >
     </VkInputNumberMM>
   </div>
@@ -64,7 +64,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import type { EditorHost } from '@/core'
 import type { BarcodeElement } from './barcode'
 import { usePropertyCommand } from '@/hooks'
@@ -104,9 +103,6 @@ function onFontSizeMMUpdate(value: any) {
 }
 function onDisplayValueUpdate(value: any) {
   batchUpdateProperty(selection, 'displayValue', value)
-}
-function onMarginMMUpdate(value: any) {
-  batchUpdateProperty(selection, 'marginMM', value)
 }
 </script>
 

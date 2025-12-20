@@ -1,4 +1,4 @@
-export { default as RectPropertyPanel } from './PropertyPanel.vue'
-export { default as RectShape } from './Shape.vue'
-export { default as RectTool } from './Tool.vue'
+export { default as LinePropertyPanel } from './PropertyPanel.vue'
+export { default as LineShape } from './Shape.vue'
+export { default as LineTool } from './Tool.vue'
 export * from './line'
