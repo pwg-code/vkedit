@@ -31,6 +31,7 @@ const renderQr = async () => {
       light: element.background ?? '#fff',
     },
     width: sizePx,
+    margin: element.margin,
   }
   image.value = await QRCode.toCanvas(element.content ?? '', opts)
 }
@@ -40,7 +41,14 @@ onMounted(() => {
 })
 
 watch(
-  () => [element.content, element.foreground, element.background, element.width, element.height],
+  () => [
+    element.content,
+    element.foreground,
+    element.background,
+    element.width,
+    element.height,
+    element.marginMM,
+  ],
   renderQr,
 )
 </script>

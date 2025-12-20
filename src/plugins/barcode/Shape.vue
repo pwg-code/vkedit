@@ -34,7 +34,11 @@ const renderBarcode = async () => {
       lineColor: element.foreground ?? '#000',
       background: element.background ?? '#fff',
       height: heightPx,
-      displayValue: true,
+      displayValue: element.displayValue,
+      fontSize: element.fontSize,
+      fontOptions: 'bold',
+      margin: element.margin,
+      font: 'OCR-B',
     })
     image.value = canvas
   } catch (e) {
@@ -50,7 +54,17 @@ onMounted(() => {
 })
 
 watch(
-  () => [element.content, element.format, element.foreground, element.background, element.width, element.height],
+  () => [
+    element.content,
+    element.format,
+    element.foreground,
+    element.background,
+    element.width,
+    element.height,
+    element.displayValue,
+    element.fontSizeMM,
+    element.marginMM,
+  ],
   renderBarcode,
 )
 </script>

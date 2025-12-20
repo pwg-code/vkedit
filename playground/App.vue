@@ -24,6 +24,7 @@ import {
   ElementManagerPlugin,
   TextElement,
 } from '@/index'
+import { LinePlugin } from '@/plugins/line'
 // import '@/styles/tailwind-base.css' // 手动导入样式
 
 // import {
@@ -44,6 +45,7 @@ host
   .installPlugin('qr-plugin', QrcodePlugin)
   .installPlugin('barcode-plugin', BarcodePlugin)
   .installPlugin('chart-plugin', ChartPlugin)
+  .installPlugin('line-plugin', LinePlugin)
 function test() {
   host.setStatus({
     dpm: 8,

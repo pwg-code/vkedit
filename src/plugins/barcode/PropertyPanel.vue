@@ -1,34 +1,54 @@
 <template>
   <div class="col-span-full">条码属性</div>
-  <div class="space-y-3">
-    <div>
-      <label class="block text-sm text-gray-600">内容</label>
-      <input class="w-full border rounded px-2 py-1" v-model="content" @change="onContentChange" />
-    </div>
-    <div>
-      <label class="block text-sm text-gray-600">格式</label>
-      <select class="w-full border rounded px-2 py-1" v-model="format" @change="onFormatChange">
-        <option value="CODE128">CODE128</option>
-        <option value="EAN13">EAN13</option>
-        <option value="UPC">UPC</option>
-        <option value="CODE39">CODE39</option>
-        <option value="ITF">ITF</option>
-      </select>
-    </div>
-    <div>
-      <label class="block text-sm text-gray-600">高度(px)</label>
-      <input type="number" class="w-full border rounded px-2 py-1" v-model.number="heightPx" @change="onSizeChange" />
-    </div>
-    <div class="grid grid-cols-2 gap-2">
-      <div>
-        <label class="block text-sm text-gray-600">前景色</label>
-        <input type="color" class="w-full h-8 p-0 border rounded" v-model="foreground" @change="onColorChange" />
-      </div>
-      <div>
-        <label class="block text-sm text-gray-600">背景色</label>
-        <input type="color" class="w-full h-8 p-0 border rounded" v-model="background" @change="onColorChange" />
-      </div>
-    </div>
+  <div class="col-span-full">
+    <label class="block text-sm text-gray-600">格式</label>
+    <VkSelect :model-value="element.format" @update:model-value="onFormatChange">
+      <VkSelectTrigger class="w-full">
+        <VkSelectValue placeholder="选择格式" />
+      </VkSelectTrigger>
+      <VkSelectContent>
+        <VkSelectGroup>
+          <VkSelectItem value="CODE128">CODE128</VkSelectItem>
+          <VkSelectItem value="EAN13">EAN13</VkSelectItem>
+          <VkSelectItem value="UPC">UPC</VkSelectItem>
+          <VkSelectItem value="CODE39">CODE39</VkSelectItem>
+          <VkSelectItem value="ITF">ITF</VkSelectItem>
+        </VkSelectGroup>
+      </VkSelectContent>
+    </VkSelect>
+  </div>
+  <div>
+    <VkLabel>内容</VkLabel>
+    <VkInput :model-value="element.content" @update:model-value="onContentChange"> </VkInput>
+  </div>
+  <div>
+    <label class="block text-sm text-gray-600">可见性</label>
+    <VkSwitch :model-value="element.displayValue" @update:model-value="onDisplayValueUpdate" />
+  </div>
+  <div>
+    <label class="block text-sm text-gray-600">高度</label>
+    <VkInputNumberMM :model-value="element.hmm" @update:model-value="onSizeChange" />
+  </div>
+  <div>
+    <VkLabel>角度</VkLabel>
+    <VkInputNumber
+      :model-value="element.rotation"
+      @update:model-value="(value) => batchUpdateProperty(selection, 'rotation', value)"
+    >
+    </VkInputNumber>
+  </div>
+  <div>
+    <label class="block text-sm text-gray-600">留白</label>
+    <VkInputNumberMM
+      :min="0"
+      :model-value="element.marginMM"
+      @update:model-value="onMarginMMUpdate"
+    >
+    </VkInputNumberMM>
+  </div>
+  <div>
+    <label class="block text-sm text-gray-600">字体大小</label>
+    <VkInputNumberMM :model-value="element.fontSizeMM" @update:model-value="onFontSizeMMUpdate" />
   </div>
 </template>
 
@@ -37,6 +57,19 @@ import { ref } from 'vue'
 import type { EditorHost } from '@/core'
 import type { BarcodeElement } from './barcode'
 import { usePropertyCommand } from '@/hooks'
+import {
+  VkInputNumberMM,
+  VkInput,
+  VkLabel,
+  VkSelect,
+  VkSelectContent,
+  VkSelectItem,
+  VkSelectGroup,
+  VkSelectTrigger,
+  VkSelectValue,
+  VkSwitch,
+  VkInputNumber,
+} from '../../components'
 
 interface Props {
   host: EditorHost
@@ -47,28 +80,25 @@ interface Props {
 const { host, element, selection } = defineProps<Props>()
 const { batchUpdateProperty } = usePropertyCommand(host)
 
-const content = ref(element.content)
-const format = ref(element.format)
-const heightPx = ref(Math.round(element.height))
-const foreground = ref(element.foreground)
-const background = ref(element.background)
-
-function onContentChange() {
-  batchUpdateProperty(selection, 'content', content.value)
+function onContentChange(value: any) {
+  batchUpdateProperty(selection, 'content', value)
 }
 
-function onFormatChange() {
-  batchUpdateProperty(selection, 'format', format.value)
+function onFormatChange(value: any) {
+  batchUpdateProperty(selection, 'format', value)
 }
 
-function onSizeChange() {
-  const hmm = heightPx.value / host.status.dpm
-  batchUpdateProperty(selection, 'hmm', hmm)
+function onSizeChange(value: any) {
+  batchUpdateProperty(selection, 'hmm', value)
 }
-
-function onColorChange() {
-  batchUpdateProperty(selection, 'foreground', foreground.value)
-  batchUpdateProperty(selection, 'background', background.value)
+function onFontSizeMMUpdate(value: any) {
+  batchUpdateProperty(selection, 'fontSizeMM', value)
+}
+function onDisplayValueUpdate(value: any) {
+  batchUpdateProperty(selection, 'displayValue', value)
+}
+function onMarginMMUpdate(value: any) {
+  batchUpdateProperty(selection, 'marginMM', value)
 }
 </script>
 

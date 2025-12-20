@@ -7,30 +7,25 @@ import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base
 import type { Component } from 'vue'
 import type { EditorHost } from '@/core'
 
-export interface RectOptions extends BaseGraphicElementOptions {
-  x?: number
-  y?: number
-  fill?: string
+export interface LineOptions extends BaseGraphicElementOptions {
   stroke?: string
-  strokeWidthMM?: number
   xmm?: number
   ymm?: number
 }
 
 // 矩形元素实现
-export class RectElement extends BaseGraphicElement {
-  public type = 'rect'
-  public fill: string = ''
+export class LineElement extends BaseGraphicElement {
+  public type = 'line'
   public stroke: string = 'black'
-  public strokeWidthMM: number = 0.2
+  // 把width 当做线长 height当做线宽
 
-  constructor(host: EditorHost, options: Partial<RectOptions> = {}) {
+  constructor(host: EditorHost, options: Partial<LineOptions> = {}) {
     // 支持传入 xmm/ymm 或 x/y
     super(host, {
-      xmm: options.xmm ?? options.x ?? 5,
-      ymm: options.ymm ?? options.y ?? 5,
-      wmm: options.wmm ?? 30,
-      hmm: options.hmm ?? 30,
+      xmm: options.xmm ?? 5,
+      ymm: options.ymm ?? 5,
+      wmm: options.wmm ?? 10,
+      hmm: options.hmm ?? 0.2,
       rotation: options.rotation,
       scaleX: options.scaleX,
       scaleY: options.scaleY,
@@ -39,26 +34,21 @@ export class RectElement extends BaseGraphicElement {
       draggable: options.draggable,
       transferable: options.transferable,
     })
-    this.fill = options.fill ?? this.fill
     this.stroke = options.stroke ?? this.stroke
-    this.strokeWidthMM = options.strokeWidthMM ?? this.strokeWidthMM
-  }
-
-  public get strokeWidth() {
-    return Math.round(this.strokeWidthMM * this.host.status.dpm)
   }
 
   public get config() {
     return {
       ...super.config,
-      fill: this.fill,
+      points: [0, 0, this.width, 0],
       stroke: this.stroke,
-      strokeWidth: this.strokeWidth,
+      strokeWidth: this.height,
+      hitStrokeWidth: this.height + 20,
     }
   }
 
   clone(): IGraphicElement {
-    const newElement = new RectElement(this.host)
+    const newElement = new LineElement(this.host)
     newElement.deserialize(this)
     return newElement
   }
@@ -66,61 +56,59 @@ export class RectElement extends BaseGraphicElement {
   serialize() {
     return {
       ...super.serialize(),
-      fill: this.fill,
       stroke: this.stroke,
-      strokeWidthMM: this.strokeWidthMM,
     }
   }
 }
 
-export class RectPlugin extends BasePlugin {
-  public name = 'rect-plugin'
+export class LinePlugin extends BasePlugin {
+  public name = 'line-plugin'
   public version = '1.0.0'
   protected onInstall(): void {
     if (!this.host) return
     // 图形工具
     this.host.emit('graphic-tool:registered', {
-      type: 'rect',
+      type: 'line',
       render: () => Tool,
-      source: 'rect-plugin-on-install',
+      source: 'line-plugin-on-install',
       timestamp: Date.now(),
     })
     // 注册图形
     this.host.emit('graphic:registered', {
-      type: 'rect',
+      type: 'line',
       render: () => Shape,
-      source: 'rect-plugin-on-install',
+      source: 'line-plugin-on-install',
       timestamp: Date.now(),
     })
     // 注册属性面板
     this.host.emit('property-panel:registered', {
-      graphicTypes: ['rect'],
+      graphicTypes: ['line'],
       render: () => PropertyPanel,
-      source: 'rect-plugin-on-install',
+      source: 'line-plugin-on-install',
       timestamp: Date.now(),
       isCanvas: false,
       isPublic: false,
     })
     // 注册元素构造器
     this.host.emit('element:registered', {
-      type: 'rect',
-      createElement: () => new RectElement(this.host, { xmm: 5, ymm: 5 }),
-      source: 'rect-plugin-on-install',
+      type: 'line',
+      createElement: () => new LineElement(this.host, { xmm: 10, ymm: 10 }),
+      source: 'line-plugin-on-install',
       timestamp: Date.now(),
     })
   }
 }
 
-// 将 RectElement 注册到可扩展的 ElementTypeMap（仅类型信息）
+// 将 LineElement 注册到可扩展的 ElementTypeMap（仅类型信息）
 declare module '@/types' {
   interface ElementTypeMap {
-    rect: RectElement
+    line: LineElement
   }
 }
 
-// 将 RectPlugin 注册到可扩展的 PluginMap（仅类型信息）
+// 将 LinePlugin 注册到可扩展的 PluginMap（仅类型信息）
 declare module '@/types' {
   interface PluginMap {
-    'rect-plugin': RectPlugin
+    'line-plugin': LinePlugin
   }
 }

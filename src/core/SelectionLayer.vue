@@ -49,6 +49,7 @@ const selectionBorders = computed(() => {
         strokeWidth: 2,
         dash: [5, 5],
         listening: false,
+        rotation: element.rotation,
         // 确保边框显示在元素上方
         opacity: 1,
       },

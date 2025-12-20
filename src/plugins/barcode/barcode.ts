@@ -1,7 +1,5 @@
 import { BasePlugin } from '../../types/base-plugin'
-import { type IGraphicElement } from '../../types'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
-import type { Component } from 'vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
 import Tool from './Tool.vue'
@@ -14,6 +12,9 @@ export interface BarcodeOptions extends BaseGraphicElementOptions {
   format?: string
   foreground?: string
   background?: string
+  marginMM?: number
+  displayValue: boolean
+  fontSizeMM: number
 }
 
 export class BarcodeElement extends BaseGraphicElement {
@@ -22,6 +23,9 @@ export class BarcodeElement extends BaseGraphicElement {
   public format: string = 'CODE128'
   public foreground: string = '#000000'
   public background: string = '#ffffff'
+  public displayValue: boolean = true
+  public fontSizeMM: number = 3
+  public marginMM: number = 0.2
 
   constructor(host: EditorHost, options: Partial<BarcodeOptions> = {}) {
     super(host, {
@@ -41,6 +45,16 @@ export class BarcodeElement extends BaseGraphicElement {
     this.format = options.format ?? this.format
     this.foreground = options.foreground ?? this.foreground
     this.background = options.background ?? this.background
+    this.displayValue = options.displayValue ?? this.displayValue
+    this.fontSizeMM = options.fontSizeMM ?? this.fontSizeMM
+    this.marginMM = options.marginMM ?? this.marginMM
+  }
+
+  public get fontSize() {
+    return Math.round(this.fontSizeMM * this.host.status.dpm)
+  }
+  public get margin() {
+    return Math.round(this.marginMM * this.host.status.dpm)
   }
 
   deserialize(data: any): void {
@@ -49,6 +63,9 @@ export class BarcodeElement extends BaseGraphicElement {
     this.format = data.format
     this.foreground = data.foreground
     this.background = data.background
+    this.displayValue = data.displayValue
+    this.fontSizeMM = data.fontSizeMM
+    this.marginMM = data.marginMM
   }
 
   serialize() {
@@ -58,6 +75,9 @@ export class BarcodeElement extends BaseGraphicElement {
       format: this.format,
       foreground: this.foreground,
       background: this.background,
+      displayValue: this.displayValue,
+      fontSizeMM: this.fontSizeMM,
+      marginMM: this.marginMM,
     }
   }
 }

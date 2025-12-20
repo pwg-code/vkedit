@@ -2,20 +2,13 @@
   <div class="text-xl font-bold pb-2">矩形属性</div>
   <div></div>
   <div>
-    <NumberField
-      :model-value="element.strokeWidth"
+    <Label>边框粗细</Label>
+    <VkInputNumberMM
+      :model-value="element.strokeWidthMM"
       :min="1"
-      @update:model-value="
-        (value) => element.updateProperty(host, 'strokeWidth', element.strokeWidth, value)
-      "
+      @update:model-value="(value) => batchUpdateProperty(selection, 'strokeWidthMM', value)"
     >
-      <Label>边框粗细</Label>
-      <NumberFieldContent>
-        <NumberFieldDecrement />
-        <NumberFieldInput />
-        <NumberFieldIncrement />
-      </NumberFieldContent>
-    </NumberField>
+    </VkInputNumberMM>
   </div>
 </template>
 
@@ -23,14 +16,8 @@
 import type { EditorHost } from '@/core'
 import type { RectElement } from './rect'
 import { Label } from '@/components/ui/label'
-import {
-  NumberField,
-  NumberFieldContent,
-  NumberFieldDecrement,
-  NumberFieldIncrement,
-  NumberFieldInput,
-} from '@/components/ui/number-field'
-import { VkInputMM } from '@/components/ui'
+import { VkInputNumberMM } from '@/components/ui'
+import { usePropertyCommand } from '@/hooks/use-property-command'
 
 interface Props {
   host: EditorHost
@@ -39,6 +26,8 @@ interface Props {
 }
 
 const { element, host, selection } = defineProps<Props>()
+
+const { batchUpdateProperty } = usePropertyCommand(host)
 </script>
 
 <style scoped></style>

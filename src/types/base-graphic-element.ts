@@ -181,13 +181,13 @@ export abstract class BaseGraphicElement implements IGraphicElement {
       rotation: this.rotation,
     }
     const newAttrs = {
-      x: eAttrs.x,
-      y: eAttrs.y,
-      width: this.width * eAttrs.scaleX,
-      height: this.height * eAttrs.scaleY,
+      x: Math.round(eAttrs.x),
+      y: Math.round(eAttrs.y),
+      width: Math.round(this.width * eAttrs.scaleX),
+      height: Math.round(this.height * eAttrs.scaleY),
       scaleX: 1,
       scaleY: 1,
-      rotation: eAttrs.rotation,
+      rotation: Math.round(eAttrs.rotation),
     }
     return { oldAttrs, newAttrs }
   }

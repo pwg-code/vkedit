@@ -14,6 +14,7 @@ export interface QrcodeOptions extends BaseGraphicElementOptions {
   content?: string
   foreground?: string
   background?: string
+  marginMM?: number
 }
 
 export class QrcodeElement extends BaseGraphicElement {
@@ -21,6 +22,7 @@ export class QrcodeElement extends BaseGraphicElement {
   public content: string = 'https://example.com'
   public foreground: string = '#000000'
   public background: string = '#ffffff'
+  public marginMM: number = 0.2
   // public image = useImage('')[0]
 
   constructor(host: EditorHost, options: Partial<QrcodeOptions> = {}) {
@@ -40,14 +42,15 @@ export class QrcodeElement extends BaseGraphicElement {
     this.content = options.content ?? this.content
     this.foreground = options.foreground ?? this.foreground
     this.background = options.background ?? this.background
+    this.marginMM = options.marginMM ?? this.marginMM
   }
-
 
   deserialize(data: any): void {
     super.deserialize(data)
     this.content = data.content
     this.foreground = data.foreground
     this.background = data.background
+    this.marginMM = data.marginMM
   }
 
   serialize() {
@@ -56,7 +59,30 @@ export class QrcodeElement extends BaseGraphicElement {
       content: this.content,
       foreground: this.foreground,
       background: this.background,
+      marginMM: this.marginMM,
     }
+  }
+
+  override get config(): {
+    [key: string]: any
+    id: string
+    x: number
+    y: number
+    width: number
+    height: number
+    rotation: number
+    scaleX: number
+    scaleY: number
+    visible: boolean
+    draggable: boolean
+  } {
+    const baseConfig = super.config
+    baseConfig.height = baseConfig.width
+    return baseConfig
+  }
+
+  get margin() {
+    return Math.round(this.marginMM * this.host.status.dpm)
   }
 }
 

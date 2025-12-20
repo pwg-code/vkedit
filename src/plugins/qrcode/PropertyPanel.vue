@@ -1,24 +1,30 @@
 <template>
   <div class="col-span-full">二维码属性</div>
-  <div class="space-y-3">
-    <div>
-      <label class="block text-sm text-gray-600">内容</label>
-      <input class="w-full border rounded px-2 py-1" v-model="content" @change="onContentChange" />
-    </div>
-    <div>
-      <label class="block text-sm text-gray-600">宽度(px)</label>
-      <input type="number" class="w-full border rounded px-2 py-1" v-model.number="widthPx" @change="onSizeChange" />
-    </div>
-    <div class="grid grid-cols-2 gap-2">
-      <div>
-        <label class="block text-sm text-gray-600">前景色</label>
-        <input type="color" class="w-full h-8 p-0 border rounded" v-model="foreground" @change="onColorChange" />
-      </div>
-      <div>
-        <label class="block text-sm text-gray-600">背景色</label>
-        <input type="color" class="w-full h-8 p-0 border rounded" v-model="background" @change="onColorChange" />
-      </div>
-    </div>
+  <div class="col-span-full">
+    <VkLabel>内容</VkLabel>
+    <VkInput :model-value="element.content" @update:model-value="onContentChange"> </VkInput>
+  </div>
+  <div>
+    <VkLabel>宽度</VkLabel>
+    <VkInputNumberMM :min="0" :model-value="element.wmm" @update:model-value="onSizeChange">
+    </VkInputNumberMM>
+  </div>
+  <div>
+    <VkLabel>角度</VkLabel>
+    <VkInputNumber
+      :model-value="element.rotation"
+      @update:model-value="(value) => batchUpdateProperty(selection, 'rotation', value)"
+    >
+    </VkInputNumber>
+  </div>
+  <div>
+    <VkLabel>留白</VkLabel>
+    <VkInputNumberMM
+      :min="0"
+      :model-value="element.marginMM"
+      @update:model-value="onMarginMMUpdate"
+    >
+    </VkInputNumberMM>
   </div>
 </template>
 
@@ -27,6 +33,7 @@ import { ref } from 'vue'
 import type { EditorHost } from '@/core'
 import type { QrcodeElement } from './qrcode'
 import { usePropertyCommand } from '@/hooks'
+import { VkInputNumberMM, VkInput, VkLabel, VkInputNumber } from '../../components'
 
 interface Props {
   host: EditorHost
@@ -37,24 +44,19 @@ interface Props {
 const { host, element, selection } = defineProps<Props>()
 const { batchUpdateProperty } = usePropertyCommand(host)
 
-const content = ref(element.content)
-const widthPx = ref(Math.round(element.width))
 const foreground = ref(element.foreground)
 const background = ref(element.background)
 
-function onContentChange() {
-  batchUpdateProperty(selection, 'content', content.value)
+function onContentChange(value: any) {
+  batchUpdateProperty(selection, 'content', value)
 }
 
-function onSizeChange() {
-  const wmm = widthPx.value / host.status.dpm
-  batchUpdateProperty(selection, 'wmm', wmm)
-  batchUpdateProperty(selection, 'hmm', wmm)
+function onSizeChange(value: number) {
+  batchUpdateProperty(selection, 'wmm', value)
 }
 
-function onColorChange() {
-  batchUpdateProperty(selection, 'foreground', foreground.value)
-  batchUpdateProperty(selection, 'background', background.value)
+function onMarginMMUpdate(value: number) {
+  batchUpdateProperty(selection, 'marginMM', value)
 }
 </script>
 

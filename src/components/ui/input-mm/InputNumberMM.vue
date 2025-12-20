@@ -9,8 +9,7 @@
           :model-value="`${model} mm`"
           @mousedown.prevent="() => (isEdit = true)"
         ></Input>
-        <!-- @click="isEdit = true" -->
-        <NumberFieldInput v-show="isEdit" />
+        <NumberFieldInput v-show="isEdit" @blur="isEdit = false" />
       </div>
       <NumberFieldIncrement />
     </NumberFieldContent>
