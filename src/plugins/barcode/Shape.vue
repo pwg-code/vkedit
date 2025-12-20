@@ -12,9 +12,7 @@
 import { ref, watch, onMounted } from 'vue'
 import type { BarcodeElement } from './barcode'
 // @ts-ignore
-import JsBarcode from 'jsbarcode'
 import type { EditorHost } from '@/core'
-import { useImage } from 'vue-konva'
 
 interface Props {
   host: EditorHost
@@ -22,31 +20,10 @@ interface Props {
 }
 
 const { host, element } = defineProps<Props>()
-const image = ref()
+const image = ref<HTMLCanvasElement>()
 
 const renderBarcode = async () => {
-  const heightPx = Math.max(1, Math.round(element.height))
-  const canvas = document.createElement('canvas')
-  try {
-    // width option controls bar width; keep it small to fit
-    JsBarcode(canvas, element.content ?? '', {
-      format: (element.format as any) ?? 'CODE128',
-      lineColor: element.foreground ?? '#000',
-      background: element.background ?? '#fff',
-      height: heightPx,
-      displayValue: element.displayValue,
-      fontSize: element.fontSize,
-      fontOptions: 'bold',
-      margin: element.margin,
-      font: 'OCR-B',
-    })
-    image.value = canvas
-  } catch (e) {
-    // fallback: empty image
-    image.value = undefined
-    // eslint-disable-next-line no-console
-    console.error('JsBarcode render error', e)
-  }
+  image.value = await element.renderBarcode()
 }
 
 onMounted(() => {

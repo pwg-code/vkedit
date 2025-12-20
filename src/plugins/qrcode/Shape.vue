@@ -11,7 +11,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue'
 import type { QrcodeElement } from './qrcode'
-import QRCode from 'qrcode'
 import type { EditorHost } from '@/core'
 import { useImage } from 'vue-konva'
 
@@ -21,19 +20,10 @@ interface Props {
 }
 
 const { host, element } = defineProps<Props>()
-const image = ref()
+const image = ref<HTMLCanvasElement>()
 
-const renderQr = async () => {
-  const sizePx = Math.max(1, Math.round(element.width))
-  const opts = {
-    color: {
-      dark: element.foreground ?? '#000',
-      light: element.background ?? '#fff',
-    },
-    width: sizePx,
-    margin: element.margin,
-  }
-  image.value = await QRCode.toCanvas(element.content ?? '', opts)
+async function renderQr() {
+  image.value = await element.renderQrcode()
 }
 
 onMounted(() => {

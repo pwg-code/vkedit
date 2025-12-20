@@ -4,6 +4,7 @@ import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
 import Tool from './Tool.vue'
 import type { EditorHost } from '@/core'
+import JsBarcode from 'jsbarcode'
 
 export interface BarcodeOptions extends BaseGraphicElementOptions {
   x?: number
@@ -79,6 +80,28 @@ export class BarcodeElement extends BaseGraphicElement {
       fontSizeMM: this.fontSizeMM,
       marginMM: this.marginMM,
     }
+  }
+  async renderBarcode(): Promise<HTMLCanvasElement> {
+    const heightPx = Math.max(1, Math.round(this.height))
+    const canvas = document.createElement('canvas')
+    try {
+      // width option controls bar width; keep it small to fit
+      JsBarcode(canvas, this.content ?? '', {
+        format: (this.format as any) ?? 'CODE128',
+        lineColor: this.foreground ?? '#000',
+        background: this.background ?? '#fff',
+        height: heightPx,
+        displayValue: this.displayValue,
+        fontSize: this.fontSize,
+        fontOptions: 'bold',
+        margin: this.margin,
+        font: 'OCR-B',
+      })
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('JsBarcode render error', e)
+    }
+    return canvas
   }
 }
 

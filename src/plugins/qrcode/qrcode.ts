@@ -7,6 +7,7 @@ import Shape from './Shape.vue'
 import Tool from './Tool.vue'
 import type { EditorHost } from '@/core'
 // import { useImage } from 'vue-konva';
+import QRCode from 'qrcode'
 
 export interface QrcodeOptions extends BaseGraphicElementOptions {
   x?: number
@@ -83,6 +84,19 @@ export class QrcodeElement extends BaseGraphicElement {
 
   get margin() {
     return Math.round(this.marginMM * this.host.status.dpm)
+  }
+
+  async renderQrcode(): Promise<HTMLCanvasElement> {
+    const sizePx = Math.max(1, Math.round(this.width))
+    const opts = {
+      color: {
+        dark: this.foreground ?? '#000',
+        light: this.background ?? '#fff',
+      },
+      width: sizePx,
+      margin: this.margin,
+    }
+    return await QRCode.toCanvas(this.content ?? '', opts)
   }
 }
 

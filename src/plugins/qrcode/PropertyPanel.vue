@@ -5,7 +5,7 @@
     <VkInput :model-value="element.content" @update:model-value="onContentChange"> </VkInput>
   </div>
   <div>
-    <VkLabel>宽度</VkLabel>
+    <VkLabel>大小</VkLabel>
     <VkInputNumberMM :min="0" :model-value="element.wmm" @update:model-value="onSizeChange">
     </VkInputNumberMM>
   </div>
