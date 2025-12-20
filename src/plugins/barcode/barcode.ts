@@ -27,13 +27,15 @@ export class BarcodeElement extends BaseGraphicElement {
   public displayValue: boolean = true
   public fontSizeMM: number = 3
   public marginMM: number = 0.2
+  // 存储渲染后的二维码宽度
+  public boundingWidth = 0
 
   constructor(host: EditorHost, options: Partial<BarcodeOptions> = {}) {
     super(host, {
       xmm: options.xmm ?? 5,
       ymm: options.ymm ?? 5,
       wmm: options.wmm ?? 0.2,
-      hmm: options.hmm ?? 20,
+      hmm: options.hmm ?? 8,
       rotation: options.rotation,
       scaleX: options.scaleX,
       scaleY: options.scaleY,
@@ -99,6 +101,8 @@ export class BarcodeElement extends BaseGraphicElement {
         margin: this.margin,
         font: 'OCR-B',
       })
+      // 每一次渲染将宽度保存
+      this.boundingWidth = canvas.width
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('JsBarcode render error', e)
@@ -107,7 +111,12 @@ export class BarcodeElement extends BaseGraphicElement {
   }
 
   override getBoundingBox(): { x: number; y: number; width: number; height: number } {
-    return { x: this.x, y: this.y, width: this.width, height: this.height + this.fontSize + 10 }
+    return {
+      x: this.x,
+      y: this.y,
+      width: this.boundingWidth,
+      height: this.height + this.fontSize + 10,
+    }
   }
 }
 

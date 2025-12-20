@@ -94,9 +94,14 @@ export class QrcodeElement extends BaseGraphicElement {
         light: this.background ?? '#fff',
       },
       width: sizePx,
-      height: this.height,
+      margin: this.margin,
     }
     return await QRCode.toCanvas(this.content ?? '', opts)
+  }
+
+  override getBoundingBox(): { x: number; y: number; width: number; height: number } {
+    // 二位始终为正方形
+    return { ...super.getBoundingBox(), height: this.width }
   }
 }
 

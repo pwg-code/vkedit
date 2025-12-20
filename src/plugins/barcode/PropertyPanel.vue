@@ -33,7 +33,7 @@
     />
   </div>
   <div>
-    <label class="block text-sm text-gray-600">宽度</label>
+    <label class="block text-sm text-gray-600">宽度(条纹)</label>
     <VkInputNumberMM
       :model-value="element.wmm"
       :step="0.01"
