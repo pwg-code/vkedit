@@ -22,6 +22,113 @@ A powerful, extensible graphic editor plugin library built on Vue 3 and Konva.js
 
 ---
 
+
+## 🚀 Installation and Usage
+
+### Environment Requirements
+
+- **Node.js**: ^20.19.0 || >=22.12.0
+- **Package Manager**: pnpm 10.19.0+
+
+### Installation
+
+```bash
+# Using npm
+npm install vkedit vue konva vue-konva pinia
+
+# Using pnpm
+pnpm add vkedit vue konva vue-konva pinia
+
+# Using yarn
+yarn add vkedit vue konva vue-konva pinia
+```
+
+### Entry File Example (main.ts)
+
+In the project entry file `main.ts`, you need to properly configure the Vue application, Pinia state management, and VueKonva:
+
+```typescript
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+import VueKonva from 'vue-konva'
+import 'vkedit/dist/vkedit.css' // Import vkedit styles
+
+const app = createApp(App)
+
+app.use(createPinia())
+app.use(VueKonva)
+app.mount('#app')
+```
+
+### Basic Usage Example
+
+```vue
+<template>
+  <Vkedit
+    :host="host"
+    :show-toolbox="true"
+    :show-property-panel="true"
+    :show-toolbar="true"
+  />
+</template>
+
+<script setup lang="ts">
+import { createEditorHost, Vkedit } from 'vkedit'
+import { 
+  RectPlugin, 
+  TextPlugin, 
+  TablePlugin,
+  QrcodePlugin,
+  BarcodePlugin,
+  ChartPlugin,
+  LinePlugin
+} from 'vkedit'
+
+// Create editor host
+const host = createEditorHost({ 
+  basePropertyPanel: false,
+  baseCanvasPropertyPanel: true,
+  exportPlugin: true,
+  previewPlugin: true,
+  importPlugin: true
+})
+
+// Install graphic plugins
+host
+  .installPlugin('rect-plugin', RectPlugin)
+  .installPlugin('text-plugin', TextPlugin)
+  .installPlugin('table-plugin', TablePlugin)
+  .installPlugin('qr-plugin', QrcodePlugin)
+  .installPlugin('barcode-plugin', BarcodePlugin)
+  .installPlugin('chart-plugin', ChartPlugin)
+  .installPlugin('line-plugin', LinePlugin)
+
+// Set canvas dimensions (A4 paper)
+host.setStatus({
+  dpm: 8,          // Dots per millimeter (DPI / 25.4)
+  width: 210 * 8,  // A4 width 210mm
+  height: 297 * 8, // A4 height 297mm
+  zoom: 0.4        // Zoom level
+})
+</script>
+```
+
+### Optional Configuration
+
+The `createEditorHost` function accepts the following configuration options:
+
+| Option                    | Type    | Default | Description                        |
+| ------------------------- | ------- | ------- | ---------------------------------- |
+| `basePropertyPanel`       | boolean | false   | Enable base element property panel |
+| `baseCanvasPropertyPanel` | boolean | true    | Enable canvas property panel       |
+| `exportPlugin`            | boolean | true    | Enable export plugin               |
+| `previewPlugin`           | boolean | true    | Enable preview plugin              |
+| `importPlugin`            | boolean | true    | Enable import plugin               |
+
+---
+
+
 ## 📖 Project Overview
 
 **vkedit** is a plugin-based graphic editor library built on Vue 3 and Konva.js. It provides a complete set of graphic editing features, including support for multiple graphic elements, a plugin system architecture, undo/redo mechanisms, and import/export functionality.
@@ -378,93 +485,6 @@ vkedit/
 ├── tsconfig.json
 └── README.md
 ```
-
----
-
-## 🚀 Installation and Usage
-
-### Environment Requirements
-
-- **Node.js**: ^20.19.0 || >=22.12.0
-- **Package Manager**: pnpm 10.19.0+
-
-### Installation
-
-```bash
-# Using npm
-npm install vkedit vue konva vue-konva pinia
-
-# Using pnpm
-pnpm add vkedit vue konva vue-konva pinia
-
-# Using yarn
-yarn add vkedit vue konva vue-konva pinia
-```
-
-### Basic Usage Example
-
-```vue
-<template>
-  <Vkedit
-    :host="host"
-    :show-toolbox="true"
-    :show-property-panel="true"
-    :show-toolbar="true"
-  />
-</template>
-
-<script setup lang="ts">
-import { createEditorHost, Vkedit } from 'vkedit'
-import { 
-  RectPlugin, 
-  TextPlugin, 
-  TablePlugin,
-  QrcodePlugin,
-  BarcodePlugin,
-  ChartPlugin,
-  LinePlugin
-} from 'vkedit'
-
-// Create editor host
-const host = createEditorHost({ 
-  basePropertyPanel: false,
-  baseCanvasPropertyPanel: true,
-  exportPlugin: true,
-  previewPlugin: true,
-  importPlugin: true
-})
-
-// Install graphic plugins
-host
-  .installPlugin('rect-plugin', RectPlugin)
-  .installPlugin('text-plugin', TextPlugin)
-  .installPlugin('table-plugin', TablePlugin)
-  .installPlugin('qr-plugin', QrcodePlugin)
-  .installPlugin('barcode-plugin', BarcodePlugin)
-  .installPlugin('chart-plugin', ChartPlugin)
-  .installPlugin('line-plugin', LinePlugin)
-
-// Set canvas dimensions (A4 paper)
-host.setStatus({
-  dpm: 8,          // Dots per millimeter (DPI / 25.4)
-  width: 210 * 8,  // A4 width 210mm
-  height: 297 * 8, // A4 height 297mm
-  zoom: 0.4        // Zoom level
-})
-</script>
-```
-
-### Optional Configuration
-
-The `createEditorHost` function accepts the following configuration options:
-
-| Option                    | Type    | Default | Description                        |
-| ------------------------- | ------- | ------- | ---------------------------------- |
-| `basePropertyPanel`       | boolean | false   | Enable base element property panel |
-| `baseCanvasPropertyPanel` | boolean | true    | Enable canvas property panel       |
-| `exportPlugin`            | boolean | true    | Enable export plugin               |
-| `previewPlugin`           | boolean | true    | Enable preview plugin              |
-| `importPlugin`            | boolean | true    | Enable import plugin               |
 
 ---
 
@@ -907,7 +927,7 @@ host.executeCommand(batchCommand)
 
 ```bash
 # Clone repository
-git clone https://github.com/your-org/vkedit.git
+git clone https://github.com/pwg-code/vkedit.git
 cd vkedit
 
 # Install dependencies (recommended pnpm)
@@ -1130,7 +1150,7 @@ chore: build/tool changes
 - Undo/Redo mechanism
 
 ### Version History
-For detailed version history, see [GitHub Releases](https://github.com/your-org/vkedit/releases)
+For detailed version history, see [GitHub Releases](https://github.com/pwg-code/vkedit/releases)
 
 ---
 

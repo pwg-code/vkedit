@@ -30,11 +30,116 @@
 
 vkedit 特别适用于**标签模板设计**、**二维码设计**、**条码设计**、**票据设计**、**名片设计**、**证书设计**等多种图形设计场景，为开发者提供强大的可视化设计能力。
 
-- **当前版本**: 2.8.5
 - **许可证**: MIT
 - **Node.js 要求**: ^20.19.0 || >=22.12.0
 
 ---
+
+## 🚀 安装与使用
+
+### 环境要求
+
+- **Node.js**: ^20.19.0 || >=22.12.0
+- **包管理器**: pnpm 10.19.0+
+
+### 安装
+
+```bash
+# 使用 npm
+npm install vkedit vue konva vue-konva pinia
+
+# 使用 pnpm
+pnpm add vkedit vue konva vue-konva pinia
+
+# 使用 yarn
+yarn add vkedit vue konva vue-konva pinia
+```
+
+### 入口文件示例（main.ts）
+
+在项目入口文件 `main.ts` 中，需要正确配置 Vue 应用、Pinia 状态管理和 VueKonva：
+
+```typescript
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+import VueKonva from 'vue-konva'
+import 'vkedit/dist/vkedit.css' // 导入 vkedit 样式
+
+const app = createApp(App)
+
+app.use(createPinia())
+app.use(VueKonva)
+app.mount('#app')
+```
+
+### 基础使用示例
+
+```vue
+<template>
+  <Vkedit
+    :host="host"
+    :show-toolbox="true"
+    :show-property-panel="true"
+    :show-toolbar="true"
+  />
+</template>
+
+<script setup lang="ts">
+import { createEditorHost, Vkedit } from 'vkedit'
+import { 
+  RectPlugin, 
+  TextPlugin, 
+  TablePlugin,
+  QrcodePlugin,
+  BarcodePlugin,
+  ChartPlugin,
+  LinePlugin
+} from 'vkedit'
+
+// 创建编辑器宿主
+const host = createEditorHost({ 
+  basePropertyPanel: false,
+  baseCanvasPropertyPanel: true,
+  exportPlugin: true,
+  previewPlugin: true,
+  importPlugin: true
+})
+
+// 安装图形插件
+host
+  .installPlugin('rect-plugin', RectPlugin)
+  .installPlugin('text-plugin', TextPlugin)
+  .installPlugin('table-plugin', TablePlugin)
+  .installPlugin('qr-plugin', QrcodePlugin)
+  .installPlugin('barcode-plugin', BarcodePlugin)
+  .installPlugin('chart-plugin', ChartPlugin)
+  .installPlugin('line-plugin', LinePlugin)
+
+// 设置画布尺寸（A4 纸张）
+host.setStatus({
+  dpm: 8,          // 每毫米点数 (DPI / 25.4)
+  width: 210 * 8,  // A4 宽度 210mm
+  height: 297 * 8, // A4 高度 297mm
+  zoom: 0.4        // 缩放级别
+})
+</script>
+```
+
+### 可选配置说明
+
+`createEditorHost` 函数接受以下配置选项：
+
+| 选项                      | 类型    | 默认值 | 说明                     |
+| ------------------------- | ------- | ------ | ------------------------ |
+| `basePropertyPanel`       | boolean | false  | 是否启用基础元素属性面板 |
+| `baseCanvasPropertyPanel` | boolean | true   | 是否启用画布属性面板     |
+| `exportPlugin`            | boolean | true   | 是否启用导出插件         |
+| `previewPlugin`           | boolean | true   | 是否启用预览插件         |
+| `importPlugin`            | boolean | true   | 是否启用导入插件         |
+
+---
+
 
 ## ✨ 核心特性
 
@@ -378,93 +483,6 @@ vkedit/
 ├── tsconfig.json
 └── README.md
 ```
-
----
-
-## 🚀 安装与使用
-
-### 环境要求
-
-- **Node.js**: ^20.19.0 || >=22.12.0
-- **包管理器**: pnpm 10.19.0+
-
-### 安装
-
-```bash
-# 使用 npm
-npm install vkedit vue konva vue-konva pinia
-
-# 使用 pnpm
-pnpm add vkedit vue konva vue-konva pinia
-
-# 使用 yarn
-yarn add vkedit vue konva vue-konva pinia
-```
-
-### 基础使用示例
-
-```vue
-<template>
-  <Vkedit
-    :host="host"
-    :show-toolbox="true"
-    :show-property-panel="true"
-    :show-toolbar="true"
-  />
-</template>
-
-<script setup lang="ts">
-import { createEditorHost, Vkedit } from 'vkedit'
-import { 
-  RectPlugin, 
-  TextPlugin, 
-  TablePlugin,
-  QrcodePlugin,
-  BarcodePlugin,
-  ChartPlugin,
-  LinePlugin
-} from 'vkedit'
-
-// 创建编辑器宿主
-const host = createEditorHost({ 
-  basePropertyPanel: false,
-  baseCanvasPropertyPanel: true,
-  exportPlugin: true,
-  previewPlugin: true,
-  importPlugin: true
-})
-
-// 安装图形插件
-host
-  .installPlugin('rect-plugin', RectPlugin)
-  .installPlugin('text-plugin', TextPlugin)
-  .installPlugin('table-plugin', TablePlugin)
-  .installPlugin('qr-plugin', QrcodePlugin)
-  .installPlugin('barcode-plugin', BarcodePlugin)
-  .installPlugin('chart-plugin', ChartPlugin)
-  .installPlugin('line-plugin', LinePlugin)
-
-// 设置画布尺寸（A4 纸张）
-host.setStatus({
-  dpm: 8,          // 每毫米点数 (DPI / 25.4)
-  width: 210 * 8,  // A4 宽度 210mm
-  height: 297 * 8, // A4 高度 297mm
-  zoom: 0.4        // 缩放级别
-})
-</script>
-```
-
-### 可选配置说明
-
-`createEditorHost` 函数接受以下配置选项：
-
-| 选项                      | 类型    | 默认值 | 说明                     |
-| ------------------------- | ------- | ------ | ------------------------ |
-| `basePropertyPanel`       | boolean | false  | 是否启用基础元素属性面板 |
-| `baseCanvasPropertyPanel` | boolean | true   | 是否启用画布属性面板     |
-| `exportPlugin`            | boolean | true   | 是否启用导出插件         |
-| `previewPlugin`           | boolean | true   | 是否启用预览插件         |
-| `importPlugin`            | boolean | true   | 是否启用导入插件         |
 
 ---
 
@@ -907,7 +925,7 @@ host.executeCommand(batchCommand)
 
 ```bash
 # 克隆仓库
-git clone https://github.com/your-org/vkedit.git
+git clone https://github.com/pwg-code/vkedit.git
 cd vkedit
 
 # 安装依赖（推荐使用 pnpm）
@@ -1130,7 +1148,7 @@ chore: 构建/工具变动
 - 撤销/重做机制
 
 ### 版本历史
-详细版本历史请查看 [GitHub Releases](https://github.com/your-org/vkedit/releases)
+详细版本历史请查看 [GitHub Releases](https://github.com/pwg-code/vkedit/releases)
 
 ---
 
