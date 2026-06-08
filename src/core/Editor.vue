@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen flex flex-col overflow-hidden bg-card">
+  <div class="h-screen flex flex-col overflow-hidden bg-white">
     <!-- 顶部工具栏 -->
-    <header v-if="showToolbar" class="h-16 w-full border-b border-border">
+    <header v-if="showToolbar" class="h-16 w-full border-b border-neutral-200">
       <Toolbar :host="host">
         <template #left>
           <slot name="toolbar-left" :host="host"></slot>
@@ -20,9 +20,9 @@
       <!-- 左侧菜单栏 -->
       <div
         v-if="showToolbox"
-        class="basis-2/12 min-w-40 flex-none border-r border-border overflow-auto"
+        class="basis-2/12 min-w-40 flex-none border-r border-neutral-200 overflow-auto"
       >
-        <div class="text-center py-2 border-b border-border">添加图形</div>
+        <div class="text-center py-2 border-b border-neutral-200">添加图形</div>
         <Toolbox :host="host">
           <template #toolbox>
             <slot name="toolbox" :host="host"></slot>
@@ -38,7 +38,7 @@
       <!-- 右侧属性栏 -->
       <div
         v-if="showPropertyPanel"
-        class="basis-3/12 min-w-44 flex-none border-l border-border p-4 bg-card overflow-auto"
+        class="basis-3/12 min-w-44 flex-none border-l border-neutral-200 p-4 bg-white overflow-auto"
       >
         <PropertyPanel :host="host">
           <template #property-panel>

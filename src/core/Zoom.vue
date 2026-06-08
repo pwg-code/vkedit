@@ -7,15 +7,15 @@
       left: width - 220 + 'px',
     }"
   >
-    <button class="hover:bg-background rounded-xl active:bg-secondary p-2" @click="handleZoomOut()">
+    <button class="hover:bg-white rounded-xl active:bg-neutral-100 p-2" @click="handleZoomOut()">
       <Icon icon="material-symbols-light:zoom-out" :width="30"></Icon>
     </button>
     <div class="w-10 flex-1 text-center">{{ zoom.toFixed(2) }}</div>
-    <button class="hover:bg-background rounded-xl active:bg-secondary p-2" @click="handleZoomIn()">
+    <button class="hover:bg-white rounded-xl active:bg-neutral-100 p-2" @click="handleZoomIn()">
       <Icon icon="material-symbols-light:zoom-in-rounded" :width="30"></Icon>
     </button>
     <button
-      class="hover:bg-background rounded-xl active:bg-secondary p-2"
+      class="hover:bg-white rounded-xl active:bg-neutral-100 p-2"
       @click="handleZoomAutoWithScroll()"
     >
       <Icon icon="material-symbols-light:zoom-out-map" :width="30"></Icon>
