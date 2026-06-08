@@ -960,7 +960,7 @@ pnpm build
 | `pnpm type-check` | TypeScript type check      |
 | `pnpm lint`       | ESLint check and auto-fix  |
 | `pnpm format`     | Prettier format code       |
-| `pnpm build:css`  | Build CSS files            |
+| `pnpm build:css`  | Build CSS only (equivalent to build-only) |
 
 ### Developing Custom Plugins
 

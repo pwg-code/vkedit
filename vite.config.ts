@@ -3,16 +3,12 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import dts from 'vite-plugin-dts'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
   plugins: [
     vue(),
     tailwindcss(),
     dts({ tsconfigPath: './tsconfig.build.json' }), // 自动生成 .d.ts
-    viteStaticCopy({
-      targets: [{ src: 'src/styles', dest: '.' }], // 拷到 dist/styles
-    }),
   ],
   resolve: {
     alias: {

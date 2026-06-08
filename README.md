@@ -958,7 +958,7 @@ pnpm build
 | `pnpm type-check` | TypeScript 类型检查      |
 | `pnpm lint`       | ESLint 检查并自动修复    |
 | `pnpm format`     | Prettier 格式化代码      |
-| `pnpm build:css`  | 构建 CSS 文件            |
+| `pnpm build:css`  | 仅构建 CSS（等价于 build-only） |
 
 ### 开发自定义插件
 
