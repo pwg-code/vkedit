@@ -1,9 +1,9 @@
 <template>
-  <Button v-bind="$attrs" variant="outline" @click="handleClick">文本</Button>
+  <VkButton v-bind="$attrs" variant="outline" @click="handleClick">文本</VkButton>
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+import { VkButton } from '@/components/ui'
 import { AddElementCommand } from '@/commands'
 import { TextElement } from './text'
 

@@ -1,19 +1,19 @@
 <template>
   <div>
-    <ButtonGroup>
-      <Button variant="ghost" @click="handleAlign('left')" title="左对齐">
+    <div class="vkedit-btn-group">
+      <VkButton variant="ghost" @click="handleAlign('left')" title="左对齐">
         <Icon icon="material-symbols-light:align-horizontal-left" width="25px" />
-      </Button>
-      <Button variant="ghost" @click="handleAlign('right')" title="右对齐">
+      </VkButton>
+      <VkButton variant="ghost" @click="handleAlign('right')" title="右对齐">
         <Icon icon="material-symbols-light:align-horizontal-right" width="25px" />
-      </Button>
-      <Button variant="ghost" @click="handleAlign('top')" title="上对齐">
+      </VkButton>
+      <VkButton variant="ghost" @click="handleAlign('top')" title="上对齐">
         <Icon icon="material-symbols-light:align-vertical-top" width="25px" />
-      </Button>
-      <Button variant="ghost" @click="handleAlign('bottom')" title="下对齐">
+      </VkButton>
+      <VkButton variant="ghost" @click="handleAlign('bottom')" title="下对齐">
         <Icon icon="material-symbols-light:align-vertical-bottom" width="25px" />
-      </Button>
-    </ButtonGroup>
+      </VkButton>
+    </div>
   </div>
 </template>
 
@@ -22,9 +22,7 @@ import type { EditorHost } from '@/core'
 import type { SelectionPlugin } from '../selection'
 import { AlignElementsCommand } from '@/commands'
 import { Icon } from '@iconify/vue'
-import { ButtonGroup } from '@/components/ui/button-group'
-
-import { Button } from '@/components/ui/button'
+import { VkButton } from '@/components/ui'
 
 const { host } = defineProps<{ host: EditorHost }>()
 

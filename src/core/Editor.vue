@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen flex flex-col overflow-hidden bg-white">
+  <div class="vkedit-editor">
     <!-- 顶部工具栏 -->
-    <header v-if="showToolbar" class="h-16 w-full border-b border-neutral-200">
+    <header v-if="showToolbar" class="vkedit-toolbar">
       <Toolbar :host="host">
         <template #left>
           <slot name="toolbar-left" :host="host"></slot>
@@ -16,13 +16,13 @@
     </header>
 
     <!-- 中间主区域 -->
-    <main class="flex flex-auto min-h-0 w-full">
+    <main class="vkedit-editor__main">
       <!-- 左侧菜单栏 -->
       <div
         v-if="showToolbox"
-        class="basis-2/12 min-w-40 flex-none border-r border-neutral-200 overflow-auto"
+        class="vkedit-toolbox"
       >
-        <div class="text-center py-2 border-b border-neutral-200">添加图形</div>
+        <div class="vkedit-toolbox__title">添加图形</div>
         <Toolbox :host="host">
           <template #toolbox>
             <slot name="toolbox" :host="host"></slot>
@@ -31,14 +31,14 @@
       </div>
 
       <!-- 中间内容区（可滚动） -->
-      <div class="basis-7/12 flex-auto flex relative overflow-hidden">
+      <div class="vkedit-stage-view">
         <StageView :host="host" :key="stageKey" />
       </div>
 
       <!-- 右侧属性栏 -->
       <div
         v-if="showPropertyPanel"
-        class="basis-3/12 min-w-44 flex-none border-l border-neutral-200 p-4 bg-white overflow-auto"
+        class="vkedit-property-panel"
       >
         <PropertyPanel :host="host">
           <template #property-panel>

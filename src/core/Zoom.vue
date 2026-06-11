@@ -1,21 +1,21 @@
 <template>
   <!-- 放大缩小按钮 -->
   <div
-    class="flex items-center absolute"
+    class="vkedit-zoom"
     :style="{
       top: height - 80 + 'px',
       left: width - 220 + 'px',
     }"
   >
-    <button class="hover:bg-white rounded-xl active:bg-neutral-100 p-2" @click="handleZoomOut()">
+    <button class="vkedit-zoom__btn" @click="handleZoomOut()">
       <Icon icon="material-symbols-light:zoom-out" :width="30"></Icon>
     </button>
-    <div class="w-10 flex-1 text-center">{{ zoom.toFixed(2) }}</div>
-    <button class="hover:bg-white rounded-xl active:bg-neutral-100 p-2" @click="handleZoomIn()">
+    <div class="vkedit-zoom__value">{{ zoom.toFixed(2) }}</div>
+    <button class="vkedit-zoom__btn" @click="handleZoomIn()">
       <Icon icon="material-symbols-light:zoom-in-rounded" :width="30"></Icon>
     </button>
     <button
-      class="hover:bg-white rounded-xl active:bg-neutral-100 p-2"
+      class="vkedit-zoom__btn"
       @click="handleZoomAutoWithScroll()"
     >
       <Icon icon="material-symbols-light:zoom-out-map" :width="30"></Icon>

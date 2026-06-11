@@ -1,6 +1,6 @@
 <template>
-  <div class="col-span-full flex">
-    <div class="min-w-[150px]">
+  <div class="vkedit-property__col-full" style="display: flex">
+    <div style="min-width: 150px">
       <VkInputMM
         :model-value="fontSize"
         :min="0"
@@ -9,7 +9,7 @@
       ></VkInputMM>
     </div>
     <VkToggle
-      :model-value="fontStyle?.includes('bold')"
+      :model-value="fontStyle?.includes('bold') ?? false"
       @update:model-value="
         (value: boolean) =>
           emit(
@@ -22,7 +22,7 @@
       <Icon icon="material-symbols-light:format-bold" style="width: 25px; height: 25px"></Icon>
     </VkToggle>
     <VkToggle
-      :model-value="fontStyle?.includes('italic')"
+      :model-value="fontStyle?.includes('italic') ?? false"
       @update:model-value="
         (value: boolean) =>
           emit(
@@ -35,7 +35,7 @@
       <Icon icon="material-symbols-light:format-italic" style="width: 25px; height: 25px"></Icon>
     </VkToggle>
   </div>
-  <div class="col-span-full flex">
+  <div class="vkedit-property__col-full" style="display: flex">
     <VkToggle :model-value="align == 'left'" @update:model-value="emit('update', 'align', 'left')"
       ><Icon
         icon="material-symbols-light:align-justify-flex-start"
@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { VkTextarea, VkToggle, VkLabel, VkInputMM } from '@/components/ui'
+import { VkToggle, VkLabel, VkInputMM } from '@/components/ui'
 import { Icon } from '@iconify/vue'
 import { useHostState } from '@/hooks'
 import type { EditorHost } from '@/core'

@@ -1,5 +1,5 @@
 <template>
-  <div class="text-xl font-bold py-2">文本属性</div>
+  <div class="vkedit-property__title">文本属性</div>
   <TextProperty
     :font-size="element.fontSize"
     :align="element.align"

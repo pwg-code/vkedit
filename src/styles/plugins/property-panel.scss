@@ -1,0 +1,27 @@
+// ====== plugins/property-panel.scss ======
+
+.vkedit-property {
+  &__title {
+    font-size: var(--vkedit-font-size-xl);
+    font-weight: var(--vkedit-font-weight-bold);
+    padding-bottom: var(--vkedit-spacing-sm);
+  }
+
+  &__label {
+    font-size: var(--vkedit-font-size-sm);
+    color: var(--vkedit-color-gray-600);
+    display: block;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--vkedit-spacing-md);
+    align-items: center;
+    padding: var(--vkedit-spacing-sm) 0;
+  }
+
+  &__col-full {
+    grid-column: 1 / -1;
+  }
+}

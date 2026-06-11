@@ -1,35 +1,35 @@
 <template>
-  <div class="col-span-full">图表属性</div>
-  <div class="col-span-full space-y-3">
+  <div class="vkedit-property__col-full">图表属性</div>
+  <div class="vkedit-property__col-full">
     <div>
-      <label class="block text-sm text-gray-600">宽度(mm)</label>
+      <label class="vkedit-property__label">宽度(mm)</label>
       <input
         type="number"
-        class="w-full border rounded px-2 py-1"
+        class="vkedit-chart__input"
         v-model.number="widthMm"
         @change="onSizeChange"
       />
     </div>
 
     <div>
-      <label class="block text-sm text-gray-600">高度(mm)</label>
+      <label class="vkedit-property__label">高度(mm)</label>
       <input
         type="number"
-        class="w-full border rounded px-2 py-1"
+        class="vkedit-chart__input"
         v-model.number="heightMm"
         @change="onSizeChange"
       />
     </div>
 
     <div>
-      <label class="block text-sm text-gray-600">图表选项(JSON)</label>
+      <label class="vkedit-property__label">图表选项(JSON)</label>
       <textarea
-        class="w-full border rounded px-2 py-1 font-mono text-xs h-48"
+        class="vkedit-chart__textarea"
         rows="3"
         v-model="chartOptionsJson"
         @change="onOptionsChange"
       ></textarea>
-      <p v-if="optionsError" class="text-red-500 text-xs mt-1">{{ optionsError }}</p>
+      <p v-if="optionsError" class="vkedit-chart__error">{{ optionsError }}</p>
     </div>
   </div>
 </template>

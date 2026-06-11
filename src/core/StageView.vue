@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex-1 w-full bg-gray-200 relative"
+    class="vkedit-stage-view"
     tabindex="0"
     ref="stageWrapperRef"
     @keydown="handleKeyDown"

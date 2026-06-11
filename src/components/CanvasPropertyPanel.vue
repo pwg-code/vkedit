@@ -1,26 +1,20 @@
 <template>
-  <div class="text-xl font-bold pb-2">画布属性</div>
+  <div class="vkedit-property__title">画布属性</div>
   <div></div>
   <div class="">纸张设置</div>
   <div></div>
-  <div class="col-span-full">
-    <Label>dpm(点/毫米)</Label>
-    <VkNumberField
+  <div class="vkedit-property__col-full">
+    <VkLabel>dpm(点/毫米)</VkLabel>
+    <VkInputNumber
       :model-value="hostState.dpm"
       @update:model-value="(value) => host.setStatus({ dpm: value })"
       :min="1"
       :step="0.01"
       :max="24"
-    >
-      <VkNumberFieldContent>
-        <VkNumberFieldDecrement slot="decrement" />
-        <VkNumberFieldInput slot="input" />
-        <VkNumberFieldIncrement slot="increment" />
-      </VkNumberFieldContent>
-    </VkNumberField>
+    />
   </div>
   <div>
-    <Label>宽度</Label>
+    <VkLabel>宽度</VkLabel>
     <VkInputMM
       :model-value="hostState.width"
       @update:model-value="
@@ -32,7 +26,7 @@
     ></VkInputMM>
   </div>
   <div>
-    <Label>高度</Label>
+    <VkLabel>高度</VkLabel>
     <VkInputMM
       :model-value="hostState.height"
       @update:model-value="
@@ -48,16 +42,8 @@
 <script setup lang="ts">
 import type { BaseGraphicElement } from '@/types'
 import type { EditorHost } from '@/core'
-import { ref, watch, computed } from 'vue'
-import { Label } from '@/components/ui/label'
-import {
-  VkInputMM,
-  VkNumberFieldInput,
-  VkNumberField,
-  VkNumberFieldDecrement,
-  VkNumberFieldIncrement,
-  VkNumberFieldContent,
-} from '@/components/ui'
+import { computed } from 'vue'
+import { VkLabel, VkInputMM, VkInputNumber } from '@/components/ui'
 
 interface Props {
   host: EditorHost

@@ -1,9 +1,9 @@
 <template>
-  <Button v-bind="$attrs" variant="outline" @click="handleClick">二维码</Button>
+  <VkButton v-bind="$attrs" variant="outline" @click="handleClick">二维码</VkButton>
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+import { VkButton } from '@/components/ui'
 import { AddElementCommand } from '@/commands'
 import { QrcodeElement } from './qrcode'
 

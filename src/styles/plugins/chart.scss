@@ -1,0 +1,40 @@
+// ====== plugins/chart.scss ======
+
+.vkedit-chart {
+  &__field {
+    width: 100%;
+    border: 1px solid var(--vkedit-color-border);
+    border-radius: var(--vkedit-radius-md);
+    padding: 0 var(--vkedit-spacing-sm);
+  }
+
+  &__input {
+    width: 100%;
+    border: 1px solid var(--vkedit-color-border);
+    border-radius: var(--vkedit-radius-md);
+    padding: 0 var(--vkedit-spacing-sm);
+    height: 36px;
+  }
+
+  &__textarea {
+    width: 100%;
+    border: 1px solid var(--vkedit-color-border);
+    border-radius: var(--vkedit-radius-md);
+    padding: var(--vkedit-spacing-xs) var(--vkedit-spacing-sm);
+    font-family: var(--vkedit-font-mono);
+    font-size: var(--vkedit-font-size-xs);
+    height: 192px;
+    resize: vertical;
+  }
+
+  &__error {
+    color: var(--vkedit-color-red-500);
+    font-size: var(--vkedit-font-size-xs);
+    margin-top: 4px;
+  }
+
+  &__section {
+    padding-top: var(--vkedit-spacing-md);
+    font-weight: var(--vkedit-font-weight-bold);
+  }
+}

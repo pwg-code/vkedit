@@ -1,0 +1,30 @@
+// ====== src/styles/index.scss ======
+// VKEdit 样式总入口
+
+@use 'variables.scss';
+@use 'reset.scss';
+@use 'animations.scss';
+
+// 核心布局（Task 10 会取消注释）
+@use 'core/editor.scss';
+@use 'core/toolbar.scss';
+@use 'core/toolbox.scss';
+@use 'core/stage-view.scss';
+@use 'core/zoom.scss';
+@use 'core/context-menu.scss';
+@use 'core/property-panel.scss' as core-property-panel;
+
+// UI 组件（Task 03 会取消注释）
+@use 'ui/button.scss';
+@use 'ui/toggle.scss';
+@use 'ui/input.scss';
+@use 'ui/label.scss';
+@use 'ui/select.scss';
+@use 'ui/switch.scss';
+@use 'ui/input-mm.scss';
+@use 'ui/dropdown.scss';
+@use 'ui/button-group.scss';
+
+// 插件面板
+@use 'plugins/property-panel.scss' as plugins-property-panel;
+@use 'plugins/chart.scss';

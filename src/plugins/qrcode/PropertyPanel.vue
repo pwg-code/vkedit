@@ -1,6 +1,6 @@
 <template>
-  <div class="col-span-full">二维码属性</div>
-  <div class="col-span-full">
+  <div class="vkedit-property__col-full">二维码属性</div>
+  <div class="vkedit-property__col-full">
     <VkLabel>内容</VkLabel>
     <VkInput :model-value="element.content" @update:model-value="onContentChange"> </VkInput>
   </div>

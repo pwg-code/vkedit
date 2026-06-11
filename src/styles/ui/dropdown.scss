@@ -1,0 +1,74 @@
+// ====== ui/dropdown.scss ======
+
+.vkedit-dropdown {
+  position: relative;
+  display: inline-block;
+
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 40;
+  }
+
+  &__content {
+    position: fixed;
+    z-index: 50;
+    min-width: 160px;
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: var(--vkedit-radius-md);
+    border: 1px solid var(--vkedit-color-border);
+    background: var(--vkedit-color-white);
+    padding: 4px;
+    box-shadow: var(--vkedit-shadow-md);
+  }
+
+  &__label {
+    padding: 4px 8px;
+    font-size: var(--vkedit-font-size-sm);
+    font-weight: var(--vkedit-font-weight-medium);
+  }
+
+  &__sep {
+    height: 1px;
+    margin: 4px 0;
+    background: var(--vkedit-color-neutral-200);
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: var(--vkedit-spacing-sm);
+    width: 100%;
+    padding: 4px 8px;
+    border: none;
+    border-radius: var(--vkedit-radius-sm);
+    background: transparent;
+    font-size: var(--vkedit-font-size-sm);
+    cursor: pointer;
+    text-align: left;
+
+    &:hover {
+      background: var(--vkedit-color-neutral-100);
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// 下拉展开/关闭动画（配合 Vue transition）
+.vkedit-scale-enter-active {
+  animation: vkedit-scale-in 150ms ease-out;
+}
+
+.vkedit-scale-leave-active {
+  animation: vkedit-scale-out 150ms ease-in;
+}

@@ -1,0 +1,26 @@
+// ====== src/styles/reset.scss ======
+// 局部 reset，仅对 .vkedit-editor 容器生效
+// 使用 :where() 保持零特异性
+
+.vkedit-editor :where(*, *::before, *::after) {
+  box-sizing: border-box;
+}
+
+.vkedit-editor :where(h1, h2, h3, h4, h5, h6) {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.vkedit-editor :where(button, input, select, textarea) {
+  font: inherit;
+  color: inherit;
+}
+
+.vkedit-editor :where(ol, ul, menu) {
+  list-style: none;
+}
+
+.vkedit-editor :where(img, svg, video, canvas) {
+  display: block;
+  vertical-align: middle;
+}

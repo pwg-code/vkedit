@@ -1,0 +1,26 @@
+.vkedit-context-menu {
+  position: absolute;
+  z-index: 50;
+  min-width: 160px;
+  border-radius: var(--vkedit-radius-md);
+  border: 1px solid var(--vkedit-color-border);
+  background: var(--vkedit-color-white);
+  padding: 4px;
+  box-shadow: var(--vkedit-shadow-md);
+
+  &__item {
+    display: block;
+    width: 100%;
+    padding: 4px 8px;
+    border: none;
+    border-radius: var(--vkedit-radius-sm);
+    background: transparent;
+    font-size: var(--vkedit-font-size-sm);
+    cursor: pointer;
+    text-align: left;
+
+    &:hover {
+      background: var(--vkedit-color-neutral-100);
+    }
+  }
+}

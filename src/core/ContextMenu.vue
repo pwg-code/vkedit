@@ -2,7 +2,7 @@
   <!-- 上下文菜单  根据右键鼠标位置显示 -->
   <div
     v-if="isShow && contextMenus.length > 0"
-    class="grid grid-cols-1 items-center absolute rounded shadow-lg border border-neutral-200 bg-white w-[120px]"
+    class="vkedit-context-menu"
     :style="{
       top: position.y + 'px',
       left: position.x + 'px',

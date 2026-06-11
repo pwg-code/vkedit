@@ -1,4 +1,4 @@
-import '@/styles/index.css'
+import '@/styles/index.scss'
 export * from './commands'
 export * from './components'
 export * from './core'

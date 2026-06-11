@@ -1,0 +1,37 @@
+.vkedit-zoom {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: var(--vkedit-spacing-sm);
+  background: var(--vkedit-color-white);
+  border: 1px solid var(--vkedit-color-border);
+  border-radius: var(--vkedit-radius-md);
+  padding: 4px;
+  box-shadow: var(--vkedit-shadow-sm);
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: var(--vkedit-radius-sm);
+    cursor: pointer;
+    font-size: var(--vkedit-font-size-lg);
+
+    &:hover {
+      background: var(--vkedit-color-neutral-100);
+    }
+  }
+
+  &__value {
+    font-size: var(--vkedit-font-size-xs);
+    font-weight: var(--vkedit-font-weight-medium);
+    min-width: 48px;
+    text-align: center;
+  }
+}

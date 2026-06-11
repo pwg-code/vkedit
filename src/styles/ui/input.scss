@@ -1,0 +1,28 @@
+// ====== ui/input.scss ======
+
+.vkedit-input {
+  display: flex;
+  height: 36px;
+  width: 100%;
+  border-radius: var(--vkedit-radius-md);
+  border: 1px solid var(--vkedit-color-border);
+  background: transparent;
+  padding: 0 var(--vkedit-spacing-sm);
+  font-size: var(--vkedit-font-size-sm);
+  box-shadow: var(--vkedit-shadow-sm);
+  transition: var(--vkedit-transition-colors);
+
+  &::placeholder {
+    color: var(--vkedit-color-neutral-500);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--vkedit-color-neutral-400);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}

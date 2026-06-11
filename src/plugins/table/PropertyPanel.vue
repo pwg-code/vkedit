@@ -1,45 +1,37 @@
 <template>
-  <div class="text-xl font-bold py-2">表格属性</div>
+  <div class="vkedit-property__title">表格属性</div>
   <div></div>
-  <NumberField
-    :model-value="element.rowsHeight.length"
-    :min="1"
-    @update:model-value="
-      (value) => {
-        if (typeof value === 'number') updateRows(value)
-      }
-    "
-  >
-    <Label>行数</Label>
-    <NumberFieldContent>
-      <NumberFieldDecrement />
-      <NumberFieldInput />
-      <NumberFieldIncrement />
-    </NumberFieldContent>
-  </NumberField>
+  <div>
+    <VkLabel>行数</VkLabel>
+    <VkInputNumber
+      :model-value="element.rowsHeight.length"
+      :min="1"
+      @update:model-value="
+        (value) => {
+          if (typeof value === 'number') updateRows(value)
+        }
+      "
+    />
+  </div>
 
-  <NumberField
-    :model-value="element.colsWidth.length"
-    :min="1"
-    @update:model-value="
-      (value) => {
-        if (typeof value === 'number') updateCols(value)
-      }
-    "
-  >
-    <Label>列数</Label>
-    <NumberFieldContent>
-      <NumberFieldDecrement />
-      <NumberFieldInput />
-      <NumberFieldIncrement />
-    </NumberFieldContent>
-  </NumberField>
-  <div class="pt-4 font-bold">
+  <div>
+    <VkLabel>列数</VkLabel>
+    <VkInputNumber
+      :model-value="element.colsWidth.length"
+      :min="1"
+      @update:model-value="
+        (value) => {
+          if (typeof value === 'number') updateCols(value)
+        }
+      "
+    />
+  </div>
+  <div class="vkedit-chart__section">
     单元格设置 ({{ element.activeRow + 1 }},{{ element.activeCol + 1 }})
   </div>
   <div></div>
   <div>
-    <Label>行高</Label>
+    <VkLabel>行高</VkLabel>
     <VkInputMM
       :model-value="element.rowsHeight[element.activeRow]"
       :dpm="hostState.dpm"
@@ -56,7 +48,7 @@
     ></VkInputMM>
   </div>
   <div>
-    <Label>列宽</Label>
+    <VkLabel>列宽</VkLabel>
     <VkInputMM
       :dpm="hostState.dpm"
       :model-value="element.colsWidth[element.activeCol]"
@@ -72,24 +64,16 @@
       "
     ></VkInputMM>
   </div>
-  <div class="flex gap-4 items-center">
-    <NumberField v-model="resizeRow">
-      <NumberFieldContent>
-        <NumberFieldInput />
-      </NumberFieldContent>
-    </NumberField>
-    <NumberField v-model="resizeCol">
-      <NumberFieldContent>
-        <NumberFieldInput />
-      </NumberFieldContent>
-    </NumberField>
+  <div style="display: flex; gap: 1rem; align-items: center">
+    <VkInputNumber v-model="resizeRow" />
+    <VkInputNumber v-model="resizeCol" />
     <VkButton size="xs" variant="outline" @click="mergeCell()">合并</VkButton>
   </div>
-  <div class="flex gap-4 items-center">
+  <div style="display: flex; gap: 1rem; align-items: center">
     <VkButton size="xs" variant="outline" @click="handleDissolve()">解除合并</VkButton>
   </div>
   <div></div>
-  <div class="col-span-full">
+  <div class="vkedit-property__col-full">
     <VkToggle
       :model-value="element.activeCell.borderUp"
       @update:model-value="(value: any) => updateActiveCellConfig('borderUp', value)"
@@ -98,7 +82,7 @@
     </VkToggle>
 
     <VkToggle
-      :model-value="element.offset(1, 0)?.borderUp"
+      :model-value="element.offset(1, 0)?.borderUp ?? false"
       @update:model-value="
         (value: any) =>
           updateCellConfig(element.activeRow + 1, element.activeCol, 'borderUp', value)
@@ -114,7 +98,7 @@
     </VkToggle>
 
     <VkToggle
-      :model-value="element.offset(0, 1)?.borderLeft"
+      :model-value="element.offset(0, 1)?.borderLeft ?? false"
       @update:model-value="
         (value: any) =>
           updateCellConfig(element.activeRow, element.activeCol + 1, 'borderLeft', value)
@@ -137,19 +121,11 @@
 <script setup lang="ts">
 import { type EditorHost } from '@/core'
 import type { CellConfig, TableElement } from './table'
-import { Label } from '@/components/ui/label'
-import { VkButton, VkInput, VkInputMM, VkTextarea, VkToggle } from '@/components/ui'
+import { VkLabel, VkButton, VkInput, VkInputMM, VkToggle, VkInputNumber } from '@/components/ui'
 import TextProperty from '@/components/TextProperty.vue'
-import {
-  NumberField,
-  NumberFieldContent,
-  NumberFieldDecrement,
-  NumberFieldIncrement,
-  NumberFieldInput,
-} from '@/components/ui/number-field'
 import { Icon } from '@iconify/vue'
 import { BatchCommand, UpdatePropertyCommand, type ICommand } from '@/commands'
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useHostState } from '@/hooks'
 
 interface Props {

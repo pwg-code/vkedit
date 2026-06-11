@@ -1,5 +1,5 @@
 <template>
-  <div class="p-5 grid grid-cols-1 xl:grid-cols-2 gap-4">
+  <div class="vkedit-toolbox">
     <template v-for="tool in graphicToolPlugin.getToolList()" :key="tool.type">
       <component :is="tool.render()" :host="host" :tool="tool"></component>
       <slot name="toolbox" :host="host"></slot>

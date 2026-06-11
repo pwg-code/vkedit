@@ -1,19 +1,19 @@
 <template>
   <div class="flex h-full items-center justify-center m-auto">
     <!-- 文件操作 -->
-    <div class="w-[200px] flex items-center">
+    <div class="vkedit-toolbar__left">
       <slot name="left" :host="host"></slot>
     </div>
 
     <!-- 撤销重做 -->
-    <div class="flex-1 flex gap-2 items-center">
+    <div class="vkedit-toolbar__center">
       <div>
-        <Button text title="撤销" @click="handleUndo" :disabled="!canUndo" variant="ghost"
+        <VkButton text title="撤销" @click="handleUndo" :disabled="!canUndo" variant="ghost"
           ><Icon icon="material-symbols-light:undo" width="25px"></Icon
-        ></Button>
-        <Button text title="重做" @click="handleRedo" :disabled="!canRedo" variant="ghost"
+        ></VkButton>
+        <VkButton text title="重做" @click="handleRedo" :disabled="!canRedo" variant="ghost"
           ><Icon icon="material-symbols-light:redo" width="25px"></Icon
-        ></Button>
+        ></VkButton>
       </div>
       <template v-for="item in tools">
         <component :is="item.render()" :host="host"></component>
@@ -21,7 +21,7 @@
       <slot name="center" :host="host"></slot>
     </div>
 
-    <div class="w-[200px]">
+    <div class="vkedit-toolbar__right">
       <!-- <Button @click="handleLoadByJSON">加载</Button>
       <Button @click="handleSave">保存</Button> -->
       <slot name="right" :host="host"></slot>
@@ -33,7 +33,7 @@
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import type { IEditorState, ToolEventData } from '../types'
 import type { EditorHost } from '@/core'
-import { Button } from '@/components/ui/button'
+import { VkButton } from '@/components/ui'
 import { ToolbarManagerPlugin } from '@/plugins'
 import { Icon } from '@iconify/vue'
 

@@ -1,10 +1,10 @@
 <template>
-  <Button v-bind="$attrs" variant="outline" @click="handleClick">矩形</Button>
+  <VkButton v-bind="$attrs" variant="outline" @click="handleClick">矩形</VkButton>
 </template>
 
 <script setup lang="ts">
 import { AddElementCommand } from '@/commands'
-import { Button } from '@/components/ui/button'
+import { VkButton } from '@/components/ui'
 import type { EditorHost } from '@/core'
 import { RectElement } from './rect'
 // 接收host

@@ -1,0 +1,60 @@
+// ====== ui/input-mm.scss ======
+
+.vkedit-input-mm {
+  display: flex;
+  align-items: center;
+  gap: 0;
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    width: 36px;
+    border: 1px solid var(--vkedit-color-border);
+    background: transparent;
+    font-size: var(--vkedit-font-size-lg);
+    cursor: pointer;
+    user-select: none;
+
+    &:first-child {
+      border-radius: var(--vkedit-radius-md) 0 0 var(--vkedit-radius-md);
+      border-right: none;
+    }
+
+    &:last-child {
+      border-radius: 0 var(--vkedit-radius-md) var(--vkedit-radius-md) 0;
+      border-left: none;
+    }
+
+    &:hover {
+      background: var(--vkedit-color-neutral-100);
+    }
+  }
+
+  &__field {
+    flex: 1;
+  }
+
+  &__display,
+  &__input {
+    display: flex;
+    height: 36px;
+    width: 100%;
+    border: 1px solid var(--vkedit-color-border);
+    border-left: none;
+    border-right: none;
+    background: transparent;
+    padding: 0 var(--vkedit-spacing-sm);
+    font-size: var(--vkedit-font-size-sm);
+    text-align: center;
+    transition: var(--vkedit-transition-colors);
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 1px var(--vkedit-color-neutral-400);
+      position: relative;
+      z-index: 1;
+    }
+  }
+}

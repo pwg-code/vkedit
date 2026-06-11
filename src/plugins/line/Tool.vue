@@ -1,10 +1,10 @@
 <template>
-  <Button v-bind="$attrs" variant="outline" @click="handleClick">直线</Button>
+  <VkButton v-bind="$attrs" variant="outline" @click="handleClick">直线</VkButton>
 </template>
 
 <script setup lang="ts">
 import { AddElementCommand } from '@/commands'
-import { Button } from '@/components/ui/button'
+import { VkButton } from '@/components/ui'
 import type { EditorHost } from '@/core'
 import { LineElement } from './line'
 // 接收host
