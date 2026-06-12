@@ -1,14 +1,25 @@
 <template>
-  <VkButton v-bind="$attrs" variant="outline" @click="handleClick">二维码</VkButton>
+  <VkButton
+    v-bind="$attrs"
+    :variant="collapsed ? 'ghost' : 'outline'"
+    :size="collapsed ? 'icon' : 'default'"
+    :title="collapsed ? '二维码' : undefined"
+    @click="handleClick"
+  >
+    <Icon v-if="collapsed" icon="material-symbols-light:qr-code-2" width="18" />
+    <template v-else>二维码</template>
+  </VkButton>
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { VkButton } from '@/components/ui'
 import { AddElementCommand } from '@/commands'
 import { QrcodeElement } from './qrcode'
 
-const { host } = defineProps<{
+const { host, collapsed = false } = defineProps<{
   host: import('@/core').EditorHost
+  collapsed?: boolean
 }>()
 
 function handleClick() {

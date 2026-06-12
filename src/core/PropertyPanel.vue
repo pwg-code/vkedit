@@ -1,5 +1,5 @@
 <template>
-  <div class="vkedit-property-panel__content">
+  <div class="vkedit-floating-property-panel__content">
     <template v-for="item in panels">
       <component :is="item" :host="host" :selection="selectionElement" :element="element" />
     </template>
@@ -12,7 +12,10 @@ import { markRaw, onMounted, ref, type Component } from 'vue'
 import type { IGraphicElement } from '@/types'
 import type { PropertyPanelManagerPlugin } from '@/plugins/property-panel-manager/property-panel-manager'
 import type { EditorHost } from '@/core'
-const { host } = defineProps<{ host: EditorHost }>()
+const { host, collapsed = false } = defineProps<{
+  host: EditorHost
+  collapsed?: boolean
+}>()
 
 const propertyPanelsPlugin = host.getPlugin('property-panel-manager-plugin')
 const selectionElement = ref<IGraphicElement[]>([])
@@ -20,7 +23,6 @@ const element = ref<IGraphicElement>()
 
 const panels = ref<Component[]>()
 
-// 更新属性设置面板
 const updatePanels = (selection: IGraphicElement[]) => {
   selectionElement.value = selection
   if (selectionElement.value.length > 0) {
@@ -32,7 +34,6 @@ const updatePanels = (selection: IGraphicElement[]) => {
   } else {
     currentPanels = propertyPanelsPlugin.getCanvasPanels() || []
   }
-  // 使用markRaw 防止监控组件响应
   panels.value = currentPanels.map((p) => markRaw(p))
 }
 

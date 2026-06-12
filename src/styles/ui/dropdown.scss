@@ -10,33 +10,37 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 40;
+    z-index: 150;
   }
 
   &__content {
     position: fixed;
-    z-index: 50;
+    z-index: 160;
     min-width: 160px;
     max-height: 300px;
     overflow-x: hidden;
     overflow-y: auto;
-    border-radius: var(--vkedit-radius-md);
-    border: 1px solid var(--vkedit-color-border);
-    background: var(--vkedit-color-white);
+    border-radius: 8px;
+    border: 1px solid var(--vkedit-color-border-dark);
+    background: var(--vkedit-color-bg-dark);
+    backdrop-filter: var(--vkedit-blur-panel);
+    -webkit-backdrop-filter: var(--vkedit-blur-panel);
     padding: 4px;
-    box-shadow: var(--vkedit-shadow-md);
+    box-shadow: var(--vkedit-shadow-panel);
+    color: var(--vkedit-color-text-dark);
   }
 
   &__label {
     padding: 4px 8px;
     font-size: var(--vkedit-font-size-sm);
     font-weight: var(--vkedit-font-weight-medium);
+    color: var(--vkedit-color-text-dark-secondary);
   }
 
   &__sep {
     height: 1px;
     margin: 4px 0;
-    background: var(--vkedit-color-neutral-200);
+    background: var(--vkedit-color-border-dark);
   }
 
   &__item {
@@ -46,14 +50,15 @@
     width: 100%;
     padding: 4px 8px;
     border: none;
-    border-radius: var(--vkedit-radius-sm);
+    border-radius: 4px;
     background: transparent;
     font-size: var(--vkedit-font-size-sm);
     cursor: pointer;
     text-align: left;
+    color: var(--vkedit-color-text-dark);
 
     &:hover {
-      background: var(--vkedit-color-neutral-100);
+      background: var(--vkedit-color-bg-dark-hover);
     }
 
     svg {
@@ -71,4 +76,17 @@
 
 .vkedit-scale-leave-active {
   animation: vkedit-scale-out 150ms ease-in;
+}
+
+body:has(.vkedit-editor) .vkedit-dropdown__content {
+  background: var(--vkedit-color-bg-dark);
+  border-color: var(--vkedit-color-border-dark);
+  color: var(--vkedit-color-text-dark);
+}
+
+body:has(.vkedit-editor) .vkedit-dropdown__item {
+  color: var(--vkedit-color-text-dark);
+  &:hover {
+    background: var(--vkedit-color-bg-dark-hover);
+  }
 }

@@ -1,15 +1,26 @@
 <template>
-  <VkButton v-bind="$attrs" variant="outline" @click="handleClick">矩形</VkButton>
+  <VkButton
+    v-bind="$attrs"
+    :variant="collapsed ? 'ghost' : 'outline'"
+    :size="collapsed ? 'icon' : 'default'"
+    :title="collapsed ? '矩形' : undefined"
+    @click="handleClick"
+  >
+    <Icon v-if="collapsed" icon="material-symbols-light:rectangle" width="18" />
+    <template v-else>矩形</template>
+  </VkButton>
 </template>
 
 <script setup lang="ts">
 import { AddElementCommand } from '@/commands'
+import { Icon } from '@iconify/vue'
 import { VkButton } from '@/components/ui'
 import type { EditorHost } from '@/core'
 import { RectElement } from './rect'
 // 接收host
-const { host } = defineProps<{
+const { host, collapsed = false } = defineProps<{
   host: EditorHost
+  collapsed?: boolean
 }>()
 
 function handleClick() {

@@ -22,20 +22,20 @@
   --vkedit-color-gray-600: oklch(44.6% 0.03 256.802);
 
   // ---- 间距 ----
-  --vkedit-spacing-xs: 0.25rem;
-  --vkedit-spacing-sm: 0.5rem;
-  --vkedit-spacing-md: 1rem;
-  --vkedit-spacing-lg: 1.5rem;
+  --vkedit-spacing-xs: 0.125rem;
+  --vkedit-spacing-sm: 0.25rem;
+  --vkedit-spacing-md: 0.5rem;
+  --vkedit-spacing-lg: 0.75rem;
   --vkedit-spacing-xl: 2rem;
 
   // ---- 排版 ----
   --vkedit-font-sans: ui-sans-serif, system-ui, sans-serif;
   --vkedit-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --vkedit-font-size-xs: 0.75rem;
-  --vkedit-font-size-sm: 0.875rem;
-  --vkedit-font-size-base: 1rem;
-  --vkedit-font-size-lg: 1.125rem;
-  --vkedit-font-size-xl: 1.25rem;
+  --vkedit-font-size-xs: 0.6875rem;
+  --vkedit-font-size-sm: 0.75rem;
+  --vkedit-font-size-base: 0.8125rem;
+  --vkedit-font-size-lg: 0.875rem;
+  --vkedit-font-size-xl: 1rem;
   --vkedit-font-weight-medium: 500;
   --vkedit-font-weight-bold: 700;
 
@@ -53,6 +53,23 @@
 
   // ---- 边框 ----
   --vkedit-color-border: var(--vkedit-color-neutral-200);
+
+  // ---- 深色面板 ----
+  --vkedit-color-bg-dark: #1e1e1e;
+  --vkedit-color-bg-dark-hover: #2a2a2a;
+  --vkedit-color-bg-dark-active: #3a3a3a;
+  --vkedit-color-panel-bg: rgba(30, 30, 30, 0.92);
+  --vkedit-color-toolbar-bg: rgba(30, 30, 30, 0.65);
+  --vkedit-color-border-dark: rgba(255, 255, 255, 0.08);
+  --vkedit-color-border-dark-hover: rgba(255, 255, 255, 0.15);
+  --vkedit-color-text-dark: #e0e0e0;
+  --vkedit-color-text-dark-secondary: #999999;
+  --vkedit-color-canvas-area: #1a1a2e;
+  --vkedit-blur-panel: blur(12px);
+  --vkedit-shadow-panel: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --vkedit-toolbar-gap: 2px;
+  --vkedit-toolbar-divider-color: rgba(255, 255, 255, 0.12);
+  --vkedit-toolbar-top: 33px;
 
   // ---- 过渡 ----
   --vkedit-transition-colors: color, background-color, border-color, 150ms ease;

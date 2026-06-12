@@ -1,14 +1,169 @@
 .vkedit-editor {
+  position: relative;
+  width: 100%;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
-  background: var(--vkedit-color-white);
+  background: var(--vkedit-color-canvas-area);
 
-  &__main {
+  // ==================== 深色主题 UI 组件覆盖 ====================
+
+  // VkButton
+  .vkedit-btn--ghost {
+    color: var(--vkedit-color-text-dark);
+    &:hover {
+      background: var(--vkedit-color-bg-dark-hover);
+    }
+  }
+
+  .vkedit-btn--outline {
+    color: var(--vkedit-color-text-dark);
+    border-color: var(--vkedit-color-border-dark);
+    background: transparent;
+    &:hover {
+      background: var(--vkedit-color-bg-dark-hover);
+    }
+  }
+
+  .vkedit-btn--default {
+    background: var(--vkedit-color-bg-dark-hover);
+    color: var(--vkedit-color-white);
+    &:hover {
+      background: var(--vkedit-color-bg-dark-active);
+    }
+  }
+
+  .vkedit-btn--secondary {
+    background: var(--vkedit-color-bg-dark-hover);
+    color: var(--vkedit-color-text-dark);
+    &:hover {
+      background: var(--vkedit-color-bg-dark-active);
+    }
+  }
+
+  // VkInput / VkInputNumber
+  .vkedit-input {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: var(--vkedit-color-border-dark);
+    color: var(--vkedit-color-text-dark);
+    &::placeholder {
+      color: var(--vkedit-color-text-dark-secondary);
+    }
+    &:focus-visible {
+      box-shadow: 0 0 0 1px var(--vkedit-color-border-dark-hover);
+    }
+  }
+
+  // VkInputMM / VkInputNumberMM
+  .vkedit-input-mm {
+    &__btn {
+      background: var(--vkedit-color-bg-dark-hover);
+      border-color: var(--vkedit-color-border-dark);
+      color: var(--vkedit-color-text-dark);
+      &:hover {
+        background: var(--vkedit-color-bg-dark-active);
+      }
+    }
+    &__display,
+    &__input {
+      background: rgba(0, 0, 0, 0.2);
+      border-color: var(--vkedit-color-border-dark);
+      color: var(--vkedit-color-text-dark);
+    }
+  }
+
+  // VkLabel
+  .vkedit-label {
+    color: var(--vkedit-color-text-dark-secondary);
+  }
+
+  // VkSelect
+  .vkedit-select {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: var(--vkedit-color-border-dark);
+    color: var(--vkedit-color-text-dark);
+    &:focus-visible {
+      box-shadow: 0 0 0 1px var(--vkedit-color-border-dark-hover);
+    }
+  }
+
+  // VkDropdown
+  .vkedit-dropdown__content {
+    background: var(--vkedit-color-bg-dark);
+    border-color: var(--vkedit-color-border-dark);
+    color: var(--vkedit-color-text-dark);
+  }
+
+  .vkedit-dropdown__item {
+    color: var(--vkedit-color-text-dark);
+    &:hover {
+      background: var(--vkedit-color-bg-dark-hover);
+    }
+  }
+
+  // VkSwitch
+  .vkedit-switch {
+    background: var(--vkedit-color-bg-dark-hover);
+  }
+
+  // VkToggle
+  .vkedit-toggle {
+    color: var(--vkedit-color-text-dark);
+    &:hover {
+      background: var(--vkedit-color-bg-dark-hover);
+    }
+    &--on {
+      background: var(--vkedit-color-bg-dark-active);
+      color: var(--vkedit-color-white);
+    }
+  }
+
+  // ==================== 最小宽度警告 ====================
+  .vkedit-editor__minwidth-warning {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
     display: flex;
-    flex: 1 1 auto;
-    min-height: 0;
-    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background: var(--vkedit-color-canvas-area);
+    color: var(--vkedit-color-text-dark);
+    font-size: var(--vkedit-font-size-lg);
+    text-align: center;
+    padding: var(--vkedit-spacing-lg);
+
+    p {
+      max-width: 320px;
+      line-height: 1.6;
+    }
+  }
+
+  // ==================== 响应式断点 ====================
+  @media (max-width: 1023px) {
+    .vkedit-floating-toolbox,
+    .vkedit-floating-toolbox--collapsed {
+      width: 44px;
+      .vkedit-floating-toolbox__title {
+        display: none;
+      }
+    }
+    .vkedit-floating-property-panel,
+    .vkedit-floating-property-panel--collapsed {
+      width: 44px;
+    }
+
+    .vkedit-floating-toolbar {
+      padding: 0 4px;
+      font-size: var(--vkedit-font-size-xs);
+      gap: 0;
+
+      .vkedit-btn--ghost {
+        height: 28px;
+        padding: 0 4px;
+      }
+
+      .vkedit-toolbar__label {
+        display: none;
+      }
+    }
   }
 }

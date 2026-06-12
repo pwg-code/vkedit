@@ -115,7 +115,7 @@ export class BarcodeElement extends BaseGraphicElement {
       this.width = canvas.width
       this.height = canvas.height
     } catch (e) {
-      // eslint-disable-next-line no-console
+       
       console.error('JsBarcode render error', e)
     }
     return canvas

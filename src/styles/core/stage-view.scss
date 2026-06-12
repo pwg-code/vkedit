@@ -1,7 +1,8 @@
 .vkedit-stage-view {
-  flex: 1 1 58.333%;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  position: relative;
+  z-index: 1;
   overflow: hidden;
 }

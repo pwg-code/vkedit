@@ -102,7 +102,7 @@ export class TableElement extends BaseGraphicElement {
   // 计算x的位置
   public getCellX(col: number) {
     let x = 0
-    for (var i = 0; i < col; i++) {
+    for (let i = 0; i < col; i++) {
       x = x + this.colsWidth[i]
     }
     return x
@@ -111,7 +111,7 @@ export class TableElement extends BaseGraphicElement {
   // 计算y的位置
   public getCellY(row: number) {
     let y = 0
-    for (var i = 0; i < row; i++) {
+    for (let i = 0; i < row; i++) {
       y = y + this.rowsHeight[i]
     }
     return y
@@ -121,7 +121,7 @@ export class TableElement extends BaseGraphicElement {
   public getCellSize = (rowIndex: number, colIndex: number) => {
     let width = this.colsWidth[colIndex]
     let height = this.rowsHeight[rowIndex]
-    let cell = this.cells[rowIndex][colIndex]
+    const cell = this.cells[rowIndex][colIndex]
     // 如果右侧单元格是合并左 则加上其宽度
     let i = colIndex + 1
     while (i < this.colCount && this.cells[rowIndex][i].mergeLeft) {

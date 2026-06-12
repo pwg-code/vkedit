@@ -1,22 +1,38 @@
-.vkedit-toolbar {
-  height: 64px;
-  width: 100%;
-  border-bottom: 1px solid var(--vkedit-color-border);
+// ====== core/toolbar.scss ======
+// 悬浮胶囊条样式
 
-  &__left {
-    display: flex;
-    align-items: center;
-  }
+.vkedit-floating-toolbar {
+  position: absolute;
+  top: var(--vkedit-toolbar-top);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 40px;
+  padding: 0 8px;
+  background: var(--vkedit-color-toolbar-bg);
+  backdrop-filter: var(--vkedit-blur-panel);
+  -webkit-backdrop-filter: var(--vkedit-blur-panel);
+  border: 1px solid var(--vkedit-color-border-dark-hover);
+  border-radius: var(--vkedit-radius-xl);
+  box-shadow: var(--vkedit-shadow-panel);
+  color: var(--vkedit-color-text-dark);
+  font-size: var(--vkedit-font-size-sm);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
 
-  &__center {
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-  }
+.vkedit-toolbar__group {
+  display: flex;
+  align-items: center;
+  gap: var(--vkedit-toolbar-gap);
+}
 
-  &__right {
-    display: flex;
-    align-items: center;
-  }
+.vkedit-toolbar__divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 6px;
+  background: var(--vkedit-toolbar-divider-color);
+  flex-shrink: 0;
 }

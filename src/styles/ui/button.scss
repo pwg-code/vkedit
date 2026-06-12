@@ -71,11 +71,11 @@
   }
 
   // ---- 尺寸 ----
-  &--default { height: 36px; padding: 0 var(--vkedit-spacing-md) }
-  &--xs       { height: 28px; padding: 0 var(--vkedit-spacing-sm); font-size: var(--vkedit-font-size-xs) }
-  &--sm       { height: 32px; padding: 0 var(--vkedit-spacing-sm); font-size: var(--vkedit-font-size-xs) }
-  &--lg       { height: 40px; padding: 0 var(--vkedit-spacing-lg) }
-  &--icon     { height: 36px; width: 36px; padding: 0 }
-  &--icon-sm  { height: 32px; width: 32px; padding: 0 }
-  &--icon-lg  { height: 40px; width: 40px; padding: 0 }
+  &--default { height: 28px; padding: 0 var(--vkedit-spacing-sm) }
+  &--xs       { height: 24px; padding: 0 var(--vkedit-spacing-xs); font-size: var(--vkedit-font-size-xs) }
+  &--sm       { height: 26px; padding: 0 var(--vkedit-spacing-xs); font-size: var(--vkedit-font-size-xs) }
+  &--lg       { height: 32px; padding: 0 var(--vkedit-spacing-md) }
+  &--icon     { height: 28px; width: 28px; padding: 0 }
+  &--icon-sm  { height: 24px; width: 24px; padding: 0 }
+  &--icon-lg  { height: 32px; width: 32px; padding: 0 }
 }

@@ -1,12 +1,6 @@
 <template>
   <!-- 放大缩小按钮 -->
-  <div
-    class="vkedit-zoom"
-    :style="{
-      top: height - 80 + 'px',
-      left: width - 220 + 'px',
-    }"
-  >
+  <div class="vkedit-zoom">
     <button class="vkedit-zoom__btn" @click="handleZoomOut()">
       <Icon icon="material-symbols-light:zoom-out" :width="30"></Icon>
     </button>
@@ -24,15 +18,12 @@
 </template>
 
 <script setup lang="ts">
-import { useScrollbarLayer, useStage, useZoom } from '@/hooks'
+import { useScrollbarLayer, useZoom } from '@/hooks'
 import { type EditorHost } from '@/core'
 import { Icon } from '@iconify/vue'
 import { onMounted } from 'vue'
 
 const { host } = defineProps<{ host: EditorHost }>()
-
-// 画布长宽
-const { width, height } = useStage()
 
 // 缩放hook
 const { zoom, handleZoomIn, handleZoomOut, handleZoomAuto, handleWheel } = useZoom(host)

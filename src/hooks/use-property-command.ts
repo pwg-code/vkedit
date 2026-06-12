@@ -21,7 +21,7 @@ export function usePropertyCommand(host: EditorHost) {
 
     const comms: ICommand[] = []
     elements.forEach((e) => {
-      let oldValue = get(e, propertyPath)
+      const oldValue = get(e, propertyPath)
       if (oldValue !== newValue) {
         comms.push(new UpdatePropertyCommand(host, e, propertyPath, oldValue, newValue))
       }

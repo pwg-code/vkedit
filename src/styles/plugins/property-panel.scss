@@ -5,11 +5,12 @@
     font-size: var(--vkedit-font-size-xl);
     font-weight: var(--vkedit-font-weight-bold);
     padding-bottom: var(--vkedit-spacing-sm);
+    color: var(--vkedit-color-text-dark);
   }
 
   &__label {
     font-size: var(--vkedit-font-size-sm);
-    color: var(--vkedit-color-gray-600);
+    color: var(--vkedit-color-text-dark-secondary);
     display: block;
   }
 

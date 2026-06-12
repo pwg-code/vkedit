@@ -38,10 +38,13 @@ export interface ElementUpdateEventData extends ElementEventData {
   updatedProperties: string[]
 }
 
+export type ToolGroup = 'history' | 'tools' | 'actions'
+
 // 工具事件数据
 export interface ToolEventData extends BaseEventData {
   toolName: string
   render: () => Component
+  group?: ToolGroup
 }
 
 // 插件事件数据

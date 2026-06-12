@@ -1,20 +1,89 @@
-.vkedit-property-panel {
-  flex: 0 0 25%;
-  min-width: 176px;
-  border-left: 1px solid var(--vkedit-color-border);
-  padding: var(--vkedit-spacing-md);
-  background: var(--vkedit-color-white);
-  overflow: auto;
+.vkedit-floating-property-panel {
+  position: absolute;
+  top: 52px;
+  right: 12px;
+  width: 220px;
+  z-index: 90;
+  background: var(--vkedit-color-panel-bg);
+  backdrop-filter: var(--vkedit-blur-panel);
+  -webkit-backdrop-filter: var(--vkedit-blur-panel);
+  border: 1px solid var(--vkedit-color-border-dark);
+  border-radius: 8px;
+  box-shadow: var(--vkedit-shadow-panel);
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  font-size: 12px;
+  color: var(--vkedit-color-text-dark);
+  transition: width 200ms ease;
+  display: flex;
+  flex-direction: column;
+
+  &__toggle {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--vkedit-color-text-dark-secondary);
+    flex-shrink: 0;
+    &:hover {
+      background: var(--vkedit-color-bg-dark-hover);
+      color: var(--vkedit-color-text-dark);
+    }
+  }
+
+  &__collapsed-icon {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    color: var(--vkedit-color-text-dark-secondary);
+    cursor: pointer;
+  }
+
+  &--collapsed {
+    width: 44px;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    .vkedit-floating-property-panel__title {
+      padding: var(--vkedit-spacing-xs);
+      border-bottom: none;
+      span { display: none; }
+      .vkedit-floating-property-panel__toggle { display: none; }
+    }
+    .vkedit-floating-property-panel__content {
+      display: none;
+    }
+    .vkedit-floating-property-panel__collapsed-icon {
+      display: flex;
+    }
+  }
 
   &__title {
-    font-size: var(--vkedit-font-size-xl);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--vkedit-spacing-sm) var(--vkedit-spacing-md);
+    font-size: var(--vkedit-font-size-sm);
     font-weight: var(--vkedit-font-weight-bold);
-    padding-bottom: var(--vkedit-spacing-sm);
+    border-bottom: 1px solid var(--vkedit-color-border-dark);
+    flex-shrink: 0;
   }
 
   &__content {
+    padding: var(--vkedit-spacing-md);
+    overflow-y: auto;
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--vkedit-spacing-md);
   }
+}
+
+.vkedit-property-panel {
+  @extend .vkedit-floating-property-panel;
 }

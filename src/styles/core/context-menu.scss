@@ -1,26 +1,31 @@
 .vkedit-context-menu {
   position: absolute;
-  z-index: 50;
+  z-index: 200;
   min-width: 160px;
-  border-radius: var(--vkedit-radius-md);
-  border: 1px solid var(--vkedit-color-border);
-  background: var(--vkedit-color-white);
+  border-radius: 8px;
+  border: 1px solid var(--vkedit-color-border-dark);
+  background: var(--vkedit-color-bg-dark);
+  backdrop-filter: var(--vkedit-blur-panel);
+  -webkit-backdrop-filter: var(--vkedit-blur-panel);
   padding: 4px;
-  box-shadow: var(--vkedit-shadow-md);
+  box-shadow: var(--vkedit-shadow-panel);
+  color: var(--vkedit-color-text-dark);
+  font-size: var(--vkedit-font-size-sm);
 
   &__item {
     display: block;
     width: 100%;
     padding: 4px 8px;
     border: none;
-    border-radius: var(--vkedit-radius-sm);
+    border-radius: 4px;
     background: transparent;
     font-size: var(--vkedit-font-size-sm);
     cursor: pointer;
     text-align: left;
+    color: var(--vkedit-color-text-dark);
 
     &:hover {
-      background: var(--vkedit-color-neutral-100);
+      background: var(--vkedit-color-bg-dark-hover);
     }
   }
 }

@@ -2,16 +2,16 @@
   <div>
     <div class="vkedit-btn-group">
       <VkButton variant="ghost" @click="handleAlign('left')" title="左对齐">
-        <Icon icon="material-symbols-light:align-horizontal-left" width="25px" />
+        <VkIcon name="align-horizontal-left" :size="25" />
       </VkButton>
       <VkButton variant="ghost" @click="handleAlign('right')" title="右对齐">
-        <Icon icon="material-symbols-light:align-horizontal-right" width="25px" />
+        <VkIcon name="align-horizontal-right" :size="25" />
       </VkButton>
       <VkButton variant="ghost" @click="handleAlign('top')" title="上对齐">
-        <Icon icon="material-symbols-light:align-vertical-top" width="25px" />
+        <VkIcon name="align-vertical-top" :size="25" />
       </VkButton>
       <VkButton variant="ghost" @click="handleAlign('bottom')" title="下对齐">
-        <Icon icon="material-symbols-light:align-vertical-bottom" width="25px" />
+        <VkIcon name="align-vertical-bottom" :size="25" />
       </VkButton>
     </div>
   </div>
@@ -21,8 +21,7 @@
 import type { EditorHost } from '@/core'
 import type { SelectionPlugin } from '../selection'
 import { AlignElementsCommand } from '@/commands'
-import { Icon } from '@iconify/vue'
-import { VkButton } from '@/components/ui'
+import { VkButton, VkIcon } from '@/components/ui'
 
 const { host } = defineProps<{ host: EditorHost }>()
 
@@ -32,5 +31,3 @@ function handleAlign(alignment: 'left' | 'right' | 'top' | 'bottom' | 'centerX' 
   host.executeCommand(new AlignElementsCommand(host, alignment, ids))
 }
 </script>
-
-<style scoped></style>
