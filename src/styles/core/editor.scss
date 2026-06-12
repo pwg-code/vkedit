@@ -143,7 +143,16 @@
     .vkedit-floating-toolbox--collapsed {
       width: 44px;
       .vkedit-floating-toolbox__title {
+        span { display: none; }
+        .vkedit-floating-toolbox__toggle { display: none; }
+        border-bottom: none;
+        padding: var(--vkedit-spacing-xs);
+      }
+      .vkedit-floating-toolbox__content {
         display: none;
+      }
+      .vkedit-floating-toolbox__collapsed-icon {
+        display: flex;
       }
     }
     .vkedit-floating-property-panel,

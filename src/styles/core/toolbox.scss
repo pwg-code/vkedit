@@ -1,7 +1,7 @@
 .vkedit-floating-toolbox {
   position: absolute;
   top: 52px;
-  left: 12px;
+  left: 37px;
   width: 180px;
   z-index: 90;
   background: var(--vkedit-color-panel-bg);
@@ -11,15 +11,13 @@
   border-radius: 8px;
   box-shadow: var(--vkedit-shadow-panel);
   max-height: calc(100vh - 64px);
-  overflow-y: auto;
   font-size: 12px;
   color: var(--vkedit-color-text-dark);
   transition: width 200ms ease;
+  display: flex;
+  flex-direction: column;
 
   &__toggle {
-    position: absolute;
-    top: 8px;
-    right: 8px;
     width: 24px;
     height: 24px;
     display: flex;
@@ -30,31 +28,62 @@
     border-radius: 4px;
     cursor: pointer;
     color: var(--vkedit-color-text-dark-secondary);
-    z-index: 1;
+    flex-shrink: 0;
     &:hover {
       background: var(--vkedit-color-bg-dark-hover);
       color: var(--vkedit-color-text-dark);
     }
   }
 
+  &__collapsed-icon {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    color: var(--vkedit-color-text-dark-secondary);
+    cursor: pointer;
+  }
+
   &--collapsed {
     width: 44px;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
     .vkedit-floating-toolbox__title {
+      padding: var(--vkedit-spacing-xs);
+      border-bottom: none;
+      span { display: none; }
+      .vkedit-floating-toolbox__toggle { display: none; }
+    }
+    .vkedit-floating-toolbox__content {
       display: none;
     }
-    .vkedit-toolbox__content {
-      padding: var(--vkedit-spacing-xs);
+    .vkedit-floating-toolbox__collapsed-icon {
+      display: flex;
     }
   }
 
   &__title {
-    text-align: center;
-    padding: var(--vkedit-spacing-sm) 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--vkedit-spacing-sm) var(--vkedit-spacing-md);
     font-size: var(--vkedit-font-size-sm);
+    font-weight: var(--vkedit-font-weight-bold);
     border-bottom: 1px solid var(--vkedit-color-border-dark);
+    flex-shrink: 0;
+  }
+
+  &__content {
+    padding: var(--vkedit-spacing-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--vkedit-spacing-xs);
+
+    .vkedit-btn {
+      width: 100%;
+      justify-content: center;
+    }
   }
 }
 
-.vkedit-toolbox {
-  @extend .vkedit-floating-toolbox;
-}

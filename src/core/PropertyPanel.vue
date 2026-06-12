@@ -37,8 +37,14 @@ const updatePanels = (selection: IGraphicElement[]) => {
   panels.value = currentPanels.map((p) => markRaw(p))
 }
 
+const initPanel = () => {
+  const selectionPlugin = host.getPlugin('selection-plugin') as any
+  const selection = selectionPlugin?.getSelectionElements() ?? []
+  updatePanels(selection)
+}
+
 onMounted(() => {
-  // 动态渲染属性面板
+  initPanel()
   host.on('selection:changed', (data) => updatePanels(data.selection))
 })
 </script>

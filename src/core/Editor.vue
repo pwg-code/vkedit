@@ -23,19 +23,26 @@
       class="vkedit-floating-toolbox"
       :class="{ 'vkedit-floating-toolbox--collapsed': toolboxCollapsed }"
     >
-      <div class="vkedit-floating-toolbox__title" v-if="!toolboxCollapsed">添加图形</div>
-      <button
-        class="vkedit-floating-toolbox__toggle"
-        @click="toggleToolbox"
-        :title="toolboxCollapsed ? '展开工具箱' : '收起工具箱'"
-      >
-        <Icon :icon="toolboxCollapsed ? 'material-symbols-light:chevron-right' : 'material-symbols-light:chevron-left'" width="16" />
-      </button>
-      <Toolbox :host="host" :collapsed="toolboxCollapsed">
-        <template #toolbox>
-          <slot name="toolbox" :host="host"></slot>
-        </template>
-      </Toolbox>
+      <div class="vkedit-floating-toolbox__title">
+        <span>添加图形</span>
+        <button
+          class="vkedit-floating-toolbox__toggle"
+          @click="toggleToolbox"
+          :title="toolboxCollapsed ? '展开工具箱' : '收起工具箱'"
+        >
+          <Icon :icon="toolboxCollapsed ? 'material-symbols-light:chevron-right' : 'material-symbols-light:chevron-left'" width="16" />
+        </button>
+      </div>
+      <div class="vkedit-floating-toolbox__content" v-if="!toolboxCollapsed">
+        <GraphicToolPanel :host="host" :collapsed="toolboxCollapsed">
+          <template #toolbox>
+            <slot name="toolbox" :host="host"></slot>
+          </template>
+        </GraphicToolPanel>
+      </div>
+      <div v-else class="vkedit-floating-toolbox__collapsed-icon" @click="toggleToolbox" :title="'展开工具箱'">
+        <Icon icon="material-symbols-light:shapes" width="20" />
+      </div>
     </div>
 
     <!-- 右侧悬浮属性面板 -->
@@ -71,7 +78,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import Toolbar from './Toolbar.vue' // 顶部区域
-import Toolbox from './Toolbox.vue'
+import GraphicToolPanel from './GraphicToolPanel.vue'
 import StageView from './StageView.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import type { EditorHost } from '@/core'

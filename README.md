@@ -423,7 +423,7 @@ vkedit/
 │   │   ├── ScrollbarLayer.vue
 │   │   ├── ContextMenu.vue
 │   │   ├── Zoom.vue
-│   │   └── Toolbox.vue
+│   │   └── GraphicToolPanel.vue
 │   ├── hooks/             # Vue 组合式函数
 │   │   ├── use-host-state.ts
 │   │   ├── use-bg-layer.ts

@@ -425,7 +425,7 @@ vkedit/
 │   │   ├── ScrollbarLayer.vue
 │   │   ├── ContextMenu.vue
 │   │   ├── Zoom.vue
-│   │   └── Toolbox.vue
+│   │   └── GraphicToolPanel.vue
 │   ├── hooks/             # Vue composition functions
 │   │   ├── use-host-state.ts
 │   │   ├── use-bg-layer.ts
