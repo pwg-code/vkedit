@@ -10,8 +10,9 @@
 @use 'core/toolbar.scss';
 @use 'core/toolbox.scss';
 @use 'core/stage-view.scss';
-@use 'core/zoom.scss';
+@use 'core/status-bar.scss';
 @use 'core/context-menu.scss';
+@use 'core/help-guide.scss';
 @use 'core/property-panel.scss' as core-property-panel;
 
 // UI 组件（Task 03 会取消注释）

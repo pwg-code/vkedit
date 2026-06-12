@@ -94,3 +94,5 @@ export interface IToolbar {
   name: string
   getComponent(): Component
 }
+
+export type CursorMode = 'default' | 'hovering' | 'grab' | 'grabbing' | 'dragging'

@@ -1,7 +1,6 @@
 import { BasePlugin } from '../types/base-plugin'
 import type { StageKeyboardEventData } from '../types'
 import { RemoveElementCommand } from '@/commands'
-import type { SelectionPlugin } from './selection'
 
 export class KeyDownPlugin extends BasePlugin {
   public name = 'keydown-plugin'
@@ -21,7 +20,22 @@ export class KeyDownPlugin extends BasePlugin {
 
   private handleKeyDown(event: StageKeyboardEventData): void {
     if (!this.host) return
-    if (event.evt.code == 'Delete') {
+
+    const evt = event.evt
+
+    if (evt.ctrlKey && evt.code === 'KeyZ') {
+      evt.preventDefault()
+      this.host.undo()
+      return
+    }
+
+    if (evt.ctrlKey && evt.code === 'KeyY') {
+      evt.preventDefault()
+      this.host.redo()
+      return
+    }
+
+    if (evt.code === 'Delete') {
       this.deleteSelectionElement()
     }
   }

@@ -2,13 +2,11 @@
 内容图层
 */
 
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useZoom } from './use-zoom'
 import { type IGraphicElement } from '@/types'
 import { type EditorHost } from '@/core'
-import type { ElementManagerPlugin } from '@/plugins'
 import { TransformElementCommand } from '@/commands'
-import { useScrollbarLayer } from './use-scrollbar-layer'
 
 export function useContentLayer(host: EditorHost) {
   // 图层
@@ -18,19 +16,16 @@ export function useContentLayer(host: EditorHost) {
   const transformerRef = ref()
 
   // 缩放逻辑hook
-  const { zoom } = useZoom(host)
-  const { contentScrollX, contentScrollY } = useScrollbarLayer(host)
+  const { zoom, contentX, contentY } = useZoom(host)
 
-  // 内容图层配置
   const contentLayerConfig = computed(() => {
     return {}
   })
 
-  // 内容图层组配置
   const contentGroupConfig = computed(() => {
     return {
-      x: contentScrollX.value,
-      y: contentScrollY.value,
+      x: contentX.value,
+      y: contentY.value,
       scaleX: zoom.value,
       scaleY: zoom.value,
     }

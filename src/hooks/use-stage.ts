@@ -8,8 +8,13 @@ export function useStage() {
     stageConfig,
     width,
     height,
-    verticalThumbY,
-    horizontalThumbX,
+    currentCursorMode,
+    mouseStageX,
+    mouseStageY,
+    spacePressed,
+    isPanning,
+    offsetX,
+    offsetY,
   } = storeToRefs(useStageStore())
   return {
     stageRef,
@@ -17,7 +22,12 @@ export function useStage() {
     stageConfig,
     width,
     height,
-    verticalThumbY,
-    horizontalThumbX,
+    currentCursorMode,
+    mouseStageX,
+    mouseStageY,
+    spacePressed,
+    isPanning,
+    offsetX,
+    offsetY,
   }
 }

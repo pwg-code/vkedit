@@ -15,7 +15,6 @@
 <script setup lang="ts">
 import { useRulerLayer, useStage, useZoom } from '@/hooks'
 import { useHostState } from '@/hooks/use-host-state'
-import { useScrollbarLayer } from '@/hooks/use-scrollbar-layer'
 import type { EditorHost } from '@/core'
 import konva from 'konva'
 import { computed, watch } from 'vue'
@@ -38,17 +37,14 @@ const {
 
 const { hostState } = useHostState(host)
 
-const { contentScrollX, contentScrollY } = useScrollbarLayer(host)
-
-// 获取zoom比例
-const { zoom } = useZoom(host)
+const { contentX, contentY, zoom } = useZoom(host)
 
 // 获取舞台宽高
 const { width, height } = useStage()
 
 // 比例、内容宽高\滚动 变化时 更新标尺位置
 watch(
-  [zoom, hostState, contentScrollX, contentScrollY],
+  [zoom, hostState, contentX, contentY],
   () => {
     // 触发标尺重绘
     const node = rulerLayerRef.value?.getNode()
@@ -84,7 +80,7 @@ const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
 
   // 以当前滚动位置为0点 向两边绘制刻度
   // 先向左绘制
-  let currentX = contentScrollX.value
+  let currentX = contentX.value
   while (currentX > rulerHeight && mm1Spacing.value >= minSpacing) {
     // 绘制逻辑
     context.moveTo(currentX, rulerHeight - mm1Height)
@@ -93,7 +89,7 @@ const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
   }
 
   // 向右绘制
-  currentX = contentScrollX.value
+  currentX = contentX.value
   while (currentX <= width.value && mm1Spacing.value >= minSpacing) {
     // 绘制逻辑
     context.moveTo(currentX, rulerHeight - mm1Height)
@@ -102,7 +98,7 @@ const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
   }
 
   // 向左绘画5mm刻度
-  currentX = contentScrollX.value
+  currentX = contentX.value
   while (currentX > rulerHeight && mm5Spacing.value >= minSpacing) {
     // 绘制逻辑
     context.moveTo(currentX, rulerHeight - mm5Height)
@@ -111,7 +107,7 @@ const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
   }
 
   // 向右绘画5mm刻度
-  currentX = contentScrollX.value
+  currentX = contentX.value
   while (currentX < width.value && mm5Spacing.value >= minSpacing) {
     // 绘制逻辑
     context.moveTo(currentX, rulerHeight - mm5Height)
@@ -120,7 +116,7 @@ const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
   }
 
   // 向左绘画10mm刻度
-  currentX = contentScrollX.value
+  currentX = contentX.value
   while (currentX > rulerHeight && mm10Spacing.value >= minSpacing) {
     // 绘制逻辑
     context.moveTo(currentX, rulerHeight - mm10Height)
@@ -128,7 +124,7 @@ const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
 
     // 当间隔大于50像素时 绘制刻度数字
     if (mm10Spacing.value >= labelMinSpacing) {
-      const mmValue = round((contentScrollX.value - currentX) / mm1Spacing.value)
+      const mmValue = round((contentX.value - currentX) / mm1Spacing.value)
       context.font = '10px Arial'
       context.fillStyle = rulerTextColor
       context.fillText(`${mmValue}`, currentX - 2, 10)
@@ -138,7 +134,7 @@ const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
   }
 
   // 向右绘画10mm刻度
-  currentX = contentScrollX.value
+  currentX = contentX.value
   while (currentX < width.value && mm10Spacing.value >= minSpacing) {
     // 绘制逻辑
     context.moveTo(currentX, rulerHeight - mm10Height)
@@ -146,7 +142,7 @@ const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
 
     // 当间隔大于50像素时 绘制刻度数字
     if (mm10Spacing.value >= labelMinSpacing) {
-      const mmValue = round((currentX - contentScrollX.value) / mm1Spacing.value)
+      const mmValue = round((currentX - contentX.value) / mm1Spacing.value)
       context.font = '10px Arial'
       context.fillStyle = rulerTextColor
       context.fillText(`${mmValue}`, currentX - 2, 10)
@@ -168,7 +164,7 @@ const upRulerShapeConfig = {
 
 // 左标尺刻度绘制函数
 const leftSceneFunc = (context: konva.Context, shape: konva.Shape) => {
-  let currentY = contentScrollY.value
+  let currentY = contentY.value
   context.beginPath()
   // 向上绘制1mm刻度
   while (currentY > rulerHeight && mm1Spacing.value >= minSpacing) {
@@ -178,7 +174,7 @@ const leftSceneFunc = (context: konva.Context, shape: konva.Shape) => {
     currentY -= mm1Spacing.value
   }
   // 向下绘制1mm刻度
-  currentY = contentScrollY.value
+  currentY = contentY.value
   while (currentY <= height.value && mm1Spacing.value >= minSpacing) {
     // 绘制逻辑
     context.moveTo(rulerHeight - mm1Height, currentY)
@@ -186,7 +182,7 @@ const leftSceneFunc = (context: konva.Context, shape: konva.Shape) => {
     currentY += mm1Spacing.value
   }
   // 向上绘制5mm刻度
-  currentY = contentScrollY.value
+  currentY = contentY.value
   while (currentY > rulerHeight && mm5Spacing.value >= minSpacing) {
     // 绘制逻辑
     context.moveTo(rulerHeight - mm5Height, currentY)
@@ -194,7 +190,7 @@ const leftSceneFunc = (context: konva.Context, shape: konva.Shape) => {
     currentY -= mm5Spacing.value
   }
   // 向下绘制5mm刻度
-  currentY = contentScrollY.value
+  currentY = contentY.value
   while (currentY <= height.value && mm5Spacing.value >= minSpacing) {
     // 绘制逻辑
     context.moveTo(rulerHeight - mm5Height, currentY)
@@ -202,7 +198,7 @@ const leftSceneFunc = (context: konva.Context, shape: konva.Shape) => {
     currentY += mm5Spacing.value
   }
   // 向上绘制10mm刻度
-  currentY = contentScrollY.value
+  currentY = contentY.value
   while (currentY > rulerHeight && mm10Spacing.value >= minSpacing) {
     // 绘制逻辑
     context.moveTo(rulerHeight - mm10Height, currentY)
@@ -210,21 +206,21 @@ const leftSceneFunc = (context: konva.Context, shape: konva.Shape) => {
     currentY -= mm10Spacing.value
     // 当间隔大于50像素时 绘制刻度数字
     if (mm10Spacing.value >= labelMinSpacing) {
-      const mmValue = round((contentScrollY.value - currentY) / mm1Spacing.value)
+      const mmValue = round((contentY.value - currentY) / mm1Spacing.value)
       context.font = '10px Arial'
       context.fillStyle = rulerTextColor
       context.fillText(`${mmValue}`, rulerHeight - 20, currentY - 2)
     }
   }
   // 向下绘制10mm刻度
-  currentY = contentScrollY.value
+  currentY = contentY.value
   while (currentY <= height.value && mm10Spacing.value >= minSpacing) {
     // 绘制逻辑
     context.moveTo(rulerHeight - mm10Height, currentY)
     context.lineTo(rulerHeight, currentY)
     // 当间隔大于50像素时 绘制刻度数字
     if (mm10Spacing.value >= labelMinSpacing) {
-      const mmValue = round((currentY - contentScrollY.value) / mm1Spacing.value)
+      const mmValue = round((currentY - contentY.value) / mm1Spacing.value)
       context.font = '10px Arial'
       context.fillStyle = rulerTextColor
       context.fillText(`${mmValue}`, rulerHeight - 20, currentY - 2)

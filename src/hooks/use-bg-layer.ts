@@ -5,21 +5,16 @@
 import { computed } from 'vue'
 import { useStage } from './use-stage'
 import { useZoom } from './use-zoom'
-import { useScrollbarLayer } from './use-scrollbar-layer'
 import type { EditorHost } from '@/core'
 
 export function useBgLayer(host: EditorHost) {
   const { width, height } = useStage()
-  // 缩放逻辑hook
-  const { contentHeight, contentWidth } = useZoom(host)
-  const { contentScrollX, contentScrollY } = useScrollbarLayer(host)
+  const { contentHeight, contentWidth, contentX, contentY } = useZoom(host)
 
-  // 标尺图层配置
   const bgLayerConfig = computed(() => {
     return { listening: false }
   })
 
-  // 上标尺
   const bgConfig = computed(() => {
     return {
       x: 0,
@@ -31,11 +26,10 @@ export function useBgLayer(host: EditorHost) {
     }
   })
 
-  // 内容图层底板
   const contentBgConfig = computed(() => {
     return {
-      x: contentScrollX.value,
-      y: contentScrollY.value,
+      x: contentX.value,
+      y: contentY.value,
       width: contentWidth.value,
       height: contentHeight.value,
       fill: 'rgba(255, 255, 255, 1)',

@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useElementSize } from '@vueuse/core'
+import type { CursorMode } from '@/types'
 
 export const useStageStore = defineStore('stage', () => {
   // 舞台父div ref对象 用于获取响应式宽高
@@ -11,11 +12,13 @@ export const useStageStore = defineStore('stage', () => {
 
   const { width, height } = useElementSize(stageWrapperRef)
 
-  // 当前垂直滑块位置
-  const verticalThumbY = ref(0)
-
-  // 当前水平滑块位置
-  const horizontalThumbX = ref(0)
+  const currentCursorMode = ref<CursorMode>('default')
+  const mouseStageX = ref(0)
+  const mouseStageY = ref(0)
+  const spacePressed = ref(false)
+  const isPanning = ref(false)
+  const offsetX = ref(0)
+  const offsetY = ref(0)
 
   // 舞台配置
   const stageConfig = computed(() => {
@@ -27,5 +30,9 @@ export const useStageStore = defineStore('stage', () => {
     }
   })
 
-  return { stageRef, stageWrapperRef, stageConfig, width, height, verticalThumbY, horizontalThumbX }
+  return {
+    stageRef, stageWrapperRef, stageConfig, width, height,
+    currentCursorMode, mouseStageX, mouseStageY, spacePressed, isPanning,
+    offsetX, offsetY,
+  }
 })
