@@ -21,6 +21,9 @@ import konva from 'konva'
 import { computed, watch } from 'vue'
 import { round } from 'lodash'
 
+const rulerTextColor = '#333'
+const rulerTickColor = '#666'
+
 const { host } = defineProps<{ host: EditorHost }>()
 
 // 标尺hook
@@ -127,6 +130,7 @@ const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
     if (mm10Spacing.value >= labelMinSpacing) {
       const mmValue = round((contentScrollX.value - currentX) / mm1Spacing.value)
       context.font = '10px Arial'
+      context.fillStyle = rulerTextColor
       context.fillText(`${mmValue}`, currentX - 2, 10)
     }
 
@@ -144,6 +148,7 @@ const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
     if (mm10Spacing.value >= labelMinSpacing) {
       const mmValue = round((currentX - contentScrollX.value) / mm1Spacing.value)
       context.font = '10px Arial'
+      context.fillStyle = rulerTextColor
       context.fillText(`${mmValue}`, currentX - 2, 10)
     }
     currentX += mm10Spacing.value
@@ -157,7 +162,7 @@ const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
 const upRulerShapeConfig = {
   // 这里是上标尺刻度的配置
   sceneFunc: upSceneFunc,
-  stroke: 'black',
+  stroke: rulerTickColor,
   strokeWidth: 1,
 }
 
@@ -207,6 +212,7 @@ const leftSceneFunc = (context: konva.Context, shape: konva.Shape) => {
     if (mm10Spacing.value >= labelMinSpacing) {
       const mmValue = round((contentScrollY.value - currentY) / mm1Spacing.value)
       context.font = '10px Arial'
+      context.fillStyle = rulerTextColor
       context.fillText(`${mmValue}`, rulerHeight - 20, currentY - 2)
     }
   }
@@ -220,6 +226,7 @@ const leftSceneFunc = (context: konva.Context, shape: konva.Shape) => {
     if (mm10Spacing.value >= labelMinSpacing) {
       const mmValue = round((currentY - contentScrollY.value) / mm1Spacing.value)
       context.font = '10px Arial'
+      context.fillStyle = rulerTextColor
       context.fillText(`${mmValue}`, rulerHeight - 20, currentY - 2)
     }
     currentY += mm10Spacing.value
@@ -232,7 +239,7 @@ const leftSceneFunc = (context: konva.Context, shape: konva.Shape) => {
 const leftRulerShapeConfig = {
   // 这里是左标尺刻度的配置
   sceneFunc: leftSceneFunc,
-  stroke: 'black',
+  stroke: rulerTickColor,
   strokeWidth: 1,
 }
 </script>
