@@ -31,3 +31,5 @@ coverage
 vkedit-*.tgz
 .npmrc
 npm包发布.md
+
+temp/

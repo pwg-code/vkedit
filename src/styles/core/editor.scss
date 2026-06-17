@@ -103,6 +103,9 @@
   // VkSwitch
   .vkedit-switch {
     background: var(--vkedit-color-bg-dark-hover);
+    &:has(&__input:checked) {
+      background: oklch(54% 0.08 260);
+    }
   }
 
   // VkToggle

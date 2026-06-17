@@ -9,7 +9,7 @@
   align-items: center;
   border-radius: var(--vkedit-radius-full);
   border: 2px solid transparent;
-  background: var(--vkedit-color-neutral-200);
+  background: oklch(87% 0 0);
   transition: var(--vkedit-transition-colors);
   box-shadow: var(--vkedit-shadow-sm);
   position: relative;
@@ -32,7 +32,7 @@
   }
 
   &:has(&__input:checked) {
-    background: var(--vkedit-color-neutral-800);
+    background: oklch(62% 0.08 260);
 
     .vkedit-switch__thumb {
       transform: translateX(16px);

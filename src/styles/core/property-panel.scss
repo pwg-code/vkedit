@@ -2,7 +2,7 @@
   position: absolute;
   top: 52px;
   right: 12px;
-  width: 220px;
+  width: 240px;
   z-index: 90;
   background: var(--vkedit-color-panel-bg);
   backdrop-filter: var(--vkedit-blur-panel);
@@ -77,7 +77,7 @@
 
   &__content {
     padding: var(--vkedit-spacing-md);
-    overflow-y: auto;
+    overflow: hidden auto;
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--vkedit-spacing-md);

@@ -1,0 +1,33 @@
+.section {
+  margin-bottom: 32px;
+}
+
+.section__title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #eee;
+}
+
+.section__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.section__label {
+  width: 100px;
+  font-size: 13px;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.section__dark {
+  background: #1e1e1e;
+  padding: 16px;
+  border-radius: 6px;
+  margin-top: 12px;
+}

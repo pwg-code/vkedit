@@ -1,6 +1,6 @@
 <template>
-  <div class="vkedit-property__col-full" style="display: flex">
-    <div style="min-width: 150px">
+  <div class="vkedit-property__col-full" style="display: flex; gap: 4px; min-width: 0">
+    <div style="flex: 1; min-width: 0">
       <VkInputMM
         :model-value="fontSize"
         :min="0"
@@ -9,6 +9,7 @@
       ></VkInputMM>
     </div>
     <VkToggle
+      size="sm"
       :model-value="fontStyle?.includes('bold') ?? false"
       @update:model-value="
         (value: boolean) =>
@@ -19,9 +20,10 @@
           )
       "
     >
-      <Icon icon="material-symbols-light:format-bold" style="width: 25px; height: 25px"></Icon>
+      <Icon icon="material-symbols-light:format-bold" style="width: 20px; height: 20px"></Icon>
     </VkToggle>
     <VkToggle
+      size="sm"
       :model-value="fontStyle?.includes('italic') ?? false"
       @update:model-value="
         (value: boolean) =>
@@ -32,37 +34,47 @@
           )
       "
     >
-      <Icon icon="material-symbols-light:format-italic" style="width: 25px; height: 25px"></Icon>
+      <Icon icon="material-symbols-light:format-italic" style="width: 20px; height: 20px"></Icon>
     </VkToggle>
   </div>
-  <div class="vkedit-property__col-full" style="display: flex">
-    <VkToggle :model-value="align == 'left'" @update:model-value="emit('update', 'align', 'left')"
+  <div class="vkedit-property__col-full" style="display: flex; gap: 1px; min-width: 0">
+    <VkToggle
+      size="sm"
+      :model-value="align == 'left'"
+      @update:model-value="emit('update', 'align', 'left')"
       ><Icon
         icon="material-symbols-light:align-justify-flex-start"
-        style="width: 25px; height: 25px"
+        style="width: 16px; height: 16px"
     /></VkToggle>
     <VkToggle
+      size="sm"
       :model-value="align == 'center'"
       @update:model-value="emit('update', 'align', 'center')"
-      ><Icon icon="material-symbols-light:align-justify-center" style="width: 25px; height: 25px"
-    /></VkToggle>
-    <VkToggle :model-value="align == 'right'" @update:model-value="emit('update', 'align', 'right')"
-      ><Icon icon="material-symbols-light:align-justify-flex-end" style="width: 25px; height: 25px"
+      ><Icon icon="material-symbols-light:align-justify-center" style="width: 16px; height: 16px"
     /></VkToggle>
     <VkToggle
+      size="sm"
+      :model-value="align == 'right'"
+      @update:model-value="emit('update', 'align', 'right')"
+      ><Icon icon="material-symbols-light:align-justify-flex-end" style="width: 16px; height: 16px"
+    /></VkToggle>
+    <VkToggle
+      size="sm"
       :model-value="verticalAlign == 'top'"
       @update:model-value="emit('update', 'verticalAlign', 'top')"
-      ><Icon icon="material-symbols-light:align-start" style="width: 25px; height: 25px"
+      ><Icon icon="material-symbols-light:align-start" style="width: 16px; height: 16px"
     /></VkToggle>
     <VkToggle
+      size="sm"
       :model-value="verticalAlign == 'middle'"
       @update:model-value="emit('update', 'verticalAlign', 'middle')"
-      ><Icon icon="material-symbols-light:align-center" style="width: 25px; height: 25px"
+      ><Icon icon="material-symbols-light:align-center" style="width: 16px; height: 16px"
     /></VkToggle>
     <VkToggle
+      size="sm"
       :model-value="verticalAlign == 'bottom'"
       @update:model-value="emit('update', 'verticalAlign', 'bottom')"
-      ><Icon icon="material-symbols-light:align-end" style="width: 25px; height: 25px"
+      ><Icon icon="material-symbols-light:align-end" style="width: 16px; height: 16px"
     /></VkToggle>
   </div>
 </template>
