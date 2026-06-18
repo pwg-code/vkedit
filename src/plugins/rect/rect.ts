@@ -57,10 +57,11 @@ export class RectElement extends BaseGraphicElement {
     }
   }
 
-  clone(): IGraphicElement {
-    const newElement = new RectElement(this.host)
-    newElement.deserialize(this)
-    return newElement
+  deserialize(data: any): void {
+    super.deserialize(data)
+    this.fill = data.fill
+    this.stroke = data.stroke
+    this.strokeWidthMM = data.strokeWidthMM
   }
 
   serialize() {

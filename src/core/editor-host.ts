@@ -229,6 +229,7 @@ export class EditorHost {
         elements.forEach((value) => {
           const e = elementsPlugin.createElement(value.type) // 先创建实例
           e.deserialize(value)
+          e.id = value.id // 保留 JSON 中的原 id（deserialize 不再复制 id）
           elementsPlugin.addElement(e)
         })
         Object.assign(this.status, data.state)

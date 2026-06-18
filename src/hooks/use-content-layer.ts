@@ -116,9 +116,29 @@ export function useContentLayer(host: EditorHost) {
   // 图形拖拽
   const handleDragEnd = (event: any, element: any) => {
     const eAttrs = event.target.attrs
+    const isAltClone = event.evt.altKey
+
+    if (isAltClone) {
+      // Alt 克隆：原元素不动，副本留于松开处
+      const releaseX = eAttrs.x
+      const releaseY = eAttrs.y
+      event.target.x(element.x)
+      event.target.y(element.y)
+      const dpm = host.status.dpm || 8
+      const deltaMM = {
+        x: (releaseX - element.x) / dpm,
+        y: (releaseY - element.y) / dpm,
+      }
+      const selectionPlugin = host.getPlugin('selection-plugin')
+      const selection = selectionPlugin.getSelectionElements()
+      const targets = selection.length > 0 ? selection : [element]
+      host.getPlugin('clipboard-plugin').cloneElementsAt(targets, deltaMM)
+      return
+    }
+
+    // 普通拖拽移动（原逻辑）
     const newAttrs = { x: eAttrs.x, y: eAttrs.y }
     const oldAttrs = { x: element.x, y: element.y }
-    // 使用命令更改属性
     const command = new TransformElementCommand(host, element, oldAttrs, newAttrs)
     host.executeCommand(command)
   }

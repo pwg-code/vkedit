@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash'
 import { BasePlugin } from '../../types/base-plugin'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 
@@ -54,7 +55,7 @@ export class ChartElement extends BaseGraphicElement {
 
   deserialize(data: any): void {
     super.deserialize(data)
-    this.chartOptions = data.chartOptions
+    this.chartOptions = cloneDeep(data.chartOptions)
   }
 
   serialize() {

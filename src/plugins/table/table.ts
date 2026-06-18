@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash'
 import { BasePlugin } from '../../types/base-plugin'
 import { type IGraphicElement, BaseGraphicType } from '../../types'
 import Shape from './Shape.vue'
@@ -249,10 +250,13 @@ export class TableElement extends BaseGraphicElement {
     this.setActiveCell(rowIndex, colIndex)
   }
 
-  clone(): IGraphicElement {
-    const newElement = new TableElement(this.host)
-    newElement.deserialize(this)
-    return newElement
+  deserialize(data: any): void {
+    super.deserialize(data)
+    this.rowsHeight = cloneDeep(data.rowsHeight)
+    this.colsWidth = cloneDeep(data.colsWidth)
+    this.cells = cloneDeep(data.cells)
+    this.updateCells()
+    this.setActiveCell(0, 0)
   }
 
   serialize() {

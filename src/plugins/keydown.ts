@@ -36,6 +36,22 @@ export class KeyDownPlugin extends BasePlugin {
 
     const evt = event.evt
 
+    // 复制 Ctrl/Cmd + C
+    if ((evt.ctrlKey || evt.metaKey) && evt.code === 'KeyC') {
+      if (this.isInputFocused()) return
+      evt.preventDefault()
+      this.copySelection()
+      return
+    }
+
+    // 粘贴 Ctrl/Cmd + V
+    if ((evt.ctrlKey || evt.metaKey) && evt.code === 'KeyV') {
+      if (this.isInputFocused()) return
+      evt.preventDefault()
+      this.pasteFromClipboard()
+      return
+    }
+
     if (evt.ctrlKey && evt.code === 'KeyZ') {
       evt.preventDefault()
       this.host.undo()
@@ -99,6 +115,27 @@ export class KeyDownPlugin extends BasePlugin {
 
     const batch = new BatchCommand(this.host, commands, '方向键移动元素')
     this.host.executeCommand(batch)
+  }
+
+  private isInputFocused(): boolean {
+    const active = document.activeElement as HTMLElement | null
+    if (!active) return false
+    if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return true
+    return active.isContentEditable
+  }
+
+  private copySelection(): void {
+    if (!this.host) return
+    const selection = this.host.getPlugin('selection-plugin').getSelectionElements()
+    if (selection.length === 0) return
+    this.host.getPlugin('clipboard-plugin').copy(selection)
+  }
+
+  private pasteFromClipboard(): void {
+    if (!this.host) return
+    const clipboard = this.host.getPlugin('clipboard-plugin')
+    if (!clipboard.hasData()) return
+    clipboard.paste()
   }
 
   private deleteSelectionElement(): void {

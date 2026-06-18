@@ -1,5 +1,6 @@
 export * from './align'
 export * from './barcode'
+export * from './clipboard'
 export * from './chart'
 export * from './context-menu-manager'
 export * from './element-manager'

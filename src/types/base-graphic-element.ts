@@ -108,7 +108,12 @@ export abstract class BaseGraphicElement implements IGraphicElement {
   }
 
   clone(): IGraphicElement {
-    throw new Error('Method not implemented.')
+    const snapshot = this.serialize()
+    const elementManager = this.host.getPlugin('element-manager-plugin')
+    const newElement = elementManager.createElement(this.type)
+    newElement.deserialize(snapshot)
+    newElement.id = uuidv4()
+    return newElement
   }
 
   getBoundingBox() {
@@ -122,7 +127,6 @@ export abstract class BaseGraphicElement implements IGraphicElement {
 
   deserialize(data: any): void {
     this.type = data.type
-    this.id = data.id
     this.xmm = data.xmm
     this.ymm = data.ymm
     this.wmm = data.wmm

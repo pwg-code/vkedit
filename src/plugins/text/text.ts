@@ -61,6 +61,15 @@ export class TextElement extends BaseGraphicElement {
     }
   }
 
+  deserialize(data: any): void {
+    super.deserialize(data)
+    this.text = data.text
+    this.fontSize = data.fontSize
+    this.align = data.align
+    this.verticalAlign = data.verticalAlign
+    this.fontStyle = data.fontStyle
+  }
+
   serialize() {
     return {
       ...super.serialize(),
