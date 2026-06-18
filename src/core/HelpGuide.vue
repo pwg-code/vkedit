@@ -58,6 +58,18 @@
                 <span class="vkedit-help-guide__desc">重做</span>
               </div>
               <div class="vkedit-help-guide__item">
+                <kbd>Ctrl</kbd>
+                <span class="vkedit-help-guide__sep">+</span>
+                <kbd>C</kbd>
+                <span class="vkedit-help-guide__desc">复制选中元素</span>
+              </div>
+              <div class="vkedit-help-guide__item">
+                <kbd>Ctrl</kbd>
+                <span class="vkedit-help-guide__sep">+</span>
+                <kbd>V</kbd>
+                <span class="vkedit-help-guide__desc">粘贴元素</span>
+              </div>
+              <div class="vkedit-help-guide__item">
                 <kbd>Delete</kbd>
                 <span class="vkedit-help-guide__desc">删除选中元素</span>
               </div>
@@ -67,6 +79,12 @@
                 <kbd>&darr;</kbd>
                 <kbd>&rarr;</kbd>
                 <span class="vkedit-help-guide__desc">移动选中元素</span>
+              </div>
+              <div class="vkedit-help-guide__item">
+                <kbd>Alt</kbd>
+                <span class="vkedit-help-guide__sep">+</span>
+                <kbd>拖拽元素</kbd>
+                <span class="vkedit-help-guide__desc">克隆元素</span>
               </div>
             </div>
             <div class="vkedit-help-guide__group">
