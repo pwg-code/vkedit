@@ -87,6 +87,7 @@ export function useContentLayer(host: EditorHost) {
 
   let command: TransformElementCommand
   let isTransforming = false
+  let isAltCloning = false
 
   // 图形变换更改属性
   const handleElementTransform = (event: any, element: IGraphicElement) => {
@@ -119,6 +120,9 @@ export function useContentLayer(host: EditorHost) {
     const isAltClone = event.evt.altKey
 
     if (isAltClone) {
+      if (isAltCloning) return
+      isAltCloning = true
+      setTimeout(() => { isAltCloning = false }, 100)
       // Alt 克隆：原元素不动，副本留于松开处
       const releaseX = eAttrs.x
       const releaseY = eAttrs.y
