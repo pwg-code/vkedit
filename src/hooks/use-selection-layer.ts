@@ -35,16 +35,24 @@ export function useSelectionLayer(host: EditorHost) {
     }
   })
 
+  const isClickOnTransformer = (event: any): boolean => {
+    let node = event.target
+    while (node) {
+      if (node.getClassName && node.getClassName() === 'Transformer') return true
+      node = node.parent
+    }
+    return false
+  }
+
   // 鼠标按下
   const handleMouseDown = (event: any) => {
-    // 只响应左键
     if (event.evt.button !== 0) return
+    if (host.status.currentTool !== 'select') return
+    if (isClickOnTransformer(event)) return
     const point = event.point
-    if (host.status.currentTool === 'select') {
-      isSelecting.value = true
-      selectionStart.value = event.point
-      selectionEnd.value = point
-    }
+    isSelecting.value = true
+    selectionStart.value = event.point
+    selectionEnd.value = point
   }
 
   const handleMouseMove = (event: any) => {

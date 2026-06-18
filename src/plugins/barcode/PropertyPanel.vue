@@ -21,6 +21,7 @@
   <div>
     <label class="vkedit-property__label">高度</label>
     <VkInputNumberMM
+      :min="1"
       :model-value="element.barcodeHeightMM"
       @update:model-value="(value) => batchUpdateProperty(selection, 'barcodeHeightMM', value)"
     />
@@ -28,6 +29,7 @@
   <div>
     <label class="vkedit-property__label">宽度(条纹)</label>
     <VkInputNumberMM
+      :min="0.1"
       :model-value="element.barcodeWidthMM"
       :step="0.01"
       @update:model-value="(value) => batchUpdateProperty(selection, 'barcodeWidthMM', value)"

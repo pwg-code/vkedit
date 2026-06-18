@@ -68,6 +68,25 @@ export class BarcodeElement extends BaseGraphicElement {
     return Math.round(this.barcodeWidthMM * this.host.status.dpm)
   }
 
+  getTransformAttr(event: any): { oldAttrs: any; newAttrs: any } {
+    const eAttrs = event.target.attrs
+    const oldAttrs = {
+      x: this.x,
+      y: this.y,
+      rotation: this.rotation,
+      scaleX: 1,
+      scaleY: 1,
+    }
+    const newAttrs = {
+      x: Math.round(eAttrs.x),
+      y: Math.round(eAttrs.y),
+      rotation: Math.round(eAttrs.rotation),
+      scaleX: 1,
+      scaleY: 1,
+    }
+    return { oldAttrs, newAttrs }
+  }
+
   deserialize(data: any): void {
     super.deserialize(data)
     this.content = data.content
@@ -105,7 +124,7 @@ export class BarcodeElement extends BaseGraphicElement {
         background: this.background ?? '#fff',
         height: this.barcodeHeight,
         width: this.barcodeWidth,
-        displayValue: this.displayValue,
+        displayValue: false,
         fontSize: this.fontSize,
         fontOptions: 'bold',
         margin: this.margin,

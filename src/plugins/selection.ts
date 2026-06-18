@@ -43,21 +43,31 @@ export class SelectionPlugin extends BasePlugin {
     this.host.off('stage:mouseup', this.handleMouseUp.bind(this))
     this.host.off('element:added', this.handleElementAdded.bind(this))
     this.host.off('element:removed', this.handleElementRemoved.bind(this))
-    this.host.on('stage:mouseleave', this.handleMouseUp.bind(this))
+    this.host.off('stage:mouseleave', this.handleMouseUp.bind(this))
   }
 
   private handleMouseDown(event: any): void {
-    // 如果按下的不是左键则不做任何操作
     if (event.evt.button !== 0) return
 
     if (!this.host || this.host.status.currentTool !== 'select') return
+
+    if (this.isClickOnTransformer(event)) return
+
     this.selectionStart = event.point
     this.selectionEnd = event.point
-    // 如果点击的是不是元素则开始范围选择
     this.mouseDownId = this.getClickElementId(event)
     if (!this.mouseDownId) {
       this.isSelecting = true
     }
+  }
+
+  private isClickOnTransformer(event: any): boolean {
+    let node = event.target
+    while (node) {
+      if (node.getClassName && node.getClassName() === 'Transformer') return true
+      node = node.parent
+    }
+    return false
   }
 
   private handleMouseMove(event: any): void {
@@ -151,11 +161,13 @@ export class SelectionPlugin extends BasePlugin {
     return elementIds
   }
 
-  /* 获取点击的元素 */
+  /* 获取点击的元素（向上遍历祖先，以支持 v-group 结构的元素命中 group 上的 id） */
   private getClickElementId(event: any): string | null {
-    const elementId = event.target.attrs.id
-    if (elementId) {
-      return elementId
+    let node = event.target
+    while (node) {
+      const id = node.attrs?.id
+      if (id) return id
+      node = node.parent
     }
     return null
   }

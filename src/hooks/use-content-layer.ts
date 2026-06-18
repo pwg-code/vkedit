@@ -8,6 +8,18 @@ import { type IGraphicElement } from '@/types'
 import { type EditorHost } from '@/core'
 import { TransformElementCommand } from '@/commands'
 
+const DEFAULT_ANCHORS = [
+  'top-left',
+  'top-right',
+  'bottom-left',
+  'bottom-right',
+  'middle-left',
+  'middle-right',
+  'top-center',
+  'bottom-center',
+]
+const CORNER_ANCHORS = ['top-left', 'top-right', 'bottom-left', 'bottom-right']
+
 export function useContentLayer(host: EditorHost) {
   // 图层
   const contentLayerRef = ref()
@@ -59,6 +71,17 @@ export function useContentLayer(host: EditorHost) {
     const transformerNode = transformerRef.value.getNode()
     if (transformerNode) {
       transformerNode.nodes(nodes)
+      const hasBarcode = selection.some((e) => e.type === 'barcode')
+      const hasNonBarcode = selection.some((e) => e.type !== 'barcode')
+      const isSingleQrcode = selection.length === 1 && selection[0].type === 'qr'
+      if (hasBarcode && !hasNonBarcode) {
+        transformerNode.enabledAnchors([])
+      } else if (isSingleQrcode) {
+        transformerNode.enabledAnchors(CORNER_ANCHORS)
+      } else {
+        transformerNode.enabledAnchors(DEFAULT_ANCHORS)
+      }
+      transformerNode.rotateEnabled(true)
     }
   }
 
@@ -75,12 +98,10 @@ export function useContentLayer(host: EditorHost) {
       command = new TransformElementCommand(host, element, oldAttrs, newAttrs)
     }
 
-    // 首次转换入栈
     if (!isTransforming) {
       isTransforming = true
       host.executeCommand(command)
     } else {
-      // 中间态不入栈 直接更新属性
       command.execute()
     }
   }
