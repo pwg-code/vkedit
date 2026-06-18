@@ -2,7 +2,7 @@
   <div>
     <VkDropdown>
       <template #trigger>
-        <VkButton variant="ghost" title="下载">
+        <VkButton variant="ghost" title="导出">
           <VkIcon name="file-export-outline" :size="25" />
         </VkButton>
       </template>
