@@ -147,6 +147,10 @@ export function useStageEvent(host: EditorHost) {
   }
 
   function handleKeyDown(event: any) {
+    // 方向键在画布聚焦时用于移动选中元素，阻止浏览器默认滚动行为
+    if (event.code === 'ArrowLeft' || event.code === 'ArrowRight' || event.code === 'ArrowUp' || event.code === 'ArrowDown') {
+      event.preventDefault()
+    }
     host.emit('stage:keydown', { evt: event, source: 'use-stage-event', timestamp: Date.now() })
     if (event.code == 'Delete') {
       host.emit('stage:keydown-delete', {

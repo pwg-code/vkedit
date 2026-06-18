@@ -68,21 +68,31 @@ async function startEdit() {
 function commitEdit(e: Event) {
   const val = parseFloat((e.target as HTMLInputElement).value)
   if (!isNaN(val)) {
-    emit('update:modelValue', clampIfMin(val * props.dpm))
+    emit('update:modelValue', clampIfMin(round(val * props.dpm, 2)))
   }
   isEdit.value = false
 }
 
 function increment() {
-  emit('update:modelValue', props.modelValue + props.step * props.dpm)
+  emit('update:modelValue', round(props.modelValue + props.step * props.dpm, 2))
 }
 
 function decrement() {
-  const next = props.modelValue - props.step * props.dpm
+  const next = round(props.modelValue - props.step * props.dpm, 2)
   if (props.min === undefined || next >= props.min) {
     emit('update:modelValue', next)
   }
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.vkedit-input-mm__input::-webkit-outer-spin-button,
+.vkedit-input-mm__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.vkedit-input-mm__input {
+  -moz-appearance: textfield;
+}
+</style>

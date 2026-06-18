@@ -1,5 +1,5 @@
 <template>
-  <v-group :config="groupConfig">
+  <v-group :config="groupConfig()">
     <v-image v-if="image" :config="imageConfig" />
     <v-text v-if="element.displayValue && image" :config="textConfig" />
   </v-group>
@@ -43,7 +43,8 @@ watch(
 )
 
 // 整体变换配置：id 放在 group 上，供 transformer.findOne('#id') 与 selection 命中
-const groupConfig = computed(() => ({
+// 使用普通函数而非 computed，因为 element 是非响应式类实例，computed 无法追踪其属性变化
+const groupConfig = () => ({
   id: element.id,
   x: element.x,
   y: element.y,
@@ -52,7 +53,7 @@ const groupConfig = computed(() => ({
   scaleY: element.scaleY,
   draggable: element.draggable,
   visible: element.visible,
-}))
+})
 
 // 条纹位图：相对 group 原点 (0,0) 放置，尺寸取 canvas 实际像素
 const imageConfig = computed(() => ({
