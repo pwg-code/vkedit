@@ -1,6 +1,6 @@
 import { BasePlugin } from '../../types/base-plugin'
 import { type IGraphicElement } from '../../types'
-import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
+import { BaseGraphicElement, CORNER_ANCHORS, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import type { Component } from 'vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
@@ -44,6 +44,7 @@ export class QrcodeElement extends BaseGraphicElement {
     this.foreground = options.foreground ?? this.foreground
     this.background = options.background ?? this.background
     this.marginMM = options.marginMM ?? this.marginMM
+    this.resizeAnchors = CORNER_ANCHORS
   }
 
   deserialize(data: any): void {

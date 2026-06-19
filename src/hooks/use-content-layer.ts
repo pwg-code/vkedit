@@ -4,21 +4,9 @@
 
 import { computed, ref } from 'vue'
 import { useZoom } from './use-zoom'
-import { type IGraphicElement } from '@/types'
+import { type IGraphicElement, DEFAULT_ANCHORS } from '@/types'
 import { type EditorHost } from '@/core'
 import { TransformElementCommand } from '@/commands'
-
-const DEFAULT_ANCHORS = [
-  'top-left',
-  'top-right',
-  'bottom-left',
-  'bottom-right',
-  'middle-left',
-  'middle-right',
-  'top-center',
-  'bottom-center',
-]
-const CORNER_ANCHORS = ['top-left', 'top-right', 'bottom-left', 'bottom-right']
 
 export function useContentLayer(host: EditorHost) {
   // 图层
@@ -71,15 +59,14 @@ export function useContentLayer(host: EditorHost) {
     const transformerNode = transformerRef.value.getNode()
     if (transformerNode) {
       transformerNode.nodes(nodes)
-      const hasBarcode = selection.some((e) => e.type === 'barcode')
-      const hasNonBarcode = selection.some((e) => e.type !== 'barcode')
-      const isSingleQrcode = selection.length === 1 && selection[0].type === 'qr'
-      if (hasBarcode && !hasNonBarcode) {
-        transformerNode.enabledAnchors([])
-      } else if (isSingleQrcode) {
-        transformerNode.enabledAnchors(CORNER_ANCHORS)
-      } else {
-        transformerNode.enabledAnchors(DEFAULT_ANCHORS)
+      const resolveAnchors = (e: IGraphicElement): string[] | null =>
+        e.resizeAnchors === undefined ? DEFAULT_ANCHORS : e.resizeAnchors
+      if (selection.length === 1) {
+        const anchors = resolveAnchors(selection[0])
+        transformerNode.enabledAnchors(anchors === null ? [] : anchors)
+      } else if (selection.length > 1) {
+        const allDisabled = selection.every((e) => resolveAnchors(e) === null)
+        transformerNode.enabledAnchors(allDisabled ? [] : DEFAULT_ANCHORS)
       }
       transformerNode.rotateEnabled(true)
     }

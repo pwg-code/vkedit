@@ -68,7 +68,6 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@iconify/vue": "^5.0.0",
     "@tsconfig/node22": "^22.0.2",
     "@types/lodash": "^4.17.20",
     "@types/node": "^22.16.5",

@@ -53,6 +53,7 @@ export class BarcodeElement extends BaseGraphicElement {
     this.displayValue = options.displayValue ?? this.displayValue
     this.fontSizeMM = options.fontSizeMM ?? this.fontSizeMM
     this.marginMM = options.marginMM ?? this.marginMM
+    this.resizeAnchors = null
   }
 
   public get fontSize() {

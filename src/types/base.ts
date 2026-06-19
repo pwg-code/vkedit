@@ -40,6 +40,7 @@ export interface IGraphicElement {
   locked: boolean
   draggable: boolean
   transferable: boolean
+  resizeAnchors?: string[] | null
   getBoundingBox(): BoundingBox
   clone(): IGraphicElement
   serialize(): any
