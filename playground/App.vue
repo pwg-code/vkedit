@@ -59,7 +59,17 @@ function redraw() {
   host.emit('stage:redraw', {})
 }
 
-onMounted(() => {})
+onMounted(() => {
+  // 测试：监听双击事件，将信息输出到控制台
+  host.on('stage:dblclick', (event) => {
+    console.group('🔥 stage:dblclick')
+    console.log('坐标:', event.point)
+    console.log('元素ID:', event.elementId)
+    console.log('元素:', event.element)
+    console.log('时间戳:', event.timestamp)
+    console.groupEnd()
+  })
+})
 </script>
 
 <style scoped>

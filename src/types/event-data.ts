@@ -125,6 +125,12 @@ export interface StageMouseEventData extends BaseStageEventData {
   evt: MouseEvent
 }
 
+// Stage双击事件数据（包含双击位置对应的元素信息）
+export interface StageDblClickEventData extends StageMouseEventData {
+  element: IGraphicElement | null
+  elementId: string | null
+}
+
 // Stage按键事件数据
 export interface StageKeyboardEventData extends BaseEventData {
   evt: KeyboardEvent

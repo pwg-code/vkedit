@@ -14,6 +14,7 @@ import type {
   AlignEventData,
   LayerOrderEventData,
   ElementUpdateEventData,
+  StageDblClickEventData,
   StageMouseEventData,
   StageKeyboardEventData,
   ElementRegisteredEventData,
@@ -59,7 +60,7 @@ export interface EventMap {
   'stage:mousemove': (payload: StageMouseEventData) => void
   'stage:mouseup': (payload: StageMouseEventData) => void
   'stage:click': (payload: StageMouseEventData) => void
-  'stage:dblclick': (payload: StageMouseEventData) => void
+  'stage:dblclick': (payload: StageDblClickEventData) => void
   'stage:contextmenu': (payload: StageMouseEventData) => void
   'stage:mouseenter': (payload: StageMouseEventData) => void
   'stage:mouseleave': (payload: StageMouseEventData) => void

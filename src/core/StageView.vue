@@ -17,6 +17,7 @@
       @mouseup="handleMouseUp"
       @wheel="handleWheel"
       @click="handleClick"
+      @dblclick="handleDblClick"
       @contextmenu="handleContextmenu"
     >
       <BgLayer :host="host"></BgLayer>
@@ -54,6 +55,7 @@ const { handleWheel: handleWheelZoom } = useZoom(props.host)
 
 const {
   handleClick,
+  handleDblClick,
   handleMouseDown,
   handleMouseMove,
   handleMouseUp,

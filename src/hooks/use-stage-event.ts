@@ -1,4 +1,4 @@
-import type { Point2D } from '@/types'
+import type { IGraphicElement, Point2D } from '@/types'
 import type { EditorHost } from '@/core'
 import { ref } from 'vue'
 import { useStage, useHostState, useZoom } from '@/hooks'
@@ -44,6 +44,19 @@ export function useStageEvent(host: EditorHost) {
   const handleClick = (event: any) => {
     const point = getEventPoint(event)
     host.emit('stage:click', { point, ...event, source: 'use-stage-event', timestamp: Date.now() })
+  }
+
+  const handleDblClick = (event: any) => {
+    const point = getEventPoint(event)
+    const { element, elementId } = getEventElement(event)
+    host.emit('stage:dblclick', {
+      ...event,
+      point,
+      element,
+      elementId,
+      source: 'use-stage-event',
+      timestamp: Date.now(),
+    })
   }
 
   const handleMouseDown = (event: any) => {
@@ -203,11 +216,43 @@ export function useStageEvent(host: EditorHost) {
     }
   }
 
+  function getEventElement(event: any): {
+    element: IGraphicElement | null
+    elementId: string | null
+  } {
+    try {
+      const elementsPlugin = host.getPlugin('element-manager-plugin')
+      let node = event.target
+
+      while (node) {
+        const elementId = node.attrs?.id
+
+        if (elementId && elementsPlugin?.elements.has(elementId)) {
+          return {
+            element: elementsPlugin.getElement(elementId),
+            elementId,
+          }
+        }
+
+        if (node === event.currentTarget) break
+        node = node.getParent?.()
+      }
+    } catch {
+      // 非元素节点（如背景、未安装插件等情况）时静默返回 null
+    }
+
+    return {
+      element: null,
+      elementId: null,
+    }
+  }
+
   return {
     stageWrapperRef,
     transformOrigin,
     hostState,
     handleClick,
+    handleDblClick,
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
