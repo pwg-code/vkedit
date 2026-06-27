@@ -66,6 +66,17 @@ export class KeyDownPlugin extends BasePlugin {
 
     if (evt.code === 'Delete') {
       this.deleteSelectionElement()
+      return
+    }
+
+    // F5: Esc 清空选择（输入框聚焦时不响应）
+    if (evt.code === 'Escape') {
+      if (this.isInputFocused()) return
+      const selector = this.host.getPlugin('selection-plugin')
+      if (selector.getSelectionElements().length > 0) {
+        selector.clearSelection()
+      }
+      return
     }
   }
 
