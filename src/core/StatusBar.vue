@@ -38,7 +38,7 @@ const { host } = defineProps<{ host: EditorHost }>()
 
 const { hostState } = useHostState(host)
 const { zoom, handleZoomIn, handleZoomOut, handleZoomAuto, contentX, contentY } = useZoom(host)
-const { currentCursorMode, mouseStageX, mouseStageY } = useStage()
+const { currentCursorMode, mouseStageX, mouseStageY } = useStage(host)
 
 const isMouseInCanvas = ref(true)
 

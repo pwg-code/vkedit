@@ -31,7 +31,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useElementSize } from '@vueuse/core'
 import type { EditorHost } from '@/core'
 import type { CursorMode } from '@/types'
 import { useStageEvent, useStage, useZoom } from '@/hooks'
@@ -49,8 +50,18 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { stageRef, stageWrapperRef, stageConfig } = useStage()
-const { currentCursorMode, spacePressed, isPanning } = useStage()
+// DOM 引用由本组件本地持有（绑定模板 ref），不再走全局 store
+const stageRef = ref()
+const stageWrapperRef = ref<HTMLElement | null>(null)
+const { width: vpWidth, height: vpHeight } = useElementSize(stageWrapperRef)
+
+// 同步视口尺寸到 host.stageState（供下游 hook 响应式读取）
+watch([vpWidth, vpHeight], () => {
+  props.host.stageState.viewportWidth = vpWidth.value
+  props.host.stageState.viewportHeight = vpHeight.value
+}, { immediate: true })
+
+const { stageConfig, currentCursorMode, spacePressed, isPanning } = useStage(props.host)
 const { handleWheel: handleWheelZoom } = useZoom(props.host)
 
 const {
@@ -103,6 +114,7 @@ const handleWindowBlur = () => {
 
 onMounted(() => {
   props.host.stage = stageRef.value
+  props.host.stageState.wrapperEl = stageWrapperRef.value
   window.addEventListener('blur', handleWindowBlur)
   window.addEventListener('keydown', handleSpaceDown)
   window.addEventListener('keyup', handleSpaceUp)

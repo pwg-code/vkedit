@@ -90,6 +90,22 @@ export interface IEditorState {
   dpm: number
 }
 
+// 舞台交互状态（非序列化，按 EditorHost 实例隔离）
+export interface IStageState {
+  // 视口尺寸（由 StageView 测量后同步写入，区别于 IEditorState.width/height 文档画布尺寸）
+  viewportWidth: number
+  viewportHeight: number
+  // 舞台外层 DOM 元素（由 StageView 在 onMounted 写入，供 hook 读取）
+  wrapperEl: HTMLElement | null
+  currentCursorMode: CursorMode
+  mouseStageX: number
+  mouseStageY: number
+  spacePressed: boolean
+  isPanning: boolean
+  offsetX: number
+  offsetY: number
+}
+
 // 工具接口
 export interface IToolbar {
   name: string

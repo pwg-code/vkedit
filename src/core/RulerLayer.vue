@@ -33,14 +33,14 @@ const {
   rulerLayerConfig,
   leftRulerShapeRef,
   upRulerShapeRef,
-} = useRulerLayer()
+} = useRulerLayer(host)
 
 const { hostState } = useHostState(host)
 
 const { contentX, contentY, zoom } = useZoom(host)
 
 // 获取舞台宽高
-const { width, height } = useStage()
+const { width, height } = useStage(host)
 
 // 比例、内容宽高\滚动 变化时 更新标尺位置
 watch(

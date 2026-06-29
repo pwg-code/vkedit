@@ -5,7 +5,7 @@ import { useStage, useHostState, useZoom } from '@/hooks'
 
 export function useStageEvent(host: EditorHost) {
   const { hostState } = useHostState(host)
-  const { stageWrapperRef, currentCursorMode, spacePressed, mouseStageX, mouseStageY, isPanning } = useStage()
+  const { currentCursorMode, spacePressed, mouseStageX, mouseStageY, isPanning } = useStage(host)
   const { handlePanByPixels } = useZoom(host)
 
   const transformOrigin = ref({ x: 0, y: 0 })
@@ -248,7 +248,6 @@ export function useStageEvent(host: EditorHost) {
   }
 
   return {
-    stageWrapperRef,
     transformOrigin,
     hostState,
     handleClick,

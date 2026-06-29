@@ -8,7 +8,7 @@ import { useZoom } from './use-zoom'
 import type { EditorHost } from '@/core'
 
 export function useBgLayer(host: EditorHost) {
-  const { width, height } = useStage()
+  const { width, height } = useStage(host)
   const { contentHeight, contentWidth, contentX, contentY } = useZoom(host)
 
   const bgLayerConfig = computed(() => {

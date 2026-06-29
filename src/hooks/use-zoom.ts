@@ -4,7 +4,7 @@ import { useHostState, useStage } from '@/hooks'
 
 export function useZoom(host: EditorHost) {
   const { hostState } = useHostState(host)
-  const { width, height, offsetX, offsetY } = useStage()
+  const { width, height, offsetX, offsetY } = useStage(host)
 
   const contentWidth = computed(() => hostState.width * hostState.zoom)
   const contentHeight = computed(() => hostState.height * hostState.zoom)

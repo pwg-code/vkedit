@@ -1,6 +1,6 @@
 {
   "name": "vkedit",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "private": false,
   "type": "module",
   "engines": {
@@ -28,7 +28,6 @@
   },
   "peerDependencies": {
     "konva": "^10.0.2",
-    "pinia": "^3.0.3",
     "vue": "^3.5.18",
     "vue-konva": "^3.2.6"
   },
@@ -63,11 +62,11 @@
     "ruler",
     "zoom",
     "drag",
-    "pinia",
     "component"
   ],
   "license": "MIT",
   "devDependencies": {
+    "@iconify/vue": "^5.0.0",
     "@tsconfig/node22": "^22.0.2",
     "@types/lodash": "^4.17.20",
     "@types/node": "^22.16.5",
@@ -80,7 +79,6 @@
     "jiti": "^2.4.2",
     "lucide-vue-next": "^0.546.0",
     "npm-run-all2": "^8.0.4",
-    "pinia": "^3.0.3",
     "prettier": "3.6.2",
     "primevue": "^4.4.1",
     "sass-embedded": "^1.83.0",

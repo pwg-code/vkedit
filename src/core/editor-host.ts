@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import type { IEditorPlugin, IEditorState, EventMap, PluginEventData, PluginMap } from '../types'
+import type { IEditorPlugin, IEditorState, IStageState, EventMap, PluginEventData, PluginMap } from '../types'
 import { EventUtils } from '../types/event-data'
 import type { ICommand } from '@/commands/i-command'
 import { RectPlugin, TextPlugin } from '@/plugins'
@@ -25,6 +25,21 @@ export class EditorHost {
     wmm: 50,
     hmm: 50,
     dpm: 8,
+  })
+
+  // 舞台交互状态（非序列化，按实例隔离）：视口尺寸、DOM 引用、交互态
+  // 注意：不进入 toJSON / loadJSON，保证序列化结构向后兼容
+  public stageState = reactive<IStageState>({
+    viewportWidth: 0,
+    viewportHeight: 0,
+    wrapperEl: null,
+    currentCursorMode: 'default',
+    mouseStageX: 0,
+    mouseStageY: 0,
+    spacePressed: false,
+    isPanning: false,
+    offsetX: 0,
+    offsetY: 0,
   })
 
   // 事件系统

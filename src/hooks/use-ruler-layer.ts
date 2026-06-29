@@ -4,9 +4,10 @@
 
 import { computed, ref } from 'vue'
 import { useStage } from './use-stage'
+import type { EditorHost } from '@/core'
 
-export function useRulerLayer() {
-  const { width, height } = useStage()
+export function useRulerLayer(host: EditorHost) {
+  const { width, height } = useStage(host)
 
   const rulerLayerRef = ref()
   const upRulerShapeRef = ref()

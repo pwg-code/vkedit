@@ -8,7 +8,7 @@ import type { Point2D } from '@/types'
 import type { EditorHost } from '@/core'
 
 export function useSelectionLayer(host: EditorHost) {
-  const { width, height } = useStage()
+  const { width, height } = useStage(host)
   const isSelecting = ref(false)
   const selectionStart = ref<Point2D>({ x: 0, y: 0 })
   const selectionEnd = ref<Point2D>({ x: 0, y: 0 })
