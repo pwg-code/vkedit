@@ -33,6 +33,12 @@ export function useBgLayer(host: EditorHost) {
       width: contentWidth.value,
       height: contentHeight.value,
       fill: 'rgba(255, 255, 255, 1)',
+      cornerRadius: 8,
+      shadowColor: 'rgba(0, 0, 0, 0.4)',
+      shadowBlur: 24,
+      shadowOffsetX: 0,
+      shadowOffsetY: 6,
+      shadowOpacity: 0.6,
       listening: false,
     }
   })
