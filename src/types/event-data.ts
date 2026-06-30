@@ -141,6 +141,13 @@ export interface StatusEventData extends BaseEventData {
   status: IEditorState
 }
 
+export interface ElementDragEventData extends BaseEventData {
+  element: IGraphicElement
+  elementId: string
+  target: any
+  evt: MouseEvent | undefined
+}
+
 // (plugin-specific event payload types moved to their plugin's types.d.ts files)
 
 /**

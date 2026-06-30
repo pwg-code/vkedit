@@ -10,6 +10,8 @@
         :is="host.getPlugin('graphic-manager-plugin')?.getElementComponent(element.type)"
         :element="element"
         :host="host"
+        @dragstart="handleDragStart($event, element)"
+        @dragmove="handleDragMove($event, element)"
         @dragend="handleDragEnd($event, element)"
         @transformend="handleElementTransformEnd($event, element)"
         @transform="handleElementTransform($event, element)"
@@ -36,6 +38,8 @@ const {
   transformerRef,
   contentGroupConfig,
   elements,
+  handleDragStart,
+  handleDragMove,
   handleDragEnd,
   handleElementTransform,
   handleElementTransformEnd,

@@ -21,7 +21,10 @@
       @contextmenu="handleContextmenu"
     >
       <BgLayer :host="host"></BgLayer>
-      <ContentLayer :host="host"> <SelectionLayer :host="host"></SelectionLayer></ContentLayer>
+      <ContentLayer :host="host">
+        <SelectionLayer :host="host"></SelectionLayer>
+        <GuideLayer :host="host"></GuideLayer>
+      </ContentLayer>
       <RulerLayer :host="host"></RulerLayer>
     </v-stage>
     <StatusBar :host="host"></StatusBar>
@@ -41,6 +44,7 @@ import BgLayer from './BgLayer.vue'
 import RulerLayer from './RulerLayer.vue'
 import ContentLayer from './ContentLayer.vue'
 import SelectionLayer from './SelectionLayer.vue'
+import GuideLayer from './GuideLayer.vue'
 import ContextMenu from './ContextMenu.vue'
 import HelpGuide from './HelpGuide.vue'
 

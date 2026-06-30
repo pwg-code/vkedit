@@ -1,5 +1,6 @@
 import type {
   BaseEventData,
+  ElementDragEventData,
   ElementEventData,
   SelectionEventData,
   TransformEventData,
@@ -100,6 +101,11 @@ export interface EventMap {
   'element:locked-change': (payload: ElementEventData) => void
   'element:visibility-change': (payload: ElementEventData) => void
   'element:zindex-change': (payload: ElementEventData) => void
+
+  // 元素拖拽过程
+  'element:dragstart': (payload: ElementDragEventData) => void
+  'element:dragmove': (payload: ElementDragEventData) => void
+  'element:dragend': (payload: ElementDragEventData) => void
 
   // 选择
   'selection:changed': (payload: SelectionEventData) => void
