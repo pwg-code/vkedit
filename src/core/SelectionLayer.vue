@@ -85,6 +85,7 @@ onMounted(() => {
   host.on('stage:mouseleave', handlePMouseleave)
   host.on('selection:changed', handleSelectionChanged)
   host.on('elements:align', handleElementsAlign)
+  host.on('elements:distribute', handleElementsAlign)
   host.on('element:updated', handleElementUpdated)
 })
 </script>

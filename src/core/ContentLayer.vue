@@ -58,6 +58,7 @@ onMounted(() => {
   host.on('element:transformed', initElements)
   host.on('element:updated', updateCanvas)
   host.on('elements:align', updateCanvas)
+  host.on('elements:distribute', updateCanvas)
 
   // 将内容图层赋值给宿主  以便其他插件使用
   host.contentLayer = contentLayerRef.value

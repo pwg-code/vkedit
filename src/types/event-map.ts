@@ -13,6 +13,7 @@ import type {
   ErrorEventData,
   PerformanceEventData,
   AlignEventData,
+  DistributeEventData,
   LayerOrderEventData,
   ElementUpdateEventData,
   StageDblClickEventData,
@@ -165,7 +166,7 @@ export interface EventMap {
 
   // 对齐分布
   'elements:align': (payload: AlignEventData) => void
-  'elements:distribute': (payload: BaseEventData) => void
+  'elements:distribute': (payload: DistributeEventData) => void
   'elements:group': (payload: BaseEventData) => void
   'elements:ungroup': (payload: BaseEventData) => void
   'elements:layer': (payload: LayerOrderEventData) => void

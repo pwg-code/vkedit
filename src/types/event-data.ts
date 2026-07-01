@@ -105,6 +105,12 @@ export interface AlignEventData extends BaseEventData {
   elementIds: string[]
 }
 
+// 等距分布事件数据
+export interface DistributeEventData extends BaseEventData {
+  direction: 'horizontal' | 'vertical'
+  elementIds: string[]
+}
+
 // 元素层级调整事件数据
 export interface LayerOrderEventData extends BaseEventData {
   elementId: string

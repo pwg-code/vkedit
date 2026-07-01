@@ -13,6 +13,7 @@ export * from './batch-command'
 export * from './change-layer-order-command'
 // 对齐分布命令
 export * from './align-elements-command'
+export * from './distribute-elements-command'
 // 组合命令
 export * from './clear-selection-command'
 
