@@ -31,11 +31,11 @@
   // ---- 排版 ----
   --vkedit-font-sans: ui-sans-serif, system-ui, sans-serif;
   --vkedit-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --vkedit-font-size-xs: 0.6875rem;
-  --vkedit-font-size-sm: 0.75rem;
-  --vkedit-font-size-base: 0.8125rem;
-  --vkedit-font-size-lg: 0.875rem;
-  --vkedit-font-size-xl: 1rem;
+  --vkedit-font-size-xs: 0.75rem;
+  --vkedit-font-size-sm: 0.8125rem;
+  --vkedit-font-size-base: 0.875rem;
+  --vkedit-font-size-lg: 0.9375rem;
+  --vkedit-font-size-xl: 1.0625rem;
   --vkedit-font-weight-medium: 500;
   --vkedit-font-weight-bold: 700;
 
@@ -63,7 +63,7 @@
   --vkedit-color-border-dark: rgba(255, 255, 255, 0.08);
   --vkedit-color-border-dark-hover: rgba(255, 255, 255, 0.15);
   --vkedit-color-text-dark: #e0e0e0;
-  --vkedit-color-text-dark-secondary: #999999;
+  --vkedit-color-text-dark-secondary: #c4c4c4;
   --vkedit-color-canvas-area: #1a1a2e;
   --vkedit-blur-panel: blur(12px);
   --vkedit-shadow-panel: 0 4px 16px rgba(0, 0, 0, 0.3);

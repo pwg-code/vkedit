@@ -11,7 +11,7 @@
   border-radius: 8px;
   box-shadow: var(--vkedit-shadow-panel);
   max-height: calc(100vh - 64px);
-  font-size: 12px;
+  font-size: var(--vkedit-font-size-sm);
   color: var(--vkedit-color-text-dark);
   transition: width 200ms ease;
   display: flex;

@@ -44,7 +44,7 @@
     -webkit-backdrop-filter: var(--vkedit-blur-panel, blur(12px));
     box-shadow: var(--vkedit-shadow-panel, 0 4px 16px rgba(0, 0, 0, 0.3));
     color: var(--vkedit-color-text-dark, #e0e0e0);
-    font-size: 13px;
+    font-size: var(--vkedit-font-size-base);
     user-select: none;
   }
 
@@ -57,7 +57,7 @@
   }
 
   &__title {
-    font-size: 15px;
+    font-size: var(--vkedit-font-size-xl);
     font-weight: 600;
   }
 
@@ -92,7 +92,7 @@
   }
 
   &__group-title {
-    font-size: 11px;
+    font-size: var(--vkedit-font-size-xs);
     font-weight: 600;
     color: #999;
     text-transform: uppercase;
@@ -110,13 +110,13 @@
 
   &__sep {
     color: #666;
-    font-size: 11px;
+    font-size: var(--vkedit-font-size-xs);
   }
 
   &__desc {
     margin-left: auto;
     color: #999;
-    font-size: 12px;
+    font-size: var(--vkedit-font-size-sm);
     white-space: nowrap;
   }
 }
@@ -132,7 +132,7 @@
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.08);
   font-family: inherit;
-  font-size: 11px;
+  font-size: var(--vkedit-font-size-xs);
   line-height: 1;
   color: #e0e0e0;
   white-space: nowrap;

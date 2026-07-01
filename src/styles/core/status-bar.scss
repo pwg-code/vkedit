@@ -16,7 +16,7 @@
   padding: 0 16px;
   height: 36px;
   color: #e0e0e0;
-  font-size: 12px;
+  font-size: var(--vkedit-font-size-sm);
   user-select: none;
   white-space: nowrap;
 
@@ -50,7 +50,7 @@
   }
 
   &__zoom-value {
-    font-size: 12px;
+    font-size: var(--vkedit-font-size-sm);
     font-weight: 500;
     min-width: 44px;
     text-align: center;
@@ -58,7 +58,7 @@
   }
 
   &__coords {
-    font-size: 12px;
+    font-size: var(--vkedit-font-size-sm);
     font-variant-numeric: tabular-nums;
     color: #e0e0e0;
     letter-spacing: 0.02em;
