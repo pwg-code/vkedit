@@ -34,29 +34,27 @@ A powerful, extensible graphic editor plugin library built on Vue 3 and Konva.js
 
 ```bash
 # Using npm
-npm install vkedit vue konva vue-konva pinia
+npm install vkedit vue konva vue-konva
 
 # Using pnpm
-pnpm add vkedit vue konva vue-konva pinia
+pnpm add vkedit vue konva vue-konva
 
 # Using yarn
-yarn add vkedit vue konva vue-konva pinia
+yarn add vkedit vue konva vue-konva
 ```
 
 ### Entry File Example (main.ts)
 
-In the project entry file `main.ts`, you need to properly configure the Vue application, Pinia state management, and VueKonva:
+In the project entry file `main.ts`, you need to properly configure the Vue application and VueKonva:
 
 ```typescript
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import App from './App.vue'
 import VueKonva from 'vue-konva'
 import 'vkedit/dist/vkedit.css' // Import vkedit styles
 
 const app = createApp(App)
 
-app.use(createPinia())
 app.use(VueKonva)
 app.mount('#app')
 ```
@@ -258,7 +256,6 @@ host.setStatus({
 | [Vue](https://vuejs.org/)                            | ^3.5.18 | Progressive JavaScript Framework |
 | [Konva.js](https://konvajs.org/)                     | ^10.0.2 | 2D Canvas Library                |
 | [vue-konva](https://www.npmjs.com/package/vue-konva) | ^3.2.6  | Vue 3 Binding                    |
-| [Pinia](https://pinia.vuejs.org/)                    | ^3.0.3  | Vue State Management             |
 | [TypeScript](https://www.typescriptlang.org/)        | ~5.8.0  | Type Safety                      |
 | [Vite](https://vitejs.dev/)                          | ^7.0.6  | Build Tool                       |
 
@@ -425,7 +422,7 @@ vkedit/
 │   │   ├── ScrollbarLayer.vue
 │   │   ├── ContextMenu.vue
 │   │   ├── Zoom.vue
-│   │   └── Toolbox.vue
+│   │   └── GraphicToolPanel.vue
 │   ├── hooks/             # Vue composition functions
 │   │   ├── use-host-state.ts
 │   │   ├── use-bg-layer.ts
@@ -466,7 +463,6 @@ vkedit/
 │   │   ├── chart/
 │   │   ├── line/
 │   │   └── context-menu-manager/
-│   ├── stores/            # Pinia state management
 │   ├── types/             # TypeScript type definitions
 │   │   ├── base-graphic-element.ts
 │   │   ├── base-graphic-type.ts
@@ -960,7 +956,7 @@ pnpm build
 | `pnpm type-check` | TypeScript type check      |
 | `pnpm lint`       | ESLint check and auto-fix  |
 | `pnpm format`     | Prettier format code       |
-| `pnpm build:css`  | Build CSS files            |
+| `pnpm build:css`  | Build CSS only (equivalent to build-only) |
 
 ### Developing Custom Plugins
 
@@ -1165,7 +1161,6 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file for
 - [Vue.js](https://vuejs.org/)
 - [Konva.js](https://konvajs.org/)
 - [vue-konva](https://www.npmjs.com/package/vue-konva)
-- [Pinia](https://pinia.vuejs.org/)
 
 ---
 

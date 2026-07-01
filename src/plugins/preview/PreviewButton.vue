@@ -1,18 +1,13 @@
 <template>
-  <Button @click="host.getPlugin('preview-plugin').handlePreview()" variant="ghost" title="预览">
-    <Icon icon="material-symbols-light:preview-outline" style="width: 25px; height: 25px"></Icon>
-  </Button>
+  <VkButton @click="host.getPlugin('preview-plugin').handlePreview()" variant="ghost" title="预览">
+    <VkIcon name="preview-outline" :size="25" />
+  </VkButton>
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { Icon } from '@iconify/vue'
-import { onMounted } from 'vue'
+import { VkButton, VkIcon } from '@/components/ui'
 
-// 接收host
 const { host } = defineProps<{
   host: import('@/core').EditorHost
 }>()
 </script>
-
-<style scoped></style>

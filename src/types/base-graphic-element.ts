@@ -3,6 +3,18 @@ import type { IGraphicElement } from '.'
 import type { EditorHost } from '@/core'
 import { v4 as uuidv4 } from 'uuid'
 
+export const DEFAULT_ANCHORS = [
+  'top-left',
+  'top-right',
+  'bottom-left',
+  'bottom-right',
+  'middle-left',
+  'middle-right',
+  'top-center',
+  'bottom-center',
+]
+export const CORNER_ANCHORS = ['top-left', 'top-right', 'bottom-left', 'bottom-right']
+
 export interface BaseGraphicElementOptions {
   xmm?: number
   ymm?: number
@@ -85,6 +97,8 @@ export abstract class BaseGraphicElement implements IGraphicElement {
   public locked: boolean = false
   public draggable: boolean = true
   public transferable: boolean = true
+  // 可用的缩放锚点；null 表示禁用所有缩放锚点（不可通过边框拖拽改变大小）
+  public resizeAnchors: string[] | null = DEFAULT_ANCHORS
   // host 在元素未加入 editor 时可能不存在，保持可选
 
   constructor(host: EditorHost, options: Partial<BaseGraphicElementOptions> = {}) {
@@ -108,7 +122,12 @@ export abstract class BaseGraphicElement implements IGraphicElement {
   }
 
   clone(): IGraphicElement {
-    throw new Error('Method not implemented.')
+    const snapshot = this.serialize()
+    const elementManager = this.host.getPlugin('element-manager-plugin')
+    const newElement = elementManager.createElement(this.type)
+    newElement.deserialize(snapshot)
+    newElement.id = uuidv4()
+    return newElement
   }
 
   getBoundingBox() {
@@ -122,7 +141,6 @@ export abstract class BaseGraphicElement implements IGraphicElement {
 
   deserialize(data: any): void {
     this.type = data.type
-    this.id = data.id
     this.xmm = data.xmm
     this.ymm = data.ymm
     this.wmm = data.wmm

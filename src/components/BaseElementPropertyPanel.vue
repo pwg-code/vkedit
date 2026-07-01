@@ -1,9 +1,9 @@
 <template>
-  <div class="text-xl font-bold pb-2">基础属性</div>
+  <div class="vkedit-property__title">基础属性</div>
   <div></div>
   <!-- <div class="grid grid-cols-2 gap-4 items-center py-3"> -->
   <div>
-    <Label>X</Label>
+    <VkLabel>X</VkLabel>
     <VkInputMM
       :step="0.1"
       :model-value="element.x"
@@ -17,7 +17,7 @@
     ></VkInputMM>
   </div>
   <div>
-    <Label>Y</Label>
+    <VkLabel>Y</VkLabel>
     <VkInputMM
       :step="0.1"
       :model-value="element.y"
@@ -31,7 +31,7 @@
     ></VkInputMM>
   </div>
   <div>
-    <Label>宽</Label>
+    <VkLabel>宽</VkLabel>
     <VkInputMM
       :step="0.1"
       :model-value="element.width"
@@ -42,7 +42,7 @@
   </div>
 
   <div>
-    <Label>高</Label>
+    <VkLabel>高</VkLabel>
     <VkInputMM
       :step="0.1"
       :model-value="element.height"
@@ -51,49 +51,31 @@
     ></VkInputMM>
   </div>
   <div>
-    <Label>缩放X</Label>
-    <NumberField
+    <VkLabel>缩放X</VkLabel>
+    <VkInputNumber
       :model-value="element.scaleX"
       :step="0.1"
       :min="0.5"
       @update:model-value="(value: any) => batchUpdateProperty(selection, 'scaleX', value)"
-    >
-      <NumberFieldContent>
-        <NumberFieldDecrement />
-        <NumberFieldInput />
-        <NumberFieldIncrement />
-      </NumberFieldContent>
-    </NumberField>
+    />
   </div>
   <div>
-    <Label>缩放Y</Label>
-    <NumberField
+    <VkLabel>缩放Y</VkLabel>
+    <VkInputNumber
       :model-value="element.scaleY"
       :step="0.1"
       :min="0.5"
       @update:model-value="(value: any) => batchUpdateProperty(selection, 'scaleY', value)"
-    >
-      <NumberFieldContent>
-        <NumberFieldDecrement />
-        <NumberFieldInput />
-        <NumberFieldIncrement />
-      </NumberFieldContent>
-    </NumberField>
+    />
   </div>
   <div>
-    <Label>角度</Label>
-    <NumberField
+    <VkLabel>角度</VkLabel>
+    <VkInputNumber
       :model-value="element.rotation"
       :min="0"
       :max="359"
       @update:model-value="(value: any) => batchUpdateProperty(selection, 'rotation', value)"
-    >
-      <NumberFieldContent>
-        <NumberFieldDecrement />
-        <NumberFieldInput />
-        <NumberFieldIncrement />
-      </NumberFieldContent>
-    </NumberField>
+    />
   </div>
   <div></div>
 </template>
@@ -101,17 +83,8 @@
 <script setup lang="ts">
 import type { BaseGraphicElement } from '@/types'
 import type { EditorHost } from '@/core'
-import { Label } from '@/components/ui/label'
-
-import {
-  NumberField,
-  NumberFieldContent,
-  NumberFieldDecrement,
-  NumberFieldIncrement,
-  NumberFieldInput,
-} from '@/components/ui/number-field'
+import { VkInputMM, VkInputNumber, VkLabel } from '@/components/ui'
 import { useHostState, usePropertyCommand } from '@/hooks'
-import { VkInputMM } from './ui'
 
 interface Props {
   host: EditorHost

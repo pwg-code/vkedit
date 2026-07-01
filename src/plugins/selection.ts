@@ -14,6 +14,8 @@ export class SelectionPlugin extends BasePlugin {
   private selectionIds: Set<string> = new Set()
   // 鼠标按下时按下的元素ID
   private mouseDownId: string | null = null
+  // 点击与拖动的位移阈值（px），小于此值视为「点击」
+  private static readonly CLICK_THRESHOLD = 3
   // 元素管理插件
   private elementsPlugin: ElementManagerPlugin | null = null
 
@@ -43,21 +45,31 @@ export class SelectionPlugin extends BasePlugin {
     this.host.off('stage:mouseup', this.handleMouseUp.bind(this))
     this.host.off('element:added', this.handleElementAdded.bind(this))
     this.host.off('element:removed', this.handleElementRemoved.bind(this))
-    this.host.on('stage:mouseleave', this.handleMouseUp.bind(this))
+    this.host.off('stage:mouseleave', this.handleMouseUp.bind(this))
   }
 
   private handleMouseDown(event: any): void {
-    // 如果按下的不是左键则不做任何操作
     if (event.evt.button !== 0) return
 
     if (!this.host || this.host.status.currentTool !== 'select') return
+
+    if (this.isClickOnTransformer(event)) return
+
     this.selectionStart = event.point
     this.selectionEnd = event.point
-    // 如果点击的是不是元素则开始范围选择
     this.mouseDownId = this.getClickElementId(event)
     if (!this.mouseDownId) {
       this.isSelecting = true
     }
+  }
+
+  private isClickOnTransformer(event: any): boolean {
+    let node = event.target
+    while (node) {
+      if (node.getClassName && node.getClassName() === 'Transformer') return true
+      node = node.parent
+    }
+    return false
   }
 
   private handleMouseMove(event: any): void {
@@ -67,26 +79,76 @@ export class SelectionPlugin extends BasePlugin {
   }
 
   private handleMouseUp(event: any): void {
-    // 如果开始范围选择 则框选
+    const modifier = this.isModifierPressed(event.evt)
+    const dragged = this.isDragged(event)
+
     if (this.isSelecting) {
-      // 根据框选的范围进行选
-      this.selectionIds = this.findElementsInRect(this.selectionStart, this.selectionEnd)
+      const rectIds = this.findElementsInRect(this.selectionStart, this.selectionEnd)
+      if (modifier && dragged) {
+        // F3: Ctrl/Shift + 拖拽框选 → 累加（并集）
+        rectIds.forEach((id) => this.selectionIds.add(id))
+      } else {
+        // 普通框选替换 / Ctrl+点击空白清空（dragged=false 时 rectIds 为空集 → 清空）
+        this.selectionIds = rectIds
+      }
       this.isSelecting = false
-      this.host?.emit('selection:changed', {
-        selection: this.getSelectedElements(),
-        source: 'selection-plugin',
-        timestamp: Date.now(),
-      })
-    } else if (this.mouseDownId && !this.selectionIds.has(this.mouseDownId)) {
-      // 点击的是元素且为为选择状态则清空选择后单选该元素
-      this.selectionIds.clear()
-      this.selectionIds.add(this.mouseDownId)
-      this.host?.emit('selection:changed', {
-        selection: this.getSelectedElements(),
-        source: 'selection-plugin',
-        timestamp: Date.now(),
-      })
+      this.emitSelectionChanged()
+    } else if (this.mouseDownId) {
+      const element = this.elementsPlugin?.elements.get(this.mouseDownId)
+      // F6: 锁定/隐藏元素不可选，静默忽略（不清空已有选择）
+      if (!element || element.locked || !element.visible) {
+        return
+      }
+
+      if (modifier && !dragged) {
+        // F1/F2: Ctrl/Cmd/Shift + 点击 → toggle 追加 / 减选
+        if (this.selectionIds.has(this.mouseDownId)) {
+          this.selectionIds.delete(this.mouseDownId)
+        } else {
+          this.selectionIds.add(this.mouseDownId)
+        }
+        this.emitSelectionChanged()
+      } else if (!modifier) {
+        if (
+          this.selectionIds.size > 1 &&
+          this.selectionIds.has(this.mouseDownId) &&
+          !dragged
+        ) {
+          // F4: 多选状态下普通点击已选元素 → 切换为单选
+          this.selectionIds.clear()
+          this.selectionIds.add(this.mouseDownId)
+          this.emitSelectionChanged()
+        } else if (!this.selectionIds.has(this.mouseDownId)) {
+          // 现有逻辑：清空后单选该元素
+          this.selectionIds.clear()
+          this.selectionIds.add(this.mouseDownId)
+          this.emitSelectionChanged()
+        }
+        // else: 单选且已选中 → 保持不变（便于拖动）
+      }
+      // else: 修饰键 + 拖动 → 保持选择，拖动交由 Transformer 处理
     }
+  }
+
+  // 判断是否按下修饰键 Ctrl/Cmd/Shift（三者等价，不区分）
+  private isModifierPressed(evt: MouseEvent): boolean {
+    return evt.ctrlKey || evt.metaKey || evt.shiftKey
+  }
+
+  // 判断从 mouseDown 到当前 mouseUp 是否发生拖动
+  private isDragged(event: any): boolean {
+    const dx = event.point.x - this.selectionStart.x
+    const dy = event.point.y - this.selectionStart.y
+    return Math.sqrt(dx * dx + dy * dy) > SelectionPlugin.CLICK_THRESHOLD
+  }
+
+  // 统一发出 selection:changed 事件
+  private emitSelectionChanged(): void {
+    this.host?.emit('selection:changed', {
+      selection: this.getSelectedElements(),
+      source: 'selection-plugin',
+      timestamp: Date.now(),
+    })
   }
 
   // 根据id集合返回选中的元素数组
@@ -151,11 +213,13 @@ export class SelectionPlugin extends BasePlugin {
     return elementIds
   }
 
-  /* 获取点击的元素 */
+  /* 获取点击的元素（向上遍历祖先，以支持 v-group 结构的元素命中 group 上的 id） */
   private getClickElementId(event: any): string | null {
-    const elementId = event.target.attrs.id
-    if (elementId) {
-      return elementId
+    let node = event.target
+    while (node) {
+      const id = node.attrs?.id
+      if (id) return id
+      node = node.parent
     }
     return null
   }

@@ -9,5 +9,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["env.d.ts", "src/**/*"]
 }

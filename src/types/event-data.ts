@@ -38,10 +38,13 @@ export interface ElementUpdateEventData extends ElementEventData {
   updatedProperties: string[]
 }
 
+export type ToolGroup = 'history' | 'tools' | 'actions'
+
 // 工具事件数据
 export interface ToolEventData extends BaseEventData {
   toolName: string
   render: () => Component
+  group?: ToolGroup
 }
 
 // 插件事件数据
@@ -102,6 +105,12 @@ export interface AlignEventData extends BaseEventData {
   elementIds: string[]
 }
 
+// 等距分布事件数据
+export interface DistributeEventData extends BaseEventData {
+  direction: 'horizontal' | 'vertical'
+  elementIds: string[]
+}
+
 // 元素层级调整事件数据
 export interface LayerOrderEventData extends BaseEventData {
   elementId: string
@@ -122,6 +131,12 @@ export interface StageMouseEventData extends BaseStageEventData {
   evt: MouseEvent
 }
 
+// Stage双击事件数据（包含双击位置对应的元素信息）
+export interface StageDblClickEventData extends StageMouseEventData {
+  element: IGraphicElement | null
+  elementId: string | null
+}
+
 // Stage按键事件数据
 export interface StageKeyboardEventData extends BaseEventData {
   evt: KeyboardEvent
@@ -130,6 +145,13 @@ export interface StageKeyboardEventData extends BaseEventData {
 // status changed event data
 export interface StatusEventData extends BaseEventData {
   status: IEditorState
+}
+
+export interface ElementDragEventData extends BaseEventData {
+  element: IGraphicElement
+  elementId: string
+  target: any
+  evt: MouseEvent | undefined
 }
 
 // (plugin-specific event payload types moved to their plugin's types.d.ts files)

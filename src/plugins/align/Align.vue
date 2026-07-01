@@ -1,38 +1,77 @@
 <template>
   <div>
-    <ButtonGroup>
-      <Button variant="ghost" @click="handleAlign('left')" title="左对齐">
-        <Icon icon="material-symbols-light:align-horizontal-left" width="25px" />
-      </Button>
-      <Button variant="ghost" @click="handleAlign('right')" title="右对齐">
-        <Icon icon="material-symbols-light:align-horizontal-right" width="25px" />
-      </Button>
-      <Button variant="ghost" @click="handleAlign('top')" title="上对齐">
-        <Icon icon="material-symbols-light:align-vertical-top" width="25px" />
-      </Button>
-      <Button variant="ghost" @click="handleAlign('bottom')" title="下对齐">
-        <Icon icon="material-symbols-light:align-vertical-bottom" width="25px" />
-      </Button>
-    </ButtonGroup>
+    <div class="vkedit-btn-group">
+      <VkButton variant="ghost" @click="handleAlign('left')" title="左对齐">
+        <VkIcon name="align-horizontal-left" :size="25" />
+      </VkButton>
+      <VkButton variant="ghost" @click="handleAlign('right')" title="右对齐">
+        <VkIcon name="align-horizontal-right" :size="25" />
+      </VkButton>
+      <VkButton variant="ghost" @click="handleAlign('top')" title="上对齐">
+        <VkIcon name="align-vertical-top" :size="25" />
+      </VkButton>
+      <VkButton variant="ghost" @click="handleAlign('bottom')" title="下对齐">
+        <VkIcon name="align-vertical-bottom" :size="25" />
+      </VkButton>
+      <VkButton
+        variant="ghost"
+        @click="handleDistribute('horizontal')"
+        :disabled="!canDistribute"
+        :title="canDistribute ? '水平等距分布' : '至少选择 3 个元素'"
+      >
+        <VkIcon name="distribute-horizontal" :size="25" />
+      </VkButton>
+      <VkButton
+        variant="ghost"
+        @click="handleDistribute('vertical')"
+        :disabled="!canDistribute"
+        :title="canDistribute ? '垂直等距分布' : '至少选择 3 个元素'"
+      >
+        <VkIcon name="distribute-vertical" :size="25" />
+      </VkButton>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import type { EditorHost } from '@/core'
-import type { SelectionPlugin } from '../selection'
-import { AlignElementsCommand } from '@/commands'
-import { Icon } from '@iconify/vue'
-import { ButtonGroup } from '@/components/ui/button-group'
-
-import { Button } from '@/components/ui/button'
+import type { IGraphicElement, SelectionEventData } from '@/types'
+import { AlignElementsCommand, DistributeElementsCommand } from '@/commands'
+import { VkButton, VkIcon } from '@/components/ui'
 
 const { host } = defineProps<{ host: EditorHost }>()
+
+const selectionElements = ref<IGraphicElement[]>([])
+
+const canDistribute = computed(() => {
+  const valid = selectionElements.value.filter((el) => el.visible && !el.locked)
+  return valid.length >= 3
+})
 
 function handleAlign(alignment: 'left' | 'right' | 'top' | 'bottom' | 'centerX' | 'centerY') {
   const ids = host.getPlugin('selection-plugin').getSelectionElementIds()
   if (!ids) return
   host.executeCommand(new AlignElementsCommand(host, alignment, ids))
 }
-</script>
 
-<style scoped></style>
+function handleDistribute(direction: 'horizontal' | 'vertical') {
+  const ids = host.getPlugin('selection-plugin').getSelectionElementIds()
+  if (!ids || ids.length < 3) return
+  host.executeCommand(new DistributeElementsCommand(host, direction, ids))
+}
+
+function handleSelectionChanged(data: SelectionEventData) {
+  selectionElements.value = data.selection
+}
+
+onMounted(() => {
+  const selectionPlugin = host.getPlugin('selection-plugin')
+  selectionElements.value = selectionPlugin.getSelectionElements()
+  host.on('selection:changed', handleSelectionChanged)
+})
+
+onUnmounted(() => {
+  host.off('selection:changed', handleSelectionChanged)
+})
+</script>

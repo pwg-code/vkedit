@@ -1,5 +1,5 @@
 <template>
-  <div class="text-xl font-bold pb-2">线条属性</div>
+  <div class="vkedit-property__title">线条属性</div>
   <div></div>
   <div>
     <Label>粗细</Label>
@@ -32,9 +32,7 @@
 <script setup lang="ts">
 import type { EditorHost } from '@/core'
 import type { LineElement } from './line'
-import { Label } from '@/components/ui/label'
-import { VkInputNumber } from '@/components/ui'
-import { VkInputNumberMM } from '../../components'
+import { VkLabel, VkInputNumber, VkInputNumberMM } from '@/components/ui'
 import { usePropertyCommand } from '@/hooks'
 
 interface Props {

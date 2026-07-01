@@ -1,8 +1,8 @@
 <template>
-  <div class="text-xl font-bold pb-2">矩形属性</div>
+  <div class="vkedit-property__title">矩形属性</div>
   <div></div>
   <div>
-    <Label>边框粗细</Label>
+    <VkLabel>边框粗细</VkLabel>
     <VkInputNumberMM
       :model-value="element.strokeWidthMM"
       :min="1"
@@ -15,8 +15,7 @@
 <script setup lang="ts">
 import type { EditorHost } from '@/core'
 import type { RectElement } from './rect'
-import { Label } from '@/components/ui/label'
-import { VkInputNumberMM } from '@/components/ui'
+import { VkLabel, VkInputNumberMM } from '@/components/ui'
 import { usePropertyCommand } from '@/hooks/use-property-command'
 
 interface Props {

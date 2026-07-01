@@ -53,6 +53,7 @@ export class BarcodeElement extends BaseGraphicElement {
     this.displayValue = options.displayValue ?? this.displayValue
     this.fontSizeMM = options.fontSizeMM ?? this.fontSizeMM
     this.marginMM = options.marginMM ?? this.marginMM
+    this.resizeAnchors = null
   }
 
   public get fontSize() {
@@ -66,6 +67,25 @@ export class BarcodeElement extends BaseGraphicElement {
   }
   public get barcodeWidth() {
     return Math.round(this.barcodeWidthMM * this.host.status.dpm)
+  }
+
+  getTransformAttr(event: any): { oldAttrs: any; newAttrs: any } {
+    const eAttrs = event.target.attrs
+    const oldAttrs = {
+      x: this.x,
+      y: this.y,
+      rotation: this.rotation,
+      scaleX: 1,
+      scaleY: 1,
+    }
+    const newAttrs = {
+      x: Math.round(eAttrs.x),
+      y: Math.round(eAttrs.y),
+      rotation: Math.round(eAttrs.rotation),
+      scaleX: 1,
+      scaleY: 1,
+    }
+    return { oldAttrs, newAttrs }
   }
 
   deserialize(data: any): void {
@@ -105,7 +125,7 @@ export class BarcodeElement extends BaseGraphicElement {
         background: this.background ?? '#fff',
         height: this.barcodeHeight,
         width: this.barcodeWidth,
-        displayValue: this.displayValue,
+        displayValue: false,
         fontSize: this.fontSize,
         fontOptions: 'bold',
         margin: this.margin,
@@ -115,7 +135,7 @@ export class BarcodeElement extends BaseGraphicElement {
       this.width = canvas.width
       this.height = canvas.height
     } catch (e) {
-      // eslint-disable-next-line no-console
+       
       console.error('JsBarcode render error', e)
     }
     return canvas

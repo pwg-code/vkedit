@@ -1,5 +1,6 @@
 import type {
   BaseEventData,
+  ElementDragEventData,
   ElementEventData,
   SelectionEventData,
   TransformEventData,
@@ -12,8 +13,10 @@ import type {
   ErrorEventData,
   PerformanceEventData,
   AlignEventData,
+  DistributeEventData,
   LayerOrderEventData,
   ElementUpdateEventData,
+  StageDblClickEventData,
   StageMouseEventData,
   StageKeyboardEventData,
   ElementRegisteredEventData,
@@ -59,7 +62,7 @@ export interface EventMap {
   'stage:mousemove': (payload: StageMouseEventData) => void
   'stage:mouseup': (payload: StageMouseEventData) => void
   'stage:click': (payload: StageMouseEventData) => void
-  'stage:dblclick': (payload: StageMouseEventData) => void
+  'stage:dblclick': (payload: StageDblClickEventData) => void
   'stage:contextmenu': (payload: StageMouseEventData) => void
   'stage:mouseenter': (payload: StageMouseEventData) => void
   'stage:mouseleave': (payload: StageMouseEventData) => void
@@ -99,6 +102,11 @@ export interface EventMap {
   'element:locked-change': (payload: ElementEventData) => void
   'element:visibility-change': (payload: ElementEventData) => void
   'element:zindex-change': (payload: ElementEventData) => void
+
+  // 元素拖拽过程
+  'element:dragstart': (payload: ElementDragEventData) => void
+  'element:dragmove': (payload: ElementDragEventData) => void
+  'element:dragend': (payload: ElementDragEventData) => void
 
   // 选择
   'selection:changed': (payload: SelectionEventData) => void
@@ -158,7 +166,7 @@ export interface EventMap {
 
   // 对齐分布
   'elements:align': (payload: AlignEventData) => void
-  'elements:distribute': (payload: BaseEventData) => void
+  'elements:distribute': (payload: DistributeEventData) => void
   'elements:group': (payload: BaseEventData) => void
   'elements:ungroup': (payload: BaseEventData) => void
   'elements:layer': (payload: LayerOrderEventData) => void

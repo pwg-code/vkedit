@@ -1,14 +1,25 @@
 <template>
-  <Button v-bind="$attrs" variant="outline" @click="handleClick">条码</Button>
+  <VkButton
+    v-bind="$attrs"
+    :variant="collapsed ? 'ghost' : 'outline'"
+    :size="collapsed ? 'icon' : 'default'"
+    :title="collapsed ? '条码' : undefined"
+    @click="handleClick"
+  >
+    <Icon v-if="collapsed" icon="material-symbols-light:barcode" width="18" />
+    <template v-else>条码</template>
+  </VkButton>
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+import { Icon } from '@iconify/vue'
+import { VkButton } from '@/components/ui'
 import { AddElementCommand } from '@/commands'
 import { BarcodeElement } from './barcode'
 
-const { host } = defineProps<{
+const { host, collapsed = false } = defineProps<{
   host: import('@/core').EditorHost
+  collapsed?: boolean
 }>()
 
 function handleClick() {

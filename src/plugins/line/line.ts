@@ -47,10 +47,9 @@ export class LineElement extends BaseGraphicElement {
     }
   }
 
-  clone(): IGraphicElement {
-    const newElement = new LineElement(this.host)
-    newElement.deserialize(this)
-    return newElement
+  deserialize(data: any): void {
+    super.deserialize(data)
+    this.stroke = data.stroke
   }
 
   serialize() {

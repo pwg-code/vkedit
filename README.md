@@ -46,29 +46,27 @@ vkedit 特别适用于**标签模板设计**、**二维码设计**、**条码设
 
 ```bash
 # 使用 npm
-npm install vkedit vue konva vue-konva pinia
+npm install vkedit vue konva vue-konva
 
 # 使用 pnpm
-pnpm add vkedit vue konva vue-konva pinia
+pnpm add vkedit vue konva vue-konva
 
 # 使用 yarn
-yarn add vkedit vue konva vue-konva pinia
+yarn add vkedit vue konva vue-konva
 ```
 
 ### 入口文件示例（main.ts）
 
-在项目入口文件 `main.ts` 中，需要正确配置 Vue 应用、Pinia 状态管理和 VueKonva：
+在项目入口文件 `main.ts` 中，需要正确配置 Vue 应用和 VueKonva：
 
 ```typescript
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
 import App from './App.vue'
 import VueKonva from 'vue-konva'
 import 'vkedit/dist/vkedit.css' // 导入 vkedit 样式
 
 const app = createApp(App)
 
-app.use(createPinia())
 app.use(VueKonva)
 app.mount('#app')
 ```
@@ -256,7 +254,6 @@ host.setStatus({
 | [Vue](https://vuejs.org/)                            | ^3.5.18 | 渐进式 JavaScript 框架 |
 | [Konva.js](https://konvajs.org/)                     | ^10.0.2 | 2D Canvas 库           |
 | [vue-konva](https://www.npmjs.com/package/vue-konva) | ^3.2.6  | Vue 3 绑定             |
-| [Pinia](https://pinia.vuejs.org/)                    | ^3.0.3  | Vue 状态管理           |
 | [TypeScript](https://www.typescriptlang.org/)        | ~5.8.0  | 类型安全               |
 | [Vite](https://vitejs.dev/)                          | ^7.0.6  | 构建工具               |
 
@@ -423,7 +420,7 @@ vkedit/
 │   │   ├── ScrollbarLayer.vue
 │   │   ├── ContextMenu.vue
 │   │   ├── Zoom.vue
-│   │   └── Toolbox.vue
+│   │   └── GraphicToolPanel.vue
 │   ├── hooks/             # Vue 组合式函数
 │   │   ├── use-host-state.ts
 │   │   ├── use-bg-layer.ts
@@ -464,7 +461,6 @@ vkedit/
 │   │   ├── chart/
 │   │   ├── line/
 │   │   └── context-menu-manager/
-│   ├── stores/            # Pinia 状态管理
 │   ├── types/             # TypeScript 类型定义
 │   │   ├── base-graphic-element.ts
 │   │   ├── base-graphic-type.ts
@@ -958,7 +954,7 @@ pnpm build
 | `pnpm type-check` | TypeScript 类型检查      |
 | `pnpm lint`       | ESLint 检查并自动修复    |
 | `pnpm format`     | Prettier 格式化代码      |
-| `pnpm build:css`  | 构建 CSS 文件            |
+| `pnpm build:css`  | 仅构建 CSS（等价于 build-only） |
 
 ### 开发自定义插件
 
@@ -1163,7 +1159,6 @@ chore: 构建/工具变动
 - [Vue.js](https://vuejs.org/)
 - [Konva.js](https://konvajs.org/)
 - [vue-konva](https://www.npmjs.com/package/vue-konva)
-- [Pinia](https://pinia.vuejs.org/)
 
 ---
 

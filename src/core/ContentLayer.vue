@@ -10,6 +10,8 @@
         :is="host.getPlugin('graphic-manager-plugin')?.getElementComponent(element.type)"
         :element="element"
         :host="host"
+        @dragstart="handleDragStart($event, element)"
+        @dragmove="handleDragMove($event, element)"
         @dragend="handleDragEnd($event, element)"
         @transformend="handleElementTransformEnd($event, element)"
         @transform="handleElementTransform($event, element)"
@@ -36,6 +38,8 @@ const {
   transformerRef,
   contentGroupConfig,
   elements,
+  handleDragStart,
+  handleDragMove,
   handleDragEnd,
   handleElementTransform,
   handleElementTransformEnd,
@@ -54,6 +58,7 @@ onMounted(() => {
   host.on('element:transformed', initElements)
   host.on('element:updated', updateCanvas)
   host.on('elements:align', updateCanvas)
+  host.on('elements:distribute', updateCanvas)
 
   // 将内容图层赋值给宿主  以便其他插件使用
   host.contentLayer = contentLayerRef.value

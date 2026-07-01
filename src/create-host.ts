@@ -1,11 +1,13 @@
 import { EditorHost } from './core/editor-host'
 import {
   AlignPlugin,
+  ClipboardPlugin,
   ElementManagerPlugin,
   ExportPlugin,
   KeyDownPlugin,
   PropertyPanelManagerPlugin,
   SelectionPlugin,
+  SnapPlugin,
   ToolbarManagerPlugin,
   PreviewPlugin,
   GraphicToolManagerPlugin,
@@ -42,6 +44,8 @@ export function createEditorHost({
     .installPlugin('element-manager-plugin', ElementManagerPlugin)
     .installPlugin('keydown-plugin', KeyDownPlugin)
     .installPlugin('selection-plugin', SelectionPlugin)
+    .installPlugin('snap-plugin', SnapPlugin)
+    .installPlugin('clipboard-plugin', ClipboardPlugin)
     .installPlugin('align-plugin', AlignPlugin)
     .installPlugin('context-menu-manager-plugin', ContextMenuManagerPlugin)
 

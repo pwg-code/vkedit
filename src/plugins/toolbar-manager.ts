@@ -1,5 +1,7 @@
 import { BasePlugin } from '../types/base-plugin'
-import type { ToolEventData } from '../types'
+import type { ToolEventData, ToolGroup } from '../types'
+
+const DEFAULT_GROUP: ToolGroup = 'tools'
 
 export class ToolbarManagerPlugin extends BasePlugin {
   name = 'toolbar-manager-plugin'
@@ -21,6 +23,22 @@ export class ToolbarManagerPlugin extends BasePlugin {
 
   public getTools(): ToolEventData[] {
     return Array.from(this.toolbars.values())
+  }
+
+  public getToolsByGroup(group: ToolGroup): ToolEventData[] {
+    return Array.from(this.toolbars.values()).filter(
+      (t) => (t.group ?? DEFAULT_GROUP) === group,
+    )
+  }
+
+  public getGroupedTools(): Record<string, ToolEventData[]> {
+    const result: Record<string, ToolEventData[]> = {}
+    for (const tool of this.toolbars.values()) {
+      const g = tool.group ?? DEFAULT_GROUP
+      if (!result[g]) result[g] = []
+      result[g].push(tool)
+    }
+    return result
   }
 }
 
