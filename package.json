@@ -1,12 +1,12 @@
 {
   "name": "vkedit",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "private": false,
   "type": "module",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
-  "description": "A powerful and extensible graphic editor plugin library based on Vue 3 and Konva.js for label template design, QR code design, barcode design, receipt design, business card design, certificate design, and more. Supports rectangle, text, line, table, QR code, barcode, and chart elements with plugin architecture, undo/redo, import/export to JSON/PNG/JPG/PDF, alignment tools, and canvas manipulation.",
+  "description": "A visual canvas designer component built on Vue 3 and Konva.js with a plugin-based architecture, for label, QR code, barcode, receipt, business card, and certificate template design and print layout. Supports rectangle, text, line, table, QR code, barcode, and chart elements with undo/redo, import/export to JSON/PNG/JPG/PDF, alignment tools, and canvas manipulation.",
   "module": "dist/vkedit.es.js",
   "files": [
     "dist",

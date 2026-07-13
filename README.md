@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/npm/l/vkedit?style=flat-square)](LICENSE)
 [![Node.js](https://img.shields.io/node/v/vkedit?style=flat-square)](package.json)
 
-基于 Vue 3 和 Konva.js 的图形编辑器插件库。采用插件化架构，适用于标签模板、二维码、条码、票据、名片、证书等设计场景。
+基于 Vue 3 与 Konva.js 的可视化画布设计器组件，采用插件化架构，适用于标签、二维码、条码、票据、名片、证书等模板设计与打印排版场景。
 
 **[English](README.en.md)**
 

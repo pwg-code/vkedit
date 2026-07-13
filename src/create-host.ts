@@ -34,7 +34,7 @@ export function createEditorHost({
   exportPlugin = true,
   previewPlugin = true,
   importPlugin = true,
-}: IOptions) {
+}: IOptions = {}) {
   const host = new EditorHost()
   host
     .installPlugin('toolbar-manager-plugin', ToolbarManagerPlugin)

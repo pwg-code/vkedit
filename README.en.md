@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/npm/l/vkedit?style=flat-square)](LICENSE)
 [![Node.js](https://img.shields.io/node/v/vkedit?style=flat-square)](package.json)
 
-A graphic editor plugin library built on Vue 3 and Konva.js. Features a plugin-based architecture suitable for label templates, QR codes, barcodes, receipts, business cards, certificates, and more.
+A visual canvas designer component built on Vue 3 and Konva.js. Features a plugin-based architecture for label, QR code, barcode, receipt, business card, and certificate template design and print layout.
 
 **[中文](README.md)**
 
