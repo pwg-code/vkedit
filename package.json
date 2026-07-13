@@ -1,6 +1,6 @@
 {
   "name": "vkedit",
-  "version": "3.2.5",
+  "version": "3.2.6",
   "private": false,
   "type": "module",
   "engines": {
@@ -65,9 +65,14 @@
     "component"
   ],
   "license": "MIT",
+  "author": "pwg <168715824@qq.com>",
+  "homepage": "https://vkedit.org",
   "repository": {
     "type": "git",
     "url": "https://github.com/pwg-code/vkedit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pwg-code/vkedit/issues"
   },
   "devDependencies": {
     "@iconify/vue": "^5.0.0",

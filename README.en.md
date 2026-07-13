@@ -3,14 +3,15 @@
 [![NPM Version](https://img.shields.io/npm/v/vkedit?style=flat-square)](https://www.npmjs.com/package/vkedit)
 [![License](https://img.shields.io/npm/l/vkedit?style=flat-square)](LICENSE)
 [![Node.js](https://img.shields.io/node/v/vkedit?style=flat-square)](package.json)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-vkedit.org-orange?style=flat-square)](https://vkedit.org)
 
 A visual canvas designer component built on Vue 3 and Konva.js. Features a plugin-based architecture for label, QR code, barcode, receipt, business card, and certificate template design and print layout.
 
-**[中文](README.md)**
+**[中文](README.md)** | **[Live Demo](https://vkedit.org)** | **[Docs](https://docs.vkedit.org)**
 
 ---
 
-![Project Preview](./截图/image.png)
+![Project Preview](https://raw.githubusercontent.com/pwg-code/vkedit/main/截图/image.png)
 
 ---
 
@@ -103,243 +104,14 @@ host.setStatus({
 </script>
 ```
 
-### Vkedit Component Props
-
-| Prop                | Type         | Default | Description              |
-| ------------------- | ------------ | ------- | ------------------------ |
-| `host`              | `EditorHost` | -       | Editor host instance     |
-| `showToolbox`       | `boolean`    | `true`  | Show left toolbox        |
-| `showPropertyPanel` | `boolean`    | `true`  | Show right property panel|
-| `showToolbar`       | `boolean`    | `true`  | Show top toolbar         |
-
----
-
-## Configuration
-
-### createEditorHost Options
-
-`createEditorHost(options)` creates a host instance and automatically installs core plugins. Optional plugins are controlled by the following options:
-
-| Option                   | Type      | Default | Description                |
-| ------------------------ | --------- | ------- | -------------------------- |
-| `basePropertyPanel`      | `boolean` | `false` | Base element property panel|
-| `baseCanvasPropertyPanel`| `boolean` | `true`  | Canvas property panel      |
-| `exportPlugin`           | `boolean` | `true`  | Export plugin              |
-| `previewPlugin`          | `boolean` | `true`  | Preview plugin             |
-| `importPlugin`           | `boolean` | `true`  | Import plugin              |
-
-### Canvas State
-
-Update canvas state via `host.setStatus()`, which supports partial updates:
-
-```typescript
-interface IEditorState {
-  zoom: number         // Zoom level
-  currentTool: string  // Current tool
-  snapToGrid: boolean  // Snap to grid
-  showGrid: boolean    // Show grid
-  width: number        // Canvas width (pixels)
-  height: number       // Canvas height (pixels)
-  wmm: number          // Canvas width (millimeters)
-  hmm: number          // Canvas height (millimeters)
-  dpm: number          // Dots per millimeter (DPI / 25.4)
-}
-```
-
-`width`/`height` and `wmm`/`hmm` are automatically converted via `dpm`. Setting `dpm` recalculates pixel dimensions from the current millimeter sizes.
-
----
-
-## Plugin List
-
-### Core Plugins (auto-installed by createEditorHost)
-
-| Plugin | Description |
-| --- | --- |
-| `ToolbarManagerPlugin` | Top toolbar management |
-| `GraphicToolManagerPlugin` | Graphic tool management |
-| `GraphicManagerPlugin` | Graphic rendering management |
-| `PropertyPanelManagerPlugin` | Dynamic property panel rendering |
-| `ElementManagerPlugin` | Element lifecycle management |
-| `SelectionPlugin` | Element selection and multi-select |
-| `KeyDownPlugin` | Keyboard shortcuts |
-| `SnapPlugin` | Grid snapping |
-| `ClipboardPlugin` | Copy / cut / paste |
-| `AlignPlugin` | Alignment and distribution |
-| `ContextMenuManagerPlugin` | Context menu |
-
-### Feature Plugins (enabled via options)
-
-| Plugin | Option | Description |
-| --- | --- | --- |
-| `ExportPlugin` | `exportPlugin` | Export JSON / PNG / JPG / PDF |
-| `ImportPlugin` | `importPlugin` | Import JSON files |
-| `PreviewPlugin` | `previewPlugin` | Preview and print preview |
-
-### Graphic Plugins (manually installed)
-
-| Plugin | Element Type | Description |
-| --- | --- | --- |
-| `RectPlugin` | `rect` | Rectangle with fill and stroke |
-| `TextPlugin` | `text` | Text with font, alignment, and style |
-| `LinePlugin` | `line` | Line with color and width |
-| `TablePlugin` | `table` | Table with rows, merged cells, and borders |
-| `QrcodePlugin` | `qr` | QR code with foreground/background colors |
-| `BarcodePlugin` | `barcode` | Barcode supporting CODE128, EAN-13, etc. |
-| `ChartPlugin` | `chart` | Chart powered by ECharts |
-
----
-
-## Core Concepts
-
-### EditorHost
-
-`EditorHost` is the core host class of the editor, managing plugins, state, commands, and history. After creating an instance via `createEditorHost()`, all operations revolve around the `host`.
-
-### Plugin System
-
-Plugins are managed via `installPlugin` / `uninstallPlugin` / `getPlugin`. Plugins must extend `BasePlugin` and implement the `onInstall()` hook. `getPlugin` supports generic type inference:
-
-```typescript
-const rectPlugin = host.getPlugin('rect-plugin') // inferred as RectPlugin
-const exportPlugin = host.getPlugin('export-plugin')
-```
-
-### Command Pattern
-
-All reversible operations are implemented as commands. `executeCommand()` executes a command and pushes it onto the history stack, while `undo()` / `redo()` navigate the stack:
-
-```typescript
-host.executeCommand(command)  // execute and push
-host.undo()                    // undo
-host.redo()                    // redo
-```
-
-### Event System
-
-The editor provides type-safe event communication via `emit` / `on` / `off`:
-
-```typescript
-// Listen for element added
-host.on('element:added', (payload) => {
-  console.log('Element added:', payload.element)
-})
-
-// Listen for selection changed
-host.on('selection:changed', (payload) => {
-  console.log('Selected:', payload.selection)
-})
-```
-
-For the full event list and custom event extension, refer to the API documentation.
-
----
-
-## Common Operations
-
-### Export / Import JSON
-
-```typescript
-// Export to JSON string
-const json = host.toJSON()
-
-// Load from JSON string
-host.loadJSON(json)
-```
-
-Use ExportPlugin / ImportPlugin to trigger file download and file picker:
-
-```typescript
-const exportPlugin = host.getPlugin('export-plugin')
-exportPlugin.handleExportJSON()   // download .json file
-exportPlugin.handleExportImage()  // download PNG image
-exportPlugin.handleExportPdf()    // download PDF document
-
-const importPlugin = host.getPlugin('import-plugin')
-importPlugin.handleImportJSON()   // open file picker
-```
-
-### Undo / Redo
-
-```typescript
-host.undo()
-host.redo()
-```
-
-### Listen to Events
-
-```typescript
-host.on('selection:changed', (payload) => {
-  console.log('Selected element IDs:', payload.selection)
-})
-```
-
-### Add Element (via command)
-
-```typescript
-import { AddElementCommand } from 'vkedit'
-
-const elementManager = host.getPlugin('element-manager-plugin')
-const element = elementManager.createElement('rect')
-host.executeCommand(new AddElementCommand(host, element))
-```
-
-### Update Element Property (via command)
-
-```typescript
-import { UpdatePropertyCommand } from 'vkedit'
-
-host.executeCommand(
-  new UpdatePropertyCommand(host, element, 'fill', 'red', 'blue')
-)
-```
-
-### Batch Operations
-
-```typescript
-import { BatchCommand, UpdatePropertyCommand } from 'vkedit'
-
-const batch = new BatchCommand(host, [
-  new UpdatePropertyCommand(host, el1, 'fill', 'red', 'blue'),
-  new UpdatePropertyCommand(host, el2, 'fill', 'red', 'green'),
-])
-host.executeCommand(batch)
-```
-
----
-
-## Use Cases
-
-| Scenario | Applicable Plugins |
-| --- | --- |
-| Label template design | QR code, barcode, text, rectangle, table |
-| QR code design | QR code, text, rectangle |
-| Barcode design | Barcode, text, line |
-| Receipt design | Table, text, rectangle, line |
-| Business card design | Text, rectangle, line |
-| Certificate design | Text, rectangle, table |
-| Data visualization | Chart, text, rectangle |
-
----
-
-## Available Commands
-
-| Command | Constructor Params | Description |
-| --- | --- | --- |
-| `AddElementCommand` | `(host, element)` | Add element |
-| `RemoveElementCommand` | `(host, element)` | Remove element |
-| `TransformElementCommand` | `(host, element, oldState, newState)` | Transform element (position/size/rotation) |
-| `UpdatePropertyCommand` | `(host, element, propertyPath, oldValue, newValue)` | Update property |
-| `BatchCommand` | `(host, commands, description?)` | Batch command |
-| `AlignElementsCommand` | `(host, alignment, elementIds)` | Align elements |
-| `DistributeElementsCommand` | `(host, direction, elementIds)` | Distribute elements |
-| `ChangeLayerOrderCommand` | `(host, elementId, direction)` | Change layer order |
-| `ClearSelectionCommand` | `(host)` | Clear selection |
+> For full tutorials, API docs, and online examples, visit [docs.vkedit.org](https://docs.vkedit.org).
 
 ---
 
 ## Links
 
+- [Website](https://vkedit.org)
+- [Docs](https://docs.vkedit.org)
 - [npm](https://www.npmjs.com/package/vkedit)
 - [GitHub Releases](https://github.com/pwg-code/vkedit/releases)
 - [Vue.js](https://vuejs.org/)
@@ -372,11 +144,11 @@ If vkedit helps you, consider buying the author a coffee.
 <table>
   <tr>
     <td align="center">
-      <img src="./截图/reward-alipay.png" width="200" alt="Alipay" />
+      <img src="https://raw.githubusercontent.com/pwg-code/vkedit/main/截图/reward-alipay.png" width="200" alt="Alipay" />
       <br>Alipay
     </td>
     <td align="center">
-      <img src="./截图/reward-wechat.png" width="200" alt="WeChat Pay" />
+      <img src="https://raw.githubusercontent.com/pwg-code/vkedit/main/截图/reward-wechat.png" width="200" alt="WeChat Pay" />
       <br>WeChat
     </td>
   </tr>
