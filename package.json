@@ -18,6 +18,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && pnpm pack",
+    "build:playground": "vue-tsc --noEmit && vite build --config vite.playground.config.ts",
     "prepublishOnly": "npm run build",
     "preview": "vite preview",
     "build-only": "vite build",
