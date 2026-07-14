@@ -5,8 +5,71 @@
   overflow: hidden;
   background: var(--vkedit-color-canvas-area);
 
-  // ==================== 深色主题 UI 组件覆盖 ====================
+  // ==================== 最小宽度警告 ====================
+  .vkedit-editor__minwidth-warning {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vkedit-color-canvas-area);
+    color: var(--vkedit-color-text-dark);
+    font-size: var(--vkedit-font-size-lg);
+    text-align: center;
+    padding: var(--vkedit-spacing-lg);
 
+    p {
+      max-width: 320px;
+      line-height: 1.6;
+    }
+  }
+
+  // ==================== 响应式断点 ====================
+  @media (max-width: 1023px) {
+    .vkedit-floating-toolbox,
+    .vkedit-floating-toolbox--collapsed {
+      width: 44px;
+      .vkedit-floating-toolbox__title {
+        span { display: none; }
+        .vkedit-floating-toolbox__toggle { display: none; }
+        border-bottom: none;
+        padding: var(--vkedit-spacing-xs);
+      }
+      .vkedit-floating-toolbox__content {
+        display: none;
+      }
+      .vkedit-floating-toolbox__collapsed-icon {
+        display: flex;
+      }
+    }
+    .vkedit-floating-property-panel,
+    .vkedit-floating-property-panel--collapsed {
+      width: 44px;
+    }
+
+    .vkedit-floating-toolbar {
+      padding: 0 4px;
+      font-size: var(--vkedit-font-size-xs);
+      gap: 0;
+
+      .vkedit-btn--ghost {
+        height: 28px;
+        padding: 0 4px;
+      }
+
+      .vkedit-toolbar__label {
+        display: none;
+      }
+    }
+  }
+}
+
+// ==================== 深色主题 UI 组件覆盖 ====================
+// 注意：使用 body:has(.vkedit-editor) 而非 .vkedit-editor 后代选择器，
+// 这样 VkDropdown 通过 <Teleport to="body"> 渲染到 body 的内容也能命中深色主题，
+// 避免出现「浅色文字落在浅色 hover 背景」这类低对比度问题。
+body:has(.vkedit-editor) {
   // VkButton
   .vkedit-btn--ghost {
     color: var(--vkedit-color-text-dark);
@@ -86,7 +149,7 @@
     }
   }
 
-  // VkDropdown
+  // VkDropdown（内容会被 teleport 到 body，必须在此命中）
   .vkedit-dropdown__content {
     background: var(--vkedit-color-bg-dark);
     border-color: var(--vkedit-color-border-dark);
@@ -117,65 +180,6 @@
     &--on {
       background: var(--vkedit-color-bg-dark-active);
       color: var(--vkedit-color-white);
-    }
-  }
-
-  // ==================== 最小宽度警告 ====================
-  .vkedit-editor__minwidth-warning {
-    position: absolute;
-    inset: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--vkedit-color-canvas-area);
-    color: var(--vkedit-color-text-dark);
-    font-size: var(--vkedit-font-size-lg);
-    text-align: center;
-    padding: var(--vkedit-spacing-lg);
-
-    p {
-      max-width: 320px;
-      line-height: 1.6;
-    }
-  }
-
-  // ==================== 响应式断点 ====================
-  @media (max-width: 1023px) {
-    .vkedit-floating-toolbox,
-    .vkedit-floating-toolbox--collapsed {
-      width: 44px;
-      .vkedit-floating-toolbox__title {
-        span { display: none; }
-        .vkedit-floating-toolbox__toggle { display: none; }
-        border-bottom: none;
-        padding: var(--vkedit-spacing-xs);
-      }
-      .vkedit-floating-toolbox__content {
-        display: none;
-      }
-      .vkedit-floating-toolbox__collapsed-icon {
-        display: flex;
-      }
-    }
-    .vkedit-floating-property-panel,
-    .vkedit-floating-property-panel--collapsed {
-      width: 44px;
-    }
-
-    .vkedit-floating-toolbar {
-      padding: 0 4px;
-      font-size: var(--vkedit-font-size-xs);
-      gap: 0;
-
-      .vkedit-btn--ghost {
-        height: 28px;
-        padding: 0 4px;
-      }
-
-      .vkedit-toolbar__label {
-        display: none;
-      }
     }
   }
 }
