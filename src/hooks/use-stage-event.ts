@@ -195,11 +195,26 @@ export function useStageEvent(host: EditorHost) {
   }
 
   function handleMouseenter(event: any) {
-    host.emit('stage:mouseenter', { ...event, source: 'use-stage-event', timestamp: Date.now() })
+    host.emit('stage:mouseenter', {
+      ...event,
+      evt: event,
+      point: { x: mouseStageX.value, y: mouseStageY.value },
+      source: 'use-stage-event',
+      timestamp: Date.now(),
+    })
   }
 
   function handleMouseleave(event: any) {
-    host.emit('stage:mouseleave', { ...event, source: 'use-stage-event', timestamp: Date.now() })
+    // 鼠标移出画布时携带的是 DOM MouseEvent（无 Konva point 子字段），
+    // 这里补齐 evt/point 占位字段，使 stage:mouseleave 与 stage:mouseup 共享一致的事件契约，
+    // 避免下游（如 SelectionPlugin）误读 undefined.evt / undefined.point 抛 TypeError。
+    host.emit('stage:mouseleave', {
+      ...event,
+      evt: event,
+      point: { x: mouseStageX.value, y: mouseStageY.value },
+      source: 'use-stage-event',
+      timestamp: Date.now(),
+    })
   }
 
   function handleContextmenu(event: any) {

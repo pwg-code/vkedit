@@ -11,6 +11,9 @@
   box-shadow: var(--vkedit-shadow-panel);
   color: var(--vkedit-color-text-dark);
   font-size: var(--vkedit-font-size-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 
   &__item {
     display: block;
@@ -27,5 +30,11 @@
     &:hover {
       background: var(--vkedit-color-bg-dark-hover);
     }
+  }
+
+  // 子项按钮（vkButton ghost 变体）纵向排布、占满行宽
+  > button {
+    width: 100%;
+    justify-content: flex-start;
   }
 }

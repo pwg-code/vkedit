@@ -33,7 +33,8 @@ export class SelectionPlugin extends BasePlugin {
     this.host.on('stage:mouseup', this.handleMouseUp.bind(this))
     this.host.on('element:added', this.handleElementAdded.bind(this))
     this.host.on('element:removed', this.handleElementRemoved.bind(this))
-    this.host.on('stage:mouseleave', this.handleMouseUp.bind(this))
+    // 鼠标移出画布：只清理框选草稿（DOM MouseEvent 不含 evt/point，避免复用 handleMouseUp 抛 TypeError）
+    this.host.on('stage:mouseleave', this.endSelectionDraft.bind(this))
   }
 
   protected onUninstall(): void {
@@ -45,7 +46,7 @@ export class SelectionPlugin extends BasePlugin {
     this.host.off('stage:mouseup', this.handleMouseUp.bind(this))
     this.host.off('element:added', this.handleElementAdded.bind(this))
     this.host.off('element:removed', this.handleElementRemoved.bind(this))
-    this.host.off('stage:mouseleave', this.handleMouseUp.bind(this))
+    this.host.off('stage:mouseleave', this.endSelectionDraft.bind(this))
   }
 
   private handleMouseDown(event: any): void {
@@ -79,6 +80,13 @@ export class SelectionPlugin extends BasePlugin {
   }
 
   private handleMouseUp(event: any): void {
+    // 兜底守卫：若事件载荷不含 evt / point（异常混入的 DOM-only 事件），
+    // 不进入 Konva 风格的处理分支，仅清理草稿态后返回，避免抛 TypeError。
+    if (!event || !event.evt || !event.point) {
+      this.endSelectionDraft()
+      return
+    }
+
     const modifier = this.isModifierPressed(event.evt)
     const dragged = this.isDragged(event)
 
@@ -92,6 +100,7 @@ export class SelectionPlugin extends BasePlugin {
         this.selectionIds = rectIds
       }
       this.isSelecting = false
+      this.mouseDownId = null
       this.emitSelectionChanged()
     } else if (this.mouseDownId) {
       const element = this.elementsPlugin?.elements.get(this.mouseDownId)
@@ -127,7 +136,17 @@ export class SelectionPlugin extends BasePlugin {
         // else: 单选且已选中 → 保持不变（便于拖动）
       }
       // else: 修饰键 + 拖动 → 保持选择，拖动交由 Transformer 处理
+      this.mouseDownId = null
     }
+  }
+
+  /**
+   * 清理框选 / 按下草稿状态（鼠标移出画布或异常事件触发时使用）。
+   * 不会触发 selection:changed，也不访问 event.evt / event.point。
+   */
+  private endSelectionDraft(): void {
+    this.isSelecting = false
+    this.mouseDownId = null
   }
 
   // 判断是否按下修饰键 Ctrl/Cmd/Shift（三者等价，不区分）

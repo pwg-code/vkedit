@@ -53,18 +53,24 @@ export class KeyDownPlugin extends BasePlugin {
     }
 
     if (evt.ctrlKey && evt.code === 'KeyZ') {
+      // 焦点不在画布时让位给输入框 / 浏览器原生 undo，不阻止默认行为
+      if (!this.isCanvasFocused()) return
       evt.preventDefault()
       this.host.undo()
       return
     }
 
     if (evt.ctrlKey && evt.code === 'KeyY') {
+      // 焦点不在画布时让位给输入框 / 浏览器原生 redo，不阻止默认行为
+      if (!this.isCanvasFocused()) return
       evt.preventDefault()
       this.host.redo()
       return
     }
 
     if (evt.code === 'Delete') {
+      // 焦点不在画布时让位给输入框原生 delete，不阻止默认行为
+      if (!this.isCanvasFocused()) return
       this.deleteSelectionElement()
       return
     }
@@ -133,6 +139,19 @@ export class KeyDownPlugin extends BasePlugin {
     if (!active) return false
     if (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA') return true
     return active.isContentEditable
+  }
+
+  /**
+   * 判断当前焦点是否落在画布舞台容器内（由 StageView 在 onMounted 写入 host.stageState.wrapperEl）。
+   * 用于 Ctrl+Z / Ctrl+Y / Delete 等影响画布历史/选中元素的快捷键守卫：
+   * 焦点不在画布时应让位给输入框/浏览器原生行为。
+   */
+  private isCanvasFocused(): boolean {
+    const wrapperEl = this.host?.stageState?.wrapperEl
+    if (!wrapperEl) return false
+    const active = document.activeElement as HTMLElement | null
+    if (!active) return false
+    return wrapperEl.contains(active)
   }
 
   private copySelection(): void {
