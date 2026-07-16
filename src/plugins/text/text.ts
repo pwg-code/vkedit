@@ -16,6 +16,7 @@ export interface TextOptions extends BaseGraphicElementOptions {
   align?: 'left' | 'center' | 'right' | 'justify'
   verticalAlign?: 'top' | 'middle' | 'bottom'
   fontStyle?: 'normal' | 'italic' | 'bold' | '500' | 'italic bold'
+  fill?: string
   xmm?: number
   ymm?: number
 }
@@ -28,6 +29,7 @@ export class TextElement extends BaseGraphicElement {
   public align: 'left' | 'center' | 'right' | 'justify' = 'left'
   public verticalAlign: 'top' | 'middle' | 'bottom' = 'bottom'
   public fontStyle: 'normal' | 'italic' | 'bold' | '500' | 'italic bold' = 'normal'
+  public fill: string = '#000000'
 
   constructor(host:EditorHost,options: Partial<TextOptions> = {}) {
     super(host,{
@@ -48,6 +50,7 @@ export class TextElement extends BaseGraphicElement {
     this.align = options.align ?? this.align
     this.verticalAlign = options.verticalAlign ?? this.verticalAlign
     this.fontStyle = options.fontStyle ?? this.fontStyle
+    this.fill = options.fill ?? this.fill
   }
 
   public get config() {
@@ -58,6 +61,7 @@ export class TextElement extends BaseGraphicElement {
       align: this.align,
       verticalAlign: this.verticalAlign,
       fontStyle: this.fontStyle,
+      fill: this.fill,
     }
   }
 
@@ -68,6 +72,7 @@ export class TextElement extends BaseGraphicElement {
     this.align = data.align
     this.verticalAlign = data.verticalAlign
     this.fontStyle = data.fontStyle
+    this.fill = data.fill
   }
 
   serialize() {
@@ -78,6 +83,7 @@ export class TextElement extends BaseGraphicElement {
       align: this.align,
       verticalAlign: this.verticalAlign,
       fontStyle: this.fontStyle,
+      fill: this.fill,
     }
   }
 }

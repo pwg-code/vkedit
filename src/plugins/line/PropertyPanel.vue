@@ -27,12 +27,19 @@
     >
     </VkInputNumber>
   </div>
+  <div class="vkedit-property__col-full">
+    <VkColorPicker
+      :model-value="element.stroke"
+      label="线条颜色"
+      @update:model-value="(value) => batchUpdateProperty(selection, 'stroke', value ?? '#000000')"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
 import type { EditorHost } from '@/core'
 import type { LineElement } from './line'
-import { VkLabel, VkInputNumber, VkInputNumberMM } from '@/components/ui'
+import { VkInputNumber, VkInputNumberMM, VkColorPicker } from '@/components/ui'
 import { usePropertyCommand } from '@/hooks'
 
 interface Props {

@@ -26,14 +26,38 @@
     >
     </VkInputNumberMM>
   </div>
+  <div class="vkedit-property__col-full">
+    <VkColorPicker
+      :model-value="element.foreground"
+      label="前景色"
+      @update:model-value="(value) => batchUpdateProperty(selection, 'foreground', value ?? '#000000')"
+    />
+  </div>
+  <div class="vkedit-property__col-full">
+    <VkColorPicker
+      :model-value="element.background"
+      label="背景色"
+      @update:model-value="(value) => batchUpdateProperty(selection, 'background', value ?? '#ffffff')"
+    />
+  </div>
+  <div v-if="readabilityWarning" class="vkedit-property__col-full vkedit-property__warning">
+    {{ readabilityWarning }}
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
 import type { EditorHost } from '@/core'
 import type { QrcodeElement } from './qrcode'
 import { usePropertyCommand } from '@/hooks'
-import { VkInputNumberMM, VkInput, VkLabel, VkInputNumber } from '../../components'
+import {
+  VkInputNumberMM,
+  VkInput,
+  VkLabel,
+  VkInputNumber,
+  VkColorPicker,
+} from '../../components'
+import { useReadabilityWarning } from '@/utils/readability'
 
 interface Props {
   host: EditorHost
@@ -44,8 +68,12 @@ interface Props {
 const { host, element, selection } = defineProps<Props>()
 const { batchUpdateProperty } = usePropertyCommand(host)
 
-const foreground = ref(element.foreground)
-const background = ref(element.background)
+const foregroundRef = computed(() => element.foreground)
+const backgroundRef = computed(() => element.background)
+const readabilityWarning = useReadabilityWarning({
+  foreground: foregroundRef,
+  background: backgroundRef,
+})
 
 function onContentChange(value: any) {
   batchUpdateProperty(selection, 'content', value)
@@ -60,4 +88,13 @@ function onMarginMMUpdate(value: number) {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.vkedit-property__warning {
+  font-size: var(--vkedit-font-size-xs);
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+  padding: 4px 6px;
+  border-radius: var(--vkedit-radius-sm);
+  line-height: 1.4;
+}
+</style>

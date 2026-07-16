@@ -1,6 +1,8 @@
 <template>
   <div class="vkedit-property__title">文本属性</div>
   <TextProperty
+    :text="element.text"
+    :fill="element.fill"
     :font-size="element.fontSize"
     :align="element.align"
     :font-style="element.fontStyle"

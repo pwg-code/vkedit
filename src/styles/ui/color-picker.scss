@@ -1,0 +1,194 @@
+// ====== ui/color-picker.scss ======
+
+.vkedit-color-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--vkedit-spacing-xs);
+
+  &.is-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  &__label {
+    font-size: var(--vkedit-font-size-sm);
+    font-weight: var(--vkedit-font-weight-medium);
+    line-height: 1;
+    color: var(--vkedit-color-text-dark-secondary);
+  }
+
+  &__field {
+    display: flex;
+    align-items: stretch;
+    gap: var(--vkedit-spacing-sm);
+    min-width: 0;
+  }
+
+  &__swatch {
+    position: relative;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border-radius: var(--vkedit-radius-md);
+    border: 1px solid var(--vkedit-color-border-dark);
+    background-image:
+      linear-gradient(45deg, #c8c8c8 25%, transparent 25%),
+      linear-gradient(-45deg, #c8c8c8 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #c8c8c8 75%),
+      linear-gradient(-45deg, transparent 75%, #c8c8c8 75%);
+    background-size: 8px 8px;
+    background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: var(--vkedit-shadow-sm);
+
+    &-inner {
+      position: absolute;
+      inset: 0;
+    }
+
+    &.is-transparent {
+      cursor: pointer;
+    }
+  }
+
+  &__hex {
+    flex: 1;
+    min-width: 0;
+    font-family: var(--vkedit-font-mono);
+    text-transform: lowercase;
+  }
+
+  &__none-btn {
+    height: 28px;
+    padding: 0 var(--vkedit-spacing-sm);
+    border-radius: var(--vkedit-radius-md);
+    border: 1px solid var(--vkedit-color-border-dark);
+    background: transparent;
+    font-size: var(--vkedit-font-size-xs);
+    font-weight: var(--vkedit-font-weight-medium);
+    color: var(--vkedit-color-text-dark-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: var(--vkedit-transition-colors);
+
+    &:hover {
+      background: var(--vkedit-color-bg-dark-hover);
+      color: var(--vkedit-color-text-dark);
+    }
+
+    &.is-active {
+      background: var(--vkedit-color-bg-dark-active);
+      color: var(--vkedit-color-white);
+      border-color: var(--vkedit-color-border-dark-hover);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+  &__message {
+    font-size: var(--vkedit-font-size-xs);
+    line-height: 1.4;
+    padding: 2px 6px;
+    border-radius: var(--vkedit-radius-sm);
+
+    &.is-error {
+      color: var(--vkedit-color-red-500);
+      background: rgba(255, 0, 0, 0.08);
+    }
+
+    &.is-warning {
+      color: #f59e0b;
+      background: rgba(245, 158, 11, 0.08);
+    }
+  }
+
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+  }
+
+  &__panel {
+    position: fixed;
+    z-index: 210;
+    width: 220px;
+    padding: var(--vkedit-spacing-md);
+    border-radius: var(--vkedit-radius-lg);
+    border: 1px solid var(--vkedit-color-border-dark);
+    background: var(--vkedit-color-bg-dark);
+    backdrop-filter: var(--vkedit-blur-panel);
+    -webkit-backdrop-filter: var(--vkedit-blur-panel);
+    box-shadow: var(--vkedit-shadow-panel);
+    color: var(--vkedit-color-text-dark);
+    display: flex;
+    flex-direction: column;
+    gap: var(--vkedit-spacing-sm);
+  }
+
+  &__panel-title {
+    font-size: var(--vkedit-font-size-xs);
+    font-weight: var(--vkedit-font-weight-medium);
+    color: var(--vkedit-color-text-dark-secondary);
+  }
+
+  &__panel-native {
+    display: flex;
+    align-items: center;
+    gap: var(--vkedit-spacing-sm);
+
+    input[type='color'] {
+      width: 100%;
+      height: 32px;
+      border: 1px solid var(--vkedit-color-border-dark);
+      border-radius: var(--vkedit-radius-md);
+      background: transparent;
+      cursor: pointer;
+      padding: 2px;
+    }
+  }
+
+  &__panel-swatches {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+  }
+
+  &__panel-swatch {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: var(--vkedit-radius-sm);
+    border: 1px solid var(--vkedit-color-border-dark);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 100ms ease;
+
+    &:hover {
+      transform: scale(1.06);
+    }
+  }
+
+  &__panel-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__panel-btn {
+    height: 28px;
+    padding: 0 var(--vkedit-spacing-md);
+    border-radius: var(--vkedit-radius-md);
+    border: 1px solid var(--vkedit-color-border-dark);
+    background: var(--vkedit-color-bg-dark-hover);
+    color: var(--vkedit-color-text-dark);
+    font-size: var(--vkedit-font-size-xs);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--vkedit-color-bg-dark-active);
+    }
+  }
+}

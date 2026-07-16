@@ -1,4 +1,20 @@
 <template>
+  <div v-if="text !== undefined" class="vkedit-property__col-full" style="display: flex; flex-direction: column; gap: 4px">
+    <VkLabel>文本内容</VkLabel>
+    <VkTextarea
+      :rows="3"
+      :model-value="text"
+      :placeholder="'请输入文本，支持回车换行'"
+      @update:model-value="(value: string) => emit('update', 'text', value)"
+    ></VkTextarea>
+  </div>
+  <div v-if="fill !== undefined" class="vkedit-property__col-full">
+    <VkColorPicker
+      :model-value="fill"
+      label="文字颜色"
+      @update:model-value="(value: string | null) => emit('update', 'fill', value ?? '#000000')"
+    />
+  </div>
   <div class="vkedit-property__col-full" style="display: flex; gap: 4px; min-width: 0">
     <div style="flex: 1; min-width: 0">
       <VkInputMM
@@ -56,7 +72,9 @@
       size="sm"
       :model-value="align == 'right'"
       @update:model-value="emit('update', 'align', 'right')"
-      ><Icon icon="material-symbols-light:align-justify-flex-end" style="width: 16px; height: 16px"
+      ><Icon
+        icon="material-symbols-light:align-justify-flex-end"
+        style="width: 16px; height: 16px"
     /></VkToggle>
     <VkToggle
       size="sm"
@@ -80,13 +98,23 @@
 </template>
 
 <script setup lang="ts">
-import { VkToggle, VkLabel, VkInputMM } from '@/components/ui'
+import { VkToggle, VkLabel, VkInputMM, VkColorPicker, VkTextarea } from '@/components/ui'
 import { Icon } from '@iconify/vue'
 import { useHostState } from '@/hooks'
 import type { EditorHost } from '@/core'
 import type { IAlign, IFontStyle, IVerticalAlign } from '@/types'
-const { fontSize, align, verticalAlign, fontStyle, host } = defineProps<{
+const {
+  text,
+  fill,
+  fontSize,
+  align,
+  verticalAlign,
+  fontStyle,
+  host,
+} = defineProps<{
   host: EditorHost
+  text?: string
+  fill?: string
   fontSize: number
   align: IAlign
   verticalAlign: IVerticalAlign
