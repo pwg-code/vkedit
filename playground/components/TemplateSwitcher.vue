@@ -26,7 +26,7 @@ import { templates, type SceneTemplate } from '../templates'
 const props = defineProps<{ host: EditorHost }>()
 
 function loadTemplate(tpl: SceneTemplate) {
-  const elementsPlugin = props.host.getPlugin('element-manager-plugin')
+  const elementsPlugin = props.host.getPlugin('graphic-registry-plugin')
   const hasContent = elementsPlugin.getAllElements().length > 0
   if (hasContent) {
     if (!window.confirm('当前画布有内容，加载模板将替换现有内容，是否继续？')) {
