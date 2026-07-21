@@ -1,11 +1,6 @@
 <template>
   <div class="app-root">
-    <Vkedit
-      :host="host"
-      :show-toolbox="true"
-      :show-property-panel="true"
-      :show-toolbar="true"
-    >
+    <Vkedit :host="host" :show-toolbox="true" :show-property-panel="true" :show-toolbar="true">
       <template #toolbar-actions="{ host: h }">
         <CanvasPresetSwitcher :host="h" />
         <TemplateSwitcher :host="h" />
@@ -20,10 +15,8 @@ import {
   createEditorHost,
   RectPlugin,
   TextPlugin,
-  TablePlugin,
   QrcodePlugin,
   BarcodePlugin,
-  ChartPlugin,
   Vkedit,
 } from '@/index'
 import { LinePlugin } from '@/plugins/line'
@@ -34,10 +27,8 @@ const host = createEditorHost({ basePropertyPanel: false, baseCanvasPropertyPane
 host
   .installPlugin('rect-plugin', RectPlugin)
   .installPlugin('text-plugin', TextPlugin)
-  .installPlugin('table-plugin', TablePlugin)
   .installPlugin('qr-plugin', QrcodePlugin)
   .installPlugin('barcode-plugin', BarcodePlugin)
-  .installPlugin('chart-plugin', ChartPlugin)
   .installPlugin('line-plugin', LinePlugin)
 
 onMounted(() => {
