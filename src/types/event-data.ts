@@ -159,7 +159,7 @@ export interface ElementDragEventData extends BaseEventData {
 export interface GraphicEventData extends BaseEventData {
   type: string
   render: () => Component
-  icon?: string
+  iconComponent?: Component
   typeDisplayName?: string
 }
 

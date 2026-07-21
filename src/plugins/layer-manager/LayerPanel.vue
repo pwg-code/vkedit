@@ -35,10 +35,10 @@
           title="拖动调整层级"
           @pointerdown.stop="startDrag(el, $event)"
         >
-          <Icon icon="material-symbols-light:drag-indicator" width="20" />
+          <IconDragIndicator width="20" />
         </div>
 
-        <Icon :icon="elementsPlugin.getTypeMeta(el.type)?.icon ?? 'material-symbols-light:circle'" width="20" class="vkedit-layer-row__type" />
+        <component :is="getTypeIcon(el.type)" width="20" class="vkedit-layer-row__type" />
 
         <input
           v-if="renamingId === el.id"
@@ -65,10 +65,8 @@
             :title="el.locked ? '解锁' : '锁定'"
             @click.stop="toggleLock(el)"
           >
-            <Icon
-              :icon="el.locked ? 'material-symbols-light:lock' : 'material-symbols-light:lock-open-right'"
-              width="26"
-            />
+            <IconLock v-if="el.locked" width="26" />
+            <IconLockOpenRight v-else width="26" />
           </button>
           <button
             class="vkedit-layer-row__btn"
@@ -76,17 +74,15 @@
             :title="el.visible ? '隐藏' : '显示'"
             @click.stop="toggleVisible(el)"
           >
-            <Icon
-              :icon="el.visible ? 'material-symbols-light:visibility' : 'material-symbols-light:visibility-off'"
-              width="26"
-            />
+            <IconVisibility v-if="el.visible" width="26" />
+            <IconVisibilityOff v-else width="26" />
           </button>
           <button
             class="vkedit-layer-row__btn"
             title="更多操作"
             @click.stop="openMenuBtn($event, el)"
           >
-            <Icon icon="material-symbols-light:more-vert" width="26" />
+            <IconMoreVert width="26" />
           </button>
         </div>
 
@@ -107,32 +103,32 @@
         @contextmenu.prevent.stop
       >
         <button class="vkedit-layer-menu__item" @click="menuAction('top')">
-          <Icon icon="material-symbols-light:vertical-align-top" width="16" />
+          <IconVerticalAlignTop width="16" />
           <span>置顶</span>
         </button>
         <button class="vkedit-layer-menu__item" @click="menuAction('up')">
-          <Icon icon="material-symbols-light:arrow-upward" width="16" />
+          <IconArrowUpward width="16" />
           <span>上移一层</span>
         </button>
         <button class="vkedit-layer-menu__item" @click="menuAction('down')">
-          <Icon icon="material-symbols-light:arrow-downward" width="16" />
+          <IconArrowDownward width="16" />
           <span>下移一层</span>
         </button>
         <button class="vkedit-layer-menu__item" @click="menuAction('bottom')">
-          <Icon icon="material-symbols-light:vertical-align-bottom" width="16" />
+          <IconVerticalAlignBottom width="16" />
           <span>置底</span>
         </button>
         <div class="vkedit-layer-menu__divider"></div>
         <button class="vkedit-layer-menu__item" @click="rename()">
-          <Icon icon="material-symbols-light:edit" width="16" />
+          <IconEdit width="16" />
           <span>重命名</span>
         </button>
         <button class="vkedit-layer-menu__item" @click="duplicate()">
-          <Icon icon="material-symbols-light:content-copy" width="16" />
+          <IconContentCopy width="16" />
           <span>复制</span>
         </button>
         <button class="vkedit-layer-menu__item" @click="remove()">
-          <Icon icon="material-symbols-light:delete" width="16" />
+          <IconDelete width="16" />
           <span>删除</span>
         </button>
       </div>
@@ -145,7 +141,7 @@
         class="vkedit-layer-ghost"
         :style="{ left: `${dragGhost.x}px`, top: `${dragGhost.y}px` }"
       >
-        <Icon :icon="elementsPlugin.getTypeMeta(dragGhost.type)?.icon ?? 'material-symbols-light:circle'" width="20" />
+        <component :is="getTypeIcon(dragGhost.type)" width="20" />
         <span class="vkedit-layer-ghost__name">{{ dragGhost.label }}</span>
       </div>
     </teleport>
@@ -154,7 +150,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
-import { Icon } from '@iconify/vue'
+import type { Component } from 'vue'
 import type { EditorHost } from '@/core'
 import type { LayerManagerPlugin } from './layer-manager'
 import type { IGraphicElement } from '@/types'
@@ -162,6 +158,20 @@ import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 import type { SelectionPlugin, ClipboardPlugin } from '@/plugins'
 import { RemoveElementCommand, BatchCommand } from '@/commands'
 import { EventUtils } from '@/types/event-data'
+import IconDragIndicator from '~icons/material-symbols-light/drag-indicator'
+import IconMoreVert from '~icons/material-symbols-light/more-vert'
+import IconVerticalAlignTop from '~icons/material-symbols-light/vertical-align-top'
+import IconArrowUpward from '~icons/material-symbols-light/arrow-upward'
+import IconArrowDownward from '~icons/material-symbols-light/arrow-downward'
+import IconVerticalAlignBottom from '~icons/material-symbols-light/vertical-align-bottom'
+import IconEdit from '~icons/material-symbols-light/edit'
+import IconContentCopy from '~icons/material-symbols-light/content-copy'
+import IconDelete from '~icons/material-symbols-light/delete'
+import IconLock from '~icons/material-symbols-light/lock'
+import IconLockOpenRight from '~icons/material-symbols-light/lock-open-right'
+import IconVisibility from '~icons/material-symbols-light/visibility'
+import IconVisibilityOff from '~icons/material-symbols-light/visibility-off'
+import IconCircle from '~icons/material-symbols-light/circle'
 
 const props = defineProps<{
   host: EditorHost
@@ -171,6 +181,10 @@ const elementsPlugin = props.host.getPlugin('graphic-registry-plugin') as Graphi
 const layerPlugin = props.host.getPlugin('layer-manager-plugin') as LayerManagerPlugin
 const selectionPlugin = props.host.getPlugin('selection-plugin') as SelectionPlugin
 const clipboardPlugin = props.host.getPlugin('clipboard-plugin') as ClipboardPlugin
+
+function getTypeIcon(type: string): Component {
+  return elementsPlugin.getTypeMeta(type)?.iconComponent ?? IconCircle
+}
 
 const listRef = ref<HTMLElement | null>(null)
 // 主动刷新触发器；监听相关事件后递增以让 computed 重新求值

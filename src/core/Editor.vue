@@ -26,18 +26,18 @@
     >
       <!-- 折叠态：仅显示汉堡按钮 -->
       <div v-if="toolboxCollapsed" class="vkedit-floating-toolbox__collapsed-icon" @click="toggleToolbox" title="展开工具箱">
-        <Icon icon="material-symbols-light:menu" width="20" />
+        <IconMenu width="20" />
       </div>
 
       <!-- 展开态 -->
       <template v-else>
         <div class="vkedit-floating-toolbox__title">
           <span class="vkedit-floating-toolbox__title-icon">
-            <Icon icon="material-symbols-light:category" width="20" />
+            <IconCategory width="20" />
           </span>
           <span class="vkedit-floating-toolbox__title-text">工具箱</span>
           <button class="vkedit-floating-toolbox__toggle" @click="toggleToolbox" title="收起工具箱">
-            <Icon icon="material-symbols-light:chevron-left" width="16" />
+            <IconChevronLeft width="16" />
           </button>
         </div>
         <div class="vkedit-floating-toolbox__content">
@@ -66,7 +66,8 @@
           @click="togglePropertyPanel"
           :title="propertyPanelCollapsed ? '展开属性面板' : '收起属性面板'"
         >
-          <Icon :icon="propertyPanelCollapsed ? 'material-symbols-light:chevron-left' : 'material-symbols-light:chevron-right'" width="16" />
+          <IconChevronLeft v-if="propertyPanelCollapsed" width="16" />
+          <IconChevronRight v-else width="16" />
         </button>
       </div>
       <div class="vkedit-floating-property-panel__content" v-if="!propertyPanelCollapsed">
@@ -77,19 +78,23 @@
         </PropertyPanel>
       </div>
       <div v-else class="vkedit-floating-property-panel__collapsed-icon" @click="togglePropertyPanel" :title="'展开属性面板'">
-        <Icon icon="material-symbols-light:settings" width="20" />
+        <IconSettings width="20" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import Toolbar from './Toolbar.vue' // 顶部区域
 import GraphicToolPanel from './GraphicToolPanel.vue'
 import StageView from './StageView.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import { LayerPanel } from '@/plugins/layer-manager'
+import IconMenu from '~icons/material-symbols-light/menu'
+import IconCategory from '~icons/material-symbols-light/category'
+import IconChevronLeft from '~icons/material-symbols-light/chevron-left'
+import IconChevronRight from '~icons/material-symbols-light/chevron-right'
+import IconSettings from '~icons/material-symbols-light/settings'
 import type { EditorHost } from '@/core'
 import { onMounted, onUnmounted, ref } from 'vue'
 

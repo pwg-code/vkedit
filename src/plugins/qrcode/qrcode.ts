@@ -3,7 +3,7 @@ import type { PropertyPanelRegistration } from '@/types/graphic-plugin'
 import { BaseGraphicElement, CORNER_ANCHORS, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
-import Tool from './Tool.vue'
+import IconQrCode2 from '~icons/material-symbols-light/qr-code-2'
 import type { EditorHost } from '@/core'
 import QRCode from 'qrcode'
 
@@ -110,8 +110,8 @@ export class QrcodePlugin extends GraphicPlugin<QrcodeElement> {
   public graphicType = 'qr'
   public graphicElement = QrcodeElement
   public shapeComponent = Shape
-  public toolComponent = Tool
-  public icon = 'material-symbols-light:qr-code'
+  public iconComponent = IconQrCode2
+  public typeDisplayName = '二维码'
   public propertyPanels: PropertyPanelRegistration[] = [
     { graphicTypes: ['qr'], render: () => PropertyPanel, isCanvas: false, isPublic: false },
   ]

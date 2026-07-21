@@ -2,7 +2,7 @@ import { GraphicPlugin, type PropertyPanelRegistration } from '@/types/graphic-p
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
-import Tool from './Tool.vue'
+import IconBarcode from '~icons/material-symbols-light/barcode'
 import type { EditorHost } from '@/core'
 import JsBarcode from 'jsbarcode'
 
@@ -148,8 +148,8 @@ export class BarcodePlugin extends GraphicPlugin<BarcodeElement> {
   public graphicType = 'barcode'
   public graphicElement = BarcodeElement
   public shapeComponent = Shape
-  public toolComponent = Tool
-  public icon = 'material-symbols-light:barcode'
+  public iconComponent = IconBarcode
+  public typeDisplayName = '条形码'
   public propertyPanels: PropertyPanelRegistration[] = [
     { graphicTypes: ['barcode'], render: () => PropertyPanel, isCanvas: false, isPublic: false },
   ]

@@ -2,7 +2,7 @@ import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base
 import { GraphicPlugin, type PropertyPanelRegistration } from '@/types/graphic-plugin'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
-import Tool from './Tool.vue'
+import IconTextFields from '~icons/material-symbols-light/text-fields'
 import TextContextMenu from './TextContextMenu.vue'
 import type { EditorHost } from '@/core'
 
@@ -91,8 +91,8 @@ export class TextPlugin extends GraphicPlugin<TextElement> {
   public graphicType = 'text'
   public graphicElement = TextElement
   public shapeComponent = Shape
-  public toolComponent = Tool
-  public icon = 'material-symbols-light:format-text'
+  public iconComponent = IconTextFields
+  public typeDisplayName = '文本'
   public propertyPanels: PropertyPanelRegistration[] = [
     {
       graphicTypes: ['text'],

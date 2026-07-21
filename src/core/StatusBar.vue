@@ -3,14 +3,14 @@
     <div class="vkedit-status-bar__section">
       <div class="vkedit-status-bar__zoom-controls">
         <button class="vkedit-status-bar__btn" @click="handleZoomOut()" title="缩小">
-          <Icon icon="material-symbols-light:zoom-out" :width="22"></Icon>
+          <IconZoomOut :width="22" />
         </button>
         <div class="vkedit-status-bar__zoom-value">{{ zoomPercent }}%</div>
         <button class="vkedit-status-bar__btn" @click="handleZoomIn()" title="放大">
-          <Icon icon="material-symbols-light:zoom-in-rounded" :width="22"></Icon>
+          <IconZoomInRounded :width="22" />
         </button>
         <button class="vkedit-status-bar__btn" @click="handleZoomAuto()" title="自适应">
-          <Icon icon="material-symbols-light:zoom-out-map" :width="22"></Icon>
+          <IconZoomOutMap :width="22" />
         </button>
       </div>
     </div>
@@ -21,7 +21,7 @@
 
     <div class="vkedit-status-bar__section">
       <div class="vkedit-status-bar__cursor-icon">
-        <Icon :icon="cursorIcon" :width="18"></Icon>
+        <component :is="cursorIconMap[currentCursorMode]" :width="18" />
       </div>
     </div>
   </div>
@@ -29,7 +29,14 @@
 
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted } from 'vue'
-import { Icon } from '@iconify/vue'
+import type { Component } from 'vue'
+import IconZoomOut from '~icons/material-symbols-light/zoom-out'
+import IconZoomInRounded from '~icons/material-symbols-light/zoom-in-rounded'
+import IconZoomOutMap from '~icons/material-symbols-light/zoom-out-map'
+import IconArrowSelectorTool from '~icons/material-symbols-light/arrow-selector-tool'
+import IconTouchpadMouse from '~icons/material-symbols-light/touchpad-mouse'
+import IconPanTool from '~icons/material-symbols-light/pan-tool'
+import IconDragPan from '~icons/material-symbols-light/drag-pan'
 import type { EditorHost } from '@/core'
 import type { CursorMode } from '@/types'
 import { useZoom, useHostState, useStage } from '@/hooks'
@@ -52,15 +59,13 @@ const coordsDisplay = computed(() => {
   return `X: ${xmm.toFixed(2)}mm  Y: ${ymm.toFixed(2)}mm`
 })
 
-const cursorIconMap: Record<CursorMode, string> = {
-  'default': 'material-symbols-light:arrow-selector-tool',
-  'hovering': 'material-symbols-light:touchpad-mouse',
-  'grab': 'material-symbols-light:pan-tool',
-  'grabbing': 'material-symbols-light:pan-tool',
-  'dragging': 'material-symbols-light:drag-pan',
+const cursorIconMap: Record<CursorMode, Component> = {
+  default: IconArrowSelectorTool,
+  hovering: IconTouchpadMouse,
+  grab: IconPanTool,
+  grabbing: IconPanTool,
+  dragging: IconDragPan,
 }
-
-const cursorIcon = computed(() => cursorIconMap[currentCursorMode.value])
 
 onMounted(() => {
   host.on('stage:mouseleave', handleMouseLeave)

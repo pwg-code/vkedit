@@ -76,7 +76,7 @@
     "url": "https://github.com/pwg-code/vkedit/issues"
   },
   "devDependencies": {
-    "@iconify/vue": "^5.0.0",
+    "@iconify-json/material-symbols-light": "^1.2.86",
     "@tsconfig/node22": "^22.0.2",
     "@types/lodash": "^4.17.20",
     "@types/node": "^22.16.5",
@@ -87,12 +87,12 @@
     "eslint": "^9.31.0",
     "eslint-plugin-vue": "~10.3.0",
     "jiti": "^2.4.2",
-    "lucide-vue-next": "^0.546.0",
     "npm-run-all2": "^8.0.4",
     "prettier": "3.6.2",
     "primevue": "^4.4.1",
     "sass-embedded": "^1.83.0",
     "typescript": "~5.8.0",
+    "unplugin-icons": "^23.0.1",
     "vite": "^7.0.6",
     "vite-plugin-css-injected-by-js": "^3.5.2",
     "vite-plugin-dts": "^4.5.4",

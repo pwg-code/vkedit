@@ -1,6 +1,6 @@
 import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
-import Tool from './Tool.vue'
+import IconRectangle from '~icons/material-symbols-light/rectangle'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import type { EditorHost } from '@/core'
 import { GraphicPlugin } from '@/types/graphic-plugin'
@@ -79,8 +79,8 @@ export class RectPlugin extends GraphicPlugin<RectElement> {
   public graphicType = 'rect'
   public graphicElement = RectElement
   public shapeComponent = Shape
-  public toolComponent = Tool
-  public icon = 'material-symbols-light:rectangle'
+  public iconComponent = IconRectangle
+  public typeDisplayName = '矩形'
   public propertyPanels: PropertyPanelRegistration[] = [
     {
       graphicTypes: ['rect'],

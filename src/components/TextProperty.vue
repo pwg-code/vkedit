@@ -36,7 +36,7 @@
           )
       "
     >
-      <Icon icon="material-symbols-light:format-bold" style="width: 20px; height: 20px"></Icon>
+      <IconFormatBold style="width: 20px; height: 20px" />
     </VkToggle>
     <VkToggle
       size="sm"
@@ -50,7 +50,7 @@
           )
       "
     >
-      <Icon icon="material-symbols-light:format-italic" style="width: 20px; height: 20px"></Icon>
+      <IconFormatItalic style="width: 20px; height: 20px" />
     </VkToggle>
   </div>
   <div class="vkedit-property__col-full" style="display: flex; gap: 1px; min-width: 0">
@@ -58,48 +58,45 @@
       size="sm"
       :model-value="align == 'left'"
       @update:model-value="emit('update', 'align', 'left')"
-      ><Icon
-        icon="material-symbols-light:align-justify-flex-start"
-        style="width: 16px; height: 16px"
-    /></VkToggle>
+      ><IconAlignJustifyFlexStart style="width: 16px; height: 16px" /></VkToggle>
     <VkToggle
       size="sm"
       :model-value="align == 'center'"
       @update:model-value="emit('update', 'align', 'center')"
-      ><Icon icon="material-symbols-light:align-justify-center" style="width: 16px; height: 16px"
-    /></VkToggle>
+      ><IconAlignJustifyCenter style="width: 16px; height: 16px" /></VkToggle>
     <VkToggle
       size="sm"
       :model-value="align == 'right'"
       @update:model-value="emit('update', 'align', 'right')"
-      ><Icon
-        icon="material-symbols-light:align-justify-flex-end"
-        style="width: 16px; height: 16px"
-    /></VkToggle>
+      ><IconAlignJustifyFlexEnd style="width: 16px; height: 16px" /></VkToggle>
     <VkToggle
       size="sm"
       :model-value="verticalAlign == 'top'"
       @update:model-value="emit('update', 'verticalAlign', 'top')"
-      ><Icon icon="material-symbols-light:align-start" style="width: 16px; height: 16px"
-    /></VkToggle>
+      ><IconAlignStart style="width: 16px; height: 16px" /></VkToggle>
     <VkToggle
       size="sm"
       :model-value="verticalAlign == 'middle'"
       @update:model-value="emit('update', 'verticalAlign', 'middle')"
-      ><Icon icon="material-symbols-light:align-center" style="width: 16px; height: 16px"
-    /></VkToggle>
+      ><IconAlignCenter style="width: 16px; height: 16px" /></VkToggle>
     <VkToggle
       size="sm"
       :model-value="verticalAlign == 'bottom'"
       @update:model-value="emit('update', 'verticalAlign', 'bottom')"
-      ><Icon icon="material-symbols-light:align-end" style="width: 16px; height: 16px"
-    /></VkToggle>
+      ><IconAlignEnd style="width: 16px; height: 16px" /></VkToggle>
   </div>
 </template>
 
 <script setup lang="ts">
 import { VkToggle, VkLabel, VkInputMM, VkColorPicker, VkTextarea } from '@/components/ui'
-import { Icon } from '@iconify/vue'
+import IconFormatBold from '~icons/material-symbols-light/format-bold'
+import IconFormatItalic from '~icons/material-symbols-light/format-italic'
+import IconAlignJustifyFlexStart from '~icons/material-symbols-light/align-justify-flex-start'
+import IconAlignJustifyCenter from '~icons/material-symbols-light/align-justify-center'
+import IconAlignJustifyFlexEnd from '~icons/material-symbols-light/align-justify-flex-end'
+import IconAlignStart from '~icons/material-symbols-light/align-start'
+import IconAlignCenter from '~icons/material-symbols-light/align-center'
+import IconAlignEnd from '~icons/material-symbols-light/align-end'
 import { useHostState } from '@/hooks'
 import type { EditorHost } from '@/core'
 import type { IAlign, IFontStyle, IVerticalAlign } from '@/types'

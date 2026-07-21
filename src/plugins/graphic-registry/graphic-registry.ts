@@ -3,6 +3,13 @@ import type { Component } from 'vue'
 import type { IGraphicElement } from '@/types'
 import type { GraphicTypeRegistration, PropertyPanelRegistration } from '@/types/graphic-plugin'
 
+export interface ToolDescriptor {
+  type: string
+  iconComponent: Component
+  typeDisplayName: string
+  createElement: () => IGraphicElement
+}
+
 export class GraphicRegistryPlugin extends BasePlugin {
   public name = 'graphic-registry-plugin'
   public version = '1.0.0'
@@ -21,7 +28,7 @@ export class GraphicRegistryPlugin extends BasePlugin {
         type: data.type,
         render: data.render,
         createElement: existing?.createElement ?? (() => { throw new Error(`Element type ${data.type} is not registered`) }),
-        icon: data.icon ?? existing?.icon,
+        iconComponent: data.iconComponent ?? existing?.iconComponent,
         typeDisplayName: data.typeDisplayName ?? existing?.typeDisplayName,
       })
     })
@@ -44,7 +51,7 @@ export class GraphicRegistryPlugin extends BasePlugin {
         type: data.type,
         render: existing?.render ?? (() => { throw new Error(`Graphic type ${data.type} is not registered`) }),
         createElement: data.createElement,
-        icon: existing?.icon,
+        iconComponent: existing?.iconComponent,
         typeDisplayName: existing?.typeDisplayName,
       })
     })
@@ -73,14 +80,21 @@ export class GraphicRegistryPlugin extends BasePlugin {
     throw new Error(`未找到类型为 ${type} 的图形组件`)
   }
 
-  getTypeMeta(type: string): { icon?: string; typeDisplayName?: string } | undefined {
+  getTypeMeta(type: string): { iconComponent?: Component; typeDisplayName?: string } | undefined {
     const graphic = this.graphics.get(type)
     if (!graphic) return undefined
-    return { icon: graphic.icon, typeDisplayName: graphic.typeDisplayName }
+    return { iconComponent: graphic.iconComponent, typeDisplayName: graphic.typeDisplayName }
   }
 
-  getToolList(): { type: string; render: () => Component }[] {
-    return Array.from(this.tools.values())
+  getToolList(): ToolDescriptor[] {
+    return Array.from(this.graphics.values())
+      .filter((g): g is GraphicTypeRegistration & { iconComponent: Component } => !!g.iconComponent)
+      .map((g) => ({
+        type: g.type,
+        iconComponent: g.iconComponent,
+        typeDisplayName: g.typeDisplayName ?? g.type,
+        createElement: g.createElement,
+      }))
   }
 
   getToolComponent(type: string): Component {

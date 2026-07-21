@@ -7,7 +7,7 @@ export interface GraphicTypeRegistration {
   type: string
   render: () => Component
   createElement: () => IGraphicElement
-  icon?: string
+  iconComponent?: Component
   typeDisplayName?: string
 }
 
@@ -22,28 +22,18 @@ export abstract class GraphicPlugin<T extends IGraphicElement> extends BasePlugi
   public abstract graphicType: string
   public abstract graphicElement: new (host: EditorHost) => T
   public abstract shapeComponent: Component
-  public abstract toolComponent?: Component
-  public abstract propertyPanels?: PropertyPanelRegistration[]
-  public icon?: string
+  public propertyPanels?: PropertyPanelRegistration[]
+  public iconComponent?: Component
   public typeDisplayName?: string
 
   protected onActivate(): void {
     if (!this.host) return
 
-    if (this.toolComponent) {
-      this.host.emit('graphic-tool:registered', {
-        type: this.graphicType,
-        render: () => this.toolComponent!,
-        source: 'graphic-plugin',
-        timestamp: Date.now(),
-      })
-    }
-
     if (this.shapeComponent) {
       this.host.emit('graphic:registered', {
         type: this.graphicType,
         render: () => this.shapeComponent,
-        icon: this.icon,
+        iconComponent: this.iconComponent,
         typeDisplayName: this.typeDisplayName,
         source: 'graphic-plugin',
         timestamp: Date.now(),
@@ -74,20 +64,11 @@ export abstract class GraphicPlugin<T extends IGraphicElement> extends BasePlugi
   protected onDeactivate(): void {
     if (!this.host) return
 
-    if (this.toolComponent) {
-      this.host.emit('graphic-tool:unregistered', {
-        type: this.graphicType,
-        render: () => this.toolComponent!,
-        source: 'graphic-plugin',
-        timestamp: Date.now(),
-      })
-    }
-
     if (this.shapeComponent) {
       this.host.emit('graphic:unregistered', {
         type: this.graphicType,
         render: () => this.shapeComponent,
-        icon: this.icon,
+        iconComponent: this.iconComponent,
         typeDisplayName: this.typeDisplayName,
         source: 'graphic-plugin',
         timestamp: Date.now(),

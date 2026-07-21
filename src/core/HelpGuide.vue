@@ -5,7 +5,7 @@
       @click.stop="toggle"
       title="快捷键帮助"
     >
-      <Icon icon="material-symbols-light:help" :width="20" />
+      <IconHelp :width="20" />
     </button>
 
     <Teleport to="body">
@@ -14,7 +14,7 @@
           <div class="vkedit-help-guide__header">
             <span class="vkedit-help-guide__title">快捷键</span>
             <button class="vkedit-help-guide__close" @click="visible = false" title="关闭">
-              <Icon icon="material-symbols-light:close" :width="18" />
+              <IconClose :width="18" />
             </button>
           </div>
           <div class="vkedit-help-guide__list">
@@ -107,7 +107,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Icon } from '@iconify/vue'
+import IconHelp from '~icons/material-symbols-light/help'
+import IconClose from '~icons/material-symbols-light/close'
 
 const visible = ref(false)
 

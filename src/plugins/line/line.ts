@@ -1,7 +1,7 @@
 import { GraphicPlugin, type PropertyPanelRegistration } from '@/types/graphic-plugin'
 import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
-import Tool from './Tool.vue'
+import IconPenSize1 from '~icons/material-symbols-light/pen-size-1'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import type { EditorHost } from '@/core'
 
@@ -64,8 +64,8 @@ export class LinePlugin extends GraphicPlugin<LineElement> {
   public graphicType = 'line'
   public graphicElement = LineElement
   public shapeComponent = Shape
-  public toolComponent = Tool
-  public icon = 'material-symbols-light:line-weight'
+  public iconComponent = IconPenSize1
+  public typeDisplayName = '线条'
   public propertyPanels: PropertyPanelRegistration[] = [
     { graphicTypes: ['line'], render: () => PropertyPanel, isCanvas: false, isPublic: false },
   ]

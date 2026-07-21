@@ -6,9 +6,16 @@
       <span class="vkedit-graphic-tool__divider"></span>
     </div>
     <div v-if="tools.length > 0" class="vkedit-graphic-tool__grid">
-      <template v-for="tool in tools" :key="tool.type">
-        <component :is="tool.render()" :host="host" :collapsed="collapsed" />
-      </template>
+      <GraphicToolRenderer
+        v-for="tool in tools"
+        :key="tool.type"
+        :type="tool.type"
+        :icon-component="tool.iconComponent"
+        :type-display-name="tool.typeDisplayName"
+        :create-element="tool.createElement"
+        :host="host"
+        :collapsed="collapsed"
+      />
     </div>
     <slot name="toolbox" :host="host"></slot>
   </div>
@@ -17,8 +24,8 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import type { EditorHost } from '@/core'
-import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
-import type { GraphicToolEventData } from '@/types/event-data'
+import type { GraphicRegistryPlugin, ToolDescriptor } from '@/plugins/graphic-registry'
+import GraphicToolRenderer from './GraphicToolRenderer.vue'
 
 interface Props {
   host: EditorHost
@@ -32,7 +39,7 @@ defineSlots<{
 }>()
 
 const graphicRegistryPlugin = host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin | undefined
-const tools = ref<GraphicToolEventData[]>([])
+const tools = ref<ToolDescriptor[]>([])
 
 const initTools = () => {
   if (graphicRegistryPlugin?.getToolList) {
@@ -40,23 +47,23 @@ const initTools = () => {
   }
 }
 
-const onToolRegistered = (data: GraphicToolEventData) => {
-  tools.value = [...tools.value, data]
+const onToolRegistered = (_data: unknown) => {
+  initTools()
 }
 
-const onToolUnregistered = (data: GraphicToolEventData) => {
-  tools.value = tools.value.filter((t) => t.type !== data.type)
+const onToolUnregistered = (_data: unknown) => {
+  initTools()
 }
 
 onMounted(() => {
   initTools()
-  host.on('graphic-tool:registered', onToolRegistered)
-  host.on('graphic-tool:unregistered', onToolUnregistered)
+  host.on('graphic:registered', onToolRegistered)
+  host.on('graphic:unregistered', onToolUnregistered)
 })
 
 onUnmounted(() => {
-  host.off('graphic-tool:registered', onToolRegistered)
-  host.off('graphic-tool:unregistered', onToolUnregistered)
+  host.off('graphic:registered', onToolRegistered)
+  host.off('graphic:unregistered', onToolUnregistered)
 })
 </script>
 

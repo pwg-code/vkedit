@@ -6,8 +6,7 @@
     :title="collapsed ? (enabled ? '关闭吸附' : '开启吸附') : undefined"
     @click="toggle"
   >
-    <Icon
-      icon="material-symbols-light:magnet-rounded"
+    <IconGridOn
       :width="20"
       :style="{ opacity: enabled ? 1 : 0.4 }"
     />
@@ -16,8 +15,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Icon } from '@iconify/vue'
 import { VkButton } from '@/components/ui'
+import IconGridOn from '~icons/material-symbols-light/grid-on'
 import type { EditorHost } from '@/core'
 
 const { host, collapsed = false } = defineProps<{
