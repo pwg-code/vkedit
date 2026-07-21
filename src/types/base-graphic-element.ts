@@ -27,6 +27,8 @@ export interface BaseGraphicElementOptions {
   locked?: boolean
   draggable?: boolean
   transferable?: boolean
+  zIndex?: number
+  name?: string | null
 }
 
 export abstract class BaseGraphicElement implements IGraphicElement {
@@ -97,8 +99,12 @@ export abstract class BaseGraphicElement implements IGraphicElement {
   public locked: boolean = false
   public draggable: boolean = true
   public transferable: boolean = true
+  // 层级排序依据：数值越大越在顶层。由 ElementManagerPlugin 在 addElement 时自动赋值。
+  public zIndex: number = 0
   // 可用的缩放锚点；null 表示禁用所有缩放锚点（不可通过边框拖拽改变大小）
   public resizeAnchors: string[] | null = DEFAULT_ANCHORS
+  /** 元素自定义显示名称。空字符串/null 时回退到 layer-manager.getElementDisplayName 的自动命名逻辑。 */
+  public name: string | null = null
   // host 在元素未加入 editor 时可能不存在，保持可选
 
   constructor(host: EditorHost, options: Partial<BaseGraphicElementOptions> = {}) {
@@ -114,6 +120,9 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     this.locked = options.locked ?? false
     this.draggable = options.draggable ?? true
     this.transferable = options.transferable ?? true
+    // 显式传入时使用传入值，否则保持默认 0，由 ElementManagerPlugin 在 addElement 时统一赋值
+    this.zIndex = options.zIndex ?? 0
+    this.name = options.name ?? null
     this.host = host
     this.id = uuidv4()
   }
@@ -127,6 +136,10 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     const newElement = elementManager.createElement(this.type)
     newElement.deserialize(snapshot)
     newElement.id = uuidv4()
+    // 副本的 zIndex 重置为 0，由 ElementManagerPlugin 在 addElement 时统一赋"当前最大 + 1"，置顶于列表顶部
+    newElement.zIndex = 0
+    // 副本名称重置为 null，让 layer-manager 分配新的固定自动名称
+    newElement.name = null
     return newElement
   }
 
@@ -152,6 +165,9 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     this.locked = data.locked
     this.draggable = data.draggable
     this.transferable = data.transferable
+    // 缺失 zIndex 时兼容旧 JSON，按 0 处理（导入流程会做归一化）
+    this.zIndex = data.zIndex ?? 0
+    this.name = data.name ?? null
   }
 
   serialize(): {
@@ -168,6 +184,8 @@ export abstract class BaseGraphicElement implements IGraphicElement {
     locked: boolean
     draggable: boolean
     transferable: boolean
+    zIndex: number
+    name: string | null
     [key: string]: any
   } {
     return {
@@ -184,6 +202,8 @@ export abstract class BaseGraphicElement implements IGraphicElement {
       locked: this.locked,
       draggable: this.draggable,
       transferable: this.transferable,
+      zIndex: this.zIndex,
+      name: this.name,
     }
   }
   // 获取转换的属性

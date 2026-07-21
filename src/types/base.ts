@@ -40,6 +40,10 @@ export interface IGraphicElement {
   locked: boolean
   draggable: boolean
   transferable: boolean
+  // 层级排序依据：数值越大越在顶层
+  zIndex: number
+  /** 元素自定义显示名称。空字符串/null 时回退到 layer-manager.getElementDisplayName 的自动命名逻辑。 */
+  name?: string | null
   resizeAnchors?: string[] | null
   getBoundingBox(): BoundingBox
   clone(): IGraphicElement

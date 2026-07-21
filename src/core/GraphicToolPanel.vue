@@ -1,8 +1,15 @@
 <template>
   <div>
-    <template v-for="tool in tools" :key="tool.type">
-      <component :is="tool.render()" :host="host" :collapsed="collapsed" />
-    </template>
+    <div v-if="tools.length > 0" class="vkedit-graphic-tool__header">
+      <span class="vkedit-graphic-tool__divider"></span>
+      <span class="vkedit-graphic-tool__title">添加元素</span>
+      <span class="vkedit-graphic-tool__divider"></span>
+    </div>
+    <div v-if="tools.length > 0" class="vkedit-graphic-tool__grid">
+      <template v-for="tool in tools" :key="tool.type">
+        <component :is="tool.render()" :host="host" :collapsed="collapsed" />
+      </template>
+    </div>
     <slot name="toolbox" :host="host"></slot>
   </div>
 </template>

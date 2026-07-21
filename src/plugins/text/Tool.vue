@@ -1,13 +1,14 @@
 <template>
   <VkButton
     v-bind="$attrs"
-    :variant="collapsed ? 'ghost' : 'outline'"
+    variant="ghost"
+    class="vkedit-tool-link"
     :size="collapsed ? 'icon' : 'default'"
-    :title="collapsed ? '文本' : undefined"
+    :title="'文本'"
     @click="handleClick"
   >
-    <Icon v-if="collapsed" icon="material-symbols-light:format-text" width="18" />
-    <template v-else>文本</template>
+    <Icon icon="material-symbols-light:text-fields" width="20" />
+    <span v-if="!collapsed">文本</span>
   </VkButton>
 </template>
 

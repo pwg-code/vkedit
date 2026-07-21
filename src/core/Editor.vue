@@ -17,32 +17,40 @@
       </Toolbar>
     </Transition>
 
-    <!-- 左侧悬浮工具箱 -->
+    <!-- 左侧固定侧边栏 -->
     <div
       v-if="showToolbox"
       class="vkedit-floating-toolbox"
       :class="{ 'vkedit-floating-toolbox--collapsed': toolboxCollapsed }"
+      :style="{ '--vkedit-sidebar-width': `${toolboxWidth}px` }"
     >
-      <div class="vkedit-floating-toolbox__title">
-        <span>添加图形</span>
-        <button
-          class="vkedit-floating-toolbox__toggle"
-          @click="toggleToolbox"
-          :title="toolboxCollapsed ? '展开工具箱' : '收起工具箱'"
-        >
-          <Icon :icon="toolboxCollapsed ? 'material-symbols-light:chevron-right' : 'material-symbols-light:chevron-left'" width="16" />
-        </button>
+      <!-- 折叠态：仅显示汉堡按钮 -->
+      <div v-if="toolboxCollapsed" class="vkedit-floating-toolbox__collapsed-icon" @click="toggleToolbox" title="展开工具箱">
+        <Icon icon="material-symbols-light:menu" width="20" />
       </div>
-      <div class="vkedit-floating-toolbox__content" v-if="!toolboxCollapsed">
-        <GraphicToolPanel :host="host" :collapsed="toolboxCollapsed">
-          <template #toolbox>
-            <slot name="toolbox" :host="host"></slot>
-          </template>
-        </GraphicToolPanel>
-      </div>
-      <div v-else class="vkedit-floating-toolbox__collapsed-icon" @click="toggleToolbox" :title="'展开工具箱'">
-        <Icon icon="material-symbols-light:shapes" width="20" />
-      </div>
+
+      <!-- 展开态 -->
+      <template v-else>
+        <div class="vkedit-floating-toolbox__title">
+          <span class="vkedit-floating-toolbox__title-icon">
+            <Icon icon="material-symbols-light:category" width="20" />
+          </span>
+          <span class="vkedit-floating-toolbox__title-text">工具箱</span>
+          <button class="vkedit-floating-toolbox__toggle" @click="toggleToolbox" title="收起工具箱">
+            <Icon icon="material-symbols-light:chevron-left" width="16" />
+          </button>
+        </div>
+        <div class="vkedit-floating-toolbox__content">
+          <GraphicToolPanel :host="host" :collapsed="toolboxCollapsed">
+            <template #toolbox>
+              <slot name="toolbox" :host="host"></slot>
+            </template>
+          </GraphicToolPanel>
+          <LayerPanel v-if="showLayers !== false" :host="host" class="vkedit-floating-toolbox__layers" />
+        </div>
+        <!-- 拖拽手柄 -->
+        <div class="vkedit-floating-toolbox__resize-handle" @pointerdown="startResize" title="拖动调整侧边栏宽度"></div>
+      </template>
     </div>
 
     <!-- 右侧悬浮属性面板 -->
@@ -81,6 +89,7 @@ import Toolbar from './Toolbar.vue' // 顶部区域
 import GraphicToolPanel from './GraphicToolPanel.vue'
 import StageView from './StageView.vue'
 import PropertyPanel from './PropertyPanel.vue'
+import { LayerPanel } from '@/plugins/layer-manager'
 import type { EditorHost } from '@/core'
 import { onMounted, onUnmounted, ref } from 'vue'
 
@@ -89,11 +98,13 @@ const {
   showToolbox = true,
   showPropertyPanel = true,
   showToolbar = true,
+  showLayers = true,
 } = defineProps<{
   host: EditorHost
   showToolbox?: boolean
   showPropertyPanel?: boolean
   showToolbar?: boolean
+  showLayers?: boolean
 }>()
 
 const stageKey = ref(`stage-${Date.now()}`)
@@ -108,6 +119,40 @@ const toggleToolbox = () => {
 
 const togglePropertyPanel = () => {
   propertyPanelCollapsed.value = !propertyPanelCollapsed.value
+}
+
+const toolboxWidth = ref(266)
+const minWidth = 240
+const maxWidth = 533
+const resizing = ref(false)
+const resizeStartX = ref(0)
+const resizeStartWidth = ref(0)
+
+function startResize(evt: PointerEvent) {
+  if (toolboxCollapsed.value) return
+  evt.preventDefault()
+  resizing.value = true
+  resizeStartX.value = evt.clientX
+  resizeStartWidth.value = toolboxWidth.value
+  document.body.style.cursor = 'col-resize'
+  document.body.style.userSelect = 'none'
+  document.addEventListener('pointermove', onResizeMove)
+  document.addEventListener('pointerup', endResize, { once: true })
+}
+
+function onResizeMove(evt: PointerEvent) {
+  if (!resizing.value) return
+  const delta = evt.clientX - resizeStartX.value
+  const next = Math.max(minWidth, Math.min(maxWidth, resizeStartWidth.value + delta))
+  toolboxWidth.value = next
+}
+
+function endResize() {
+  if (!resizing.value) return
+  resizing.value = false
+  document.body.style.cursor = ''
+  document.body.style.userSelect = ''
+  document.removeEventListener('pointermove', onResizeMove)
 }
 
 const onResize = () => {
@@ -133,6 +178,10 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', onResize)
+  document.removeEventListener('pointermove', onResizeMove)
+  document.removeEventListener('pointerup', endResize)
+  document.body.style.cursor = ''
+  document.body.style.userSelect = ''
 })
 </script>
 

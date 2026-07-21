@@ -1,8 +1,8 @@
 .vkedit-floating-toolbox {
   position: absolute;
-  top: 52px;
-  left: 37px;
-  width: 180px;
+  top: 100px;
+  left: 36px;
+  width: var(--vkedit-sidebar-width, 200px);
   z-index: 90;
   background: var(--vkedit-color-panel-bg);
   backdrop-filter: var(--vkedit-blur-panel);
@@ -16,6 +16,18 @@
   transition: width 200ms ease;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+
+  &__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--vkedit-spacing-sm) var(--vkedit-spacing-md);
+    font-size: var(--vkedit-font-size-sm);
+    font-weight: var(--vkedit-font-weight-bold);
+    border-bottom: 1px solid var(--vkedit-color-border-dark);
+    flex-shrink: 0;
+  }
 
   &__toggle {
     width: 24px;
@@ -36,26 +48,25 @@
   }
 
   &__collapsed-icon {
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
-    height: 44px;
+    height: 100%;
+    min-height: 44px;
     color: var(--vkedit-color-text-dark-secondary);
     cursor: pointer;
+    &:hover {
+      color: var(--vkedit-color-text-dark);
+      background: var(--vkedit-color-bg-dark-hover);
+    }
   }
 
   &--collapsed {
     width: 44px;
     overflow: hidden;
-    align-items: center;
-    justify-content: center;
-    .vkedit-floating-toolbox__title {
-      padding: var(--vkedit-spacing-xs);
-      border-bottom: none;
-      span { display: none; }
-      .vkedit-floating-toolbox__toggle { display: none; }
-    }
-    .vkedit-floating-toolbox__content {
+    .vkedit-floating-toolbox__title,
+    .vkedit-floating-toolbox__content,
+    .vkedit-floating-toolbox__resize-handle {
       display: none;
     }
     .vkedit-floating-toolbox__collapsed-icon {
@@ -63,27 +74,88 @@
     }
   }
 
-  &__title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--vkedit-spacing-sm) var(--vkedit-spacing-md);
-    font-size: var(--vkedit-font-size-sm);
-    font-weight: var(--vkedit-font-weight-bold);
-    border-bottom: 1px solid var(--vkedit-color-border-dark);
-    flex-shrink: 0;
-  }
-
   &__content {
     padding: var(--vkedit-spacing-sm);
     display: flex;
     flex-direction: column;
     gap: var(--vkedit-spacing-xs);
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
 
     .vkedit-btn {
       width: 100%;
       justify-content: center;
     }
   }
+
+  &__layers {
+    margin-top: var(--vkedit-spacing-xs);
+    padding-top: var(--vkedit-spacing-xs);
+    border-top: 1px solid var(--vkedit-color-border-dark);
+  }
+
+  &__resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    cursor: col-resize;
+    background: transparent;
+    transition: background 150ms ease;
+    &:hover,
+    &--active {
+      background: var(--vkedit-color-border-dark-hover);
+    }
+  }
 }
 
+// Link-like hover overrides — 双类名提升特异度盖过 editor.scss 的 ghost hover
+.vkedit-floating-toolbox.vkedit-floating-toolbox .vkedit-floating-toolbox__content .vkedit-tool-link {
+  background: transparent;
+  color: var(--vkedit-color-text-dark-secondary);
+}
+.vkedit-floating-toolbox.vkedit-floating-toolbox .vkedit-floating-toolbox__content .vkedit-tool-link:hover {
+  background: transparent;
+  color: var(--vkedit-color-text-dark);
+}
+
+// 图形工具区 header（与 .vkedit-layer-panel__header 风格统一）
+.vkedit-floating-toolbox .vkedit-graphic-tool__header {
+  display: flex;
+  align-items: center;
+  gap: var(--vkedit-spacing-sm);
+  padding: var(--vkedit-spacing-xs) 0;
+  color: var(--vkedit-color-text-dark-secondary);
+}
+.vkedit-floating-toolbox .vkedit-graphic-tool__title {
+  font-size: var(--vkedit-font-size-xs);
+  font-weight: var(--vkedit-font-weight-bold);
+  white-space: nowrap;
+}
+.vkedit-floating-toolbox .vkedit-graphic-tool__divider {
+  flex: 1;
+  height: 1px;
+  background: var(--vkedit-color-border-dark);
+}
+
+// 图形工具区 2 列网格
+.vkedit-floating-toolbox .vkedit-graphic-tool__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--vkedit-spacing-md);
+  padding: var(--vkedit-spacing-sm) 0 var(--vkedit-spacing-md);
+}
+
+.vkedit-graphic-tool__grid .vkedit-btn.vkedit-tool-link {
+  flex-direction: column;
+  gap: var(--vkedit-spacing-xs);
+  height: auto;
+  padding: var(--vkedit-spacing-md);
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+}

@@ -55,6 +55,11 @@ export class ImportPlugin extends BasePlugin {
     this.host?.emit('import:start', this.createEventData('json'))
     try {
       this.host.loadJSON(data)
+      // 导入完成后对所有元素的 zIndex 归一化，
+      // 避免旧 JSON（无 zIndex 字段）反序列化后的全部并列 0 导致顺序错乱，
+      // 由 JSON 数组顺序决定保留视觉顺序
+      const elementsPlugin = this.host.getPlugin('element-manager-plugin')
+      elementsPlugin?.normalizeZIndices()
       this.host?.emit('import:complete', this.createEventData('json'))
     } catch (error) {
       this.host?.emit('import:error', this.createEventData('json', error))

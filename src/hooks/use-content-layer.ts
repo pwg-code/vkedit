@@ -34,9 +34,15 @@ export function useContentLayer(host: EditorHost) {
   // 所有的图像元素
   const elements = ref<IGraphicElement[]>([])
   const initElements = () => {
-    const a = host.getPlugin('element-manager-plugin')?.elements.values()
-    if (a) {
-      elements.value = Array.from(a)
+    const manager = host.getPlugin('element-manager-plugin')
+    if (manager?.getOrderedElements) {
+      // 按 zIndex 降序：顶层在前，作为渲染顺序传给 Konva group（数组顺序即 Z 顺序）
+      elements.value = manager.getOrderedElements()
+    } else {
+      const a = manager?.elements.values()
+      if (a) {
+        elements.value = Array.from(a)
+      }
     }
   }
 

@@ -22,12 +22,52 @@ export class ElementManagerPlugin extends BasePlugin {
 
   // 添加元素
   addElement(element: IGraphicElement): void {
+    // zIndex 自动赋值策略：若未显式赋值（仍为默认 0 且当前已有元素），则取"当前最大 + 1"置顶；
+    // 第一个元素保持 0。导入 JSON 时若元素带显式 zIndex，此处 size 可能已 > 0 但其值非默认 0，会走保留分支。
+    if (element.zIndex === 0 && this.elements.size > 0) {
+      element.zIndex = this.getMaxZIndex() + 1
+    }
     this.elements.set(element.id, element)
     this.host?.emit('element:added', {
       element,
       elementId: element.id,
       timestamp: Date.now(),
       source: 'element-manager-plugin',
+    })
+  }
+
+  // 当前最大 zIndex；无元素时返回 -1，使下一个默认从 0 开始
+  private getMaxZIndex(): number {
+    let max = -1
+    this.elements.forEach((e) => {
+      if (e.zIndex > max) max = e.zIndex
+    })
+    return max
+  }
+
+  // 按 zIndex 降序返回元素列表（顶层在前）；zIndex 相同时按插入顺序稳定排序
+  getOrderedElements(): IGraphicElement[] {
+    const arr = Array.from(this.elements.values())
+    // 稳定排序：用 Map 记录原始顺序索引，避免在元素实例上挂载临时属性
+    const idxMap = new Map<string, number>()
+    arr.forEach((e, i) => idxMap.set(e.id, i))
+    arr.sort((a, b) => {
+      if (b.zIndex !== a.zIndex) return b.zIndex - a.zIndex
+      const ai = idxMap.get(a.id) ?? 0
+      const bi = idxMap.get(b.id) ?? 0
+      return ai - bi
+    })
+    return arr
+  }
+
+  // 归一化所有元素的 zIndex：按当前 zIndex 降序（顶层在前）结果重新分配连续值 0..n-1
+  // 用于导入旧 JSON 后避免全部并列 0 导致顺序错乱，或处理重复/乱序 zIndex
+  normalizeZIndices(): void {
+    const ordered = this.getOrderedElements()
+    const len = ordered.length
+    // ordered[0] 是最顶层 → 最大 zIndex；逐项递减
+    ordered.forEach((e, i) => {
+      e.zIndex = len - 1 - i
     })
   }
 

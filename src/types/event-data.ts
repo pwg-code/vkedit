@@ -115,6 +115,8 @@ export interface DistributeEventData extends BaseEventData {
 export interface LayerOrderEventData extends BaseEventData {
   elementId: string
   direction: 'up' | 'down' | 'top' | 'bottom'
+  // 新增：批量重排时携带，与 direction 互斥使用（拖拽松手时由 ReorderElementsCommand 触发）
+  newOrder?: string[]
 }
 
 // Stage基础事件数据

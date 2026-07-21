@@ -11,6 +11,7 @@ export * from './clear-selection-command'
 export * from './batch-command'
 // 图层命令
 export * from './change-layer-order-command'
+export * from './reorder-elements-command'
 // 对齐分布命令
 export * from './align-elements-command'
 export * from './distribute-elements-command'

@@ -113,6 +113,7 @@ export class ClipboardPlugin extends BasePlugin {
       const el = elementManager.createElement(snapshot.type) as any
       el.deserialize(snapshot)
       el.id = crypto.randomUUID?.() ?? this.uuidFallback()
+      el.name = null
       el.xmm = snapshot.xmm + delta.x
       el.ymm = snapshot.ymm + delta.y
       newElements.push(el)

@@ -1,9 +1,12 @@
 import { BaseCommand } from './base-command'
 import type { EditorHost } from '@/core'
+import type { ElementManagerPlugin } from '@/plugins'
+import type { IGraphicElement } from '@/types'
 
 export class ChangeLayerOrderCommand extends BaseCommand {
   public name = 'CHANGE_LAYER_ORDER'
   private previousOrder: Map<string, number> = new Map()
+  private elementsPlugin: ElementManagerPlugin | null
 
   constructor(
     host: EditorHost,
@@ -11,6 +14,7 @@ export class ChangeLayerOrderCommand extends BaseCommand {
     private direction: 'up' | 'down' | 'top' | 'bottom',
   ) {
     super(host, `调整图层顺序: ${direction}`)
+    this.elementsPlugin = this.host.getPlugin('element-manager-plugin')
   }
 
   execute(): void {
@@ -40,18 +44,49 @@ export class ChangeLayerOrderCommand extends BaseCommand {
   }
 
   private saveCurrentOrder(): void {
-    // 这里需要实现保存当前图层顺序的逻辑
-    // 简化实现
+    this.previousOrder.clear()
+    this.elementsPlugin?.elements.forEach((e) => {
+      this.previousOrder.set(e.id, e.zIndex)
+    })
   }
 
   private changeLayerOrder(): void {
-    // 这里需要实现调整图层顺序的逻辑
-    // 简化实现
+    const ordered = this.elementsPlugin?.getOrderedElements() ?? []
+    if (ordered.length === 0) return
+    const idx = ordered.findIndex((e: IGraphicElement) => e.id === this.elementId)
+    if (idx === -1) return
+    const target = ordered[idx]
+    switch (this.direction) {
+      case 'top':
+        target.zIndex = ordered[0].zIndex + 1
+        break
+      case 'bottom':
+        target.zIndex = ordered[ordered.length - 1].zIndex - 1
+        break
+      case 'up': {
+        if (idx === 0) return
+        const prev = ordered[idx - 1]
+        const tmp = target.zIndex
+        target.zIndex = prev.zIndex
+        prev.zIndex = tmp
+        break
+      }
+      case 'down': {
+        if (idx === ordered.length - 1) return
+        const next = ordered[idx + 1]
+        const tmp = target.zIndex
+        target.zIndex = next.zIndex
+        next.zIndex = tmp
+        break
+      }
+    }
   }
 
   private restorePreviousOrder(): void {
-    // 这里需要实现恢复图层顺序的逻辑
-    // 简化实现
+    this.previousOrder.forEach((z, id) => {
+      const el = this.elementsPlugin?.elements.get(id)
+      if (el) el.zIndex = z
+    })
   }
 
   private getReverseDirection(): 'up' | 'down' | 'top' | 'bottom' {

@@ -1,13 +1,14 @@
 <template>
   <VkButton
     v-bind="$attrs"
-    :variant="collapsed ? 'ghost' : 'outline'"
+    variant="ghost"
+    class="vkedit-tool-link"
     :size="collapsed ? 'icon' : 'default'"
-    :title="collapsed ? '二维码' : undefined"
+    :title="'二维码'"
     @click="handleClick"
   >
-    <Icon v-if="collapsed" icon="material-symbols-light:qr-code-2" width="18" />
-    <template v-else>二维码</template>
+    <Icon icon="material-symbols-light:qr-code-2" width="20" />
+    <span v-if="!collapsed">二维码</span>
   </VkButton>
 </template>
 

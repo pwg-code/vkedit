@@ -1,13 +1,14 @@
 <template>
   <VkButton
     v-bind="$attrs"
-    :variant="collapsed ? 'ghost' : 'outline'"
+    variant="ghost"
+    class="vkedit-tool-link"
     :size="collapsed ? 'icon' : 'default'"
-    :title="collapsed ? '直线' : undefined"
+    :title="'线条'"
     @click="handleClick"
   >
-    <Icon v-if="collapsed" icon="material-symbols-light:pen-size-1" width="18" />
-    <template v-else>直线</template>
+    <Icon icon="material-symbols-light:pen-size-1" width="20" />
+    <span v-if="!collapsed">线条</span>
   </VkButton>
 </template>
 

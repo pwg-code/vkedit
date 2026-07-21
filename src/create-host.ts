@@ -5,6 +5,7 @@ import {
   ElementManagerPlugin,
   ExportPlugin,
   KeyDownPlugin,
+  LayerManagerPlugin,
   PropertyPanelManagerPlugin,
   SelectionPlugin,
   SnapPlugin,
@@ -48,6 +49,7 @@ export function createEditorHost({
     .installPlugin('clipboard-plugin', ClipboardPlugin)
     .installPlugin('align-plugin', AlignPlugin)
     .installPlugin('context-menu-manager-plugin', ContextMenuManagerPlugin)
+    .installPlugin('layer-manager-plugin', LayerManagerPlugin)
 
   if (basePropertyPanel) {
     host.emit('property-panel:registered', {

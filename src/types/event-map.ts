@@ -170,6 +170,8 @@ export interface EventMap {
   'elements:group': (payload: BaseEventData) => void
   'elements:ungroup': (payload: BaseEventData) => void
   'elements:layer': (payload: LayerOrderEventData) => void
+  // 批量重排（拖拽松手后触发，由 ReorderElementsCommand 发出，携带完整新顺序 id 列表）
+  'elements:reorder': (payload: LayerOrderEventData) => void
 
   // 快捷键
   'shortcut:triggered': (payload: BaseEventData) => void
