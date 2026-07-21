@@ -1,10 +1,8 @@
-import { BasePlugin } from '../../types/base-plugin'
-import { type IGraphicElement, BaseGraphicType } from '../../types'
+import { GraphicPlugin, type PropertyPanelRegistration } from '@/types/graphic-plugin'
 import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Tool from './Tool.vue'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
-import type { Component } from 'vue'
 import type { EditorHost } from '@/core'
 
 export interface LineOptions extends BaseGraphicElementOptions {
@@ -32,7 +30,7 @@ export class LineElement extends BaseGraphicElement {
       visible: options.visible,
       locked: options.locked,
       draggable: options.draggable,
-      transferable: options.transferable,
+      resizable: options.resizable,
     })
     this.stroke = options.stroke ?? this.stroke
   }
@@ -60,54 +58,16 @@ export class LineElement extends BaseGraphicElement {
   }
 }
 
-export class LinePlugin extends BasePlugin {
+export class LinePlugin extends GraphicPlugin<LineElement> {
   public name = 'line-plugin'
   public version = '1.0.0'
-  protected onInstall(): void {
-    if (!this.host) return
-    // 图形工具
-    this.host.emit('graphic-tool:registered', {
-      type: 'line',
-      render: () => Tool,
-      source: 'line-plugin-on-install',
-      timestamp: Date.now(),
-    })
-    // 注册图形
-    this.host.emit('graphic:registered', {
-      type: 'line',
-      render: () => Shape,
-      source: 'line-plugin-on-install',
-      timestamp: Date.now(),
-    })
-    // 注册属性面板
-    this.host.emit('property-panel:registered', {
-      graphicTypes: ['line'],
-      render: () => PropertyPanel,
-      source: 'line-plugin-on-install',
-      timestamp: Date.now(),
-      isCanvas: false,
-      isPublic: false,
-    })
-    // 注册元素构造器
-    this.host.emit('element:registered', {
-      type: 'line',
-      createElement: () => new LineElement(this.host, { xmm: 10, ymm: 10 }),
-      source: 'line-plugin-on-install',
-      timestamp: Date.now(),
-    })
-  }
-}
-
-// 将 LineElement 注册到可扩展的 ElementTypeMap（仅类型信息）
-declare module '@/types' {
-  interface ElementTypeMap {
-    line: LineElement
-  }
-}
-
-// 将 LinePlugin 注册到可扩展的 PluginMap（仅类型信息）
-declare module '@/types' {
-  interface PluginMap {
-    'line-plugin': LinePlugin
-  }
+  public graphicType = 'line'
+  public graphicElement = LineElement
+  public shapeComponent = Shape
+  public toolComponent = Tool
+  public propertyPanels: PropertyPanelRegistration[] = [
+    { graphicTypes: ['line'], render: () => PropertyPanel, isCanvas: false, isPublic: false },
+  ]
+  protected onInstall(): void { this.activate() }
+  protected onUninstall(): void { this.deactivate() }
 }

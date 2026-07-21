@@ -18,13 +18,6 @@ export interface BoundingBox {
   height: number
 }
 
-// 图形组件接口
-export interface IGraphicComponent {
-  component: any
-  props?: any
-  events?: any
-}
-
 // 图形基础元素接口
 export interface IGraphicElement {
   id: string
@@ -39,11 +32,11 @@ export interface IGraphicElement {
   visible: boolean
   locked: boolean
   draggable: boolean
-  transferable: boolean
+  resizable: boolean
   // 层级排序依据：数值越大越在顶层
   zIndex: number
   /** 元素自定义显示名称。空字符串/null 时回退到 layer-manager.getElementDisplayName 的自动命名逻辑。 */
-  name?: string | null
+  displayName?: string | null
   resizeAnchors?: string[] | null
   getBoundingBox(): BoundingBox
   clone(): IGraphicElement
@@ -61,24 +54,7 @@ export interface IEditorPlugin {
   uninstall(): void
   activate?(): void
   deactivate?(): void
-  // 注册图形类型
-  registerGraphicTypes?(): IGraphicType[]
-  // 提供工具栏工具
-  getTools?(): IPluginTool[]
   [key: string]: any
-}
-
-export interface IPluginTool {
-  [key: string]: any
-}
-
-// 图形构造器
-export interface IGraphicType {
-  type: string
-  render(): Component // 渲染图形组件
-  renderTool(): Component // 工具按钮
-  renderPropertyPanel(): Component // 属性面板
-  createElement(x: number, y: number): IGraphicElement // 实例化图形元素
 }
 
 // 编辑器状态

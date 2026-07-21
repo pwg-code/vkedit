@@ -1,12 +1,12 @@
 import { BaseCommand } from './base-command'
 import type { EditorHost } from '@/core'
-import type { ElementManagerPlugin } from '@/plugins'
+import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 import type { IGraphicElement } from '@/types'
 
 export class ChangeLayerOrderCommand extends BaseCommand {
   public name = 'CHANGE_LAYER_ORDER'
   private previousOrder: Map<string, number> = new Map()
-  private elementsPlugin: ElementManagerPlugin | null
+  private elementsPlugin: GraphicRegistryPlugin | null
 
   constructor(
     host: EditorHost,
@@ -14,7 +14,7 @@ export class ChangeLayerOrderCommand extends BaseCommand {
     private direction: 'up' | 'down' | 'top' | 'bottom',
   ) {
     super(host, `调整图层顺序: ${direction}`)
-    this.elementsPlugin = this.host.getPlugin('element-manager-plugin')
+    this.elementsPlugin = this.host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
   }
 
   execute(): void {

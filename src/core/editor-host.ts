@@ -1,8 +1,7 @@
 import { reactive } from 'vue'
-import type { IEditorPlugin, IEditorState, IStageState, EventMap, PluginEventData, PluginMap } from '../types'
+import type { IEditorPlugin, IEditorState, IStageState, EventMap, PluginEventData } from '../types'
 import { EventUtils } from '../types/event-data'
 import type { ICommand } from '@/commands/i-command'
-import { RectPlugin, TextPlugin } from '@/plugins'
 
 export class EditorHost {
   // 运行时用一个通用 Map 存储插件实例（键为 string），编译时通过重载和泛型保证类型推断
@@ -76,14 +75,7 @@ export class EditorHost {
   // installPlugin 支持两种用法：
   // 1) 通过 PluginMap 推断： installPlugin('rect-plugin', rectPlugin)
   // 2) 显式泛型以覆盖或在未知映射时指定类型： installPlugin<'my-plugin'>(name, plugin)
-  installPlugin<K extends keyof PluginMap>(
-    name: K,
-    pluginClass: PluginMap[K] | (new (...args: any[]) => PluginMap[K]),
-  ): EditorHost
-  installPlugin(
-    name: string,
-    pluginClass: IEditorPlugin | (new (...args: any[]) => IEditorPlugin),
-  ): EditorHost
+  installPlugin<T extends IEditorPlugin = IEditorPlugin>(name: string, pluginClass: new (...args: any[]) => T): EditorHost
   installPlugin(name: string, pluginClass: any): EditorHost {
     if (this.plugins.has(name)) {
       console.warn(`Plugin ${name} is already registered`)
@@ -102,7 +94,6 @@ export class EditorHost {
   }
 
   // uninstallPlugin 支持按映射键名或任意字符串调用
-  uninstallPlugin<K extends keyof PluginMap>(pluginName: K): EditorHost
   uninstallPlugin(pluginName: string): EditorHost
   uninstallPlugin(pluginName: string): EditorHost {
     const plugin = this.plugins.get(pluginName)
@@ -120,7 +111,6 @@ export class EditorHost {
   // getPlugin 支持两种用法：
   // 1) 通过 PluginMap 推断返回类型： getPlugin('rect-plugin') -> RectPlugin
   // 2) 显式泛型： getPlugin<MyPlugin>('my-plugin')
-  getPlugin<K extends keyof PluginMap>(pluginName: K): PluginMap[K]
   getPlugin<T extends IEditorPlugin = IEditorPlugin>(pluginName: string): T
   getPlugin(pluginName: string): IEditorPlugin {
     const p = this.plugins.get(pluginName)
@@ -198,10 +188,10 @@ export class EditorHost {
     // 发送事件
     this.emit('host:to-json:start', { timestamp: Date.now(), source: 'host' })
     try {
-      // 尝试通过 getPlugin 获取已安装的 element-manager-plugin（getPlugin 会在不存在时抛出）
+      // 尝试通过 getPlugin 获取已安装的 graphic-registry-plugin（getPlugin 会在不存在时抛出）
       let elements: any[] | undefined
       try {
-        const elementsPlugin = this.getPlugin('element-manager-plugin')
+        const elementsPlugin = this.getPlugin('graphic-registry-plugin')
         elements = elementsPlugin.getAllElements()
       } catch {
         elements = undefined
@@ -236,7 +226,7 @@ export class EditorHost {
     try {
       const data = JSON.parse(jsonStr)
       // 加载编辑器状态
-      const elementsPlugin = this.getPlugin('element-manager-plugin')
+      const elementsPlugin = this.getPlugin('graphic-registry-plugin')
       const elements: any[] = data.elements
       if (elementsPlugin) {
         elementsPlugin.elements.clear()
@@ -262,16 +252,3 @@ export class EditorHost {
   }
 }
 
-declare module '@/types' {
-  interface PluginMap {
-    ttt: RectPlugin
-  }
-}
-
-function test() {
-  const host = new EditorHost()
-  const p = host.getPlugin('keydown-plugin')
-  const t = host.getPlugin('selection-plugin')
-  host.installPlugin('456', TextPlugin)
-  host.uninstallPlugin('456')
-}

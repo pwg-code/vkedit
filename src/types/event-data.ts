@@ -1,5 +1,5 @@
 import type { Component } from 'vue'
-import type { IEditorState, IGraphicElement, IGraphicType, Point2D } from './base'
+import type { IEditorState, IGraphicElement, Point2D } from './base'
 
 /**
  * 事件数据接口定义
@@ -156,7 +156,22 @@ export interface ElementDragEventData extends BaseEventData {
   evt: MouseEvent | undefined
 }
 
-// (plugin-specific event payload types moved to their plugin's types.d.ts files)
+export interface GraphicEventData extends BaseEventData {
+  type: string
+  render: () => Component
+}
+
+export interface GraphicToolEventData extends BaseEventData {
+  type: string
+  render: () => Component
+}
+
+export interface PropertyPanelEventData extends BaseEventData {
+  graphicTypes: string[]
+  render: () => Component
+  isCanvas: boolean
+  isPublic: boolean
+}
 
 /**
  * 事件工具函数

@@ -66,7 +66,7 @@ export function useSelectionLayer(host: EditorHost) {
     isSelecting.value = false
   }
 
-  const handlePMouseleave = (event: any) => {
+  const handleMouseLeave = (event: any) => {
     isSelecting.value = false
   }
 
@@ -77,7 +77,7 @@ export function useSelectionLayer(host: EditorHost) {
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
-    handlePMouseleave,
+    handleMouseLeave,
     rectConfig,
     selectionLayerConfig,
   }

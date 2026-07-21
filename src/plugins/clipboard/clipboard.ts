@@ -1,5 +1,6 @@
 import { BasePlugin } from '@/types/base-plugin'
 import type { IGraphicElement } from '@/types'
+import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 import { AddElementCommand, BatchCommand } from '@/commands'
 import { EventUtils } from '@/types/event-data'
 
@@ -105,7 +106,7 @@ export class ClipboardPlugin extends BasePlugin {
       y: target.y - this.state.origin.y,
     }
 
-    const elementManager = this.host.getPlugin('element-manager-plugin')
+    const elementManager = this.host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
     const newElements: IGraphicElement[] = []
     const newIds: string[] = []
 
@@ -113,7 +114,7 @@ export class ClipboardPlugin extends BasePlugin {
       const el = elementManager.createElement(snapshot.type) as any
       el.deserialize(snapshot)
       el.id = crypto.randomUUID?.() ?? this.uuidFallback()
-      el.name = null
+      el.displayName = null
       el.xmm = snapshot.xmm + delta.x
       el.ymm = snapshot.ymm + delta.y
       newElements.push(el)

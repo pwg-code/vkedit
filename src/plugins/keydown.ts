@@ -1,5 +1,6 @@
 import { BasePlugin } from '../types/base-plugin'
 import type { StageKeyboardEventData } from '../types'
+import type { SelectionPlugin, ClipboardPlugin } from '@/plugins'
 import { BatchCommand, RemoveElementCommand, TransformElementCommand } from '@/commands'
 
 export class KeyDownPlugin extends BasePlugin {
@@ -114,7 +115,7 @@ export class KeyDownPlugin extends BasePlugin {
   // 方向键移动选中元素（与拖动一致，使用 TransformElementCommand 支持撤销/重做）
   private moveSelection(dx: number, dy: number): void {
     if (!this.host) return
-    const selector = this.host.getPlugin('selection-plugin')
+    const selector = this.host.getPlugin('selection-plugin') as SelectionPlugin
     if (!selector) return
 
     const elements = selector.getSelectionElements()
@@ -156,21 +157,21 @@ export class KeyDownPlugin extends BasePlugin {
 
   private copySelection(): void {
     if (!this.host) return
-    const selection = this.host.getPlugin('selection-plugin').getSelectionElements()
+    const selection = (this.host.getPlugin('selection-plugin') as SelectionPlugin).getSelectionElements()
     if (selection.length === 0) return
-    this.host.getPlugin('clipboard-plugin').copy(selection)
+    (this.host.getPlugin('clipboard-plugin') as ClipboardPlugin).copy(selection)
   }
 
   private pasteFromClipboard(): void {
     if (!this.host) return
-    const clipboard = this.host.getPlugin('clipboard-plugin')
+    const clipboard = this.host.getPlugin('clipboard-plugin') as ClipboardPlugin
     if (!clipboard.hasData()) return
     clipboard.paste()
   }
 
   private deleteSelectionElement(): void {
     if (!this.host) return
-    const selector = this.host.getPlugin('selection-plugin')
+    const selector = this.host.getPlugin('selection-plugin') as SelectionPlugin
     // 删除选中的图形
     selector.getSelectionElements().forEach((i) => {
       if (this.host) {

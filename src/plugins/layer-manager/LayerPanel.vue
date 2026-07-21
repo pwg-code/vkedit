@@ -158,6 +158,8 @@ import { Icon } from '@iconify/vue'
 import type { EditorHost } from '@/core'
 import type { LayerManagerPlugin } from './layer-manager'
 import type { IGraphicElement } from '@/types'
+import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
+import type { SelectionPlugin, ClipboardPlugin } from '@/plugins'
 import { RemoveElementCommand, BatchCommand } from '@/commands'
 import { EventUtils } from '@/types/event-data'
 
@@ -165,10 +167,10 @@ const props = defineProps<{
   host: EditorHost
 }>()
 
-const elementsPlugin = props.host.getPlugin('element-manager-plugin')
+const elementsPlugin = props.host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
 const layerPlugin = props.host.getPlugin('layer-manager-plugin') as LayerManagerPlugin
-const selectionPlugin = props.host.getPlugin('selection-plugin')
-const clipboardPlugin = props.host.getPlugin('clipboard-plugin')
+const selectionPlugin = props.host.getPlugin('selection-plugin') as SelectionPlugin
+const clipboardPlugin = props.host.getPlugin('clipboard-plugin') as ClipboardPlugin
 
 const listRef = ref<HTMLElement | null>(null)
 // 主动刷新触发器；监听相关事件后递增以让 computed 重新求值
@@ -498,8 +500,8 @@ function commitRename() {
   }
   const raw = renameInput.value.trim()
   const next = raw.length === 0 ? null : raw.slice(0, 50)
-  if (element.name !== next) {
-    element.updateProperty(props.host, 'name', element.name, next)
+  if (element.displayName !== next) {
+    element.updateProperty(props.host, 'displayName', element.displayName, next)
   }
   renamingId.value = null
 }

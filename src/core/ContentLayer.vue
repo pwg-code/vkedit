@@ -7,7 +7,7 @@
       <component
         v-for="element in elements"
         :key="element.id"
-        :is="host.getPlugin('graphic-manager-plugin')?.getElementComponent(element.type)"
+        :is="host.getPlugin('graphic-registry-plugin')?.getElementComponent(element.type)"
         :element="element"
         :host="host"
         @dragstart="handleDragStart($event, element)"

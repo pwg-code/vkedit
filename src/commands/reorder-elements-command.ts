@@ -1,6 +1,6 @@
 import { BaseCommand } from './base-command'
 import type { EditorHost } from '@/core'
-import type { ElementManagerPlugin } from '@/plugins'
+import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 
 /**
  * 批量重排命令：用于图层列表拖拽松手后一次性重建全局顺序。
@@ -10,7 +10,7 @@ import type { ElementManagerPlugin } from '@/plugins'
  */
 export class ReorderElementsCommand extends BaseCommand {
   public name = 'REORDER_ELEMENTS'
-  private elementsPlugin: ElementManagerPlugin | null
+  private elementsPlugin: GraphicRegistryPlugin | null
   private previousOrder: Map<string, number> = new Map()
 
   constructor(
@@ -19,7 +19,7 @@ export class ReorderElementsCommand extends BaseCommand {
     description?: string,
   ) {
     super(host, description ?? `重排图层 (${newOrder.length} 项)`)
-    this.elementsPlugin = this.host.getPlugin('element-manager-plugin')
+    this.elementsPlugin = this.host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
   }
 
   execute(): void {

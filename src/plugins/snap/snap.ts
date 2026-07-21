@@ -2,6 +2,8 @@
 import { ref, type Ref } from 'vue'
 import { BasePlugin } from '@/types/base-plugin'
 import type { IGraphicElement, ViewEventData, ElementDragEventData } from '@/types'
+import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
+import type { SelectionPlugin } from '@/plugins'
 import {
   getElementAABB,
   getAABBLineValues,
@@ -75,8 +77,8 @@ export class SnapPlugin extends BasePlugin {
 
   private cacheTargets(): void {
     if (!this.host) return
-    const elementsPlugin = this.host.getPlugin('element-manager-plugin')
-    const selectionPlugin = this.host.getPlugin('selection-plugin')
+    const elementsPlugin = this.host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
+    const selectionPlugin = this.host.getPlugin('selection-plugin') as SelectionPlugin
     const selection = selectionPlugin?.getSelectionElements() ?? []
     this.cachedSelectionIds = new Set(selection.map((e) => e.id))
 
@@ -101,7 +103,7 @@ export class SnapPlugin extends BasePlugin {
     if (!this.host || !this.snapEnabledSnapshot) return
     if (this.cachedTargetLines.length === 0) return
 
-    const selectionPlugin = this.host.getPlugin('selection-plugin')
+    const selectionPlugin = this.host.getPlugin('selection-plugin') as SelectionPlugin
     const selection = selectionPlugin?.getSelectionElements() ?? []
     const draggedEls: IGraphicElement[] =
       selection.length > 0 && selection.some((e) => e.id === payload.element.id)

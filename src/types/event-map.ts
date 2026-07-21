@@ -21,6 +21,9 @@ import type {
   StageKeyboardEventData,
   ElementRegisteredEventData,
   StatusEventData,
+  GraphicEventData,
+  GraphicToolEventData,
+  PropertyPanelEventData,
 } from './event-data'
 
 /**
@@ -151,7 +154,10 @@ export interface EventMap {
   'plugin:loaded': (payload: PluginEventData) => void
   'plugin:error': (payload: ErrorEventData) => void
 
-  // graphic events moved to graphic-manager plugin types
+  'graphic:registered': (payload: GraphicEventData) => void
+  'graphic:unregistered': (payload: GraphicEventData) => void
+  'graphic-tool:registered': (payload: GraphicToolEventData) => void
+  'graphic-tool:unregistered': (payload: GraphicToolEventData) => void
 
   // 创建策略
   'create-strategy:registered': (payload: BaseEventData) => void
@@ -159,7 +165,8 @@ export interface EventMap {
   'create-strategy:needs-register': (payload: BaseEventData) => void
 
   // 属性面板
-  // property-panel events moved to property-panel-manager plugin types
+  'property-panel:registered': (payload: PropertyPanelEventData) => void
+  'property-panel:unregistered': (payload: PropertyPanelEventData) => void
   'property:value-change': (payload: BaseEventData) => void
   'property:batch-update-start': (payload: BaseEventData) => void
   'property:batch-update-end': (payload: BaseEventData) => void

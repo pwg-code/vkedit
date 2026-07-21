@@ -1,18 +1,18 @@
 import { BaseCommand } from './base-command'
 import type { IGraphicElement } from '../types'
 import { type EditorHost } from '@/core'
-import type { ElementManagerPlugin } from '@/plugins'
+import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 export class RemoveElementCommand extends BaseCommand {
   public name = 'REMOVE_ELEMENT'
   private elementData: any
-  private elementsPlugin: ElementManagerPlugin | null
+  private elementsPlugin: GraphicRegistryPlugin | null
 
   constructor(
     host: EditorHost,
     private element: IGraphicElement,
   ) {
     super(host, '删除元素')
-    this.elementsPlugin = host.getPlugin('element-manager-plugin')
+    this.elementsPlugin = host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
     this.element = element
   }
 

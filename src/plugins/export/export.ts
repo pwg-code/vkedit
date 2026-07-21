@@ -3,6 +3,7 @@
 */
 
 import { BasePlugin } from '@/types/base-plugin'
+import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 import Export from './Export.vue'
 import jsPDF from 'jspdf'
 import konva from 'konva'
@@ -208,7 +209,7 @@ export class ExportPlugin extends BasePlugin {
     const hostState = this.host?.status
     if (!hostState) return ''
     // 先获取到所以元素
-    const elementsPlugin = this.host?.getPlugin('element-manager-plugin')
+    const elementsPlugin = this.host?.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
     if (!elementsPlugin) return ''
     const elements = elementsPlugin.getAllElements()
     // 创建一个临时的容器

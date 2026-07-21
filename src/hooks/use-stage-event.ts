@@ -1,5 +1,6 @@
 import type { IGraphicElement, Point2D } from '@/types'
 import type { EditorHost } from '@/core'
+import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 import { ref } from 'vue'
 import { useStage, useHostState, useZoom } from '@/hooks'
 
@@ -236,7 +237,7 @@ export function useStageEvent(host: EditorHost) {
     elementId: string | null
   } {
     try {
-      const elementsPlugin = host.getPlugin('element-manager-plugin')
+      const elementsPlugin = host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
       let node = event.target
 
       while (node) {

@@ -1,6 +1,6 @@
 import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicElement, Point2D, ElementEventData } from '../types'
-import type { ElementManagerPlugin } from './element-manager'
+import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 
 export class SelectionPlugin extends BasePlugin {
   public name = 'selection-plugin'
@@ -17,39 +17,39 @@ export class SelectionPlugin extends BasePlugin {
   // 点击与拖动的位移阈值（px），小于此值视为「点击」
   private static readonly CLICK_THRESHOLD = 3
   // 元素管理插件
-  private elementsPlugin: ElementManagerPlugin | null = null
+  private elementsPlugin: GraphicRegistryPlugin | null = null
 
   protected onInstall(): void {
     if (!this.host) return
-    this.elementsPlugin = this.host.getPlugin('element-manager-plugin') as ElementManagerPlugin
+    this.elementsPlugin = this.host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
     // 如果没获取到元素管理插件 则报错
     if (!this.elementsPlugin) {
       throw new Error('SelectionPlugin requires ElementManagerPlugin to be installed first.')
     }
 
     // 注册事件监听
-    this.host.on('stage:mousedown', this.handleMouseDown.bind(this))
-    this.host.on('stage:mousemove', this.handleMouseMove.bind(this))
-    this.host.on('stage:mouseup', this.handleMouseUp.bind(this))
-    this.host.on('element:added', this.handleElementAdded.bind(this))
-    this.host.on('element:removed', this.handleElementRemoved.bind(this))
+    this.host.on('stage:mousedown', this.handleMouseDown)
+    this.host.on('stage:mousemove', this.handleMouseMove)
+    this.host.on('stage:mouseup', this.handleMouseUp)
+    this.host.on('element:added', this.handleElementAdded)
+    this.host.on('element:removed', this.handleElementRemoved)
     // 鼠标移出画布：只清理框选草稿（DOM MouseEvent 不含 evt/point，避免复用 handleMouseUp 抛 TypeError）
-    this.host.on('stage:mouseleave', this.endSelectionDraft.bind(this))
+    this.host.on('stage:mouseleave', this.endSelectionDraft)
   }
 
   protected onUninstall(): void {
     if (!this.host) return
 
     // 移除事件监听
-    this.host.off('stage:mousedown', this.handleMouseDown.bind(this))
-    this.host.off('stage:mousemove', this.handleMouseMove.bind(this))
-    this.host.off('stage:mouseup', this.handleMouseUp.bind(this))
-    this.host.off('element:added', this.handleElementAdded.bind(this))
-    this.host.off('element:removed', this.handleElementRemoved.bind(this))
-    this.host.off('stage:mouseleave', this.endSelectionDraft.bind(this))
+    this.host.off('stage:mousedown', this.handleMouseDown)
+    this.host.off('stage:mousemove', this.handleMouseMove)
+    this.host.off('stage:mouseup', this.handleMouseUp)
+    this.host.off('element:added', this.handleElementAdded)
+    this.host.off('element:removed', this.handleElementRemoved)
+    this.host.off('stage:mouseleave', this.endSelectionDraft)
   }
 
-  private handleMouseDown(event: any): void {
+  private handleMouseDown = (event: any): void => {
     if (event.evt.button !== 0) return
 
     if (!this.host || this.host.status.currentTool !== 'select') return
@@ -73,13 +73,13 @@ export class SelectionPlugin extends BasePlugin {
     return false
   }
 
-  private handleMouseMove(event: any): void {
+  private handleMouseMove = (event: any): void => {
     // 如果没有开始选择，则不做任何操作
     if (!this.isSelecting || !this.host) return
     this.selectionEnd = event.point
   }
 
-  private handleMouseUp(event: any): void {
+  private handleMouseUp = (event: any): void => {
     // 兜底守卫：若事件载荷不含 evt / point（异常混入的 DOM-only 事件），
     // 不进入 Konva 风格的处理分支，仅清理草稿态后返回，避免抛 TypeError。
     if (!event || !event.evt || !event.point) {
@@ -144,7 +144,7 @@ export class SelectionPlugin extends BasePlugin {
    * 清理框选 / 按下草稿状态（鼠标移出画布或异常事件触发时使用）。
    * 不会触发 selection:changed，也不访问 event.evt / event.point。
    */
-  private endSelectionDraft(): void {
+  private endSelectionDraft = (): void => {
     this.isSelecting = false
     this.mouseDownId = null
   }
@@ -182,7 +182,7 @@ export class SelectionPlugin extends BasePlugin {
     return elements
   }
 
-  private handleElementAdded(data: ElementEventData): void {
+  private handleElementAdded = (data: ElementEventData): void => {
     // 新添加的元素 默认选中 延迟选中 以便画布刷新
     setTimeout(() => {
       this.selectionIds.clear()
@@ -195,7 +195,7 @@ export class SelectionPlugin extends BasePlugin {
     }, 200)
   }
 
-  private handleElementRemoved(data: ElementEventData): void {
+  private handleElementRemoved = (data: ElementEventData): void => {
     this.deselectElement(data.element.id)
   }
 

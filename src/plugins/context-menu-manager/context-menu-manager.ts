@@ -1,4 +1,5 @@
 import { BasePlugin } from '@/types'
+import type { SelectionPlugin } from '@/plugins'
 
 export class ContextMenuManagerPlugin extends BasePlugin {
   public name = 'context-menu-manager-plugin'
@@ -29,7 +30,7 @@ export class ContextMenuManagerPlugin extends BasePlugin {
     if (!this.host) return []
     // 根据当前选中的图形类型过滤菜单
     const menus: ContextMenuRegisteredEventData[] = []
-    const selection = this.host?.getPlugin('selection-plugin').getSelectionElements()
+    const selection = (this.host?.getPlugin('selection-plugin') as SelectionPlugin).getSelectionElements()
     // 公共菜单和画布菜单始终显示
     this.contextMenus.forEach((menu) => {
       // 如果没有选择则显示画布菜单

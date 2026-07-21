@@ -1,7 +1,5 @@
-import { BasePlugin } from '../../types/base-plugin'
-import { type IGraphicElement, BaseGraphicType } from '../../types'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
-import type { Component } from 'vue'
+import { GraphicPlugin, type PropertyPanelRegistration } from '@/types/graphic-plugin'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
 import Tool from './Tool.vue'
@@ -21,7 +19,6 @@ export interface TextOptions extends BaseGraphicElementOptions {
   ymm?: number
 }
 
-// 矩形元素实现
 export class TextElement extends BaseGraphicElement {
   public type = 'text'
   public text: string = '新建文本'
@@ -43,7 +40,7 @@ export class TextElement extends BaseGraphicElement {
       visible: options.visible,
       locked: options.locked,
       draggable: options.draggable,
-      transferable: options.transferable,
+      resizable: options.resizable,
     })
     this.text = options.text ?? this.text
     this.fontSize = options.fontSize ?? this.fontSize
@@ -88,42 +85,24 @@ export class TextElement extends BaseGraphicElement {
   }
 }
 
-export class TextPlugin extends BasePlugin {
+export class TextPlugin extends GraphicPlugin<TextElement> {
   public name = 'text-plugin'
   public version = '1.0.0'
-  protected onInstall(): void {
-    if (!this.host) return
-    // 图形工具
-    this.host.emit('graphic-tool:registered', {
-      type: 'text',
-      render: () => Tool,
-      source: 'text-plugin-on-install',
-      timestamp: Date.now(),
-    })
-    // 注册图形
-    this.host.emit('graphic:registered', {
-      type: 'text',
-      render: () => Shape,
-      source: 'text-plugin-on-install',
-      timestamp: Date.now(),
-    })
-    // 注册属性面板
-    this.host.emit('property-panel:registered', {
+  public graphicType = 'text'
+  public graphicElement = TextElement
+  public shapeComponent = Shape
+  public toolComponent = Tool
+  public propertyPanels: PropertyPanelRegistration[] = [
+    {
       graphicTypes: ['text'],
       render: () => PropertyPanel,
-      source: 'text-plugin-on-install',
-      timestamp: Date.now(),
       isCanvas: false,
       isPublic: false,
-    })
-    // 注册元素构造器
-    this.host.emit('element:registered', {
-      type: 'text',
-      createElement: () => new TextElement( this.host),
-      source: 'text-plugin-on-install',
-      timestamp: Date.now(),
-    })
-    // 注册一个上下文菜单
+    },
+  ]
+
+  protected onInstall(): void {
+    this.activate()
     this.host.emit('context-menu:registered', {
       graphicTypes: ['text'],
       render: () => TextContextMenu,
@@ -133,18 +112,16 @@ export class TextPlugin extends BasePlugin {
       timestamp: Date.now(),
     })
   }
-}
 
-// 将 TextElement 注册到可扩展的 ElementTypeMap（仅类型信息）
-declare module '@/types' {
-  interface ElementTypeMap {
-    text: TextElement
-  }
-}
-
-// 将 TextPlugin 注册到可扩展的 PluginMap（仅类型信息）
-declare module '@/types' {
-  interface PluginMap {
-    'text-plugin': TextPlugin
+  protected onUninstall(): void {
+    this.deactivate()
+    this.host?.emit('context-menu:unregistered', {
+      graphicTypes: ['text'],
+      render: () => TextContextMenu,
+      isPublic: false,
+      isCanvas: false,
+      source: 'text-plugin-on-install',
+      timestamp: Date.now(),
+    })
   }
 }

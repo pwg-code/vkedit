@@ -14,7 +14,7 @@ export class DistributeElementsCommand extends BaseCommand {
   ) {
     super(host, `分布元素: ${direction}`)
 
-    const elementManager = this.host.getPlugin('element-manager-plugin')
+    const elementManager = this.host.getPlugin('graphic-registry-plugin')
     this.elementIds.forEach((id) => {
       const element = elementManager.elements.get(id)
       if (element) {
@@ -44,7 +44,7 @@ export class DistributeElementsCommand extends BaseCommand {
   }
 
   private distributeElements(): void {
-    const elementManager = this.host.getPlugin('element-manager-plugin')
+    const elementManager = this.host.getPlugin('graphic-registry-plugin')
 
     const elements = this.elementIds
       .map((id) => elementManager.elements.get(id))
@@ -107,7 +107,7 @@ export class DistributeElementsCommand extends BaseCommand {
   }
 
   private restorePreviousPositions(): void {
-    const elementManager = this.host.getPlugin('element-manager-plugin')
+    const elementManager = this.host.getPlugin('graphic-registry-plugin')
     this.previousPositions.forEach((pos, id) => {
       const element = elementManager.elements.get(id)
       if (element) {

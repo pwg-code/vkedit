@@ -2,17 +2,14 @@ import { EditorHost } from './core/editor-host'
 import {
   AlignPlugin,
   ClipboardPlugin,
-  ElementManagerPlugin,
+  GraphicRegistryPlugin,
   ExportPlugin,
   KeyDownPlugin,
   LayerManagerPlugin,
-  PropertyPanelManagerPlugin,
   SelectionPlugin,
   SnapPlugin,
   ToolbarManagerPlugin,
   PreviewPlugin,
-  GraphicToolManagerPlugin,
-  GraphicManagerPlugin,
   ImportPlugin,
   ContextMenuManagerPlugin,
 } from './plugins'
@@ -39,10 +36,7 @@ export function createEditorHost({
   const host = new EditorHost()
   host
     .installPlugin('toolbar-manager-plugin', ToolbarManagerPlugin)
-    .installPlugin('graphic-tool-manager-plugin', GraphicToolManagerPlugin)
-    .installPlugin('graphic-manager-plugin', GraphicManagerPlugin)
-    .installPlugin('property-panel-manager-plugin', PropertyPanelManagerPlugin)
-    .installPlugin('element-manager-plugin', ElementManagerPlugin)
+    .installPlugin('graphic-registry-plugin', GraphicRegistryPlugin)
     .installPlugin('keydown-plugin', KeyDownPlugin)
     .installPlugin('selection-plugin', SelectionPlugin)
     .installPlugin('snap-plugin', SnapPlugin)

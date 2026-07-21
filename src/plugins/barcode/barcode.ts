@@ -1,4 +1,4 @@
-import { BasePlugin } from '../../types/base-plugin'
+import { GraphicPlugin, type PropertyPanelRegistration } from '@/types/graphic-plugin'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
@@ -44,7 +44,7 @@ export class BarcodeElement extends BaseGraphicElement {
       visible: options.visible,
       locked: options.locked,
       draggable: options.draggable,
-      transferable: options.transferable,
+      resizable: options.resizable,
     })
     this.content = options.content ?? this.content
     this.format = options.format ?? this.format
@@ -142,52 +142,16 @@ export class BarcodeElement extends BaseGraphicElement {
   }
 }
 
-export class BarcodePlugin extends BasePlugin {
+export class BarcodePlugin extends GraphicPlugin<BarcodeElement> {
   public name = 'barcode-plugin'
   public version = '1.0.0'
-  protected onInstall(): void {
-    if (!this.host) return
-
-    this.host.emit('graphic-tool:registered', {
-      type: 'barcode',
-      render: () => Tool,
-      source: 'barcode-plugin-on-install',
-      timestamp: Date.now(),
-    })
-
-    this.host.emit('graphic:registered', {
-      type: 'barcode',
-      render: () => Shape,
-      source: 'barcode-plugin-on-install',
-      timestamp: Date.now(),
-    })
-
-    this.host.emit('property-panel:registered', {
-      graphicTypes: ['barcode'],
-      render: () => PropertyPanel,
-      source: 'barcode-plugin-on-install',
-      timestamp: Date.now(),
-      isCanvas: false,
-      isPublic: false,
-    })
-
-    this.host.emit('element:registered', {
-      type: 'barcode',
-      createElement: () => new BarcodeElement(this.host),
-      source: 'barcode-plugin-on-install',
-      timestamp: Date.now(),
-    })
-  }
-}
-
-declare module '@/types' {
-  interface ElementTypeMap {
-    barcode: BarcodeElement
-  }
-}
-
-declare module '@/types' {
-  interface PluginMap {
-    'barcode-plugin': BarcodePlugin
-  }
+  public graphicType = 'barcode'
+  public graphicElement = BarcodeElement
+  public shapeComponent = Shape
+  public toolComponent = Tool
+  public propertyPanels: PropertyPanelRegistration[] = [
+    { graphicTypes: ['barcode'], render: () => PropertyPanel, isCanvas: false, isPublic: false },
+  ]
+  protected onInstall(): void { this.activate() }
+  protected onUninstall(): void { this.deactivate() }
 }

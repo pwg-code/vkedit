@@ -23,7 +23,7 @@ const {
   handleMouseDown,
   handleMouseMove,
   handleMouseUp,
-  handlePMouseleave,
+  handleMouseLeave,
 } = useSelectionLayer(host)
 
 // 选中的元素列表
@@ -82,7 +82,7 @@ onMounted(() => {
   host.on('stage:mousedown', handleMouseDown)
   host.on('stage:mousemove', handleMouseMove)
   host.on('stage:mouseup', handleMouseUp)
-  host.on('stage:mouseleave', handlePMouseleave)
+  host.on('stage:mouseleave', handleMouseLeave)
   host.on('selection:changed', handleSelectionChanged)
   host.on('elements:align', handleElementsAlign)
   host.on('elements:distribute', handleElementsAlign)

@@ -1,5 +1,6 @@
 import { BasePlugin } from '@/types/base-plugin'
 import type { IGraphicElement } from '@/types'
+import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 import { ChangeLayerOrderCommand, ReorderElementsCommand } from '@/commands'
 
 // 类型 → 中文名映射；缺省回落到 type 字符串本身
@@ -35,13 +36,13 @@ export class LayerManagerPlugin extends BasePlugin {
 
   getElementDisplayName(element: IGraphicElement): string {
     // 1. 已有名称（用户自定义或之前自动分配的）→ 直接返回
-    const customName = element.name
+    const customName = element.displayName
     if (typeof customName === 'string' && customName.trim().length > 0) {
       return customName
     }
 
     // 2. 首次需要名称 → 分配并存储固定名称，后续拖拽不再变化
-    const elementsPlugin = this.host?.getPlugin('element-manager-plugin')
+    const elementsPlugin = this.host?.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
     const ordered = elementsPlugin?.getOrderedElements() ?? []
     const typeName = this.getTypeDisplayName(element.type)
 
@@ -49,8 +50,8 @@ export class LayerManagerPlugin extends BasePlugin {
     for (const e of ordered) {
       if (e.type !== element.type) continue
       if (e.id === element.id) continue
-      if (typeof e.name !== 'string' || e.name.trim().length === 0) continue
-      const m = AUTO_NAME_PATTERN.exec(e.name)
+      if (typeof e.displayName !== 'string' || e.displayName.trim().length === 0) continue
+      const m = AUTO_NAME_PATTERN.exec(e.displayName)
       if (m && m[1] === typeName) {
         const num = Number.parseInt(m[2], 10)
         if (Number.isFinite(num) && num > 0) usedNumbers.add(num)
@@ -61,7 +62,7 @@ export class LayerManagerPlugin extends BasePlugin {
     while (usedNumbers.has(nextSeq)) nextSeq++
     const autoName = `${typeName} ${nextSeq}`
 
-    element.name = autoName
+    element.displayName = autoName
 
     return autoName
   }

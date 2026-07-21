@@ -1,11 +1,10 @@
-import { BasePlugin } from '../../types/base-plugin'
-import { type IGraphicElement, BaseGraphicType } from '../../types'
 import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Tool from './Tool.vue'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
-import type { Component } from 'vue'
 import type { EditorHost } from '@/core'
+import { GraphicPlugin } from '@/types/graphic-plugin'
+import type { PropertyPanelRegistration } from '@/types/graphic-plugin'
 
 export interface RectOptions extends BaseGraphicElementOptions {
   x?: number
@@ -37,7 +36,7 @@ export class RectElement extends BaseGraphicElement {
       visible: options.visible,
       locked: options.locked,
       draggable: options.draggable,
-      transferable: options.transferable,
+      resizable: options.resizable,
     })
     this.fill = options.fill ?? this.fill
     this.stroke = options.stroke ?? this.stroke
@@ -74,54 +73,24 @@ export class RectElement extends BaseGraphicElement {
   }
 }
 
-export class RectPlugin extends BasePlugin {
+export class RectPlugin extends GraphicPlugin<RectElement> {
   public name = 'rect-plugin'
   public version = '1.0.0'
-  protected onInstall(): void {
-    if (!this.host) return
-    // 图形工具
-    this.host.emit('graphic-tool:registered', {
-      type: 'rect',
-      render: () => Tool,
-      source: 'rect-plugin-on-install',
-      timestamp: Date.now(),
-    })
-    // 注册图形
-    this.host.emit('graphic:registered', {
-      type: 'rect',
-      render: () => Shape,
-      source: 'rect-plugin-on-install',
-      timestamp: Date.now(),
-    })
-    // 注册属性面板
-    this.host.emit('property-panel:registered', {
+  public graphicType = 'rect'
+  public graphicElement = RectElement
+  public shapeComponent = Shape
+  public toolComponent = Tool
+  public propertyPanels: PropertyPanelRegistration[] = [
+    {
       graphicTypes: ['rect'],
       render: () => PropertyPanel,
-      source: 'rect-plugin-on-install',
-      timestamp: Date.now(),
       isCanvas: false,
       isPublic: false,
-    })
-    // 注册元素构造器
-    this.host.emit('element:registered', {
-      type: 'rect',
-      createElement: () => new RectElement(this.host, { xmm: 5, ymm: 5 }),
-      source: 'rect-plugin-on-install',
-      timestamp: Date.now(),
-    })
+    },
+  ]
+
+  protected onInstall(): void {
+    this.activate()
   }
 }
 
-// 将 RectElement 注册到可扩展的 ElementTypeMap（仅类型信息）
-declare module '@/types' {
-  interface ElementTypeMap {
-    rect: RectElement
-  }
-}
-
-// 将 RectPlugin 注册到可扩展的 PluginMap（仅类型信息）
-declare module '@/types' {
-  interface PluginMap {
-    'rect-plugin': RectPlugin
-  }
-}

@@ -17,8 +17,8 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import type { EditorHost } from '@/core'
-import type { GraphicToolRegisteredEventData } from '@/plugins/graphic-manager/graphic-manager'
-import type { GraphicToolManagerPlugin } from '@/plugins/graphic-tool-manager'
+import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
+import type { GraphicToolEventData } from '@/types/event-data'
 
 interface Props {
   host: EditorHost
@@ -31,20 +31,20 @@ defineSlots<{
   toolbox?(props: { host: EditorHost }): any
 }>()
 
-const graphicToolPlugin = host.getPlugin('graphic-tool-manager-plugin') as GraphicToolManagerPlugin | undefined
-const tools = ref<GraphicToolRegisteredEventData[]>([])
+const graphicRegistryPlugin = host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin | undefined
+const tools = ref<GraphicToolEventData[]>([])
 
 const initTools = () => {
-  if (graphicToolPlugin?.getToolList) {
-    tools.value = graphicToolPlugin.getToolList()
+  if (graphicRegistryPlugin?.getToolList) {
+    tools.value = graphicRegistryPlugin.getToolList()
   }
 }
 
-const onToolRegistered = (data: GraphicToolRegisteredEventData) => {
+const onToolRegistered = (data: GraphicToolEventData) => {
   tools.value = [...tools.value, data]
 }
 
-const onToolUnregistered = (data: GraphicToolRegisteredEventData) => {
+const onToolUnregistered = (data: GraphicToolEventData) => {
   tools.value = tools.value.filter((t) => t.type !== data.type)
 }
 

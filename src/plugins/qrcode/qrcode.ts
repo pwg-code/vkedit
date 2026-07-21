@@ -1,12 +1,10 @@
-import { BasePlugin } from '../../types/base-plugin'
-import { type IGraphicElement } from '../../types'
+import { GraphicPlugin } from '@/types/graphic-plugin'
+import type { PropertyPanelRegistration } from '@/types/graphic-plugin'
 import { BaseGraphicElement, CORNER_ANCHORS, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
-import type { Component } from 'vue'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
 import Tool from './Tool.vue'
 import type { EditorHost } from '@/core'
-// import { useImage } from 'vue-konva';
 import QRCode from 'qrcode'
 
 export interface QrcodeOptions extends BaseGraphicElementOptions {
@@ -38,7 +36,7 @@ export class QrcodeElement extends BaseGraphicElement {
       visible: options.visible,
       locked: options.locked,
       draggable: options.draggable,
-      transferable: options.transferable,
+      resizable: options.resizable,
     })
     this.content = options.content ?? this.content
     this.foreground = options.foreground ?? this.foreground
@@ -106,52 +104,16 @@ export class QrcodeElement extends BaseGraphicElement {
   }
 }
 
-export class QrcodePlugin extends BasePlugin {
+export class QrcodePlugin extends GraphicPlugin<QrcodeElement> {
   public name = 'qr-plugin'
   public version = '1.0.0'
-  protected onInstall(): void {
-    if (!this.host) return
-
-    this.host.emit('graphic-tool:registered', {
-      type: 'qr',
-      render: () => Tool,
-      source: 'qr-plugin-on-install',
-      timestamp: Date.now(),
-    })
-
-    this.host.emit('graphic:registered', {
-      type: 'qr',
-      render: () => Shape,
-      source: 'qr-plugin-on-install',
-      timestamp: Date.now(),
-    })
-
-    this.host.emit('property-panel:registered', {
-      graphicTypes: ['qr'],
-      render: () => PropertyPanel,
-      source: 'qr-plugin-on-install',
-      timestamp: Date.now(),
-      isCanvas: false,
-      isPublic: false,
-    })
-
-    this.host.emit('element:registered', {
-      type: 'qr',
-      createElement: () => new QrcodeElement(this.host),
-      source: 'qr-plugin-on-install',
-      timestamp: Date.now(),
-    })
-  }
-}
-
-declare module '@/types' {
-  interface ElementTypeMap {
-    qr: QrcodeElement
-  }
-}
-
-declare module '@/types' {
-  interface PluginMap {
-    'qr-plugin': QrcodePlugin
-  }
+  public graphicType = 'qr'
+  public graphicElement = QrcodeElement
+  public shapeComponent = Shape
+  public toolComponent = Tool
+  public propertyPanels: PropertyPanelRegistration[] = [
+    { graphicTypes: ['qr'], render: () => PropertyPanel, isCanvas: false, isPublic: false },
+  ]
+  protected onInstall(): void { this.activate() }
+  protected onUninstall(): void { this.deactivate() }
 }
