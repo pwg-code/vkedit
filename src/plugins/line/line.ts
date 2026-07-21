@@ -65,6 +65,7 @@ export class LinePlugin extends GraphicPlugin<LineElement> {
   public graphicElement = LineElement
   public shapeComponent = Shape
   public toolComponent = Tool
+  public icon = 'material-symbols-light:line-weight'
   public propertyPanels: PropertyPanelRegistration[] = [
     { graphicTypes: ['line'], render: () => PropertyPanel, isCanvas: false, isPublic: false },
   ]

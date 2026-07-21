@@ -38,8 +38,8 @@ export function useContentLayer(host: EditorHost) {
   const initElements = () => {
     const manager = host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
     if (manager?.getOrderedElements) {
-      // 按 zIndex 降序：顶层在前，作为渲染顺序传给 Konva group（数组顺序即 Z 顺序）
-      elements.value = manager.getOrderedElements()
+      // 按 zIndex 升序：底层在前，先渲染的在底部，后渲染的在顶部叠压
+      elements.value = manager.getOrderedElements('ascending')
     } else {
       const a = manager?.elements.values()
       if (a) {

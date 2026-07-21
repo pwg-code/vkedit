@@ -2,19 +2,6 @@ import { BasePlugin } from '@/types/base-plugin'
 import type { IGraphicElement } from '@/types'
 import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 import { ChangeLayerOrderCommand, ReorderElementsCommand } from '@/commands'
-
-// 类型 → 中文名映射；缺省回落到 type 字符串本身
-const TYPE_NAME_MAP: Record<string, string> = {
-  rect: '矩形',
-  text: '文本',
-  line: '线条',
-  table: '表格',
-  qrcode: '二维码',
-  qr: '二维码',
-  barcode: '条形码',
-  chart: '图表',
-}
-
 const AUTO_NAME_PATTERN = /^([^\s]+)\s+(\d+)$/u
 
 export class LayerManagerPlugin extends BasePlugin {
@@ -29,11 +16,6 @@ export class LayerManagerPlugin extends BasePlugin {
     if (!this.host) return
   }
 
-  // 获取元素类型的中文名
-  getTypeDisplayName(type: string): string {
-    return TYPE_NAME_MAP[type] ?? type
-  }
-
   getElementDisplayName(element: IGraphicElement): string {
     // 1. 已有名称（用户自定义或之前自动分配的）→ 直接返回
     const customName = element.displayName
@@ -44,7 +26,7 @@ export class LayerManagerPlugin extends BasePlugin {
     // 2. 首次需要名称 → 分配并存储固定名称，后续拖拽不再变化
     const elementsPlugin = this.host?.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin
     const ordered = elementsPlugin?.getOrderedElements() ?? []
-    const typeName = this.getTypeDisplayName(element.type)
+    const typeName = element.type
 
     const usedNumbers = new Set<number>()
     for (const e of ordered) {

@@ -92,6 +92,7 @@ export class TextPlugin extends GraphicPlugin<TextElement> {
   public graphicElement = TextElement
   public shapeComponent = Shape
   public toolComponent = Tool
+  public icon = 'material-symbols-light:format-text'
   public propertyPanels: PropertyPanelRegistration[] = [
     {
       graphicTypes: ['text'],

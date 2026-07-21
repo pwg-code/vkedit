@@ -111,6 +111,7 @@ export class QrcodePlugin extends GraphicPlugin<QrcodeElement> {
   public graphicElement = QrcodeElement
   public shapeComponent = Shape
   public toolComponent = Tool
+  public icon = 'material-symbols-light:qr-code'
   public propertyPanels: PropertyPanelRegistration[] = [
     { graphicTypes: ['qr'], render: () => PropertyPanel, isCanvas: false, isPublic: false },
   ]

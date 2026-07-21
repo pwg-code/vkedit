@@ -7,6 +7,8 @@ export interface GraphicTypeRegistration {
   type: string
   render: () => Component
   createElement: () => IGraphicElement
+  icon?: string
+  typeDisplayName?: string
 }
 
 export interface PropertyPanelRegistration {
@@ -22,6 +24,8 @@ export abstract class GraphicPlugin<T extends IGraphicElement> extends BasePlugi
   public abstract shapeComponent: Component
   public abstract toolComponent?: Component
   public abstract propertyPanels?: PropertyPanelRegistration[]
+  public icon?: string
+  public typeDisplayName?: string
 
   protected onActivate(): void {
     if (!this.host) return
@@ -39,6 +43,8 @@ export abstract class GraphicPlugin<T extends IGraphicElement> extends BasePlugi
       this.host.emit('graphic:registered', {
         type: this.graphicType,
         render: () => this.shapeComponent,
+        icon: this.icon,
+        typeDisplayName: this.typeDisplayName,
         source: 'graphic-plugin',
         timestamp: Date.now(),
       })
@@ -81,6 +87,8 @@ export abstract class GraphicPlugin<T extends IGraphicElement> extends BasePlugi
       this.host.emit('graphic:unregistered', {
         type: this.graphicType,
         render: () => this.shapeComponent,
+        icon: this.icon,
+        typeDisplayName: this.typeDisplayName,
         source: 'graphic-plugin',
         timestamp: Date.now(),
       })

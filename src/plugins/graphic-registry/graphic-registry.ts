@@ -21,6 +21,8 @@ export class GraphicRegistryPlugin extends BasePlugin {
         type: data.type,
         render: data.render,
         createElement: existing?.createElement ?? (() => { throw new Error(`Element type ${data.type} is not registered`) }),
+        icon: data.icon ?? existing?.icon,
+        typeDisplayName: data.typeDisplayName ?? existing?.typeDisplayName,
       })
     })
 
@@ -42,6 +44,8 @@ export class GraphicRegistryPlugin extends BasePlugin {
         type: data.type,
         render: existing?.render ?? (() => { throw new Error(`Graphic type ${data.type} is not registered`) }),
         createElement: data.createElement,
+        icon: existing?.icon,
+        typeDisplayName: existing?.typeDisplayName,
       })
     })
 
@@ -67,6 +71,12 @@ export class GraphicRegistryPlugin extends BasePlugin {
       return graphic.render()
     }
     throw new Error(`未找到类型为 ${type} 的图形组件`)
+  }
+
+  getTypeMeta(type: string): { icon?: string; typeDisplayName?: string } | undefined {
+    const graphic = this.graphics.get(type)
+    if (!graphic) return undefined
+    return { icon: graphic.icon, typeDisplayName: graphic.typeDisplayName }
   }
 
   getToolList(): { type: string; render: () => Component }[] {
@@ -177,15 +187,16 @@ export class GraphicRegistryPlugin extends BasePlugin {
     throw new Error(`Element type ${type} is not registered.`)
   }
 
-  getOrderedElements(): IGraphicElement[] {
+  getOrderedElements(order: 'ascending' | 'descending' = 'descending'): IGraphicElement[] {
     const arr = Array.from(this.elements.values())
     const idxMap = new Map<string, number>()
     arr.forEach((e, i) => idxMap.set(e.id, i))
+    const dir = order === 'ascending' ? 1 : -1
     arr.sort((a, b) => {
-      if (b.zIndex !== a.zIndex) return b.zIndex - a.zIndex
+      if (a.zIndex !== b.zIndex) return (a.zIndex - b.zIndex) * dir
       const ai = idxMap.get(a.id) ?? 0
       const bi = idxMap.get(b.id) ?? 0
-      return ai - bi
+      return (ai - bi) * dir
     })
     return arr
   }

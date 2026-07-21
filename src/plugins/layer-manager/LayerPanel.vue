@@ -38,7 +38,7 @@
           <Icon icon="material-symbols-light:drag-indicator" width="20" />
         </div>
 
-        <Icon :icon="typeIcon(el.type)" width="20" class="vkedit-layer-row__type" />
+        <Icon :icon="elementsPlugin.getTypeMeta(el.type)?.icon ?? 'material-symbols-light:circle'" width="20" class="vkedit-layer-row__type" />
 
         <input
           v-if="renamingId === el.id"
@@ -145,7 +145,7 @@
         class="vkedit-layer-ghost"
         :style="{ left: `${dragGhost.x}px`, top: `${dragGhost.y}px` }"
       >
-        <Icon :icon="typeIcon(dragGhost.type)" width="20" />
+        <Icon :icon="elementsPlugin.getTypeMeta(dragGhost.type)?.icon ?? 'material-symbols-light:circle'" width="20" />
         <span class="vkedit-layer-ghost__name">{{ dragGhost.label }}</span>
       </div>
     </teleport>
@@ -224,20 +224,6 @@ onUnmounted(() => {
   document.removeEventListener('click', closeMenu)
 })
 
-// ---------- 名称与图标 ----------
-function typeIcon(type: string): string {
-  const map: Record<string, string> = {
-    rect: 'material-symbols-light:rectangle',
-    text: 'material-symbols-light:format-text',
-    line: 'material-symbols-light:line-weight',
-    table: 'material-symbols-light:table-rows',
-    qrcode: 'material-symbols-light:qr-code',
-    qr: 'material-symbols-light:qr-code',
-    barcode: 'material-symbols-light:barcode',
-    chart: 'material-symbols-light:bar-chart',
-  }
-  return map[type] ?? 'material-symbols-light:circle'
-}
 function getDisplayName(el: IGraphicElement): string {
   return layerPlugin.getElementDisplayName(el)
 }

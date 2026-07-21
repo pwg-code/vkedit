@@ -149,6 +149,7 @@ export class BarcodePlugin extends GraphicPlugin<BarcodeElement> {
   public graphicElement = BarcodeElement
   public shapeComponent = Shape
   public toolComponent = Tool
+  public icon = 'material-symbols-light:barcode'
   public propertyPanels: PropertyPanelRegistration[] = [
     { graphicTypes: ['barcode'], render: () => PropertyPanel, isCanvas: false, isPublic: false },
   ]

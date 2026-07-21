@@ -80,6 +80,7 @@ export class RectPlugin extends GraphicPlugin<RectElement> {
   public graphicElement = RectElement
   public shapeComponent = Shape
   public toolComponent = Tool
+  public icon = 'material-symbols-light:rectangle'
   public propertyPanels: PropertyPanelRegistration[] = [
     {
       graphicTypes: ['rect'],
