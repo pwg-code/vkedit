@@ -27,9 +27,32 @@ const props = defineProps<{
   collapsed?: boolean
 }>()
 
+let col = 0
+let shiftX = 0
+let shiftY = 0
+
 function handleClick() {
   if (!props.host || !props.createElement) return
   const element = props.createElement()
+  const canvasWmm = props.host.status.wmm
+  const canvasHmm = props.host.status.hmm
+  if (5 + shiftX + col * 5 + element.wmm > canvasWmm) {
+    shiftY += 5
+    col = 0
+  }
+  if (5 + shiftY + col * 5 + element.hmm > canvasHmm) {
+    shiftX += 5
+    col = 0
+  }
+  if (5 + shiftX + element.wmm > canvasWmm) {
+    shiftX = 0
+  }
+  if (5 + shiftY + element.hmm > canvasHmm) {
+    shiftY = 0
+  }
+  element.xmm = 5 + shiftX + col * 5
+  element.ymm = 5 + shiftY + col * 5
+  col++
   props.host.executeCommand(new AddElementCommand(props.host, element))
 }
 </script>
