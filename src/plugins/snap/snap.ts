@@ -13,8 +13,6 @@ import {
   type AABBLineValues,
   type GuideLine,
 } from '@/utils/geometry'
-import SnapToggle from './SnapToggle.vue'
-
 const SNAP_THRESHOLD_PX = 5
 
 export class SnapPlugin extends BasePlugin {
@@ -32,14 +30,6 @@ export class SnapPlugin extends BasePlugin {
     this.host.on('element:dragstart', this.handleDragStart.bind(this))
     this.host.on('element:dragmove', this.handleDragMove.bind(this))
     this.host.on('element:dragend', this.handleDragEnd.bind(this))
-
-    this.host.emit('tool:registered', {
-      toolName: 'snap-toggle',
-      render: () => SnapToggle,
-      group: 'actions',
-      source: 'snap-plugin-on-install',
-      timestamp: Date.now(),
-    })
   }
 
   protected onUninstall(): void {

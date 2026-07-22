@@ -72,9 +72,26 @@
 body:has(.vkedit-editor) {
   // VkButton
   .vkedit-btn--ghost {
+    background: transparent;
     color: var(--vkedit-color-text-dark);
     &:hover {
       background: var(--vkedit-color-bg-dark-hover);
+    }
+  }
+
+  .vkedit-btn--link {
+    background: transparent;
+    color: var(--vkedit-color-text-dark);
+    &:hover {
+      color: var(--vkedit-color-text-dark-secondary);
+    }
+  }
+
+  .vkedit-btn--destructive {
+    background: var(--vkedit-color-red-600);
+    color: var(--vkedit-color-white);
+    &:hover {
+      background: var(--vkedit-color-red-500);
     }
   }
 
@@ -144,6 +161,11 @@ body:has(.vkedit-editor) {
     background: rgba(0, 0, 0, 0.2);
     border-color: var(--vkedit-color-border-dark);
     color: var(--vkedit-color-text-dark);
+    color-scheme: dark;
+    option {
+      background: var(--vkedit-color-bg-dark);
+      color: var(--vkedit-color-text-dark);
+    }
     &:focus-visible {
       box-shadow: 0 0 0 1px var(--vkedit-color-border-dark-hover);
     }

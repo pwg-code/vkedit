@@ -1,7 +1,7 @@
 <template>
   <VkDropdown>
     <template #trigger>
-      <VkButton variant="ghost" size="sm">画布: {{ currentPresetName }}</VkButton>
+      <VkButton size="sm">画布: {{ currentPresetName }}</VkButton>
     </template>
     <div class="preset-menu">
       <div
@@ -28,9 +28,7 @@ const props = defineProps<{ host: EditorHost }>()
 
 const currentKey = computed(() => {
   const { wmm, hmm, dpm } = props.host.status
-  const matched = canvasPresets.find(
-    (p) => p.width === wmm && p.height === hmm && p.dpm === dpm,
-  )
+  const matched = canvasPresets.find((p) => p.width === wmm && p.height === hmm && p.dpm === dpm)
   return matched?.key ?? ''
 })
 

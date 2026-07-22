@@ -9,7 +9,7 @@
   border-radius: var(--vkedit-radius-md);
   font-size: var(--vkedit-font-size-sm);
   font-weight: var(--vkedit-font-weight-medium);
-  transition: var(--vkedit-transition-colors);
+  transition: color, background-color, border-color, text-decoration, 200ms ease;
   cursor: pointer;
   border: none;
   line-height: 1;
@@ -49,21 +49,28 @@
   &--outline {
     border: 1px solid var(--vkedit-color-border);
     background: var(--vkedit-color-white);
+    color: inherit;
 
     &:hover { background: var(--vkedit-color-neutral-100); }
   }
 
   &--secondary {
     background: var(--vkedit-color-neutral-100);
+    color: inherit;
 
     &:hover { background: var(--vkedit-color-neutral-200); }
   }
 
   &--ghost {
+    background: transparent;
+    color: inherit;
+
     &:hover { background: var(--vkedit-color-neutral-100); }
   }
 
   &--link {
+    background: transparent;
+    color: var(--vkedit-color-neutral-700);
     text-decoration: underline;
     text-underline-offset: 4px;
 

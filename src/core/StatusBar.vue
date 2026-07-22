@@ -24,6 +24,7 @@
         <component :is="cursorIconMap[currentCursorMode]" :width="18" />
       </div>
     </div>
+    <SnapToggle :host="host" collapsed />
   </div>
 </template>
 
@@ -37,6 +38,7 @@ import IconArrowSelectorTool from '~icons/material-symbols-light/arrow-selector-
 import IconTouchpadMouse from '~icons/material-symbols-light/touchpad-mouse'
 import IconPanTool from '~icons/material-symbols-light/pan-tool'
 import IconDragPan from '~icons/material-symbols-light/drag-pan'
+import SnapToggle from '@/plugins/snap/SnapToggle.vue'
 import type { EditorHost } from '@/core'
 import type { CursorMode } from '@/types'
 import { useZoom, useHostState, useStage } from '@/hooks'
