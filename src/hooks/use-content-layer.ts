@@ -9,6 +9,7 @@ import { type EditorHost } from '@/core'
 import { TransformElementCommand, BatchCommand } from '@/commands'
 import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 import type { SelectionPlugin } from '@/plugins/selection'
+import { cssColorVar } from '@/utils/css-var'
 
 export function useContentLayer(host: EditorHost) {
   // 图层
@@ -30,6 +31,23 @@ export function useContentLayer(host: EditorHost) {
       y: contentY.value,
       scaleX: zoom.value,
       scaleY: zoom.value,
+    }
+  })
+
+  // Transformer 主题化（与 primary / surface 语义 token 对齐，避免 Konva 默认蓝）
+  const transformerConfig = computed(() => {
+    const el = host.stageState.wrapperEl
+    const primary = cssColorVar('--vkedit-color-primary', el)
+    const anchorFill = cssColorVar('--vkedit-color-surface-solid', el)
+    return {
+      borderStroke: primary,
+      borderStrokeWidth: 1,
+      anchorStroke: primary,
+      anchorStrokeWidth: 1,
+      anchorFill,
+      anchorSize: 8,
+      anchorCornerRadius: 1,
+      rotateAnchorOffset: 18,
     }
   })
 
@@ -266,6 +284,7 @@ export function useContentLayer(host: EditorHost) {
     transformerRef,
     contentLayerConfig,
     contentGroupConfig,
+    transformerConfig,
     elements,
     initElements,
     handleDragStart,

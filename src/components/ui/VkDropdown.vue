@@ -7,12 +7,14 @@
       <div
         v-if="open"
         class="vkedit-dropdown__overlay"
+        :data-vkedit-theme="theme"
         @click="open = false"
       />
       <Transition name="vkedit-scale">
         <div
           v-if="open"
           class="vkedit-dropdown__content"
+          :data-vkedit-theme="theme"
           :style="{ top: contentStyle.top, left: contentStyle.left }"
         >
           <slot />
@@ -24,14 +26,17 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, nextTick, ref } from 'vue'
+import { resolveVkeditTheme, type VkeditTheme } from '@/utils/theme'
 
 const open = ref(false)
 const dropdownRef = ref<HTMLElement | null>(null)
 const contentStyle = ref<{ top: string; left: string }>({ top: '0px', left: '0px' })
+const theme = ref<VkeditTheme>('dark')
 
 function toggle() {
   open.value = !open.value
   if (open.value) {
+    theme.value = resolveVkeditTheme(dropdownRef.value)
     updatePosition()
   }
 }

@@ -2,20 +2,22 @@
 
 .vkedit-input-mm {
   display: flex;
-  align-items: center;
-  gap: 0;
+  align-items: stretch;
+  width: 100%;
 
   &__btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 28px;
-    width: 28px;
-    border: 1px solid var(--vkedit-color-border);
-    background: transparent;
+    flex-shrink: 0;
+    width: var(--vkedit-control-height-md);
+    border: var(--vkedit-border-width) solid var(--vkedit-color-border);
+    background: var(--vkedit-color-bg-hover);
+    color: var(--vkedit-color-text);
     font-size: var(--vkedit-font-size-lg);
     cursor: pointer;
     user-select: none;
+    transition: var(--vkedit-transition-colors);
 
     &:first-child {
       border-radius: var(--vkedit-radius-md) 0 0 var(--vkedit-radius-md);
@@ -27,8 +29,13 @@
       border-left: none;
     }
 
-    &:hover {
-      background: var(--vkedit-color-neutral-100);
+    &:hover:not(:disabled) {
+      background: var(--vkedit-color-bg-active);
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
   }
 
@@ -38,13 +45,15 @@
 
   &__display,
   &__input {
-    display: flex;
-    height: 28px;
+    flex: 1;
+    min-width: 0;
+    height: var(--vkedit-control-height-md);
     width: 100%;
-    border: 1px solid var(--vkedit-color-border);
+    border: var(--vkedit-border-width) solid var(--vkedit-color-border);
     border-left: none;
     border-right: none;
-    background: transparent;
+    background: var(--vkedit-color-surface-1);
+    color: var(--vkedit-color-text);
     padding: 0 var(--vkedit-spacing-sm);
     font-size: var(--vkedit-font-size-sm);
     text-align: center;
@@ -52,7 +61,9 @@
 
     &:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 1px var(--vkedit-color-neutral-400);
+      border-color: var(--vkedit-color-focus-ring);
+      box-shadow: 0 0 0 2px var(--vkedit-color-canvas-area),
+        0 0 0 4px color-mix(in oklab, var(--vkedit-color-focus-ring) 45%, transparent);
       position: relative;
       z-index: 1;
     }

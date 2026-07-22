@@ -9,27 +9,34 @@
     <!-- 左标尺 -->
     <v-rect :config="leftRulerConfig"></v-rect>
     <v-shape :config="leftRulerShapeConfig" ref="leftRulerShapeRef"></v-shape>
+
+    <!-- 左上交叉区（后绘盖住重叠脏边） -->
+    <v-rect :config="cornerConfig"></v-rect>
+    <v-line :config="cornerEdgeConfigs.right"></v-line>
+    <v-line :config="cornerEdgeConfigs.bottom"></v-line>
   </v-layer>
 </template>
 
 <script setup lang="ts">
 import { useRulerLayer, useStage, useZoom } from '@/hooks'
 import { useHostState } from '@/hooks/use-host-state'
+import { cssColorVar, cssVar } from '@/utils/css-var'
 import type { EditorHost } from '@/core'
 import konva from 'konva'
 import { computed, watch } from 'vue'
 import { round } from 'lodash'
 
-const rulerTextColor = '#333'
-const rulerTickColor = '#666'
-
 const { host } = defineProps<{ host: EditorHost }>()
+
+const themeEl = () => host.stageState.wrapperEl
 
 // 标尺hook
 const {
   rulerLayerRef,
   upRulerConfig,
   leftRulerConfig,
+  cornerConfig,
+  cornerEdgeConfigs,
   rulerLayerConfig,
   leftRulerShapeRef,
   upRulerShapeRef,
@@ -62,181 +69,213 @@ const mm1Spacing = computed(() => hostState.dpm * zoom.value)
 const mm5Spacing = computed(() => mm1Spacing.value * 5)
 // 十毫米刻度间距
 const mm10Spacing = computed(() => mm1Spacing.value * 10)
-// 1mm线条高度
+// 1mm线条高度（最弱）
 const mm1Height = 5
 // 5mm线条高度
 const mm5Height = 10
-// 10mm线条高度
-const mm10Height = 13
+// 10mm线条高度（最强刻度，仍弱于正文）
+const mm10Height = 14
 // 尺子总高度
 const rulerHeight = 25
 // 显示文字的最小间距
 const labelMinSpacing = 30
 
+// 刻度层级：用实色 text token，避免 border-* 半透明在 surface 上发虚看不见
+function rulerColors() {
+  const el = themeEl()
+  return {
+    tick1: cssColorVar('--vkedit-color-text-disabled', el),
+    tick5: cssColorVar('--vkedit-color-text-muted', el),
+    tick10: cssColorVar('--vkedit-color-text-secondary', el),
+    text: cssColorVar('--vkedit-color-text-secondary', el),
+    font: `10px ${cssVar('--vkedit-font-sans', el) || 'sans-serif'}`,
+  }
+}
+
+function strokeTicks(
+  context: konva.Context,
+  color: string,
+  draw: () => void,
+) {
+  context.beginPath()
+  draw()
+  context.setAttr('strokeStyle', color)
+  context.setAttr('lineWidth', 1)
+  context.setAttr('globalAlpha', 1)
+  context.stroke()
+}
+
 // 上标尺刻度绘制函数
 const upSceneFunc = (context: konva.Context, shape: konva.Shape) => {
-  // 绘制上标尺刻度的逻辑
-  context.beginPath()
+  const { tick1, tick5, tick10, text, font } = rulerColors()
+  const sp1 = mm1Spacing.value
+  const sp5 = mm5Spacing.value
+  const sp10 = mm10Spacing.value
 
-  // 以当前滚动位置为0点 向两边绘制刻度
-  // 先向左绘制
-  let currentX = contentX.value
-  while (currentX > rulerHeight && mm1Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(currentX, rulerHeight - mm1Height)
-    context.lineTo(currentX, rulerHeight)
-    currentX -= mm1Spacing.value
+  // 1mm
+  if (sp1 >= minSpacing) {
+    strokeTicks(context, tick1, () => {
+      let x = contentX.value
+      while (x > rulerHeight) {
+        context.moveTo(x, rulerHeight - mm1Height)
+        context.lineTo(x, rulerHeight)
+        x -= sp1
+      }
+      x = contentX.value
+      while (x <= width.value) {
+        context.moveTo(x, rulerHeight - mm1Height)
+        context.lineTo(x, rulerHeight)
+        x += sp1
+      }
+    })
   }
 
-  // 向右绘制
-  currentX = contentX.value
-  while (currentX <= width.value && mm1Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(currentX, rulerHeight - mm1Height)
-    context.lineTo(currentX, rulerHeight)
-    currentX += mm1Spacing.value
+  // 5mm
+  if (sp5 >= minSpacing) {
+    strokeTicks(context, tick5, () => {
+      let x = contentX.value
+      while (x > rulerHeight) {
+        context.moveTo(x, rulerHeight - mm5Height)
+        context.lineTo(x, rulerHeight)
+        x -= sp5
+      }
+      x = contentX.value
+      while (x < width.value) {
+        context.moveTo(x, rulerHeight - mm5Height)
+        context.lineTo(x, rulerHeight)
+        x += sp5
+      }
+    })
   }
 
-  // 向左绘画5mm刻度
-  currentX = contentX.value
-  while (currentX > rulerHeight && mm5Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(currentX, rulerHeight - mm5Height)
-    context.lineTo(currentX, rulerHeight)
-    currentX -= mm5Spacing.value
-  }
+  // 10mm + 数字
+  if (sp10 >= minSpacing) {
+    strokeTicks(context, tick10, () => {
+      let x = contentX.value
+      while (x > rulerHeight) {
+        context.moveTo(x, rulerHeight - mm10Height)
+        context.lineTo(x, rulerHeight)
+        x -= sp10
+      }
+      x = contentX.value
+      while (x < width.value) {
+        context.moveTo(x, rulerHeight - mm10Height)
+        context.lineTo(x, rulerHeight)
+        x += sp10
+      }
+    })
 
-  // 向右绘画5mm刻度
-  currentX = contentX.value
-  while (currentX < width.value && mm5Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(currentX, rulerHeight - mm5Height)
-    context.lineTo(currentX, rulerHeight)
-    currentX += mm5Spacing.value
-  }
-
-  // 向左绘画10mm刻度
-  currentX = contentX.value
-  while (currentX > rulerHeight && mm10Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(currentX, rulerHeight - mm10Height)
-    context.lineTo(currentX, rulerHeight)
-
-    // 当间隔大于50像素时 绘制刻度数字
-    if (mm10Spacing.value >= labelMinSpacing) {
-      const mmValue = round((contentX.value - currentX) / mm1Spacing.value)
-      context.font = '10px Arial'
-      context.fillStyle = rulerTextColor
-      context.fillText(`${mmValue}`, currentX - 2, 10)
+    if (sp10 >= labelMinSpacing) {
+      context.font = font
+      context.fillStyle = text
+      let x = contentX.value
+      while (x > rulerHeight) {
+        const mmValue = round((contentX.value - x) / sp1)
+        context.fillText(`${mmValue}`, x - 2, 10)
+        x -= sp10
+      }
+      x = contentX.value
+      while (x < width.value) {
+        const mmValue = round((x - contentX.value) / sp1)
+        context.fillText(`${mmValue}`, x - 2, 10)
+        x += sp10
+      }
     }
-
-    currentX -= mm10Spacing.value
   }
 
-  // 向右绘画10mm刻度
-  currentX = contentX.value
-  while (currentX < width.value && mm10Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(currentX, rulerHeight - mm10Height)
-    context.lineTo(currentX, rulerHeight)
-
-    // 当间隔大于50像素时 绘制刻度数字
-    if (mm10Spacing.value >= labelMinSpacing) {
-      const mmValue = round((currentX - contentX.value) / mm1Spacing.value)
-      context.font = '10px Arial'
-      context.fillStyle = rulerTextColor
-      context.fillText(`${mmValue}`, currentX - 2, 10)
-    }
-    currentX += mm10Spacing.value
-  }
-
-  context.closePath()
   context.fillStrokeShape(shape)
 }
 
 // 上标尺刻度配置
 const upRulerShapeConfig = {
-  // 这里是上标尺刻度的配置
   sceneFunc: upSceneFunc,
-  stroke: rulerTickColor,
-  strokeWidth: 1,
+  strokeEnabled: false,
+  listening: false,
 }
 
 // 左标尺刻度绘制函数
 const leftSceneFunc = (context: konva.Context, shape: konva.Shape) => {
-  let currentY = contentY.value
-  context.beginPath()
-  // 向上绘制1mm刻度
-  while (currentY > rulerHeight && mm1Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(rulerHeight - mm1Height, currentY)
-    context.lineTo(rulerHeight, currentY)
-    currentY -= mm1Spacing.value
+  const { tick1, tick5, tick10, text, font } = rulerColors()
+  const sp1 = mm1Spacing.value
+  const sp5 = mm5Spacing.value
+  const sp10 = mm10Spacing.value
+
+  if (sp1 >= minSpacing) {
+    strokeTicks(context, tick1, () => {
+      let y = contentY.value
+      while (y > rulerHeight) {
+        context.moveTo(rulerHeight - mm1Height, y)
+        context.lineTo(rulerHeight, y)
+        y -= sp1
+      }
+      y = contentY.value
+      while (y <= height.value) {
+        context.moveTo(rulerHeight - mm1Height, y)
+        context.lineTo(rulerHeight, y)
+        y += sp1
+      }
+    })
   }
-  // 向下绘制1mm刻度
-  currentY = contentY.value
-  while (currentY <= height.value && mm1Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(rulerHeight - mm1Height, currentY)
-    context.lineTo(rulerHeight, currentY)
-    currentY += mm1Spacing.value
+
+  if (sp5 >= minSpacing) {
+    strokeTicks(context, tick5, () => {
+      let y = contentY.value
+      while (y > rulerHeight) {
+        context.moveTo(rulerHeight - mm5Height, y)
+        context.lineTo(rulerHeight, y)
+        y -= sp5
+      }
+      y = contentY.value
+      while (y <= height.value) {
+        context.moveTo(rulerHeight - mm5Height, y)
+        context.lineTo(rulerHeight, y)
+        y += sp5
+      }
+    })
   }
-  // 向上绘制5mm刻度
-  currentY = contentY.value
-  while (currentY > rulerHeight && mm5Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(rulerHeight - mm5Height, currentY)
-    context.lineTo(rulerHeight, currentY)
-    currentY -= mm5Spacing.value
-  }
-  // 向下绘制5mm刻度
-  currentY = contentY.value
-  while (currentY <= height.value && mm5Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(rulerHeight - mm5Height, currentY)
-    context.lineTo(rulerHeight, currentY)
-    currentY += mm5Spacing.value
-  }
-  // 向上绘制10mm刻度
-  currentY = contentY.value
-  while (currentY > rulerHeight && mm10Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(rulerHeight - mm10Height, currentY)
-    context.lineTo(rulerHeight, currentY)
-    currentY -= mm10Spacing.value
-    // 当间隔大于50像素时 绘制刻度数字
-    if (mm10Spacing.value >= labelMinSpacing) {
-      const mmValue = round((contentY.value - currentY) / mm1Spacing.value)
-      context.font = '10px Arial'
-      context.fillStyle = rulerTextColor
-      context.fillText(`${mmValue}`, rulerHeight - 20, currentY - 2)
+
+  if (sp10 >= minSpacing) {
+    strokeTicks(context, tick10, () => {
+      let y = contentY.value
+      while (y > rulerHeight) {
+        context.moveTo(rulerHeight - mm10Height, y)
+        context.lineTo(rulerHeight, y)
+        y -= sp10
+      }
+      y = contentY.value
+      while (y <= height.value) {
+        context.moveTo(rulerHeight - mm10Height, y)
+        context.lineTo(rulerHeight, y)
+        y += sp10
+      }
+    })
+
+    if (sp10 >= labelMinSpacing) {
+      context.font = font
+      context.fillStyle = text
+      let y = contentY.value
+      while (y > rulerHeight) {
+        y -= sp10
+        const mmValue = round((contentY.value - y) / sp1)
+        context.fillText(`${mmValue}`, rulerHeight - 20, y - 2)
+      }
+      y = contentY.value
+      while (y <= height.value) {
+        const mmValue = round((y - contentY.value) / sp1)
+        context.fillText(`${mmValue}`, rulerHeight - 20, y - 2)
+        y += sp10
+      }
     }
   }
-  // 向下绘制10mm刻度
-  currentY = contentY.value
-  while (currentY <= height.value && mm10Spacing.value >= minSpacing) {
-    // 绘制逻辑
-    context.moveTo(rulerHeight - mm10Height, currentY)
-    context.lineTo(rulerHeight, currentY)
-    // 当间隔大于50像素时 绘制刻度数字
-    if (mm10Spacing.value >= labelMinSpacing) {
-      const mmValue = round((currentY - contentY.value) / mm1Spacing.value)
-      context.font = '10px Arial'
-      context.fillStyle = rulerTextColor
-      context.fillText(`${mmValue}`, rulerHeight - 20, currentY - 2)
-    }
-    currentY += mm10Spacing.value
-  }
-  context.closePath()
+
   context.fillStrokeShape(shape)
 }
 
 // 左标尺刻度配置
 const leftRulerShapeConfig = {
-  // 这里是左标尺刻度的配置
   sceneFunc: leftSceneFunc,
-  stroke: rulerTickColor,
-  strokeWidth: 1,
+  strokeEnabled: false,
+  listening: false,
 }
 </script>
 

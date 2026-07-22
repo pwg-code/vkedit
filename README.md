@@ -108,6 +108,28 @@ host.setStatus({
 
 ---
 
+## 主题与样式
+
+vkedit 默认提供暗色主题（`data-vkedit-theme="dark"`），引入 CSS 后即刻生效：
+
+```ts
+import 'vkedit/dist/vkedit.css'
+```
+
+覆盖品牌色（挂载在编辑器根或包裹容器上）：
+
+```css
+.vkedit-editor {
+  --vkedit-color-primary: oklch(55% 0.18 260);
+  --vkedit-color-primary-hover: oklch(65% 0.16 260);
+  --vkedit-color-on-primary: oklch(99% 0 0);
+}
+```
+
+完整变量列表与破坏性变更说明见 [MIGRATION.md](./MIGRATION.md)。
+
+---
+
 ## 链接
 
 - [官网](https://vkedit.org)

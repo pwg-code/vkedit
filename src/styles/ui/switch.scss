@@ -1,5 +1,3 @@
-// ====== ui/switch.scss ======
-
 .vkedit-switch {
   display: inline-flex;
   height: 20px;
@@ -9,7 +7,7 @@
   align-items: center;
   border-radius: var(--vkedit-radius-full);
   border: 2px solid transparent;
-  background: oklch(87% 0 0);
+  background: var(--vkedit-color-bg-active);
   transition: var(--vkedit-transition-colors);
   box-shadow: var(--vkedit-shadow-sm);
   position: relative;
@@ -26,21 +24,26 @@
     height: 16px;
     width: 16px;
     border-radius: var(--vkedit-radius-full);
-    background: var(--vkedit-color-white);
-    box-shadow: var(--vkedit-shadow-lg);
-    transition: transform 150ms ease;
+    background: var(--vkedit-color-text);
+    box-shadow: var(--vkedit-shadow-sm);
+    transition: transform var(--vkedit-duration-fast) var(--vkedit-easing-default);
   }
 
   &:has(&__input:checked) {
-    background: oklch(62% 0.08 260);
+    background: var(--vkedit-color-primary);
 
     .vkedit-switch__thumb {
       transform: translateX(16px);
+      background: var(--vkedit-color-on-primary);
     }
+  }
+
+  &:has(&__input:focus-visible) {
+    box-shadow: 0 0 0 2px var(--vkedit-color-focus-ring);
   }
 
   &:has(&__input:disabled) {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.45;
   }
 }

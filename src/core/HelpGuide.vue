@@ -1,5 +1,5 @@
 <template>
-  <div class="vkedit-help-guide">
+  <div ref="helpGuideRef" class="vkedit-help-guide">
     <button
       class="vkedit-help-guide__btn"
       @click.stop="toggle"
@@ -9,8 +9,8 @@
     </button>
 
     <Teleport to="body">
-      <div v-if="visible" class="vkedit-help-guide__overlay" @click="visible = false">
-        <div class="vkedit-help-guide__popup" @click.stop>
+      <div v-if="visible" class="vkedit-help-guide__overlay" :data-vkedit-theme="theme" @click="visible = false">
+        <div class="vkedit-help-guide__popup" :data-vkedit-theme="theme" @click.stop>
           <div class="vkedit-help-guide__header">
             <span class="vkedit-help-guide__title">快捷键</span>
             <button class="vkedit-help-guide__close" @click="visible = false" title="关闭">
@@ -107,13 +107,19 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { resolveVkeditTheme, type VkeditTheme } from '@/utils/theme'
 import IconHelp from '~icons/material-symbols-light/help'
 import IconClose from '~icons/material-symbols-light/close'
 
 const visible = ref(false)
+const helpGuideRef = ref<HTMLElement | null>(null)
+const theme = ref<VkeditTheme>('dark')
 
 const toggle = () => {
   visible.value = !visible.value
+  if (visible.value) {
+    theme.value = resolveVkeditTheme(helpGuideRef.value)
+  }
 }
 </script>
 

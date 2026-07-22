@@ -1,76 +1,204 @@
 // ====== src/styles/variables.scss ======
-// VKEdit 设计 Token — 所有变量以 --vkedit- 为前缀
+// VKEdit Design Token — 两层体系：Palette（:root） + Semantic（主题选择器）
 
+// 1) Palette：颜色原始阶梯，仅供 semantic 层引用，组件禁止直接使用
 :root {
-  // ---- 颜色 ----
-  --vkedit-color-white: #ffffff;
-  --vkedit-color-bg: #ffffff;
-  --vkedit-color-bg-hover: var(--vkedit-color-neutral-100);
-  --vkedit-color-bg-active: var(--vkedit-color-neutral-200);
+  /* ---- Palette: neutral ---- */
+  --vkedit-palette-neutral-0: oklch(99% 0 0);
+  --vkedit-palette-neutral-50: oklch(97% 0 0);
+  --vkedit-palette-neutral-100: oklch(94% 0 0);
+  --vkedit-palette-neutral-200: oklch(88% 0 0);
+  --vkedit-palette-neutral-300: oklch(78% 0 0);
+  --vkedit-palette-neutral-400: oklch(68% 0 0);
+  --vkedit-palette-neutral-500: oklch(55% 0 0);
+  --vkedit-palette-neutral-600: oklch(45% 0 0);
+  --vkedit-palette-neutral-700: oklch(35% 0 0);
+  --vkedit-palette-neutral-800: oklch(27% 0 0);
+  --vkedit-palette-neutral-900: oklch(20% 0 0);
+  --vkedit-palette-neutral-950: oklch(14% 0 0);
 
-  --vkedit-color-neutral-100: oklch(97% 0 0);
-  --vkedit-color-neutral-200: oklch(92.2% 0 0);
-  --vkedit-color-neutral-400: oklch(70.8% 0 0);
-  --vkedit-color-neutral-500: oklch(55.6% 0 0);
-  --vkedit-color-neutral-700: oklch(37.1% 0 0);
-  --vkedit-color-neutral-800: oklch(26.9% 0 0);
+  /* ---- Palette: teal (primary brand) ---- */
+  --vkedit-palette-teal-400: oklch(78% 0.12 185);
+  --vkedit-palette-teal-500: oklch(70% 0.14 185);
+  --vkedit-palette-teal-600: oklch(60% 0.13 185);
 
-  --vkedit-color-red-500: oklch(63.7% .237 25.331);
-  --vkedit-color-red-600: oklch(57.7% .245 27.325);
+  /* ---- Palette: danger / warning / success ---- */
+  --vkedit-palette-danger-500: oklch(63% 0.22 25);
+  --vkedit-palette-danger-600: oklch(55% 0.23 27);
+  --vkedit-palette-warning-500: oklch(78% 0.15 75);
+  --vkedit-palette-success-500: oklch(72% 0.15 155);
 
-  --vkedit-color-gray-200: oklch(92.8% 0.006 264.531);
-  --vkedit-color-gray-600: oklch(44.6% 0.03 256.802);
+  /* ---- 非颜色、主题无关的尺度 Token ---- */
+  --vkedit-spacing-0: 0;
+  --vkedit-spacing-0-5: 0.125rem; /* 2px */
+  --vkedit-spacing-1: 0.25rem;    /* 4px */
+  --vkedit-spacing-1-5: 0.375rem; /* 6px */
+  --vkedit-spacing-2: 0.5rem;     /* 8px */
+  --vkedit-spacing-3: 0.75rem;    /* 12px */
+  --vkedit-spacing-4: 1rem;       /* 16px */
+  --vkedit-spacing-5: 1.25rem;    /* 20px */
+  --vkedit-spacing-6: 1.5rem;     /* 24px */
+  --vkedit-spacing-8: 2rem;       /* 32px */
 
-  // ---- 间距 ----
-  --vkedit-spacing-xs: 0.125rem;
-  --vkedit-spacing-sm: 0.25rem;
-  --vkedit-spacing-md: 0.5rem;
-  --vkedit-spacing-lg: 0.75rem;
-  --vkedit-spacing-xl: 2rem;
+  /* 兼容别名：旧代码大量用 xs/sm/md/lg/xl —— 映射到新阶梯 */
+  --vkedit-spacing-xs: var(--vkedit-spacing-0-5);
+  --vkedit-spacing-sm: var(--vkedit-spacing-1);
+  --vkedit-spacing-md: var(--vkedit-spacing-2);
+  --vkedit-spacing-lg: var(--vkedit-spacing-3);
+  --vkedit-spacing-xl: var(--vkedit-spacing-8);
 
-  // ---- 排版 ----
-  --vkedit-font-sans: ui-sans-serif, system-ui, sans-serif;
-  --vkedit-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --vkedit-font-size-xs: 0.75rem;
-  --vkedit-font-size-sm: 0.8125rem;
-  --vkedit-font-size-base: 0.875rem;
-  --vkedit-font-size-lg: 0.9375rem;
-  --vkedit-font-size-xl: 1.0625rem;
-  --vkedit-font-weight-medium: 500;
-  --vkedit-font-weight-bold: 700;
-
-  // ---- 圆角 ----
   --vkedit-radius-sm: 0.25rem;
   --vkedit-radius-md: 0.375rem;
   --vkedit-radius-lg: 0.5rem;
   --vkedit-radius-xl: 0.75rem;
   --vkedit-radius-full: 9999px;
 
-  // ---- 阴影 ----
-  --vkedit-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --vkedit-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --vkedit-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --vkedit-font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --vkedit-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --vkedit-font-size-xs: 0.75rem;      /* 12 */
+  --vkedit-font-size-sm: 0.8125rem;    /* 13 */
+  --vkedit-font-size-base: 0.875rem;   /* 14 */
+  --vkedit-font-size-lg: 0.9375rem;    /* 15 */
+  --vkedit-font-size-xl: 1.0625rem;    /* 17 */
+  --vkedit-font-weight-medium: 500;
+  --vkedit-font-weight-bold: 700;
+  --vkedit-line-height-tight: 1.25;
+  --vkedit-line-height-normal: 1.5;
 
-  // ---- 边框 ----
-  --vkedit-color-border: var(--vkedit-color-neutral-200);
+  --vkedit-border-width: 1px;
 
-  // ---- 深色面板 ----
-  --vkedit-color-bg-dark: #1e1e1e;
-  --vkedit-color-bg-dark-hover: #2a2a2a;
-  --vkedit-color-bg-dark-active: #3a3a3a;
-  --vkedit-color-panel-bg: rgba(30, 30, 30, 0.92);
-  --vkedit-color-toolbar-bg: rgba(30, 30, 30, 0.65);
-  --vkedit-color-border-dark: rgba(255, 255, 255, 0.08);
-  --vkedit-color-border-dark-hover: rgba(255, 255, 255, 0.15);
-  --vkedit-color-text-dark: #e0e0e0;
-  --vkedit-color-text-dark-secondary: #c4c4c4;
-  --vkedit-color-canvas-area: #1a1a2e;
-  --vkedit-blur-panel: blur(12px);
-  --vkedit-shadow-panel: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --vkedit-duration-fast: 120ms;
+  --vkedit-duration-normal: 160ms;
+  --vkedit-duration-slow: 220ms;
+  --vkedit-easing-default: cubic-bezier(0.2, 0, 0, 1);
+  --vkedit-easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --vkedit-easing-out: cubic-bezier(0, 0, 0.2, 1);
+
+  --vkedit-z-base: 1;
+  --vkedit-z-sidebar: 90;
+  --vkedit-z-toolbar: 100;
+  --vkedit-z-dropdown-overlay: 150;
+  --vkedit-z-dropdown: 160;
+  --vkedit-z-context-menu: 200;
+  --vkedit-z-modal: 999;
+  --vkedit-z-warning: 1000;
+
   --vkedit-toolbar-gap: 2px;
-  --vkedit-toolbar-divider-color: rgba(255, 255, 255, 0.12);
   --vkedit-toolbar-top: 33px;
+  --vkedit-control-height-sm: 24px;
+  --vkedit-control-height-md: 28px;
+  --vkedit-control-height-lg: 32px;
+}
 
-  // ---- 过渡 ----
-  --vkedit-transition-colors: color, background-color, border-color, 150ms ease;
+// 2) Semantic：dark 默认（编辑器根 + 任意带 data 属性的节点）
+.vkedit-editor,
+[data-vkedit-theme='dark'] {
+  color-scheme: dark;
+
+  --vkedit-color-primary: var(--vkedit-palette-teal-500);
+  --vkedit-color-primary-hover: var(--vkedit-palette-teal-400);
+  --vkedit-color-on-primary: var(--vkedit-palette-neutral-950);
+
+  --vkedit-color-danger: var(--vkedit-palette-danger-500);
+  --vkedit-color-danger-hover: var(--vkedit-palette-danger-600);
+  --vkedit-color-on-danger: var(--vkedit-palette-neutral-0);
+
+  --vkedit-color-warning: var(--vkedit-palette-warning-500);
+  --vkedit-color-success: var(--vkedit-palette-success-500);
+
+  --vkedit-color-canvas-area: oklch(20% 0.015 265);
+  --vkedit-color-paper: var(--vkedit-palette-neutral-0);
+
+  --vkedit-color-surface: oklch(26% 0.012 260 / 0.92);
+  --vkedit-color-surface-solid: oklch(26% 0.012 260);
+  --vkedit-color-surface-1: oklch(22% 0.01 260 / 0.55);
+  --vkedit-color-surface-2: oklch(30% 0.01 260);
+
+  --vkedit-color-bg: var(--vkedit-color-surface-solid);
+  --vkedit-color-bg-hover: oklch(32% 0.01 260);
+  --vkedit-color-bg-active: oklch(36% 0.012 260);
+
+  --vkedit-color-border: oklch(100% 0 0 / 0.09);
+  --vkedit-color-border-subtle: oklch(100% 0 0 / 0.06);
+  --vkedit-color-border-strong: oklch(100% 0 0 / 0.14);
+
+  --vkedit-color-text: oklch(86% 0.005 260);
+  --vkedit-color-text-secondary: oklch(70% 0.005 260);
+  --vkedit-color-text-muted: oklch(58% 0.005 260);
+  --vkedit-color-text-disabled: oklch(50% 0 0 / 0.55);
+
+  --vkedit-color-focus-ring: var(--vkedit-color-primary);
+  --vkedit-color-overlay: oklch(0% 0 0 / 0.45);
+
+  --vkedit-color-toolbar-bg: oklch(26% 0.012 260 / 0.78);
+  --vkedit-color-panel-bg: var(--vkedit-color-surface);
+  --vkedit-toolbar-divider-color: var(--vkedit-color-border-strong);
+
+  --vkedit-blur-panel: blur(12px);
+  --vkedit-elevation-1: 0 1px 2px oklch(0% 0 0 / 0.18);
+  --vkedit-elevation-2: 0 4px 16px oklch(0% 0 0 / 0.28);
+  --vkedit-elevation-3: 0 12px 32px oklch(0% 0 0 / 0.36);
+  --vkedit-shadow-sm: var(--vkedit-elevation-1);
+  --vkedit-shadow-md: var(--vkedit-elevation-2);
+  --vkedit-shadow-lg: var(--vkedit-elevation-3);
+  --vkedit-shadow-panel: var(--vkedit-elevation-2);
+
+  --vkedit-transition-colors: color, background-color, border-color, box-shadow, opacity,
+    var(--vkedit-duration-fast) var(--vkedit-easing-default);
+}
+
+// 3) Semantic：light（完整映射，默认不启用）
+[data-vkedit-theme='light'] {
+  color-scheme: light;
+
+  --vkedit-color-primary: var(--vkedit-palette-teal-600);
+  --vkedit-color-primary-hover: var(--vkedit-palette-teal-500);
+  --vkedit-color-on-primary: var(--vkedit-palette-neutral-0);
+
+  --vkedit-color-danger: var(--vkedit-palette-danger-500);
+  --vkedit-color-danger-hover: var(--vkedit-palette-danger-600);
+  --vkedit-color-on-danger: var(--vkedit-palette-neutral-0);
+
+  --vkedit-color-warning: var(--vkedit-palette-warning-500);
+  --vkedit-color-success: var(--vkedit-palette-success-500);
+
+  --vkedit-color-canvas-area: oklch(94% 0.01 260);
+  --vkedit-color-paper: var(--vkedit-palette-neutral-0);
+
+  --vkedit-color-surface: oklch(100% 0 0 / 0.92);
+  --vkedit-color-surface-solid: oklch(100% 0 0);
+  --vkedit-color-surface-1: oklch(97% 0 0);
+  --vkedit-color-surface-2: oklch(94% 0 0);
+
+  --vkedit-color-bg: var(--vkedit-color-surface-solid);
+  --vkedit-color-bg-hover: oklch(96% 0 0);
+  --vkedit-color-bg-active: oklch(92% 0 0);
+
+  --vkedit-color-border: oklch(0% 0 0 / 0.10);
+  --vkedit-color-border-subtle: oklch(0% 0 0 / 0.06);
+  --vkedit-color-border-strong: oklch(0% 0 0 / 0.16);
+
+  --vkedit-color-text: oklch(22% 0 0);
+  --vkedit-color-text-secondary: oklch(40% 0 0);
+  --vkedit-color-text-muted: oklch(50% 0 0);
+  --vkedit-color-text-disabled: oklch(55% 0 0 / 0.7);
+
+  --vkedit-color-focus-ring: var(--vkedit-color-primary);
+  --vkedit-color-overlay: oklch(0% 0 0 / 0.35);
+
+  --vkedit-color-toolbar-bg: oklch(100% 0 0 / 0.78);
+  --vkedit-color-panel-bg: var(--vkedit-color-surface);
+  --vkedit-toolbar-divider-color: var(--vkedit-color-border);
+
+  --vkedit-blur-panel: blur(12px);
+  --vkedit-elevation-1: 0 1px 2px oklch(0% 0 0 / 0.06);
+  --vkedit-elevation-2: 0 4px 16px oklch(0% 0 0 / 0.10);
+  --vkedit-elevation-3: 0 12px 32px oklch(0% 0 0 / 0.14);
+  --vkedit-shadow-sm: var(--vkedit-elevation-1);
+  --vkedit-shadow-md: var(--vkedit-elevation-2);
+  --vkedit-shadow-lg: var(--vkedit-elevation-3);
+  --vkedit-shadow-panel: var(--vkedit-elevation-2);
+
+  --vkedit-transition-colors: color, background-color, border-color, box-shadow, opacity,
+    var(--vkedit-duration-fast) var(--vkedit-easing-default);
 }

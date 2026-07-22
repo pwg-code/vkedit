@@ -1,5 +1,5 @@
 <template>
-  <div class="vkedit-editor">
+  <div class="vkedit-editor" data-vkedit-theme="dark">
     <div v-if="isTooSmall" class="vkedit-editor__minwidth-warning">
       <p>请使用宽度不低于 800px 的屏幕访问本编辑器</p>
     </div>

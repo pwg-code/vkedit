@@ -1,5 +1,3 @@
-// ====== src/styles/animations.scss ======
-
 @keyframes vkedit-scale-in {
   from {
     opacity: 0;
@@ -51,5 +49,38 @@
   to {
     opacity: 0;
     transform: translateX(-50%) translateY(-6px);
+  }
+}
+
+.vkedit-scale-enter-active {
+  animation: vkedit-scale-in var(--vkedit-duration-fast) var(--vkedit-easing-out);
+}
+
+.vkedit-scale-leave-active {
+  animation: vkedit-scale-out var(--vkedit-duration-fast) var(--vkedit-easing-in);
+}
+
+.vkedit-toolbar-enter-active {
+  animation: vkedit-toolbar-enter var(--vkedit-duration-normal) var(--vkedit-easing-out);
+}
+
+.vkedit-toolbar-leave-active {
+  animation: vkedit-toolbar-leave var(--vkedit-duration-normal) var(--vkedit-easing-in);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vkedit-scale-enter-active,
+  .vkedit-scale-leave-active,
+  .vkedit-toolbar-enter-active,
+  .vkedit-toolbar-leave-active {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .vkedit-editor *,
+  [data-vkedit-theme] * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

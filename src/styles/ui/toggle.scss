@@ -1,5 +1,3 @@
-// ====== ui/toggle.scss ======
-
 .vkedit-toggle {
   display: inline-flex;
   align-items: center;
@@ -12,23 +10,25 @@
   cursor: pointer;
   white-space: nowrap;
   outline: none;
+  color: var(--vkedit-color-text-secondary);
 
   &:hover {
-    background: var(--vkedit-color-neutral-100);
+    background: var(--vkedit-color-bg-hover);
+    color: var(--vkedit-color-text);
   }
 
   &--on {
-    background: var(--vkedit-color-neutral-100);
-    color: var(--vkedit-color-neutral-800);
+    background: var(--vkedit-color-bg-active);
+    color: var(--vkedit-color-primary);
   }
 
   &:focus-visible {
-    box-shadow: 0 0 0 3px rgb(from var(--vkedit-color-neutral-400) r g b / 0.5);
+    box-shadow: 0 0 0 2px var(--vkedit-color-focus-ring);
   }
 
   &:disabled {
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.45;
   }
 
   svg {
@@ -38,7 +38,6 @@
     flex-shrink: 0;
   }
 
-  // ---- 尺寸 ----
   &--default { height: 36px; min-width: 36px; padding: 0 var(--vkedit-spacing-sm); }
   &--sm      { height: 32px; min-width: 32px; padding: 0 6px; }
   &--lg      { height: 40px; min-width: 40px; padding: 0 10px; }

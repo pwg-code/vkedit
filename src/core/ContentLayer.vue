@@ -16,7 +16,7 @@
         @transformend="handleElementTransformEnd($event, element)"
         @transform="handleElementTransform($event, element)"
       />
-      <v-transformer ref="transformerRef"></v-transformer>
+      <v-transformer ref="transformerRef" :config="transformerConfig"></v-transformer>
     </v-group>
     <slot></slot>
   </v-layer>
@@ -37,6 +37,7 @@ const {
   contentLayerRef,
   transformerRef,
   contentGroupConfig,
+  transformerConfig,
   elements,
   handleDragStart,
   handleDragMove,

@@ -3,17 +3,17 @@
   top: 100px;
   left: 36px;
   width: var(--vkedit-sidebar-width, 200px);
-  z-index: 90;
+  z-index: var(--vkedit-z-sidebar);
   background: var(--vkedit-color-panel-bg);
   backdrop-filter: var(--vkedit-blur-panel);
   -webkit-backdrop-filter: var(--vkedit-blur-panel);
-  border: 1px solid var(--vkedit-color-border-dark);
-  border-radius: 8px;
+  border: var(--vkedit-border-width) solid var(--vkedit-color-border);
+  border-radius: var(--vkedit-radius-lg);
   box-shadow: var(--vkedit-shadow-panel);
   max-height: calc(100vh - 64px);
   font-size: var(--vkedit-font-size-sm);
-  color: var(--vkedit-color-text-dark);
-  transition: width 200ms ease;
+  color: var(--vkedit-color-text);
+  transition: width var(--vkedit-duration-normal) var(--vkedit-easing-default);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -25,7 +25,7 @@
     padding: var(--vkedit-spacing-sm) var(--vkedit-spacing-md);
     font-size: var(--vkedit-font-size-sm);
     font-weight: var(--vkedit-font-weight-bold);
-    border-bottom: 1px solid var(--vkedit-color-border-dark);
+    border-bottom: 1px solid var(--vkedit-color-border-subtle);
     flex-shrink: 0;
   }
 
@@ -37,13 +37,13 @@
     justify-content: center;
     background: transparent;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--vkedit-radius-sm);
     cursor: pointer;
-    color: var(--vkedit-color-text-dark-secondary);
+    color: var(--vkedit-color-text-secondary);
     flex-shrink: 0;
     &:hover {
-      background: var(--vkedit-color-bg-dark-hover);
-      color: var(--vkedit-color-text-dark);
+      background: var(--vkedit-color-bg-hover);
+      color: var(--vkedit-color-text);
     }
   }
 
@@ -53,11 +53,11 @@
     justify-content: center;
     height: 100%;
     min-height: 44px;
-    color: var(--vkedit-color-text-dark-secondary);
+    color: var(--vkedit-color-text-secondary);
     cursor: pointer;
     &:hover {
-      color: var(--vkedit-color-text-dark);
-      background: var(--vkedit-color-bg-dark-hover);
+      color: var(--vkedit-color-text);
+      background: var(--vkedit-color-bg-hover);
     }
   }
 
@@ -92,7 +92,7 @@
   &__layers {
     margin-top: var(--vkedit-spacing-xs);
     padding-top: var(--vkedit-spacing-xs);
-    border-top: 1px solid var(--vkedit-color-border-dark);
+    border-top: 1px solid var(--vkedit-color-border);
   }
 
   &__resize-handle {
@@ -103,10 +103,10 @@
     height: 100%;
     cursor: col-resize;
     background: transparent;
-    transition: background 150ms ease;
+    transition: background var(--vkedit-duration-fast) var(--vkedit-easing-default);
     &:hover,
     &--active {
-      background: var(--vkedit-color-border-dark-hover);
+      background: var(--vkedit-color-border);
     }
   }
 }
@@ -114,11 +114,11 @@
 // Link-like hover overrides — 双类名提升特异度盖过 editor.scss 的 ghost hover
 .vkedit-floating-toolbox.vkedit-floating-toolbox .vkedit-floating-toolbox__content .vkedit-tool-link {
   background: transparent;
-  color: var(--vkedit-color-text-dark-secondary);
+  color: var(--vkedit-color-text-secondary);
 }
 .vkedit-floating-toolbox.vkedit-floating-toolbox .vkedit-floating-toolbox__content .vkedit-tool-link:hover {
   background: transparent;
-  color: var(--vkedit-color-text-dark);
+  color: var(--vkedit-color-text);
 }
 
 // 图形工具区 header（与 .vkedit-layer-panel__header 风格统一）
@@ -127,7 +127,7 @@
   align-items: center;
   gap: var(--vkedit-spacing-sm);
   padding: var(--vkedit-spacing-xs) 0;
-  color: var(--vkedit-color-text-dark-secondary);
+  color: var(--vkedit-color-text-secondary);
 }
 .vkedit-floating-toolbox .vkedit-graphic-tool__title {
   font-size: var(--vkedit-font-size-xs);
@@ -137,7 +137,7 @@
 .vkedit-floating-toolbox .vkedit-graphic-tool__divider {
   flex: 1;
   height: 1px;
-  background: var(--vkedit-color-border-dark);
+  background: var(--vkedit-color-border);
 }
 
 // 图形工具区 2 列网格

@@ -91,8 +91,8 @@ function onMarginMMUpdate(value: number) {
 <style scoped>
 .vkedit-property__warning {
   font-size: var(--vkedit-font-size-xs);
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.08);
+  color: var(--vkedit-color-warning);
+  background: color-mix(in oklab, var(--vkedit-color-warning) 12%, transparent);
   padding: 4px 6px;
   border-radius: var(--vkedit-radius-sm);
   line-height: 1.4;

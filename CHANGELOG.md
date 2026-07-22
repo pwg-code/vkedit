@@ -2,6 +2,22 @@
 
 ## [4.0.0] - 2026-07-21
 
+### BREAKING CHANGE (styles)
+
+- **Design Token 重命名/删除** — 废弃 `--vkedit-color-white`、`--vkedit-color-gray-*`、`--vkedit-color-bg-dark*`、`--vkedit-color-border-dark*`、`--vkedit-color-text-dark*` 等旧变量，改用统一语义 Token（详见 [MIGRATION.md](./MIGRATION.md)）
+- **默认暗色主题** — 编辑器根节点默认 `data-vkedit-theme="dark"`，废除原 `body:has(.vkedit-editor)` 深色覆盖方案
+- **Primary 色变更为 teal** — 品牌色从蓝色系切换为 teal 系，若需还原请覆盖 `--vkedit-color-primary` 等 CSS 变量
+- **移除 `--vkedit-color-neutral-*` 零散阶梯** — 统一为 `--vkedit-palette-neutral-*`（0～950 完整阶梯）
+
+### Features
+
+- **teal primary 品牌色** — 暗色 `--vkedit-palette-teal-500`、亮色 `--vkedit-palette-teal-600`，统一 Vk* 组件与壳层视觉
+- **Design Token 体系** — 两层架构：Palette（`:root`）+ Semantic（主题选择器），组件只引用语义变量
+- **VkButton `variant="primary"`** — 新增 primary/destructive/outline/secondary/ghost/link 变体
+- **Teleport 浮层主题继承** — 弹出层自动携带 `data-vkedit-theme`，浮层在 DOM 外也能正确渲染主题色
+- **主题解析工具** — `resolveVkeditTheme(el)` 工具函数，供自定义组件获取当前主题
+- **完整 CSS 变量集** — 包含 spacing、radius、font、shadow、elevation、z-index、control-height 等基础设施
+
 ### Added
 
 - **`GraphicPlugin<T>` 抽象基类** — 新增统一插件基类，子类只需声明 `graphicType`、`graphicElement`、`shapeComponent`、`toolComponent`、`propertyPanels` 等抽象属性，即可在 `onActivate`/`onDeactivate` 中自动完成图形组件、工具栏、属性面板、元素构造器的注册与注销，无需手动 emit 四条事件。

@@ -6,21 +6,20 @@
   top: var(--vkedit-toolbar-top);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 100;
+  z-index: var(--vkedit-z-toolbar);
   display: flex;
   align-items: center;
-  gap: 0;
   height: 40px;
-  padding: 0 8px;
+  padding: 0 var(--vkedit-spacing-2);
   background: var(--vkedit-color-toolbar-bg);
   backdrop-filter: var(--vkedit-blur-panel);
   -webkit-backdrop-filter: var(--vkedit-blur-panel);
-  border: 1px solid var(--vkedit-color-border-dark-hover);
+  border: var(--vkedit-border-width) solid var(--vkedit-color-border-strong);
   border-radius: var(--vkedit-radius-xl);
   box-shadow: var(--vkedit-shadow-panel);
-  color: var(--vkedit-color-text-dark);
+  color: var(--vkedit-color-text);
   font-size: var(--vkedit-font-size-sm);
-  transition: opacity 200ms ease, transform 200ms ease;
+  transition: opacity var(--vkedit-duration-normal) var(--vkedit-easing-default);
 }
 
 .vkedit-toolbar__group {
@@ -32,7 +31,13 @@
 .vkedit-toolbar__divider {
   width: 1px;
   height: 20px;
-  margin: 0 6px;
+  margin: 0 var(--vkedit-spacing-1-5);
   background: var(--vkedit-toolbar-divider-color);
   flex-shrink: 0;
+}
+
+.vkedit-floating-toolbar .vkedit-btn.is-active,
+.vkedit-floating-toolbar .vkedit-btn[aria-pressed='true'] {
+  color: var(--vkedit-color-primary);
+  background: var(--vkedit-color-bg-active);
 }

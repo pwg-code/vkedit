@@ -1,8 +1,7 @@
-// ====== ui/label.scss ======
-
 .vkedit-label {
   font-size: var(--vkedit-font-size-sm);
   font-weight: var(--vkedit-font-weight-medium);
-  line-height: 1;
+  color: var(--vkedit-color-text-secondary);
+  line-height: var(--vkedit-line-height-tight);
   margin-bottom: var(--vkedit-spacing-xs);
 }

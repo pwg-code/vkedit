@@ -1,5 +1,5 @@
 <template>
-  <div class="vkedit-layer-panel" @contextmenu.prevent>
+  <div ref="panelRef" class="vkedit-layer-panel" @contextmenu.prevent>
     <!-- 区块分隔标题 -->
     <div class="vkedit-layer-panel__header">
       <span class="vkedit-layer-panel__divider"></span>
@@ -98,6 +98,7 @@
       <div
         v-if="menu.open"
         class="vkedit-layer-menu"
+        :data-vkedit-theme="theme"
         :style="{ left: `${menu.x}px`, top: `${menu.y}px` }"
         @click.stop
         @contextmenu.prevent.stop
@@ -139,6 +140,7 @@
       <div
         v-if="dragGhost?.visible"
         class="vkedit-layer-ghost"
+        :data-vkedit-theme="theme"
         :style="{ left: `${dragGhost.x}px`, top: `${dragGhost.y}px` }"
       >
         <component :is="getTypeIcon(dragGhost.type)" width="20" />
@@ -158,6 +160,7 @@ import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 import type { SelectionPlugin, ClipboardPlugin } from '@/plugins'
 import { RemoveElementCommand, BatchCommand } from '@/commands'
 import { EventUtils } from '@/types/event-data'
+import { resolveVkeditTheme } from '@/utils/theme'
 import IconDragIndicator from '~icons/material-symbols-light/drag-indicator'
 import IconMoreVert from '~icons/material-symbols-light/more-vert'
 import IconVerticalAlignTop from '~icons/material-symbols-light/vertical-align-top'
@@ -237,6 +240,10 @@ onUnmounted(() => {
   document.removeEventListener('pointerup', endDrag)
   document.removeEventListener('click', closeMenu)
 })
+
+const panelRef = ref<HTMLElement | null>(null)
+
+const theme = computed(() => resolveVkeditTheme(panelRef.value))
 
 function getDisplayName(el: IGraphicElement): string {
   return layerPlugin.getElementDisplayName(el)
@@ -516,7 +523,7 @@ function cancelRename() {
   display: flex;
   flex-direction: column;
   gap: var(--vkedit-spacing-xs);
-  color: var(--vkedit-color-text-dark);
+  color: var(--vkedit-color-text);
   font-size: var(--vkedit-font-size-xs);
   user-select: none;
   position: relative;
@@ -527,7 +534,7 @@ function cancelRename() {
   align-items: center;
   gap: var(--vkedit-spacing-sm);
   padding: var(--vkedit-spacing-xs) 0;
-  color: var(--vkedit-color-text-dark-secondary);
+  color: var(--vkedit-color-text-secondary);
 }
 
 .vkedit-layer-panel__title {
@@ -539,12 +546,12 @@ function cancelRename() {
 .vkedit-layer-panel__divider {
   flex: 1;
   height: 1px;
-  background: var(--vkedit-color-border-dark);
+  background: var(--vkedit-color-border);
 }
 
 .vkedit-layer-panel__empty {
   padding: var(--vkedit-spacing-md) var(--vkedit-spacing-sm);
-  color: var(--vkedit-color-text-dark-secondary);
+  color: var(--vkedit-color-text-secondary);
   text-align: center;
   font-size: var(--vkedit-font-size-xs);
   opacity: 0.6;
@@ -571,12 +578,11 @@ function cancelRename() {
   transition: background 100ms ease, transform 200ms ease;
 
   &:hover {
-    background: var(--vkedit-color-bg-dark-hover);
+    background: var(--vkedit-color-bg-hover);
   }
 
   &--selected {
-    outline: 1px solid var(--vkedit-color-border-dark-hover);
-    background: var(--vkedit-color-bg-dark-active);
+    background: color-mix(in oklab, var(--vkedit-color-primary) 14%, transparent);
   }
 
   &--hidden {
@@ -584,12 +590,12 @@ function cancelRename() {
   }
 
   &--locked .vkedit-layer-row__handle {
-    color: var(--vkedit-color-text-dark-secondary);
+    color: var(--vkedit-color-text-secondary);
   }
 
   &--dragging {
     opacity: 0.5;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+    box-shadow: var(--vkedit-shadow-panel);
   }
 }
 
@@ -597,15 +603,15 @@ function cancelRename() {
   display: flex;
   align-items: center;
   cursor: grab;
-  color: var(--vkedit-color-text-dark-secondary);
+  color: var(--vkedit-color-text-secondary);
   &:hover {
-    color: var(--vkedit-color-text-dark);
+    color: var(--vkedit-color-text);
   }
 }
 
 .vkedit-layer-row__type {
   flex-shrink: 0;
-  color: var(--vkedit-color-text-dark-secondary);
+  color: var(--vkedit-color-text-secondary);
 }
 
 .vkedit-layer-row__name {
@@ -622,10 +628,10 @@ function cancelRename() {
   min-width: 0;
   height: 24px;
   padding: 0 4px;
-  background: var(--vkedit-color-bg-dark-active);
-  border: 1px solid var(--vkedit-color-border-dark-hover);
+  background: var(--vkedit-color-bg-active);
+  border: 1px solid var(--vkedit-color-border-strong);
   border-radius: var(--vkedit-radius-sm);
-  color: var(--vkedit-color-text-dark);
+  color: var(--vkedit-color-text);
   font-size: var(--vkedit-font-size-xs);
   outline: none;
 }
@@ -653,13 +659,13 @@ function cancelRename() {
   border: none;
   border-radius: var(--vkedit-radius-sm);
   cursor: pointer;
-  color: var(--vkedit-color-text-dark-secondary);
+  color: var(--vkedit-color-text-secondary);
   &:hover {
-    background: var(--vkedit-color-bg-dark-hover);
-    color: var(--vkedit-color-text-dark);
+    background: var(--vkedit-color-bg-hover);
+    color: var(--vkedit-color-text);
   }
   &--active {
-    color: var(--vkedit-color-text-dark);
+    color: var(--vkedit-color-text);
   }
 }
 
@@ -670,8 +676,8 @@ function cancelRename() {
   right: var(--vkedit-spacing-sm);
   height: 2px;
   border-radius: 1px;
-  background: var(--vkedit-color-border-dark-hover);
-  box-shadow: 0 0 6px var(--vkedit-color-border-dark-hover);
+  background: var(--vkedit-color-border-strong);
+  box-shadow: 0 0 6px var(--vkedit-color-border-strong);
   z-index: 2;
   pointer-events: none;
   animation: vkedit-layer-indicator-fade-in 120ms ease-out;
@@ -691,15 +697,16 @@ function cancelRename() {
 /* 右键/操作菜单（teleport 到 body） */
 .vkedit-layer-menu {
   position: fixed;
-  z-index: 1000;
+  z-index: var(--vkedit-z-dropdown);
   min-width: 140px;
   padding: 4px;
-  background: var(--vkedit-color-panel-bg);
+  background: var(--vkedit-color-surface-solid);
   backdrop-filter: var(--vkedit-blur-panel);
   -webkit-backdrop-filter: var(--vkedit-blur-panel);
-  border: 1px solid var(--vkedit-color-border-dark);
+  border: var(--vkedit-border-width) solid var(--vkedit-color-border);
   border-radius: var(--vkedit-radius-sm);
   box-shadow: var(--vkedit-shadow-panel);
+  color: var(--vkedit-color-text);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -714,18 +721,18 @@ function cancelRename() {
   border: none;
   border-radius: var(--vkedit-radius-sm);
   cursor: pointer;
-  color: var(--vkedit-color-text-dark);
+  color: var(--vkedit-color-text);
   font-size: var(--vkedit-font-size-xs);
   text-align: left;
   &:hover {
-    background: var(--vkedit-color-bg-dark-hover);
+    background: var(--vkedit-color-bg-hover);
   }
 }
 
 .vkedit-layer-menu__divider {
   height: 1px;
   margin: 2px 0;
-  background: var(--vkedit-color-border-dark);
+  background: var(--vkedit-color-border);
 }
 
 /* 拖拽幽灵 */
@@ -742,10 +749,10 @@ function cancelRename() {
   background: var(--vkedit-color-panel-bg);
   backdrop-filter: var(--vkedit-blur-panel);
   -webkit-backdrop-filter: var(--vkedit-blur-panel);
-  border: 1px solid var(--vkedit-color-border-dark-hover);
+  border: var(--vkedit-border-width) solid var(--vkedit-color-border-strong);
   border-radius: var(--vkedit-radius-sm);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.45);
-  color: var(--vkedit-color-text-dark);
+  box-shadow: var(--vkedit-shadow-lg);
+  color: var(--vkedit-color-text);
   font-size: var(--vkedit-font-size-xs);
   pointer-events: none;
   user-select: none;

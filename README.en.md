@@ -108,6 +108,28 @@ host.setStatus({
 
 ---
 
+## Theme & Styles
+
+vkedit ships with a dark theme by default (`data-vkedit-theme="dark"`). Just import the CSS:
+
+```ts
+import 'vkedit/dist/vkedit.css'
+```
+
+Override the brand color on the editor root or a wrapper container:
+
+```css
+.vkedit-editor {
+  --vkedit-color-primary: oklch(55% 0.18 260);
+  --vkedit-color-primary-hover: oklch(65% 0.16 260);
+  --vkedit-color-on-primary: oklch(99% 0 0);
+}
+```
+
+See [MIGRATION.md](./MIGRATION.md) for the full variable list and breaking changes.
+
+---
+
 ## Links
 
 - [Website](https://vkedit.org)

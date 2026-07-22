@@ -21,7 +21,7 @@ export function useBgLayer(host: EditorHost) {
       y: 0,
       width: width.value,
       height: height.value,
-      fill: '#6666',
+      fill: '#6666', /* token-exception: editor canvas background */
       listening: false,
     }
   })
@@ -32,9 +32,9 @@ export function useBgLayer(host: EditorHost) {
       y: contentY.value,
       width: contentWidth.value,
       height: contentHeight.value,
-      fill: 'rgba(255, 255, 255, 1)',
+      fill: 'rgba(255, 255, 255, 1)', /* token-exception: artboard page color */
       cornerRadius: 8,
-      shadowColor: 'rgba(0, 0, 0, 0.4)',
+      shadowColor: 'rgba(0, 0, 0, 0.4)', /* token-exception: page shadow */
       shadowBlur: 24,
       shadowOffsetX: 0,
       shadowOffsetY: 6,

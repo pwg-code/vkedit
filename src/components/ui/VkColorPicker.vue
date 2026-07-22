@@ -1,5 +1,5 @@
 <template>
-  <div :class="['vkedit-color-picker', disabled && 'is-disabled']">
+  <div ref="rootRef" :class="['vkedit-color-picker', disabled && 'is-disabled']">
     <div v-if="label" class="vkedit-color-picker__label">{{ label }}</div>
     <div class="vkedit-color-picker__field">
       <div
@@ -36,11 +36,12 @@
       {{ message }}
     </div>
     <Teleport to="body">
-      <div v-if="panelOpen" class="vkedit-color-picker__overlay" @click="closePicker"></div>
+      <div v-if="panelOpen" class="vkedit-color-picker__overlay" :data-vkedit-theme="theme" @click="closePicker"></div>
       <Transition name="vkedit-scale">
         <div
           v-if="panelOpen"
           class="vkedit-color-picker__panel"
+          :data-vkedit-theme="theme"
           :style="{ top: panelStyle.top, left: panelStyle.left }"
           @mousedown.stop
         >
@@ -82,6 +83,7 @@ import {
   isFullHexColor,
   normalizeHex,
 } from '@/utils/color'
+import { resolveVkeditTheme, type VkeditTheme } from '@/utils/theme'
 
 const props = withDefaults(
   defineProps<{
@@ -107,12 +109,14 @@ const emit = defineEmits<{
   'update:modelValue': [value: string | null]
 }>()
 
+const rootRef = ref<HTMLElement | null>(null)
 const panelOpen = ref(false)
 const hexDraft = ref<string>('')
 const isInvalid = ref(false)
 const hexInput = ref<HTMLInputElement | null>(null)
 const nativePicker = ref<HTMLInputElement | null>(null)
 const panelStyle = ref<{ top: string; left: string }>({ top: '0px', left: '0px' })
+const theme = ref<VkeditTheme>('dark')
 // 记录最近一次有效填充色：进入“无填充”后用于恢复
 const lastValidHex = ref<string>('#000000')
 
@@ -180,6 +184,7 @@ watch(
 
 function openPicker() {
   if (props.disabled) return
+  theme.value = resolveVkeditTheme(rootRef.value)
   panelOpen.value = true
   updatePanelPosition()
   nextTick(() => {

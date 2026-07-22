@@ -10,6 +10,7 @@
 import { computed } from 'vue'
 import type { EditorHost } from '@/core'
 import { useZoom, useStage } from '@/hooks'
+import { cssColorVar } from '@/utils/css-var'
 import type { GuideLine } from '@/utils/geometry'
 
 const { host } = defineProps<{ host: EditorHost }>()
@@ -38,7 +39,7 @@ const screenLines = computed(() => {
       const sx = cx + line.value * z
       return {
         points: [sx, 0, sx, h],
-        stroke: '#00b894',
+        stroke: cssColorVar('--vkedit-color-primary', host.stageState.wrapperEl),
         strokeWidth: 1,
         dash: [4, 4],
         opacity: 0.8,
@@ -48,7 +49,7 @@ const screenLines = computed(() => {
       const sy = cy + line.value * z
       return {
         points: [0, sy, w, sy],
-        stroke: '#00b894',
+        stroke: cssColorVar('--vkedit-color-primary', host.stageState.wrapperEl),
         strokeWidth: 1,
         dash: [4, 4],
         opacity: 0.8,

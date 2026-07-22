@@ -1,5 +1,3 @@
-// ====== ui/dropdown.scss ======
-
 .vkedit-dropdown {
   position: relative;
   display: inline-block;
@@ -10,37 +8,37 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 150;
+    z-index: var(--vkedit-z-dropdown-overlay);
   }
 
   &__content {
     position: fixed;
-    z-index: 160;
+    z-index: var(--vkedit-z-dropdown);
     min-width: 160px;
     max-height: 300px;
     overflow-x: hidden;
     overflow-y: auto;
-    border-radius: 8px;
-    border: 1px solid var(--vkedit-color-border-dark);
-    background: var(--vkedit-color-bg-dark);
+    border-radius: var(--vkedit-radius-lg);
+    border: var(--vkedit-border-width) solid var(--vkedit-color-border);
+    background: var(--vkedit-color-surface-solid);
     backdrop-filter: var(--vkedit-blur-panel);
     -webkit-backdrop-filter: var(--vkedit-blur-panel);
-    padding: 4px;
+    padding: var(--vkedit-spacing-1);
     box-shadow: var(--vkedit-shadow-panel);
-    color: var(--vkedit-color-text-dark);
+    color: var(--vkedit-color-text);
   }
 
   &__label {
-    padding: 4px 8px;
+    padding: var(--vkedit-spacing-1) var(--vkedit-spacing-2);
     font-size: var(--vkedit-font-size-sm);
     font-weight: var(--vkedit-font-weight-medium);
-    color: var(--vkedit-color-text-dark-secondary);
+    color: var(--vkedit-color-text-secondary);
   }
 
   &__sep {
     height: 1px;
-    margin: 4px 0;
-    background: var(--vkedit-color-border-dark);
+    margin: var(--vkedit-spacing-1) 0;
+    background: var(--vkedit-color-border);
   }
 
   &__item {
@@ -48,17 +46,34 @@
     align-items: center;
     gap: var(--vkedit-spacing-sm);
     width: 100%;
-    padding: 4px 8px;
+    padding: var(--vkedit-spacing-1) var(--vkedit-spacing-2);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--vkedit-radius-sm);
     background: transparent;
     font-size: var(--vkedit-font-size-sm);
     cursor: pointer;
     text-align: left;
-    color: var(--vkedit-color-text-dark);
+    color: var(--vkedit-color-text);
 
     &:hover {
-      background: var(--vkedit-color-bg-dark-hover);
+      background: var(--vkedit-color-bg-hover);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--vkedit-color-focus-ring);
+    }
+
+    &:disabled,
+    &[disabled] {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    &.is-active,
+    &[aria-selected='true'] {
+      color: var(--vkedit-color-primary);
+      background: color-mix(in oklab, var(--vkedit-color-primary) 16%, transparent);
     }
 
     svg {
@@ -66,27 +81,5 @@
       height: 16px;
       flex-shrink: 0;
     }
-  }
-}
-
-// 下拉展开/关闭动画（配合 Vue transition）
-.vkedit-scale-enter-active {
-  animation: vkedit-scale-in 150ms ease-out;
-}
-
-.vkedit-scale-leave-active {
-  animation: vkedit-scale-out 150ms ease-in;
-}
-
-body:has(.vkedit-editor) .vkedit-dropdown__content {
-  background: var(--vkedit-color-bg-dark);
-  border-color: var(--vkedit-color-border-dark);
-  color: var(--vkedit-color-text-dark);
-}
-
-body:has(.vkedit-editor) .vkedit-dropdown__item {
-  color: var(--vkedit-color-text-dark);
-  &:hover {
-    background: var(--vkedit-color-bg-dark-hover);
   }
 }

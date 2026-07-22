@@ -4,17 +4,35 @@
   height: 100vh;
   overflow: hidden;
   background: var(--vkedit-color-canvas-area);
+  font-family: var(--vkedit-font-sans);
+  color: var(--vkedit-color-text);
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--vkedit-color-border-strong) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--vkedit-color-border-strong);
+    border-radius: var(--vkedit-radius-full);
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--vkedit-color-text-muted);
+  }
 
   // ==================== 最小宽度警告 ====================
   .vkedit-editor__minwidth-warning {
     position: absolute;
     inset: 0;
-    z-index: 1000;
+    z-index: var(--vkedit-z-warning);
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--vkedit-color-canvas-area);
-    color: var(--vkedit-color-text-dark);
+    color: var(--vkedit-color-text);
     font-size: var(--vkedit-font-size-lg);
     text-align: center;
     padding: var(--vkedit-spacing-lg);
@@ -49,13 +67,13 @@
     }
 
     .vkedit-floating-toolbar {
-      padding: 0 4px;
+      padding: 0 var(--vkedit-spacing-xs);
       font-size: var(--vkedit-font-size-xs);
       gap: 0;
 
       .vkedit-btn--ghost {
         height: 28px;
-        padding: 0 4px;
+        padding: 0 var(--vkedit-spacing-xs);
       }
 
       .vkedit-toolbar__label {
@@ -65,143 +83,4 @@
   }
 }
 
-// ==================== 深色主题 UI 组件覆盖 ====================
-// 注意：使用 body:has(.vkedit-editor) 而非 .vkedit-editor 后代选择器，
-// 这样 VkDropdown 通过 <Teleport to="body"> 渲染到 body 的内容也能命中深色主题，
-// 避免出现「浅色文字落在浅色 hover 背景」这类低对比度问题。
-body:has(.vkedit-editor) {
-  // VkButton
-  .vkedit-btn--ghost {
-    background: transparent;
-    color: var(--vkedit-color-text-dark);
-    &:hover {
-      background: var(--vkedit-color-bg-dark-hover);
-    }
-  }
 
-  .vkedit-btn--link {
-    background: transparent;
-    color: var(--vkedit-color-text-dark);
-    &:hover {
-      color: var(--vkedit-color-text-dark-secondary);
-    }
-  }
-
-  .vkedit-btn--destructive {
-    background: var(--vkedit-color-red-600);
-    color: var(--vkedit-color-white);
-    &:hover {
-      background: var(--vkedit-color-red-500);
-    }
-  }
-
-  .vkedit-btn--outline {
-    color: var(--vkedit-color-text-dark);
-    border-color: var(--vkedit-color-border-dark);
-    background: transparent;
-    &:hover {
-      background: var(--vkedit-color-bg-dark-hover);
-    }
-  }
-
-  .vkedit-btn--default {
-    background: var(--vkedit-color-bg-dark-hover);
-    color: var(--vkedit-color-white);
-    &:hover {
-      background: var(--vkedit-color-bg-dark-active);
-    }
-  }
-
-  .vkedit-btn--secondary {
-    background: var(--vkedit-color-bg-dark-hover);
-    color: var(--vkedit-color-text-dark);
-    &:hover {
-      background: var(--vkedit-color-bg-dark-active);
-    }
-  }
-
-  // VkInput / VkInputNumber
-  .vkedit-input {
-    background: rgba(0, 0, 0, 0.2);
-    border-color: var(--vkedit-color-border-dark);
-    color: var(--vkedit-color-text-dark);
-    &::placeholder {
-      color: var(--vkedit-color-text-dark-secondary);
-    }
-    &:focus-visible {
-      box-shadow: 0 0 0 1px var(--vkedit-color-border-dark-hover);
-    }
-  }
-
-  // VkInputMM / VkInputNumberMM
-  .vkedit-input-mm {
-    &__btn {
-      background: var(--vkedit-color-bg-dark-hover);
-      border-color: var(--vkedit-color-border-dark);
-      color: var(--vkedit-color-text-dark);
-      &:hover {
-        background: var(--vkedit-color-bg-dark-active);
-      }
-    }
-    &__display,
-    &__input {
-      background: rgba(0, 0, 0, 0.2);
-      border-color: var(--vkedit-color-border-dark);
-      color: var(--vkedit-color-text-dark);
-    }
-  }
-
-  // VkLabel
-  .vkedit-label {
-    color: var(--vkedit-color-text-dark-secondary);
-  }
-
-  // VkSelect
-  .vkedit-select {
-    background: rgba(0, 0, 0, 0.2);
-    border-color: var(--vkedit-color-border-dark);
-    color: var(--vkedit-color-text-dark);
-    color-scheme: dark;
-    option {
-      background: var(--vkedit-color-bg-dark);
-      color: var(--vkedit-color-text-dark);
-    }
-    &:focus-visible {
-      box-shadow: 0 0 0 1px var(--vkedit-color-border-dark-hover);
-    }
-  }
-
-  // VkDropdown（内容会被 teleport 到 body，必须在此命中）
-  .vkedit-dropdown__content {
-    background: var(--vkedit-color-bg-dark);
-    border-color: var(--vkedit-color-border-dark);
-    color: var(--vkedit-color-text-dark);
-  }
-
-  .vkedit-dropdown__item {
-    color: var(--vkedit-color-text-dark);
-    &:hover {
-      background: var(--vkedit-color-bg-dark-hover);
-    }
-  }
-
-  // VkSwitch
-  .vkedit-switch {
-    background: var(--vkedit-color-bg-dark-hover);
-    &:has(&__input:checked) {
-      background: oklch(54% 0.08 260);
-    }
-  }
-
-  // VkToggle
-  .vkedit-toggle {
-    color: var(--vkedit-color-text-dark);
-    &:hover {
-      background: var(--vkedit-color-bg-dark-hover);
-    }
-    &--on {
-      background: var(--vkedit-color-bg-dark-active);
-      color: var(--vkedit-color-white);
-    }
-  }
-}

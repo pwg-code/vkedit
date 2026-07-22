@@ -2,23 +2,68 @@
 
 .vkedit-input {
   display: flex;
-  height: 28px;
+  align-items: center;
+  height: var(--vkedit-control-height-md);
   width: 100%;
   border-radius: var(--vkedit-radius-md);
-  border: 1px solid var(--vkedit-color-border);
-  background: transparent;
-  padding: 0 var(--vkedit-spacing-sm);
+  border: var(--vkedit-border-width) solid var(--vkedit-color-border);
+  background: var(--vkedit-color-surface-1);
+  padding: 0 var(--vkedit-spacing-2);
   font-size: var(--vkedit-font-size-sm);
-  box-shadow: var(--vkedit-shadow-sm);
+  color: var(--vkedit-color-text);
+  box-shadow: none;
   transition: var(--vkedit-transition-colors);
 
   &::placeholder {
-    color: var(--vkedit-color-neutral-500);
+    color: var(--vkedit-color-text-muted);
+  }
+
+  &:hover:not(:disabled):not(:focus-visible) {
+    border-color: var(--vkedit-color-border-strong);
   }
 
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 1px var(--vkedit-color-neutral-400);
+    border-color: var(--vkedit-color-focus-ring);
+    box-shadow: 0 0 0 2px var(--vkedit-color-canvas-area),
+      0 0 0 4px color-mix(in oklab, var(--vkedit-color-focus-ring) 45%, transparent);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    color: var(--vkedit-color-text-disabled);
+  }
+
+  &.is-invalid,
+  &[aria-invalid='true'] {
+    border-color: var(--vkedit-color-danger);
+  }
+}
+
+.vkedit-textarea {
+  display: block;
+  width: 100%;
+  min-height: 72px;
+  resize: vertical;
+  border-radius: var(--vkedit-radius-md);
+  border: var(--vkedit-border-width) solid var(--vkedit-color-border);
+  background: var(--vkedit-color-surface-1);
+  padding: var(--vkedit-spacing-2);
+  font-size: var(--vkedit-font-size-sm);
+  line-height: var(--vkedit-line-height-normal);
+  color: var(--vkedit-color-text);
+  transition: var(--vkedit-transition-colors);
+
+  &::placeholder {
+    color: var(--vkedit-color-text-muted);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--vkedit-color-focus-ring);
+    box-shadow: 0 0 0 2px var(--vkedit-color-canvas-area),
+      0 0 0 4px color-mix(in oklab, var(--vkedit-color-focus-ring) 45%, transparent);
   }
 
   &:disabled {

@@ -38,18 +38,18 @@ function toggle() {
   border: none;
   border-radius: var(--vkedit-radius-sm);
   background: transparent;
-  color: var(--vkedit-color-text-dark-secondary);
+  color: var(--vkedit-color-text-secondary);
   cursor: pointer;
   transition: var(--vkedit-transition-colors);
 }
 
 .snap-toggle:hover {
-  background: var(--vkedit-color-bg-dark-hover);
-  color: var(--vkedit-color-text-dark);
+  background: var(--vkedit-color-bg-hover);
+  color: var(--vkedit-color-text);
 }
 
 .snap-toggle--active {
-  background: var(--vkedit-color-bg-dark-active);
-  color: var(--vkedit-color-white);
+  background: var(--vkedit-color-bg-active);
+  color: var(--vkedit-color-text);
 }
 </style>

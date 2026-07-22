@@ -2,24 +2,24 @@
   <!-- <v-layer :config="selectionLayerConfig"> -->
   <!-- <v-group> -->
   <v-rect v-if="isSelecting" :config="rectConfig" />
-  <!-- 为每个已选中的元素绘制凸显边框 -->
+  <!-- 为每个已选中的元素绘制凸显边框（策略 A：单选且 Transformer 可见时不绘制） -->
   <v-rect v-for="border in selectionBorders" :key="border.id" :config="border.config" />
   <!-- </v-group> -->
   <!-- </v-layer> -->
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { type EditorHost } from '@/core'
 import { useSelectionLayer } from '@/hooks/use-selection-layer'
 import { useZoom } from '@/hooks/use-zoom'
+import { cssColorVar } from '@/utils/css-var'
 import type { IGraphicElement } from '@/types'
 
 const { host } = defineProps<{ host: EditorHost }>()
 const {
   rectConfig,
   isSelecting,
-  selectionLayerConfig,
   handleMouseDown,
   handleMouseMove,
   handleMouseUp,
@@ -29,32 +29,38 @@ const {
 // 选中的元素列表
 const selectedElements = ref<IGraphicElement[]>([])
 
-// 视口平移/缩放偏移（响应式），确保空格+拖动平移时虚线边框跟随元素
+// 视口平移/缩放偏移（响应式），确保空格+拖动平移时边框跟随元素
 const { contentX, contentY, zoom } = useZoom(host)
 
 // 为选中元素生成边框配置
+// 策略 A：单选且可变换 → 仅保留 Transformer；多选 / 不可变换 → SelectionLayer 边框
 const selectionBorders = computed(() => {
-  // 读取响应式偏移，建立对平移/缩放的依赖
+  const elements = selectedElements.value
+  if (elements.length === 0) return []
+
+  const onlyTransformer =
+    elements.length === 1 && elements[0].resizable !== false
+  if (onlyTransformer) return []
+
   const cx = contentX.value
   const cy = contentY.value
   const z = zoom.value
-  return selectedElements.value.map((element) => {
+  const stroke = cssColorVar('--vkedit-color-primary', host.stageState.wrapperEl)
+
+  return elements.map((element) => {
     const bbox = element.getBoundingBox()
     return {
       id: element.id,
       config: {
-        // 元素本地坐标经内容层变换后的屏幕坐标
         x: cx + bbox.x * z,
         y: cy + bbox.y * z,
         width: bbox.width * z,
         height: bbox.height * z,
         fill: 'transparent',
-        stroke: '#3498db',
-        strokeWidth: 2,
-        dash: [5, 5],
+        stroke,
+        strokeWidth: 1.5,
         listening: false,
         rotation: element.rotation,
-        // 确保边框显示在元素上方
         opacity: 1,
       },
     }
@@ -67,8 +73,7 @@ const handleSelectionChanged = (event: any) => {
 }
 
 // 监听元素对齐事件，强制更新边框位置
-const handleElementsAlign = (event: any) => {
-  // 触发响应式更新，确保边框重新计算位置
+const handleElementsAlign = () => {
   selectedElements.value = [...selectedElements.value]
 }
 

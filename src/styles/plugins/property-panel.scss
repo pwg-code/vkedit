@@ -2,15 +2,17 @@
 
 .vkedit-property {
   &__title {
-    font-size: var(--vkedit-font-size-xl);
+    font-size: var(--vkedit-font-size-base);
     font-weight: var(--vkedit-font-weight-bold);
+    color: var(--vkedit-color-text);
     padding-bottom: var(--vkedit-spacing-sm);
-    color: var(--vkedit-color-text-dark);
+    border-bottom: var(--vkedit-border-width) solid var(--vkedit-color-border-subtle);
+    margin-bottom: var(--vkedit-spacing-sm);
   }
 
   &__label {
     font-size: var(--vkedit-font-size-sm);
-    color: var(--vkedit-color-text-dark-secondary);
+    color: var(--vkedit-color-text-secondary);
     display: block;
   }
 
