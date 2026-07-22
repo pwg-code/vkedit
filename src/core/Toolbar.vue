@@ -2,10 +2,10 @@
   <div class="vkedit-floating-toolbar">
     <div class="vkedit-toolbar__group">
       <VkButton text title="撤销" @click="handleUndo" :disabled="!canUndo" variant="ghost">
-        <VkIcon name="undo" :size="25" />
+        <IconUndo :width="28" :height="28" />
       </VkButton>
       <VkButton text title="重做" @click="handleRedo" :disabled="!canRedo" variant="ghost">
-        <VkIcon name="redo" :size="25" />
+        <IconRedo :width="28" :height="28" />
       </VkButton>
     </div>
 
@@ -34,7 +34,9 @@
 import { computed, ref, onMounted } from 'vue'
 import type { IEditorState, ToolEventData } from '../types'
 import type { EditorHost } from '@/core'
-import { VkButton, VkIcon } from '@/components/ui'
+import { VkButton } from '@/components/ui'
+import IconUndo from '~icons/material-symbols-light/undo'
+import IconRedo from '~icons/material-symbols-light/redo'
 import { ToolbarManagerPlugin } from '@/plugins'
 
 interface Props {

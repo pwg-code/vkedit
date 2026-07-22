@@ -3,7 +3,7 @@
     <VkDropdown>
       <template #trigger>
         <VkButton variant="ghost" title="导出">
-          <VkIcon name="file-export-outline" :size="25" />
+          <IconFileExportOutline :width="28" :height="28" />
         </VkButton>
       </template>
       <div class="vkedit-dropdown__label">导出文件</div>
@@ -23,7 +23,8 @@
 
 <script setup lang="ts">
 import { type EditorHost } from '@/core'
-import { VkButton, VkDropdown, VkIcon } from '@/components/ui'
+import { VkButton, VkDropdown } from '@/components/ui'
+import IconFileExportOutline from '~icons/material-symbols-light/file-export-outline'
 
 const { host } = defineProps<{ host: EditorHost }>()
 const exportPlugin = host.getPlugin('export-plugin')!

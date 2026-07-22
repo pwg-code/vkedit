@@ -3,7 +3,7 @@
     <VkDropdown>
       <template #trigger>
         <VkButton variant="ghost" title="导入">
-          <VkIcon name="display-external-input" :size="25" />
+          <IconDisplayExternalInput :width="28" :height="28" />
         </VkButton>
       </template>
       <div class="vkedit-dropdown__label">导入文件</div>
@@ -20,7 +20,8 @@
 
 <script setup lang="ts">
 import { type EditorHost } from '@/core'
-import { VkButton, VkDropdown, VkIcon } from '@/components/ui'
+import { VkButton, VkDropdown } from '@/components/ui'
+import IconDisplayExternalInput from '~icons/material-symbols-light/display-external-input'
 import type { ImportPlugin } from './import'
 
 const { host } = defineProps<{ host: EditorHost }>()

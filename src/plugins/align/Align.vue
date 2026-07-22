@@ -2,16 +2,16 @@
   <div>
     <div class="vkedit-btn-group">
       <VkButton variant="ghost" @click="handleAlign('left')" title="左对齐">
-        <VkIcon name="align-horizontal-left" :size="25" />
+        <IconAlignHorizontalLeft :width="28" :height="28" />
       </VkButton>
       <VkButton variant="ghost" @click="handleAlign('right')" title="右对齐">
-        <VkIcon name="align-horizontal-right" :size="25" />
+        <IconAlignHorizontalRight :width="28" :height="28" />
       </VkButton>
       <VkButton variant="ghost" @click="handleAlign('top')" title="上对齐">
-        <VkIcon name="align-vertical-top" :size="25" />
+        <IconAlignVerticalTop :width="28" :height="28" />
       </VkButton>
       <VkButton variant="ghost" @click="handleAlign('bottom')" title="下对齐">
-        <VkIcon name="align-vertical-bottom" :size="25" />
+        <IconAlignVerticalBottom :width="28" :height="28" />
       </VkButton>
       <VkButton
         variant="ghost"
@@ -19,7 +19,7 @@
         :disabled="!canDistribute"
         :title="canDistribute ? '水平等距分布' : '至少选择 3 个元素'"
       >
-        <VkIcon name="distribute-horizontal" :size="25" />
+        <IconHorizontalDistribute :width="28" :height="28" />
       </VkButton>
       <VkButton
         variant="ghost"
@@ -27,7 +27,7 @@
         :disabled="!canDistribute"
         :title="canDistribute ? '垂直等距分布' : '至少选择 3 个元素'"
       >
-        <VkIcon name="distribute-vertical" :size="25" />
+        <IconVerticalDistribute :width="28" :height="28" />
       </VkButton>
     </div>
   </div>
@@ -38,7 +38,13 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import type { EditorHost } from '@/core'
 import type { IGraphicElement, SelectionEventData } from '@/types'
 import { AlignElementsCommand, DistributeElementsCommand } from '@/commands'
-import { VkButton, VkIcon } from '@/components/ui'
+import { VkButton } from '@/components/ui'
+import IconAlignHorizontalLeft from '~icons/material-symbols-light/align-horizontal-left'
+import IconAlignHorizontalRight from '~icons/material-symbols-light/align-horizontal-right'
+import IconAlignVerticalTop from '~icons/material-symbols-light/align-vertical-top'
+import IconAlignVerticalBottom from '~icons/material-symbols-light/align-vertical-bottom'
+import IconHorizontalDistribute from '~icons/material-symbols-light/horizontal-distribute'
+import IconVerticalDistribute from '~icons/material-symbols-light/vertical-distribute'
 
 const { host } = defineProps<{ host: EditorHost }>()
 
