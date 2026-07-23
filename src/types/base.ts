@@ -62,6 +62,7 @@ export interface IEditorState {
   zoom: number
   currentTool: string
   snapToGrid: boolean
+  snapRotation: boolean
   showGrid: boolean
   width: number
   height: number

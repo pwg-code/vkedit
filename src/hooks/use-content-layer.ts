@@ -4,19 +4,15 @@
 
 import { computed, ref } from 'vue'
 import { useZoom } from './use-zoom'
-import { type IGraphicElement, DEFAULT_ANCHORS } from '@/types'
+import { type IGraphicElement } from '@/types'
 import { type EditorHost } from '@/core'
 import { TransformElementCommand, BatchCommand } from '@/commands'
 import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 import type { SelectionPlugin } from '@/plugins/selection'
-import { cssColorVar } from '@/utils/css-var'
 
 export function useContentLayer(host: EditorHost) {
   // 图层
   const contentLayerRef = ref()
-
-  // 转换器
-  const transformerRef = ref()
 
   // 缩放逻辑hook
   const { zoom, contentX, contentY } = useZoom(host)
@@ -31,23 +27,6 @@ export function useContentLayer(host: EditorHost) {
       y: contentY.value,
       scaleX: zoom.value,
       scaleY: zoom.value,
-    }
-  })
-
-  // Transformer 主题化（与 primary / surface 语义 token 对齐，避免 Konva 默认蓝）
-  const transformerConfig = computed(() => {
-    const el = host.stageState.wrapperEl
-    const primary = cssColorVar('--vkedit-color-primary', el)
-    const anchorFill = cssColorVar('--vkedit-color-surface-solid', el)
-    return {
-      borderStroke: primary,
-      borderStrokeWidth: 1,
-      anchorStroke: primary,
-      anchorStrokeWidth: 1,
-      anchorFill,
-      anchorSize: 8,
-      anchorCornerRadius: 1,
-      rotateAnchorOffset: 18,
     }
   })
 
@@ -71,65 +50,15 @@ export function useContentLayer(host: EditorHost) {
     elements.value = [...elements.value]
   }
 
-  // 更新选中元素
-  const updateTransformerNodes = (selection: IGraphicElement[]) => {
-    const nodes: any[] = []
-    if (!contentLayerRef.value) return
-    selection.forEach((e) => {
-      const node = contentLayerRef.value.getNode().findOne('#' + e.id)
-      if (node && e.resizable) {
-        nodes.push(node)
-      }
-    })
-
-    const transformerNode = transformerRef.value.getNode()
-    if (transformerNode) {
-      transformerNode.nodes(nodes)
-      const resolveAnchors = (e: IGraphicElement): string[] | null =>
-        e.resizeAnchors === undefined ? DEFAULT_ANCHORS : e.resizeAnchors
-      if (selection.length === 1) {
-        const anchors = resolveAnchors(selection[0])
-        transformerNode.enabledAnchors(anchors === null ? [] : anchors)
-      } else if (selection.length > 1) {
-        const allDisabled = selection.every((e) => resolveAnchors(e) === null)
-        transformerNode.enabledAnchors(allDisabled ? [] : DEFAULT_ANCHORS)
-      }
-      transformerNode.rotateEnabled(true)
-    }
-  }
-
-  let command: TransformElementCommand
-  let isTransforming = false
   let isAltCloning = false
   let multiDragStartPositions: Map<string, { x: number; y: number }> | null = null
   let multiDraggedId: string | null = null
 
-  // 图形变换更改属性
-  const handleElementTransform = (event: any, element: IGraphicElement) => {
-    if (element?.getTransformAttr) {
-      const { oldAttrs, newAttrs } = element.getTransformAttr(event)
-      command = new TransformElementCommand(host, element, oldAttrs, newAttrs)
-    } else {
-      const { oldAttrs, newAttrs } = getTransformAttr(event, element)
-      command = new TransformElementCommand(host, element, oldAttrs, newAttrs)
-    }
-
-    if (!isTransforming) {
-      isTransforming = true
-      host.executeCommand(command)
-    } else {
-      command.execute()
-    }
-  }
-
-  // 图形变换更改属性
-  const handleElementTransformEnd = (event: any, element: any) => {
-    // 结束入栈
-    host.executeCommand(command)
-    isTransforming = false
-  }
-
   const handleDragStart = (event: any, element: any) => {
+    if (element.locked) {
+      event.target.stopDrag()
+      return
+    }
     host.emit('element:dragstart', {
       element,
       elementId: element.id,
@@ -255,44 +184,15 @@ export function useContentLayer(host: EditorHost) {
     multiDraggedId = null
   }
 
-  // 获取转换的属性
-  const getTransformAttr = (event: any, element: any) => {
-    const eAttrs = event.target.attrs
-    const oldAttrs = {
-      x: element.x,
-      y: element.y,
-      width: element.width,
-      height: element.height,
-      scaleX: 1,
-      scaleY: 1,
-      rotation: element.rotation,
-    }
-    const newAttrs = {
-      x: eAttrs.x,
-      y: eAttrs.y,
-      width: element.width * eAttrs.scaleX,
-      height: element.height * eAttrs.scaleY,
-      scaleX: 1,
-      scaleY: 1,
-      rotation: eAttrs.rotation,
-    }
-    return { oldAttrs, newAttrs }
-  }
-
   return {
     contentLayerRef,
-    transformerRef,
     contentLayerConfig,
     contentGroupConfig,
-    transformerConfig,
     elements,
     initElements,
     handleDragStart,
     handleDragMove,
     handleDragEnd,
-    handleElementTransform,
-    handleElementTransformEnd,
-    updateTransformerNodes,
     updateCanvas,
   }
 }

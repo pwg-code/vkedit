@@ -25,6 +25,14 @@
       </div>
     </div>
     <SnapToggle :host="host" collapsed />
+    <button
+      class="vkedit-status-bar__btn"
+      :class="{ 'vkedit-status-bar__btn--active': host.status.snapRotation }"
+      title="旋转吸附（5°间隔）"
+      @click="host.status.snapRotation = !host.status.snapRotation"
+    >
+      <IconRotateRight :width="18" :style="{ opacity: host.status.snapRotation ? 1 : 0.4 }" />
+    </button>
   </div>
 </template>
 
@@ -38,6 +46,7 @@ import IconArrowSelectorTool from '~icons/material-symbols-light/arrow-selector-
 import IconTouchpadMouse from '~icons/material-symbols-light/touchpad-mouse'
 import IconPanTool from '~icons/material-symbols-light/pan-tool'
 import IconDragPan from '~icons/material-symbols-light/drag-pan'
+import IconRotateRight from '~icons/material-symbols-light/rotate-right'
 import SnapToggle from '@/plugins/snap/SnapToggle.vue'
 import type { EditorHost } from '@/core'
 import type { CursorMode } from '@/types'

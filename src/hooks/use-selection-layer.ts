@@ -4,6 +4,7 @@
 
 import { computed, ref } from 'vue'
 import { cssColorMix, cssColorVar } from '@/utils/css-var'
+import { isClickOnTransformOverlay } from '@/utils/transform-overlay'
 import type { Point2D } from '@/types'
 import type { EditorHost } from '@/core'
 
@@ -37,20 +38,11 @@ export function useSelectionLayer(host: EditorHost) {
     }
   })
 
-  const isClickOnTransformer = (event: any): boolean => {
-    let node = event.target
-    while (node) {
-      if (node.getClassName && node.getClassName() === 'Transformer') return true
-      node = node.parent
-    }
-    return false
-  }
-
   // 鼠标按下
   const handleMouseDown = (event: any) => {
     if (event.evt.button !== 0) return
     if (host.status.currentTool !== 'select') return
-    if (isClickOnTransformer(event)) return
+    if (isClickOnTransformOverlay(event)) return
     const point = event.point
     isSelecting.value = true
     selectionStart.value = event.point

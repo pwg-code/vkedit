@@ -1,6 +1,7 @@
 import { BasePlugin } from '../types/base-plugin'
 import type { IGraphicElement, Point2D, ElementEventData } from '../types'
 import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
+import { isClickOnTransformOverlay } from '@/utils/transform-overlay'
 
 export class SelectionPlugin extends BasePlugin {
   public name = 'selection-plugin'
@@ -54,7 +55,7 @@ export class SelectionPlugin extends BasePlugin {
 
     if (!this.host || this.host.status.currentTool !== 'select') return
 
-    if (this.isClickOnTransformer(event)) return
+    if (isClickOnTransformOverlay(event)) return
 
     this.selectionStart = event.point
     this.selectionEnd = event.point
@@ -62,15 +63,6 @@ export class SelectionPlugin extends BasePlugin {
     if (!this.mouseDownId) {
       this.isSelecting = true
     }
-  }
-
-  private isClickOnTransformer(event: any): boolean {
-    let node = event.target
-    while (node) {
-      if (node.getClassName && node.getClassName() === 'Transformer') return true
-      node = node.parent
-    }
-    return false
   }
 
   private handleMouseMove = (event: any): void => {

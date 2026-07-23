@@ -48,6 +48,11 @@
       background: var(--vkedit-color-bg-hover);
       color: var(--vkedit-color-text);
     }
+
+    &--active {
+      background: var(--vkedit-color-bg-active);
+      color: var(--vkedit-color-text);
+    }
   }
 
   &__zoom-value {

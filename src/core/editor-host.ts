@@ -17,6 +17,7 @@ export class EditorHost {
     zoom: 1,
     currentTool: 'select',
     snapToGrid: true,
+    snapRotation: true,
     showGrid: false,
     // 像素 = 毫米 * DPM
     width: 400,

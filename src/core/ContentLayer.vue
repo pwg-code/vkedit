@@ -13,10 +13,7 @@
         @dragstart="handleDragStart($event, element)"
         @dragmove="handleDragMove($event, element)"
         @dragend="handleDragEnd($event, element)"
-        @transformend="handleElementTransformEnd($event, element)"
-        @transform="handleElementTransform($event, element)"
       />
-      <v-transformer ref="transformerRef" :config="transformerConfig"></v-transformer>
     </v-group>
     <slot></slot>
   </v-layer>
@@ -35,17 +32,12 @@ const groupRef = ref()
 const {
   contentLayerConfig,
   contentLayerRef,
-  transformerRef,
   contentGroupConfig,
-  transformerConfig,
   elements,
   handleDragStart,
   handleDragMove,
   handleDragEnd,
-  handleElementTransform,
-  handleElementTransformEnd,
   initElements,
-  updateTransformerNodes,
   updateCanvas,
 } = useContentLayer(host)
 
@@ -54,8 +46,6 @@ onMounted(() => {
   // 添加或删除图形时触发更新elements
   host.on('element:removed', initElements)
   host.on('element:added', initElements)
-  // 选中变更事件
-  host.on('selection:changed', (data) => updateTransformerNodes(data.selection))
   host.on('element:transformed', initElements)
   host.on('element:updated', updateCanvas)
   host.on('elements:align', updateCanvas)
