@@ -1,7 +1,7 @@
 <template>
   <VkDropdown>
     <template #trigger>
-      <VkButton size="sm">模板</VkButton>
+      <VkButton size="sm">示例模板</VkButton>
     </template>
     <div class="template-menu">
       <div

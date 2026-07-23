@@ -230,6 +230,8 @@ export class EditorHost {
       const elementsPlugin = this.getPlugin('graphic-registry-plugin')
       const elements: any[] = data.elements
       if (elementsPlugin) {
+        const selectionPlugin = this.getPlugin('selection-plugin') as any
+        selectionPlugin?.clearSelection()
         elementsPlugin.elements.clear()
         // 加载所有图形元素
         elements.forEach((value) => {

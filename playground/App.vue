@@ -2,7 +2,6 @@
   <div class="app-root">
     <Vkedit :host="host" :show-toolbox="true" :show-property-panel="true" :show-toolbar="true">
       <template #toolbar-actions="{ host: h }">
-        <CanvasPresetSwitcher :host="h" />
         <TemplateSwitcher :host="h" />
       </template>
     </Vkedit>
@@ -20,8 +19,8 @@ import {
   Vkedit,
 } from '@/index'
 import { LinePlugin } from '@/plugins/line'
-import CanvasPresetSwitcher from './components/CanvasPresetSwitcher.vue'
 import TemplateSwitcher from './components/TemplateSwitcher.vue'
+import { templates } from './templates'
 
 const host = createEditorHost({ basePropertyPanel: false, baseCanvasPropertyPanel: true })
 host
@@ -40,7 +39,25 @@ onMounted(() => {
     console.log('时间戳:', event.timestamp)
     console.groupEnd()
   })
+
+  loadExampleTemplate()
 })
+
+function loadExampleTemplate() {
+  const tpl = templates[0]
+  if (!tpl) return
+  const elementsPlugin = host.getPlugin('graphic-registry-plugin')
+  if (!elementsPlugin) return
+
+  function onError() {
+    console.warn('示例模板加载失败')
+  }
+
+  host.on('host:load-json:error', onError)
+  host.loadJSON(JSON.stringify(tpl.data))
+  host.off('host:load-json:error', onError)
+  host.emit('stage:redraw', {})
+}
 </script>
 
 <style>

@@ -8,9 +8,6 @@
       </template>
       <div class="vkedit-dropdown__label">导入文件</div>
       <div class="vkedit-dropdown__sep"></div>
-      <button class="vkedit-dropdown__item" @click="importPlugin.importExcel()">
-        <span>Excel</span>
-      </button>
       <button class="vkedit-dropdown__item" @click="importPlugin.handleImportJSON()">
         <span>JSON</span>
       </button>

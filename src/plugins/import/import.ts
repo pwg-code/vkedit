@@ -67,11 +67,6 @@ export class ImportPlugin extends BasePlugin {
     }
   }
 
-  // 导入Excel数据 只发送事件  不实现具体逻辑
-  importExcel() {
-    if (!this.host) return
-    this.host?.emit('import:start', this.createEventData('excel'))
-  }
 }
 
 // 将 ImportPlugin 注册到可扩展的 PluginMap（仅类型信息）
@@ -84,7 +79,7 @@ declare module '@/types' {
 import type { BaseEventData } from '@/types'
 
 export interface ImportEventData extends BaseEventData {
-  format: 'json' | 'excel' | string
+  format: 'json' | string
   error?: any
 }
 

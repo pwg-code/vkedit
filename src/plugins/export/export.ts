@@ -27,26 +27,6 @@ export class ExportPlugin extends BasePlugin {
     })
   }
 
-  // 导出excel
-  handleExportExcel() {
-    let prevented = false
-    this.host?.emit('export:start', {
-      timestamp: Date.now(),
-      source: 'export-plugin',
-      format: 'excel',
-      prevent: () => {
-        prevented = true
-      },
-    })
-
-    // 如果被阻止,则不执行导出
-    if (prevented) {
-      return
-    }
-
-    // 这里不实现具体逻辑 只发送事件
-  }
-
   // 处理导出图片
   handleExportImage() {
     let prevented = false
@@ -279,7 +259,7 @@ import type { BaseEventData } from '@/types'
 import type { EditorHost } from '@/core'
 
 export interface ExportEventData extends BaseEventData {
-  format: 'png' | 'jpeg' | 'pdf' | 'json' | 'excel' | string
+  format: 'png' | 'jpeg' | 'pdf' | 'json' | string
   error?: any
   // 阻止导出
   prevent?: () => void
