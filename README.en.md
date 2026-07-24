@@ -11,7 +11,7 @@ A visual canvas designer component built on Vue 3 and Konva.js with a plugin-bas
 
 ---
 
-![Project Preview](https://raw.githubusercontent.com/pwg-code/vkedit/main/截图/image.png?v=2)
+![Project Preview](https://raw.githubusercontent.com/pwg-code/vkedit/main/截图/image.png?v=3)
 
 ---
 

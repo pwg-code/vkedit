@@ -11,7 +11,7 @@
 
 ---
 
-![项目预览](https://raw.githubusercontent.com/pwg-code/vkedit/main/截图/image.png?v=2)
+![项目预览](https://raw.githubusercontent.com/pwg-code/vkedit/main/截图/image.png?v=3)
 
 ---
 
