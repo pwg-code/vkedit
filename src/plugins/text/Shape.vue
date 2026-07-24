@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import type { TextElement } from './text'
 
-interface Props {
+export interface Props {
   element: TextElement
 }
 

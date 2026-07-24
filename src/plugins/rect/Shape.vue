@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import type { RectElement } from './rect'
 
-interface Props {
+export interface Props {
   element: RectElement
 }
 

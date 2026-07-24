@@ -12,9 +12,7 @@
 import { ref, watch, onMounted, computed } from 'vue'
 import type { QrcodeElement } from './qrcode'
 import type { EditorHost } from '@/core'
-import { useImage } from 'vue-konva'
-
-interface Props {
+export interface Props {
   host: EditorHost
   element: QrcodeElement
 }

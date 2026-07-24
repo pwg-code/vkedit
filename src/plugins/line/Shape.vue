@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import type { LineElement } from './line'
 
-interface Props {
+export interface Props {
   element: LineElement
 }
 const { element } = defineProps<Props>()

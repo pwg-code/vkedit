@@ -11,7 +11,7 @@ import type { BarcodeElement } from './barcode'
 // @ts-ignore
 import type { EditorHost } from '@/core'
 
-interface Props {
+export interface Props {
   host: EditorHost
   element: BarcodeElement
 }
