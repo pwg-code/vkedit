@@ -34,24 +34,27 @@ let shiftY = 0
 function handleClick() {
   if (!props.host || !props.createElement) return
   const element = props.createElement()
+  const dpm = props.host.status.dpm
   const canvasWmm = props.host.status.wmm
   const canvasHmm = props.host.status.hmm
-  if (5 + shiftX + col * 5 + element.wmm > canvasWmm) {
+  const elementWmm = element.width / dpm
+  const elementHmm = element.height / dpm
+  if (5 + shiftX + col * 5 + elementWmm > canvasWmm) {
     shiftY += 5
     col = 0
   }
-  if (5 + shiftY + col * 5 + element.hmm > canvasHmm) {
+  if (5 + shiftY + col * 5 + elementHmm > canvasHmm) {
     shiftX += 5
     col = 0
   }
-  if (5 + shiftX + element.wmm > canvasWmm) {
+  if (5 + shiftX + elementWmm > canvasWmm) {
     shiftX = 0
   }
-  if (5 + shiftY + element.hmm > canvasHmm) {
+  if (5 + shiftY + elementHmm > canvasHmm) {
     shiftY = 0
   }
-  element.xmm = 5 + shiftX + col * 5
-  element.ymm = 5 + shiftY + col * 5
+  element.x = (5 + shiftX + col * 5) * dpm
+  element.y = (5 + shiftY + col * 5) * dpm
   col++
   props.host.executeCommand(new AddElementCommand(props.host, element))
 }

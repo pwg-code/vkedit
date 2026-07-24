@@ -17,14 +17,17 @@
 
 ## 特性
 
-- **插件化架构** - 核心功能与图形元素均以插件形式注册，按需启用
-- **7 种图形元素** - 矩形、文本、线条、表格、二维码、条形码、图表（ECharts）
+- **插件化架构** - 核心功能与图形元素均以插件形式注册，按需启用；`GraphicPlugin<T>` 抽象基类简化自定义插件开发
+- **5 种图形元素** - 矩形、文本、线条、二维码、条形码
 - **撤销/重做** - 基于命令模式，所有修改操作可逆
 - **导入/导出** - JSON 序列化、PNG/JPG 图片、PDF 文档
 - **对齐与分布** - 左/右/上/下/居中对齐、水平/垂直均分
 - **标尺与缩放** - 毫米级精度标尺、可配置 DPM（每毫米点数）
 - **事件驱动** - 类型安全的事件系统，插件间松耦合通信
 - **TypeScript** - 完整类型定义，泛型推断插件与元素类型
+- **设计令牌系统** - 两层架构（Palette + Semantic），完整 CSS 变量覆盖 spacing、radius、font、shadow、elevation、z-index
+- **主题系统** - 默认暗色主题，亮色主题通过 `data-vkedit-theme` 切换；Teleport 浮层主题继承；`resolveVkeditTheme()` 工具函数
+- **VkButton 多变体** - primary、destructive、outline、secondary、ghost、link
 
 ---
 
@@ -75,10 +78,8 @@ import { createEditorHost, Vkedit } from 'vkedit'
 import {
   RectPlugin,
   TextPlugin,
-  TablePlugin,
   QrcodePlugin,
   BarcodePlugin,
-  ChartPlugin,
   LinePlugin,
 } from 'vkedit'
 
@@ -88,10 +89,8 @@ const host = createEditorHost()
 host
   .installPlugin('rect-plugin', RectPlugin)
   .installPlugin('text-plugin', TextPlugin)
-  .installPlugin('table-plugin', TablePlugin)
   .installPlugin('qr-plugin', QrcodePlugin)
   .installPlugin('barcode-plugin', BarcodePlugin)
-  .installPlugin('chart-plugin', ChartPlugin)
   .installPlugin('line-plugin', LinePlugin)
 
 // 设置画布尺寸（A4 纸张，DPM = 8）
@@ -110,7 +109,7 @@ host.setStatus({
 
 ## 主题与样式
 
-vkedit 默认提供暗色主题（`data-vkedit-theme="dark"`），引入 CSS 后即刻生效：
+vkedit 内置完整的设计令牌（Design Token）体系。暗色主题为默认值（`data-vkedit-theme="dark"`），引入 CSS 后即刻生效：
 
 ```ts
 import 'vkedit/dist/vkedit.css'
@@ -120,11 +119,15 @@ import 'vkedit/dist/vkedit.css'
 
 ```css
 .vkedit-editor {
-  --vkedit-color-primary: oklch(55% 0.18 260);
-  --vkedit-color-primary-hover: oklch(65% 0.16 260);
-  --vkedit-color-on-primary: oklch(99% 0 0);
+  --vkedit-color-primary: oklch(70% 0.14 185);
+  --vkedit-color-primary-hover: oklch(78% 0.12 185);
+  --vkedit-color-on-primary: oklch(14% 0 0);
 }
 ```
+
+令牌体系分两层：
+- **Palette**（`:root`）— 颜色原始阶梯（neutral、teal、danger 等）以及非颜色尺度（spacing、radius、font、shadow、elevation、z-index）
+- **Semantic**（主题选择器）— 引用 palette 的语义变量，分别定义 `data-vkedit-theme="dark"`（默认）与 `data-vkedit-theme="light"` 两套映射
 
 完整变量列表与破坏性变更说明见 [MIGRATION.md](./MIGRATION.md)。
 
@@ -154,24 +157,3 @@ import 'vkedit/dist/vkedit.css'
 - **邮箱**: 168715824@qq.com
 
 提供技术支持、功能定制、项目合作。
-
----
-
-如果 vkedit 对您有帮助，欢迎请作者喝杯咖啡。
-
-<div align="center">
-
-<table>
-  <tr>
-    <td align="center">
-      <img src="https://raw.githubusercontent.com/pwg-code/vkedit/main/截图/reward-alipay.png" width="200" alt="支付宝打赏" />
-      <br>支付宝
-    </td>
-    <td align="center">
-      <img src="https://raw.githubusercontent.com/pwg-code/vkedit/main/截图/reward-wechat.png" width="200" alt="微信打赏" />
-      <br>微信
-    </td>
-  </tr>
-</table>
-
-</div>

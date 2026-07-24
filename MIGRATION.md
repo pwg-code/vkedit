@@ -87,9 +87,9 @@ declare module '@/types' {
 }
 ```
 
-v4.0 中此模式已废弃，插件类型由 `GraphicPlugin<T>` 的抽象属性和 `GraphicRegistryPlugin` 统一管理。**只需删除所有 `declare module '@/types' { interface PluginMap ... }` 和 `declare module '@/types' { interface ElementTypeMap ... }` 代码块**。
+v4.0 中**外部插件不再需要**自己编写 `declare module '@/types'` 声明合并（`GraphicPlugin<T>` 的抽象属性已替代 `ElementTypeMap` 的功能），因此请删除你自己的项目代码中所有 `declare module '@/types' { interface ElementTypeMap ... }` 以及不必要的 `declare module '@/types' { interface PluginMap ... }` 代码块。
 
-`PluginMap` / `ElementTypeMap` 类型文件（`src/types/plugin-map.ts`、`src/types/element-type-map.ts`）本身也已删除。
+`ElementTypeMap` 已完全移除，`PluginMap` / `ElementTypeMap` 的独立类型文件（`src/types/plugin-map.ts`、`src/types/element-type-map.ts`）也一并删除。框架内部插件仍通过声明合并维护 `PluginMap` 以保证 `installPlugin`/`getPlugin` 的类型推断，但外部消费者无需再自行编写。
 
 ---
 
@@ -185,15 +185,16 @@ v4.x 引入了完整的 Design Token 体系，废弃了大量旧版颜色变量�
 以下变量定义在 `.vkedit-editor, [data-vkedit-theme='dark']` 和 `[data-vkedit-theme='light']` 下，宿主可提高选择器优先级覆盖：
 
 ```css
-.vkedit-editor {
+.vkedit-editor,
+[data-vkedit-theme='dark'] {
   --vkedit-color-primary: oklch(70% 0.14 185);       /* 品牌色 */
   --vkedit-color-primary-hover: oklch(78% 0.12 185);
   --vkedit-color-on-primary: oklch(14% 0 0);
-  --vkedit-color-canvas-area: oklch(18% 0.02 270);
-  --vkedit-color-surface: oklch(22% 0.01 260 / 0.92);
-  --vkedit-color-border: oklch(100% 0 0 / 0.10);
-  --vkedit-color-text: oklch(93% 0 0);
-  --vkedit-color-text-muted: oklch(65% 0 0);
+  --vkedit-color-canvas-area: oklch(20% 0.015 265);
+  --vkedit-color-surface: oklch(26% 0.012 260 / 0.92);
+  --vkedit-color-border: oklch(100% 0 0 / 0.09);
+  --vkedit-color-text: oklch(86% 0.005 260);
+  --vkedit-color-text-muted: oklch(58% 0.005 260);
   --vkedit-radius-md: 0.375rem;
   --vkedit-font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
