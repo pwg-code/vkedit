@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="vkedit">
+  <title>vkedit</title>
+  <desc>Teal rounded square with a fused white VK monogram. V's right arm and K's vertical stem share the same axis (x=30 to 36), so the lower half of the K stem is absorbed into V. The K diagonals branch from that shared stem to the upper-right and lower-right corners of the mark.</desc>
+  <rect width="64" height="64" rx="14" fill="#0d9488"/>
+  <path d="M 8 14 L 20 14 L 32 40 L 44 14 L 56 14 L 36 52 L 28 52 Z" fill="#ffffff"/>
+  <path d="M 30 14 L 36 14 L 36 28 L 50 14 L 56 14 L 40 32 L 56 50 L 50 50 L 36 36 L 36 50 L 30 50 Z" fill="#ffffff"/>
+</svg>
