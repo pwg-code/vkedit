@@ -258,6 +258,7 @@ export class EditorHost {
     this.emit('host:load-json:start', { timestamp: Date.now(), source: 'host' })
     try {
       const data = JSON.parse(jsonStr)
+      this.emit('editor:reset', { timestamp: Date.now(), source: 'EditorHost.loadJSON' })
       // 加载编辑器状态
       const elementsPlugin = this.getPlugin('graphic-registry-plugin')
       const elements: any[] = data.elements
