@@ -24,6 +24,8 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
     "build:css": "vite build"

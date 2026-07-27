@@ -1,6 +1,7 @@
 import { BaseCommand } from './base-command'
 import type { EditorHost } from '@/core'
 import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
+import type { LayerOrderChangedPayload } from '@/types/event-data'
 
 /**
  * 批量重排命令：用于图层列表拖拽松手后一次性重建全局顺序。
@@ -25,25 +26,25 @@ export class ReorderElementsCommand extends BaseCommand {
   execute(): void {
     this.saveCurrentOrder()
     this.applyOrder(this.newOrder)
-    this.host.emit('elements:reorder', {
-      elementId: this.newOrder[0] ?? '',
-      direction: 'top',
-      newOrder: this.newOrder,
-      timestamp: this.timestamp,
-      source: 'ReorderElementsCommand',
-    })
+    this.emitOrderChanged(this.newOrder)
   }
 
   undo(): void {
     const ids = Array.from(this.previousOrder.keys())
     this.applyOrder(ids)
-    this.host.emit('elements:reorder', {
-      elementId: ids[0] ?? '',
+    this.emitOrderChanged(ids)
+  }
+
+  private emitOrderChanged(order: string[]): void {
+    const payload: LayerOrderChangedPayload = {
+      elementIds: order,
+      newOrder: order,
+      elementId: order[0],
       direction: 'top',
-      newOrder: ids,
       timestamp: this.timestamp,
       source: 'ReorderElementsCommand',
-    })
+    }
+    this.host.emit('layer:order-changed', payload)
   }
 
   private saveCurrentOrder(): void {

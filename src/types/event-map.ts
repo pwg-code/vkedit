@@ -15,6 +15,8 @@ import type {
   AlignEventData,
   DistributeEventData,
   LayerOrderEventData,
+  LayerOrderChangedPayload,
+  LayerVisibilityChangedPayload,
   ElementUpdateEventData,
   StageDblClickEventData,
   StageMouseEventData,
@@ -134,8 +136,8 @@ export interface EventMap {
   // 图层
   'layer:added': (payload: BaseEventData) => void
   'layer:removed': (payload: BaseEventData) => void
-  'layer:order-changed': (payload: LayerOrderEventData) => void
-  'layer:visibility-change': (payload: BaseEventData) => void
+  'layer:order-changed': (payload: LayerOrderChangedPayload) => void
+  'layer:visibility-change': (payload: LayerVisibilityChangedPayload) => void
   'layer:locked-change': (payload: BaseEventData) => void
   'layer:active-change': (payload: BaseEventData) => void
 
@@ -176,8 +178,10 @@ export interface EventMap {
   'elements:distribute': (payload: DistributeEventData) => void
   'elements:group': (payload: BaseEventData) => void
   'elements:ungroup': (payload: BaseEventData) => void
+  // 图层顺序变化已统一到 layer:order-changed（兼容旧名占位，已无 producer）
+  // 保留旧键以避免外部插件依赖编译失败（emit 端已不再触发）
   'elements:layer': (payload: LayerOrderEventData) => void
-  // 批量重排（拖拽松手后触发，由 ReorderElementsCommand 发出，携带完整新顺序 id 列表）
+  // 批量重排已统一到 layer:order-changed（兼容旧名占位，已无 producer）
   'elements:reorder': (payload: LayerOrderEventData) => void
 
   // 快捷键

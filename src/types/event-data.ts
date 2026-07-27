@@ -123,6 +123,22 @@ export interface LayerOrderEventData extends BaseEventData {
   newOrder?: string[]
 }
 
+// 图层顺序变更（统一事件名 layer:order-changed 的负载）
+export interface LayerOrderChangedPayload extends BaseEventData {
+  elementIds: string[]
+  // 单步调整时携带具体元素；批量重排时与 elementIds 互斥但都保留以便消费方识别
+  elementId?: string
+  direction?: 'up' | 'down' | 'top' | 'bottom'
+  // 批量重排时携带完整新顺序（自顶到底层）
+  newOrder?: string[]
+}
+
+// 图层可见性变更（统一事件名 layer:visibility-change 的负载）
+export interface LayerVisibilityChangedPayload extends BaseEventData {
+  elementId: string
+  visible: boolean
+}
+
 // Stage基础事件数据
 export interface BaseStageEventData extends BaseEventData {
   point: Point2D

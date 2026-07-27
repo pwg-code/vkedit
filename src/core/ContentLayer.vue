@@ -51,8 +51,7 @@ onMounted(() => {
   host.on('elements:align', updateCanvas)
   host.on('elements:distribute', updateCanvas)
   // 层级变更事件：单元素上移/下移/置顶/置底 + 拖拽批量重排
-  host.on('elements:layer', initElements)
-  host.on('elements:reorder', initElements)
+  host.on('layer:order-changed', initElements)
 
   // 将内容图层赋值给宿主  以便其他插件使用
   host.contentLayer = contentLayerRef.value

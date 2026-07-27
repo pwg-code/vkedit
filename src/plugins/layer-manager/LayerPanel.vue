@@ -220,8 +220,7 @@ const elementsList = computed<IGraphicElement[]>(() => {
 onMounted(() => {
   props.host.on('element:added', bumpRefresh)
   props.host.on('element:removed', bumpRefresh)
-  props.host.on('elements:reorder', bumpRefresh)
-  props.host.on('elements:layer', bumpRefresh)
+  props.host.on('layer:order-changed', bumpRefresh)
   props.host.on('element:updated', bumpRefresh)
   props.host.on('selection:changed', bumpRefresh)
   props.host.on('host:status-restored', bumpRefresh)
@@ -232,8 +231,7 @@ onMounted(() => {
 onUnmounted(() => {
   props.host.off('element:added', bumpRefresh)
   props.host.off('element:removed', bumpRefresh)
-  props.host.off('elements:reorder', bumpRefresh)
-  props.host.off('elements:layer', bumpRefresh)
+  props.host.off('layer:order-changed', bumpRefresh)
   props.host.off('element:updated', bumpRefresh)
   props.host.off('selection:changed', bumpRefresh)
   props.host.off('host:status-restored', bumpRefresh)
@@ -306,10 +304,17 @@ function toggleLock(el: IGraphicElement) {
   bumpRefresh()
 }
 function toggleVisible(el: IGraphicElement) {
-  el.updateProperty(props.host, 'visible', el.visible, !el.visible)
+  const nextVisible = !el.visible
+  el.updateProperty(props.host, 'visible', el.visible, nextVisible)
   props.host.emit('element:visibility-change', {
     element: el,
     elementId: el.id,
+    ...EventUtils.createBaseEventData('layer-panel'),
+  })
+  // 图层级可见性事件：携带最终态，供外部（保存/序列化/UI 联动）直接消费
+  props.host.emit('layer:visibility-change', {
+    elementId: el.id,
+    visible: nextVisible,
     ...EventUtils.createBaseEventData('layer-panel'),
   })
   bumpRefresh()

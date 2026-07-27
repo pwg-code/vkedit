@@ -1,7 +1,8 @@
 import { BaseCommand } from './base-command'
 import type { EditorHost } from '@/core'
 import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
-import type { IGraphicElement } from '@/types'
+import type { IGraphicElement } from '@/types/base'
+import type { LayerOrderChangedPayload } from '@/types/event-data'
 
 export class ChangeLayerOrderCommand extends BaseCommand {
   public name = 'CHANGE_LAYER_ORDER'
@@ -24,20 +25,28 @@ export class ChangeLayerOrderCommand extends BaseCommand {
     // 执行图层顺序调整
     this.changeLayerOrder()
 
-    this.host.emit('elements:layer', {
+    this.emitOrderChanged({
       elementId: this.elementId,
       direction: this.direction,
-      timestamp: this.timestamp,
-      source: 'ChangeLayerOrderCommand',
+      elementIds: [this.elementId],
     })
   }
 
   undo(): void {
     // 恢复之前的顺序
     this.restorePreviousOrder()
-    this.host.emit('elements:layer', {
+    this.emitOrderChanged({
       elementId: this.elementId,
       direction: this.getReverseDirection(),
+      elementIds: [this.elementId],
+    })
+  }
+
+  private emitOrderChanged(
+    payload: Pick<LayerOrderChangedPayload, 'elementId' | 'direction' | 'elementIds'>,
+  ): void {
+    this.host.emit('layer:order-changed', {
+      ...payload,
       timestamp: this.timestamp,
       source: 'ChangeLayerOrderCommand',
     })
