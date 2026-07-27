@@ -142,7 +142,7 @@ export class ExportPlugin extends BasePlugin {
     const link = document.createElement('a')
     link.href = dataUrl
     link.download =
-      mimeType == 'image/png' ? `canvas-${Date.now()}.png` : `canvas-${Date.now()}.jpg`
+      mimeType == 'image/png' ? `vkedit-${Date.now()}.png` : `vkedit-${Date.now()}.jpg`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -156,7 +156,7 @@ export class ExportPlugin extends BasePlugin {
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `canvas-${Date.now()}.json`
+    link.download = `vkedit-${Date.now()}.json`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -178,7 +178,7 @@ export class ExportPlugin extends BasePlugin {
       format: [hostState.width, hostState.height],
     })
     pdf.addImage(dataUrl, 'PNG', 0, 0, hostState.width, hostState.height)
-    pdf.save(`canvas-${Date.now()}.pdf`)
+    pdf.save(`vkedit-${Date.now()}.pdf`)
   }
 
   // 将所以元素移动到临时舞台 并获取图片数据 再移动回原舞台
