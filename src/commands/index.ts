@@ -5,6 +5,8 @@ export * from './add-element-command'
 export * from './remove-element-command'
 export * from './transform-element-command'
 export * from './update-property-command'
+// 画布属性命令
+export * from './update-canvas-property-command'
 // 选择命令
 export * from './clear-selection-command'
 // 批量命令

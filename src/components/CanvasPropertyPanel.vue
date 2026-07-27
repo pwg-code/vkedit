@@ -7,7 +7,7 @@
     <VkLabel>dpm(点/毫米)</VkLabel>
     <VkInputNumber
       :model-value="hostState.dpm"
-      @update:model-value="(value) => host.setStatus({ dpm: value })"
+      @update:model-value="(value) => updateCanvasProperty('dpm', value)"
       :min="1"
       :step="0.01"
       :max="24"
@@ -19,7 +19,7 @@
       :model-value="hostState.width"
       @update:model-value="
         (value) => {
-          host.setStatus({ width: value })
+          updateCanvasProperty('width', value)
         }
       "
       :dpm="hostState.dpm"
@@ -31,7 +31,7 @@
       :model-value="hostState.height"
       @update:model-value="
         (value) => {
-          host.setStatus({ height: value })
+          updateCanvasProperty('height', value)
         }
       "
       :dpm="hostState.dpm"
@@ -44,6 +44,7 @@ import type { BaseGraphicElement } from '@/types'
 import type { EditorHost } from '@/core'
 import { computed } from 'vue'
 import { VkLabel, VkInputMM, VkInputNumber } from '@/components/ui'
+import { useCanvasPropertyCommand } from '@/hooks'
 
 interface Props {
   host: EditorHost
@@ -53,6 +54,7 @@ interface Props {
 
 const { host } = defineProps<Props>()
 const hostState = computed(() => host.status)
+const { updateCanvasProperty } = useCanvasPropertyCommand(host)
 </script>
 
 <style scoped></style>
