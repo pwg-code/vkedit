@@ -61,14 +61,29 @@ const stageRef = ref()
 const stageWrapperRef = ref<HTMLElement | null>(null)
 const { width: vpWidth, height: vpHeight } = useElementSize(stageWrapperRef)
 
-// 同步视口尺寸到 host.stageState（供下游 hook 响应式读取）
+const { stageConfig, currentCursorMode, spacePressed, isPanning } = useStage(props.host)
+const { handleWheel: handleWheelZoom, handleZoomAuto } = useZoom(props.host)
+
+// loadJSON 成功后待视口就绪补执行一次自适应。
+// 标记存于 host.stageState.autoFitPending（host 级瞬态字段），规避 StageView 因 stage:redraw 重挂载导致局部状态丢失。
+const tryRunAutoFit = () => {
+  if (!props.host.stageState.autoFitPending) return
+  if (vpWidth.value <= 0 || vpHeight.value <= 0) return
+  props.host.stageState.autoFitPending = false
+  handleZoomAuto()
+}
+
+const onLoadComplete = () => {
+  props.host.stageState.autoFitPending = true
+  tryRunAutoFit()
+}
+
+// 同步视口尺寸到 host.stageState（供下游 hook 响应式读取）；视口就绪后补执行待自适应
 watch([vpWidth, vpHeight], () => {
   props.host.stageState.viewportWidth = vpWidth.value
   props.host.stageState.viewportHeight = vpHeight.value
+  tryRunAutoFit()
 }, { immediate: true })
-
-const { stageConfig, currentCursorMode, spacePressed, isPanning } = useStage(props.host)
-const { handleWheel: handleWheelZoom } = useZoom(props.host)
 
 const {
   handleClick,
@@ -124,12 +139,16 @@ onMounted(() => {
   window.addEventListener('blur', handleWindowBlur)
   window.addEventListener('keydown', handleSpaceDown)
   window.addEventListener('keyup', handleSpaceUp)
+  props.host.on('host:load-json:complete', onLoadComplete)
+  // 覆盖 loadJSON 先于挂载/重挂载完成的场景：若已有待自适应标记则补执行
+  tryRunAutoFit()
 })
 
 onUnmounted(() => {
   window.removeEventListener('blur', handleWindowBlur)
   window.removeEventListener('keydown', handleSpaceDown)
   window.removeEventListener('keyup', handleSpaceUp)
+  props.host.off('host:load-json:complete', onLoadComplete)
 })
 </script>
 

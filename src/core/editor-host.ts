@@ -40,6 +40,7 @@ export class EditorHost {
     isPanning: false,
     offsetX: 0,
     offsetY: 0,
+    autoFitPending: false,
   })
 
   // 事件系统

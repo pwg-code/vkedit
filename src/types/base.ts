@@ -85,6 +85,9 @@ export interface IStageState {
   isPanning: boolean
   offsetX: number
   offsetY: number
+  // 瞬态标记：loadJSON 成功后置位，待视口尺寸就绪后由 StageView 补执行一次自适应。
+  // 不进入 toJSON / loadJSON（非序列化），仅存于运行时实例，规避 StageView 重挂载导致局部状态丢失。
+  autoFitPending: boolean
 }
 
 // 工具接口

@@ -46,9 +46,15 @@ export function useZoom(host: EditorHost) {
   }
 
   const handleZoomAuto = () => {
-    const zoomX = (width.value - 100) / hostState.width
-    const zoomY = (height.value - 100) / hostState.height
-    const newZoom = Math.min(zoomX, zoomY)
+    // 画布尺寸守卫：避免空文档/损坏 JSON 导致除零产生 Infinity zoom
+    if (hostState.width <= 0 || hostState.height <= 0) return
+    // 视口未就绪时跳过（由调用方决定是否延迟补执行）
+    if (width.value <= 0 || height.value <= 0) return
+    // 自适应目标：画布等比缩放后放入"宽=视口宽/2、高=视口高/2"的区域，
+    // 保持画布原有宽高比不拉伸，左右各留约 1/4 视口宽度空白以避让浮动面板。
+    const zoomX = (width.value * 0.5) / hostState.width
+    const zoomY = (height.value * 0.5) / hostState.height
+    const newZoom = Math.max(0.1, Math.min(10, Math.min(zoomX, zoomY)))
     resetPanOffset()
     hostState.zoom = newZoom
   }
