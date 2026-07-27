@@ -1,7 +1,6 @@
 import { BaseCommand } from './base-command'
 import type { IGraphicElement } from '../types'
 import { EditorHost } from '@/core'
-import type { ICommand } from './i-command'
 import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 
 export class AddElementCommand extends BaseCommand {
@@ -28,7 +27,4 @@ export class AddElementCommand extends BaseCommand {
     })
   }
 
-  canMergeWith(command: ICommand): boolean {
-    return command instanceof AddElementCommand && Date.now() - command.timestamp < 1000
-  }
 }

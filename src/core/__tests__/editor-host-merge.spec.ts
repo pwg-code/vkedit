@@ -131,6 +131,25 @@ describe('EditorHost.executeCommand 合并', () => {
     expect(asInternals(host).commandStack.length).toBe(1)
   })
 
+  it('合并路径每次 execute 都生效：连续递增属性值即时应用（InputNumber + 号场景）', () => {
+    host.executeCommand(new UpdatePropertyCommand(host, element, 'rotation', 0, 1))
+    expect(element.rotation).toBe(1)
+
+    host.executeCommand(new UpdatePropertyCommand(host, element, 'rotation', 1, 2))
+    expect(element.rotation).toBe(2)
+
+    host.executeCommand(new UpdatePropertyCommand(host, element, 'rotation', 2, 3))
+    expect(element.rotation).toBe(3)
+
+    expect(asInternals(host).commandStack.length).toBe(1)
+
+    host.undo()
+    expect(element.rotation).toBe(0)
+
+    host.redo()
+    expect(element.rotation).toBe(3)
+  })
+
   it('UpdatePropertyCommand：时间窗边界外不再合并', () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date(2025, 0, 1, 0, 0, 0))
