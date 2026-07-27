@@ -1,51 +1,17 @@
 <template>
-  <v-line v-bind="$attrs" :config="element.config" @click="handleClick" />
+  <v-group v-bind="$attrs" :config="element.groupConfig">
+    <v-rect :config="element.hitRectConfig" />
+    <v-rect :config="element.visibleRectConfig" />
+  </v-group>
 </template>
 
 <script setup lang="ts">
+import type { EditorHost } from '@/core'
 import type { LineElement } from './line'
 
 export interface Props {
+  host: EditorHost
   element: LineElement
 }
 const { element } = defineProps<Props>()
-const handleClick = (event: any) => {
-  // event.cancelBubble = true
-}
-class A {
-  _x: number = 0
-  _y: number = 0
-  _width: number = 100
-  _height: number = 100
-  stroke: string = 'black'
-  strokeWidth: number = 2
-
-  public get x() {
-    return this._x
-  }
-  public set x(value: number) {
-    this._x = value
-  }
-
-  public get y() {
-    return this._y
-  }
-  public set y(value: number) {
-    this._y = value
-  }
-  public get width() {
-    return this._width
-  }
-  public set width(value: number) {
-    this._width = value
-  }
-  public get height() {
-    return this._height
-  }
-  public set height(value: number) {
-    this._height = value
-  }
-}
-
-const a = new A()
 </script>

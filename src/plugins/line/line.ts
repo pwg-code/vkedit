@@ -11,11 +11,14 @@ export interface LineOptions extends BaseGraphicElementOptions {
   ymm?: number
 }
 
-// 矩形元素实现
+// 直线元素实现：用矩形填充模拟线条，配合透明命中层保证细线在任意缩放下可选中
 export class LineElement extends BaseGraphicElement {
   public type = 'line'
   public stroke: string = 'black'
-  // 把width 当做线长 height当做线宽
+  // 把 width 当做线长，height 当做线宽（粗细）
+
+  // 屏幕空间最小命中厚度（像素），与 zoom 无关
+  private static readonly MIN_HIT_SCREEN_PX = 10
 
   constructor(host: EditorHost, options: Partial<LineOptions> = {}) {
     // 支持传入 xmm/ymm 或 x/y
@@ -35,13 +38,45 @@ export class LineElement extends BaseGraphicElement {
     this.stroke = options.stroke ?? this.stroke
   }
 
-  public get config() {
+  // 命中矩形高度（内容空间像素）：保证屏幕上可点击厚度不低于 MIN_HIT_SCREEN_PX
+  // 公式：hitHeight = max(height, MIN_HIT_SCREEN_PX / (abs(scaleY) * zoom))
+  public get hitHeight(): number {
+    const zoom = Math.max(this.host.status.zoom, 0.001)
+    const absScaleY = Math.abs(this.scaleY)
+    if (absScaleY < 0.001) {
+      return this.height
+    }
+    const expanded = LineElement.MIN_HIT_SCREEN_PX / (absScaleY * zoom)
+    return Math.max(this.height, expanded)
+  }
+
+  // v-group 配置：继承 super.config，id 放在 group 上供 selection.findOne('#id') 命中
+  public get groupConfig() {
     return {
       ...super.config,
-      points: [0, 0, this.width, 0],
-      stroke: this.stroke,
-      strokeWidth: this.height,
-      hitStrokeWidth: this.height + 20,
+    }
+  }
+
+  // 可见矩形：stroke 颜色作为填充，尺寸为线长×线宽
+  public get visibleRectConfig() {
+    return {
+      width: this.width,
+      height: this.height,
+      fill: this.stroke,
+      x: 0,
+      y: 0,
+    }
+  }
+
+  // 透明命中矩形：仅厚度方向扩展，居中对齐可见矩形
+  public get hitRectConfig() {
+    const hitHeight = this.hitHeight
+    return {
+      width: this.width,
+      height: hitHeight,
+      x: 0,
+      y: -(hitHeight - this.height) / 2,
+      fill: 'transparent',
     }
   }
 

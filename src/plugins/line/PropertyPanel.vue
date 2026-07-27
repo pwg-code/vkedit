@@ -5,7 +5,7 @@
     <Label>粗细</Label>
     <VkInputNumberMM
       :model-value="element.hmm"
-      :min="0"
+      :min="0.1"
       @update:model-value="(value) => batchUpdateProperty(selection, 'hmm', value)"
     >
     </VkInputNumberMM>
