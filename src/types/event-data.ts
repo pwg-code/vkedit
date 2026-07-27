@@ -62,6 +62,12 @@ export interface PluginEventData extends BaseEventData {
   plugin: any
 }
 
+// 插件加载完成事件数据（install 与可选 activate 成功后触发，区分 registered 与 loaded）
+export interface PluginLoadedPayload extends BaseEventData {
+  name: string
+  plugin: unknown
+}
+
 // 命令事件数据
 export interface CommandEventData extends BaseEventData {
   command: any

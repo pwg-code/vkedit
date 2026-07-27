@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import type { IEditorPlugin, IEditorState, IStageState, EventMap, PluginEventData } from '../types'
+import type { IEditorPlugin, IEditorState, IStageState, EventMap, PluginEventData, BasePlugin } from '../types'
 import { EventUtils } from '../types/event-data'
 import type { ICommand } from '@/commands/i-command'
 
@@ -90,6 +90,12 @@ export class EditorHost {
     this.emit('plugin:registered', {
       ...EventUtils.createBaseEventData('host'),
       plugin: pluginInstance,
+    })
+    this.emit('plugin:loaded', {
+      name,
+      plugin: pluginInstance as BasePlugin,
+      timestamp: Date.now(),
+      source: 'EditorHost.installPlugin',
     })
 
     return this

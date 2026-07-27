@@ -7,6 +7,7 @@ import type {
   TransformEventData,
   ToolEventData,
   PluginEventData,
+  PluginLoadedPayload,
   CommandEventData,
   HistoryEventData,
   ViewEventData,
@@ -154,7 +155,7 @@ export interface EventMap {
   'plugin:unregistered': (payload: PluginEventData) => void
   'plugin:activated': (payload: PluginEventData) => void
   'plugin:deactivated': (payload: PluginEventData) => void
-  'plugin:loaded': (payload: PluginEventData) => void
+  'plugin:loaded': (payload: PluginLoadedPayload) => void
   'plugin:error': (payload: ErrorEventData) => void
 
   'graphic:registered': (payload: GraphicEventData) => void
