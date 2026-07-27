@@ -31,8 +31,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
-import type { IEditorState, ToolEventData } from '../types'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import type { IEditorState, ToolEventData, HistoryEventData } from '../types'
 import type { EditorHost } from '@/core'
 import { VkButton } from '@/components/ui'
 import IconUndo from '~icons/material-symbols-light/undo'
@@ -75,8 +75,8 @@ const toolsByGroup = computed(() => {
 
 const hasActionsSlot = computed(() => !!slots.actions)
 
-const canUndo = computed(() => true)
-const canRedo = computed(() => true)
+const canUndo = ref(false)
+const canRedo = ref(false)
 
 const handleUndo = () => {
   host.undo()
@@ -86,8 +86,18 @@ const handleRedo = () => {
   host.redo()
 }
 
+const onHistoryChanged = (payload: HistoryEventData) => {
+  canUndo.value = payload.canUndo
+  canRedo.value = payload.canRedo
+}
+
 onMounted(() => {
   initTools()
+  host.on('history:changed', onHistoryChanged)
+})
+
+onBeforeUnmount(() => {
+  host.off('history:changed', onHistoryChanged)
 })
 </script>
 

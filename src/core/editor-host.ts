@@ -136,6 +136,7 @@ export class EditorHost {
         this.commandStack[this.commandStack.length - 1] = merged
       }
       this.currentCommandIndex = this.commandStack.length - 1
+      this._emitHistoryChanged()
       return
     }
     // 非合并分支：截断 redo 区段、压栈、执行、发出命令执行事件
@@ -146,6 +147,7 @@ export class EditorHost {
     this.currentCommandIndex++
     command.execute()
     this.emit('command:executed', { ...EventUtils.createBaseEventData('host'), command })
+    this._emitHistoryChanged()
   }
 
   undo(): void {
@@ -154,6 +156,7 @@ export class EditorHost {
       command.undo()
       this.currentCommandIndex--
       this.emit('command:undone', { ...EventUtils.createBaseEventData('host'), command })
+      this._emitHistoryChanged()
     }
   }
 
@@ -163,7 +166,18 @@ export class EditorHost {
       const command = this.commandStack[this.currentCommandIndex]
       command.redo()
       this.emit('command:redone', { ...EventUtils.createBaseEventData('host'), command })
+      this._emitHistoryChanged()
     }
+  }
+
+  // 统一发出撤销栈状态变更事件，供 Toolbar / 属性面板等消费方响应式更新按钮可用性
+  private _emitHistoryChanged(): void {
+    this.emit('history:changed', {
+      canUndo: this.currentCommandIndex >= 0,
+      canRedo: this.currentCommandIndex < this.commandStack.length - 1,
+      timestamp: Date.now(),
+      source: 'EditorHost',
+    })
   }
 
   public get status(): IEditorState {
@@ -264,6 +278,15 @@ export class EditorHost {
       return
     }
     this.emit('host:load-json:complete', { timestamp: Date.now(), source: 'host' })
+    // 加载新文档后旧命令历史不再有效，清空栈并通知消费方
+    this.commandStack = []
+    this.currentCommandIndex = -1
+    this.emit('history:cleared', {
+      ...EventUtils.createBaseEventData('EditorHost'),
+      canUndo: false,
+      canRedo: false,
+    })
+    this._emitHistoryChanged()
   }
 }
 
