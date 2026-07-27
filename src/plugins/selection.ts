@@ -264,12 +264,17 @@ export class SelectionPlugin extends BasePlugin {
   }
 
   public clearSelection(): void {
+    const hadSelection = this.selectionIds.size > 0
     this.selectionIds.clear()
-    this.host?.emit('selection:changed', {
+    const payload = {
       selection: this.getSelectedElements(),
       source: 'selection-plugin',
       timestamp: Date.now(),
-    })
+    }
+    if (hadSelection) {
+      this.host?.emit('selection:cleared', payload)
+    }
+    this.host?.emit('selection:changed', payload)
   }
 
   public selectElementByIds(ids: string[]): void {

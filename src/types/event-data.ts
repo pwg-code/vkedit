@@ -27,6 +27,10 @@ export interface SelectionEventData extends BaseEventData {
   selection: Array<IGraphicElement>
 }
 
+export interface SelectionChangedPayload {
+  elements: unknown[]
+}
+
 export interface TransformEventData extends ElementEventData {
   oldState: any
   newState: any
