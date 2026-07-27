@@ -94,7 +94,7 @@ export class UpdatePropertyCommand extends BaseCommand {
     return (
       command.element.id === this.element.id &&
       command.propertyPath === this.propertyPath &&
-      Date.now() - command.timestamp < 1000
+      Date.now() - this.timestamp < 1000
     )
   }
 

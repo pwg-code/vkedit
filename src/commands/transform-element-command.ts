@@ -95,7 +95,7 @@ export class TransformElementCommand extends BaseCommand {
     return (
       command.element.id === this.element.id &&
       command.transformType === this.transformType &&
-      Date.now() - command.timestamp < 500
+      Date.now() - this.timestamp < 500
     )
   }
 

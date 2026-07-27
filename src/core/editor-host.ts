@@ -127,7 +127,18 @@ export class EditorHost {
 
   // 命令系统
   executeCommand(command: ICommand): void {
-    // 清楚redo栈
+    // 合并检查：若栈顶命令声明可与新命令合并，则合并到栈顶，不重复 execute，不 emit command:executed。
+    // 这样连续同类操作（如拖拽、连改属性）只占用一个历史槽，undo 也能一次性回到起点。
+    const top = this.commandStack[this.commandStack.length - 1]
+    if (top && typeof top.canMergeWith === 'function' && top.canMergeWith(command)) {
+      const merged = top.mergeWith!(command)
+      if (merged && merged !== top) {
+        this.commandStack[this.commandStack.length - 1] = merged
+      }
+      this.currentCommandIndex = this.commandStack.length - 1
+      return
+    }
+    // 非合并分支：截断 redo 区段、压栈、执行、发出命令执行事件
     if (this.currentCommandIndex < this.commandStack.length - 1) {
       this.commandStack = this.commandStack.slice(0, this.currentCommandIndex + 1)
     }
