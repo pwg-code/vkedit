@@ -1,6 +1,6 @@
 import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
-import IconRectangle from '~icons/material-symbols-light/rectangle'
+import IconRectangle from '~icons/ph/square-light'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import type { EditorHost } from '@/core'
 import { GraphicPlugin } from '@/types/graphic-plugin'

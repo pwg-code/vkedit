@@ -18,8 +18,7 @@
 <script setup lang="ts">
 import { type EditorHost } from '@/core'
 import { VkButton, VkDropdown } from '@/components/ui'
-import IconDisplayExternalInput from '~icons/material-symbols-light/display-external-input'
-import type { ImportPlugin } from './import'
+import IconDisplayExternalInput from '~icons/ph/file-arrow-down-light'
 
 const { host } = defineProps<{ host: EditorHost }>()
 const importPlugin = host.getPlugin('import-plugin')

@@ -151,6 +151,15 @@ import 'vkedit/dist/vkedit.css'
 
 ---
 
+## 社区
+
+- [贡献指南](CONTRIBUTING.md)
+- [行为准则](CODE_OF_CONDUCT.md)
+- [安全政策](SECURITY.md)
+- [第三方许可证声明](THIRD_PARTY_LICENSES.md)
+
+---
+
 ## 联系方式
 
 - **QQ**: 16871824

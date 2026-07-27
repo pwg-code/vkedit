@@ -2,7 +2,7 @@ import { GraphicPlugin } from '@/types/graphic-plugin'
 import { BaseGraphicElement, CORNER_ANCHORS, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
-import IconQrCode2 from '~icons/material-symbols-light/qr-code-2'
+import IconQrCode2 from '~icons/ph/qr-code-light'
 import type { EditorHost } from '@/core'
 import QRCode from 'qrcode'
 

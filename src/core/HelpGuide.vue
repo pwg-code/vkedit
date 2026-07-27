@@ -108,8 +108,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { resolveVkeditTheme, type VkeditTheme } from '@/utils/theme'
-import IconHelp from '~icons/material-symbols-light/help'
-import IconClose from '~icons/material-symbols-light/close'
+import IconHelp from '~icons/ph/question-light'
+import IconClose from '~icons/ph/x-light'
 
 const visible = ref(false)
 const helpGuideRef = ref<HTMLElement | null>(null)

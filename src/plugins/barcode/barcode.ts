@@ -2,7 +2,7 @@ import { GraphicPlugin } from '@/types/graphic-plugin'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
-import IconBarcode from '~icons/material-symbols-light/barcode'
+import IconBarcode from '~icons/ph/barcode-light'
 import type { EditorHost } from '@/core'
 import JsBarcode from 'jsbarcode'
 

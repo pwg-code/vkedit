@@ -39,12 +39,12 @@ import type { EditorHost } from '@/core'
 import type { IGraphicElement, SelectionEventData } from '@/types'
 import { AlignElementsCommand, DistributeElementsCommand } from '@/commands'
 import { VkButton } from '@/components/ui'
-import IconAlignHorizontalLeft from '~icons/material-symbols-light/align-horizontal-left'
-import IconAlignHorizontalRight from '~icons/material-symbols-light/align-horizontal-right'
-import IconAlignVerticalTop from '~icons/material-symbols-light/align-vertical-top'
-import IconAlignVerticalBottom from '~icons/material-symbols-light/align-vertical-bottom'
-import IconHorizontalDistribute from '~icons/material-symbols-light/horizontal-distribute'
-import IconVerticalDistribute from '~icons/material-symbols-light/vertical-distribute'
+import IconAlignHorizontalLeft from '~icons/ph/align-left-simple-light'
+import IconAlignHorizontalRight from '~icons/ph/align-right-simple-light'
+import IconAlignVerticalTop from '~icons/ph/align-top-simple-light'
+import IconAlignVerticalBottom from '~icons/ph/align-bottom-simple-light'
+import IconHorizontalDistribute from '~icons/ph/rows-light'
+import IconVerticalDistribute from '~icons/ph/columns-light'
 
 const { host } = defineProps<{ host: EditorHost }>()
 

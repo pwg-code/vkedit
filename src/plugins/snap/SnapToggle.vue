@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import IconGridOn from '~icons/material-symbols-light/grid-on'
+import IconGridOn from '~icons/ph/grid-four-light'
 import type { EditorHost } from '@/core'
 
 const { host, collapsed = false } = defineProps<{

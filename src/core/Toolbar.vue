@@ -35,8 +35,8 @@ import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import type { IEditorState, ToolEventData, HistoryEventData } from '../types'
 import type { EditorHost } from '@/core'
 import { VkButton } from '@/components/ui'
-import IconUndo from '~icons/material-symbols-light/undo'
-import IconRedo from '~icons/material-symbols-light/redo'
+import IconUndo from '~icons/ph/arrow-counter-clockwise-light'
+import IconRedo from '~icons/ph/arrow-clockwise-light'
 import { ToolbarManagerPlugin } from '@/plugins'
 
 interface Props {

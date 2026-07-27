@@ -2,7 +2,7 @@ import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base
 import { GraphicPlugin } from '@/types/graphic-plugin'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
-import IconTextFields from '~icons/material-symbols-light/text-fields'
+import IconTextFields from '~icons/ph/text-aa-light'
 import TextContextMenu from './TextContextMenu.vue'
 import type { EditorHost } from '@/core'
 

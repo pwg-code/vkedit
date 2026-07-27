@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { type EditorHost } from '@/core'
 import { VkButton, VkDropdown } from '@/components/ui'
-import IconFileExportOutline from '~icons/material-symbols-light/file-export-outline'
+import IconFileExportOutline from '~icons/ph/file-arrow-up-light'
 
 const { host } = defineProps<{ host: EditorHost }>()
 const exportPlugin = host.getPlugin('export-plugin')!

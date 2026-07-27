@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { VkButton } from '@/components/ui'
-import IconPreviewOutline from '~icons/material-symbols-light/preview-outline'
+import IconPreviewOutline from '~icons/ph/eye-light'
 
 const { host } = defineProps<{
   host: import('@/core').EditorHost

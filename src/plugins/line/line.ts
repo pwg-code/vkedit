@@ -1,7 +1,7 @@
 import { GraphicPlugin } from '@/types/graphic-plugin'
 import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
-import IconPenSize1 from '~icons/material-symbols-light/pen-size-1'
+import IconPenSize1 from '~icons/ph/pen-nib-light'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import type { EditorHost } from '@/core'
 
