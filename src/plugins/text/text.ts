@@ -1,5 +1,5 @@
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
-import { GraphicPlugin, type PropertyPanelRegistration } from '@/types/graphic-plugin'
+import { GraphicPlugin } from '@/types/graphic-plugin'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
 import IconTextFields from '~icons/material-symbols-light/text-fields'
@@ -93,17 +93,9 @@ export class TextPlugin extends GraphicPlugin<TextElement> {
   public shapeComponent = Shape
   public iconComponent = IconTextFields
   public typeDisplayName = '文本'
-  public propertyPanels: PropertyPanelRegistration[] = [
-    {
-      graphicTypes: ['text'],
-      render: () => PropertyPanel,
-      isCanvas: false,
-      isPublic: false,
-    },
-  ]
+  public propertyPanel = PropertyPanel
 
   protected onInstall(): void {
-    this.activate()
     this.host.emit('context-menu:registered', {
       graphicTypes: ['text'],
       render: () => TextContextMenu,
@@ -115,7 +107,6 @@ export class TextPlugin extends GraphicPlugin<TextElement> {
   }
 
   protected onUninstall(): void {
-    this.deactivate()
     this.host?.emit('context-menu:unregistered', {
       graphicTypes: ['text'],
       render: () => TextContextMenu,

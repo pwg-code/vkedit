@@ -1,4 +1,4 @@
-import { GraphicPlugin, type PropertyPanelRegistration } from '@/types/graphic-plugin'
+import { GraphicPlugin } from '@/types/graphic-plugin'
 import Shape from './Shape.vue'
 import PropertyPanel from './PropertyPanel.vue'
 import IconPenSize1 from '~icons/material-symbols-light/pen-size-1'
@@ -66,9 +66,5 @@ export class LinePlugin extends GraphicPlugin<LineElement> {
   public shapeComponent = Shape
   public iconComponent = IconPenSize1
   public typeDisplayName = '线条'
-  public propertyPanels: PropertyPanelRegistration[] = [
-    { graphicTypes: ['line'], render: () => PropertyPanel, isCanvas: false, isPublic: false },
-  ]
-  protected onInstall(): void { this.activate() }
-  protected onUninstall(): void { this.deactivate() }
+  public propertyPanel = PropertyPanel
 }

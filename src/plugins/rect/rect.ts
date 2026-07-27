@@ -4,7 +4,6 @@ import IconRectangle from '~icons/material-symbols-light/rectangle'
 import { BaseGraphicElement, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import type { EditorHost } from '@/core'
 import { GraphicPlugin } from '@/types/graphic-plugin'
-import type { PropertyPanelRegistration } from '@/types/graphic-plugin'
 
 export interface RectOptions extends BaseGraphicElementOptions {
   x?: number
@@ -81,17 +80,6 @@ export class RectPlugin extends GraphicPlugin<RectElement> {
   public shapeComponent = Shape
   public iconComponent = IconRectangle
   public typeDisplayName = '矩形'
-  public propertyPanels: PropertyPanelRegistration[] = [
-    {
-      graphicTypes: ['rect'],
-      render: () => PropertyPanel,
-      isCanvas: false,
-      isPublic: false,
-    },
-  ]
-
-  protected onInstall(): void {
-    this.activate()
-  }
+  public propertyPanel = PropertyPanel
 }
 

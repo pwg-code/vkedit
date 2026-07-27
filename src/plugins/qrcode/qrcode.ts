@@ -1,5 +1,4 @@
 import { GraphicPlugin } from '@/types/graphic-plugin'
-import type { PropertyPanelRegistration } from '@/types/graphic-plugin'
 import { BaseGraphicElement, CORNER_ANCHORS, type BaseGraphicElementOptions } from '@/types/base-graphic-element'
 import PropertyPanel from './PropertyPanel.vue'
 import Shape from './Shape.vue'
@@ -112,9 +111,5 @@ export class QrcodePlugin extends GraphicPlugin<QrcodeElement> {
   public shapeComponent = Shape
   public iconComponent = IconQrCode2
   public typeDisplayName = '二维码'
-  public propertyPanels: PropertyPanelRegistration[] = [
-    { graphicTypes: ['qr'], render: () => PropertyPanel, isCanvas: false, isPublic: false },
-  ]
-  protected onInstall(): void { this.activate() }
-  protected onUninstall(): void { this.deactivate() }
+  public propertyPanel = PropertyPanel
 }

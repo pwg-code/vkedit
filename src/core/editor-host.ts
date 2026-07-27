@@ -86,6 +86,7 @@ export class EditorHost {
     const pluginInstance: IEditorPlugin = new pluginClass(this)
     this.plugins.set(name, pluginInstance)
     pluginInstance.install(this)
+    pluginInstance.activate?.() // ← 关键：安装即激活，由 host 统一桥接
     this.emit('plugin:registered', {
       ...EventUtils.createBaseEventData('host'),
       plugin: pluginInstance,

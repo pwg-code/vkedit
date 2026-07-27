@@ -22,6 +22,34 @@ export abstract class GraphicPlugin<T extends IGraphicElement> extends BasePlugi
   public abstract graphicType: string
   public abstract graphicElement: new (host: EditorHost) => T
   public abstract shapeComponent: Component
+
+  /**
+   * 当前图形自身的属性面板 Vue 组件。
+   *
+   * 与 {@link shapeComponent} / {@link iconComponent} 风格一致：
+   * 直接以组件引用声明，而非工厂函数。
+   *
+   * 基类会在 `onActivate` 时自动 emit 等价的 `property-panel:registered` 事件：
+   * - `graphicTypes = [this.graphicType]`
+   * - `render = () => this.propertyPanel`
+   * - `isCanvas = false`
+   * - `isPublic = false`
+   *
+   * 如需注册自身以外的图形类型、注册多个面板、或 `isCanvas = true` / `isPublic = true`，
+   * 请改用旧 {@link propertyPanels} 字段或在独立插件的 `onInstall` 手动 emit。
+   */
+  public propertyPanel?: Component
+
+  /**
+   * 属性面板注册列表（旧 API，多面板与逃生通道）。
+   *
+   * @deprecated 请优先使用单数 {@link propertyPanel} 字段。本字段仅作为
+   * 「多面板 / 为其他 graphicType 注册 / `isCanvas = true` / `isPublic = true`」
+   * 场景下的逃生通道保留。新插件禁止使用本字段。
+   *
+   * 基类 `onActivate` 仍按现有逻辑遍历本数组 emit `property-panel:registered`，
+   * 因此同一插件同时声明 `propertyPanel` 与 `propertyPanels` 时两者都会被注册。
+   */
   public propertyPanels?: PropertyPanelRegistration[]
   public iconComponent?: Component
   public typeDisplayName?: string
@@ -35,6 +63,17 @@ export abstract class GraphicPlugin<T extends IGraphicElement> extends BasePlugi
         render: () => this.shapeComponent,
         iconComponent: this.iconComponent,
         typeDisplayName: this.typeDisplayName,
+        source: 'graphic-plugin',
+        timestamp: Date.now(),
+      })
+    }
+
+    if (this.propertyPanel) {
+      this.host.emit('property-panel:registered', {
+        graphicTypes: [this.graphicType],
+        render: () => this.propertyPanel as Component,
+        isCanvas: false,
+        isPublic: false,
         source: 'graphic-plugin',
         timestamp: Date.now(),
       })
@@ -70,6 +109,17 @@ export abstract class GraphicPlugin<T extends IGraphicElement> extends BasePlugi
         render: () => this.shapeComponent,
         iconComponent: this.iconComponent,
         typeDisplayName: this.typeDisplayName,
+        source: 'graphic-plugin',
+        timestamp: Date.now(),
+      })
+    }
+
+    if (this.propertyPanel) {
+      this.host.emit('property-panel:unregistered', {
+        graphicTypes: [this.graphicType],
+        render: () => this.propertyPanel as Component,
+        isCanvas: false,
+        isPublic: false,
         source: 'graphic-plugin',
         timestamp: Date.now(),
       })
