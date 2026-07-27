@@ -11,6 +11,12 @@ export interface BaseEventData {
   source?: string
 }
 
+// 编辑器生命周期事件数据（editor:ready / editor:destroy / editor:reset）
+export interface EditorLifecyclePayload {
+  timestamp: number
+  source: string
+}
+
 // 元素相关事件数据
 export interface ElementEventData extends BaseEventData {
   element: any

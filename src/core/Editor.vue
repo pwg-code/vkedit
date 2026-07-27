@@ -97,6 +97,7 @@ import IconChevronRight from '~icons/material-symbols-light/chevron-right'
 import IconSettings from '~icons/material-symbols-light/settings'
 import type { EditorHost } from '@/core'
 import { onMounted, onUnmounted, ref } from 'vue'
+import type { EditorLifecyclePayload } from '@/types'
 
 const {
   host,
@@ -170,6 +171,7 @@ const onResize = () => {
 
 // 绑定舞台重绘事件
 onMounted(() => {
+  if (!host) return
   host.on('stage:redraw', () => {
     // 强制更改key 以触发StageView重绘
     stageKey.value = `stage-${Date.now()}`
@@ -179,9 +181,23 @@ onMounted(() => {
   })
   onResize()
   window.addEventListener('resize', onResize)
+  const readyPayload: EditorLifecyclePayload = {
+    timestamp: Date.now(),
+    source: 'Editor.vue',
+  }
+  host.emit('editor:ready', readyPayload)
 })
 
 onUnmounted(() => {
+  if (!host) {
+    // host 缺失时安全跳过生命周期事件，但 resize 等监听器从未注册，无需清理
+    return
+  }
+  const destroyPayload: EditorLifecyclePayload = {
+    timestamp: Date.now(),
+    source: 'Editor.vue',
+  }
+  host.emit('editor:destroy', destroyPayload)
   window.removeEventListener('resize', onResize)
   document.removeEventListener('pointermove', onResizeMove)
   document.removeEventListener('pointerup', endResize)

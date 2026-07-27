@@ -1,5 +1,6 @@
 import type {
   BaseEventData,
+  EditorLifecyclePayload,
   ElementDragEventData,
   ElementEventData,
   SelectionEventData,
@@ -47,9 +48,9 @@ import type {
 
 export interface EventMap {
   // 生命周期
-  'editor:ready': (payload: BaseEventData) => void
-  'editor:destroy': (payload: BaseEventData) => void
-  'editor:reset': (payload: BaseEventData) => void
+  'editor:ready': (payload: EditorLifecyclePayload) => void
+  'editor:destroy': (payload: EditorLifecyclePayload) => void
+  'editor:reset': (payload: EditorLifecyclePayload) => void
 
   // 文件操作
   'file:new': (payload: BaseEventData) => void
