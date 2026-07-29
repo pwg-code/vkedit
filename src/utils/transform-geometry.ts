@@ -96,7 +96,7 @@ export function getElementOBB(input: {
 
 export function getElementOBBFromSource(
   element: IGraphicElement,
-  node: {
+  _node: {
     x: () => number
     y: () => number
     rotation: () => number
@@ -104,17 +104,6 @@ export function getElementOBBFromSource(
     scaleY: () => number
   } | null | undefined,
 ): OBB {
-  if (node) {
-    return getElementOBB({
-      x: node.x(),
-      y: node.y(),
-      width: element.width,
-      height: element.height,
-      rotation: node.rotation(),
-      scaleX: node.scaleX(),
-      scaleY: node.scaleY(),
-    })
-  }
   return getElementOBB({
     x: element.x,
     y: element.y,

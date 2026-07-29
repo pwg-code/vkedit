@@ -47,7 +47,7 @@ const groupConfig = () => ({
   rotation: element.rotation,
   scaleX: element.scaleX,
   scaleY: element.scaleY,
-  draggable: element.draggable,
+  draggable: false,
   visible: element.visible,
 })
 
