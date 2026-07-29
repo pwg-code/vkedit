@@ -25,7 +25,9 @@ import {
   type HitZone,
 } from '@/utils/transform-overlay'
 import type { SelectionPlugin } from '@/plugins/selection'
+import type { ClipboardPlugin } from '@/plugins/clipboard'
 import { BatchCommand, TransformElementCommand } from '@/commands'
+import type { ElementDragEventData } from '@/types/event-data'
 
 export interface OverlayAnchorView {
   id: string
@@ -284,6 +286,7 @@ export function useTransformOverlay(host: EditorHost) {
 
   let session: (ResizeSession | RotateSession | MoveSession) | null = null
   let _gestureStage: any = null
+  let _lastMouseUpAltKey = false
 
   const cursor = ref<string>('default')
 
@@ -485,6 +488,16 @@ export function useTransformOverlay(host: EditorHost) {
         }
       }
       refreshOverlay()
+      const mainEl = s.elements[0]
+      const mainNode = getElementNode(mainEl.id)
+      host.emit('element:dragmove', {
+        element: mainEl,
+        elementId: mainEl.id,
+        target: mainNode,
+        evt: e,
+        source: 'transform-overlay',
+        timestamp: Date.now(),
+      } satisfies ElementDragEventData)
       return
     }
 
@@ -560,7 +573,8 @@ export function useTransformOverlay(host: EditorHost) {
     refreshOverlay()
   }
 
-  function onWindowUp() {
+  function onWindowUp(e: MouseEvent) {
+    _lastMouseUpAltKey = e.altKey
     if (!session) return
     if (session.kind === 'move') endMove()
     else if (session.kind === 'resize') endResize()
@@ -624,10 +638,51 @@ export function useTransformOverlay(host: EditorHost) {
     _gestureStage = host.stage?.getNode?.() ?? host.stage
     window.addEventListener('mousemove', onWindowMove)
     window.addEventListener('mouseup', onWindowUp)
+    const mainEl = session.elements[0]
+    const mainNode = getElementNode(mainEl.id)
+    host.emit('element:dragstart', {
+      element: mainEl,
+      elementId: mainEl.id,
+      target: mainNode,
+      evt: undefined,
+      source: 'transform-overlay',
+      timestamp: Date.now(),
+    } satisfies ElementDragEventData)
   }
 
   function endMove() {
     if (!session || session.kind !== 'move') return
+
+    if (_lastMouseUpAltKey) {
+      const clipboard = host.getPlugin<ClipboardPlugin>('clipboard-plugin')
+      if (clipboard && typeof clipboard.cloneElementsAt === 'function') {
+        const releasePositions = new Map<string, { x: number; y: number }>()
+        for (const e of session.elements) {
+          const node = getElementNode(e.id)
+          releasePositions.set(e.id, {
+            x: node ? node.x() : e.x,
+            y: node ? node.y() : e.y,
+          })
+        }
+        for (const e of session.elements) {
+          const start = session.startPositions.get(e.id)!
+          e.x = start.x
+          e.y = start.y
+          const n = getElementNode(e.id)
+          if (n) { n.x(start.x); n.y(start.y) }
+        }
+        const mainEl = session.elements[0]
+        const mainStart = session.startPositions.get(mainEl.id)!
+        const mainRelease = releasePositions.get(mainEl.id)!
+        const deltaMM = {
+          x: (mainRelease.x - mainStart.x) / host.status.dpm,
+          y: (mainRelease.y - mainStart.y) / host.status.dpm,
+        }
+        clipboard.cloneElementsAt(session.elements, deltaMM)
+      }
+      return
+    }
+
     const commands: TransformElementCommand[] = []
     for (const e of session.elements) {
       const start = session.startPositions.get(e.id)!
@@ -639,6 +694,16 @@ export function useTransformOverlay(host: EditorHost) {
         new TransformElementCommand(host, e, { x: start.x, y: start.y }, { x: nx, y: ny }),
       )
     }
+    const mainEl = session.elements[0]
+    const mainNode = getElementNode(mainEl.id)
+    host.emit('element:dragend', {
+      element: mainEl,
+      elementId: mainEl.id,
+      target: mainNode,
+      evt: undefined,
+      source: 'transform-overlay',
+      timestamp: Date.now(),
+    } satisfies ElementDragEventData)
     if (commands.length === 1) host.executeCommand(commands[0])
     else if (commands.length > 1) {
       host.executeCommand(new BatchCommand(host, commands, '\u591A\u9009\u62D6\u62FD'))

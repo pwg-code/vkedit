@@ -7,14 +7,10 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue'
+import type { ShapeProps } from '@/types/shape-props'
 import type { BarcodeElement } from './barcode'
-// @ts-ignore
-import type { EditorHost } from '@/core'
 
-export interface Props {
-  host: EditorHost
-  element: BarcodeElement
-}
+export interface Props extends ShapeProps<BarcodeElement> {}
 
 const { host, element } = defineProps<Props>()
 const image = ref<HTMLCanvasElement>()

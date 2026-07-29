@@ -254,7 +254,7 @@ export abstract class BaseGraphicElement implements IGraphicElement {
       scaleX: this.scaleX,
       scaleY: this.scaleY,
       visible: this.visible,
-      draggable: this.draggable && !this.locked,
+      draggable: false,
     }
   }
 }

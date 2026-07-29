@@ -1,7 +1,11 @@
 import { BasePlugin } from '@/types/base-plugin'
-import type { Component } from 'vue'
+import { markRaw, type Component } from 'vue'
 import type { IGraphicElement } from '@/types'
 import type { GraphicTypeRegistration, PropertyPanelRegistration } from '@/types/graphic-plugin'
+
+function rawComponent<T extends Component | undefined>(comp: T): T {
+  return (comp ? markRaw(comp) : comp) as T
+}
 
 export interface ToolDescriptor {
   type: string
@@ -28,7 +32,7 @@ export class GraphicRegistryPlugin extends BasePlugin {
         type: data.type,
         render: data.render,
         createElement: existing?.createElement ?? (() => { throw new Error(`Element type ${data.type} is not registered`) }),
-        iconComponent: data.iconComponent ?? existing?.iconComponent,
+        iconComponent: rawComponent(data.iconComponent ?? existing?.iconComponent),
         typeDisplayName: data.typeDisplayName ?? existing?.typeDisplayName,
       })
     })
@@ -75,7 +79,7 @@ export class GraphicRegistryPlugin extends BasePlugin {
   getElementComponent(type: string): Component {
     const graphic = this.graphics.get(type)
     if (graphic) {
-      return graphic.render()
+      return rawComponent(graphic.render())
     }
     throw new Error(`未找到类型为 ${type} 的图形组件`)
   }
@@ -83,7 +87,7 @@ export class GraphicRegistryPlugin extends BasePlugin {
   getTypeMeta(type: string): { iconComponent?: Component; typeDisplayName?: string } | undefined {
     const graphic = this.graphics.get(type)
     if (!graphic) return undefined
-    return { iconComponent: graphic.iconComponent, typeDisplayName: graphic.typeDisplayName }
+    return { iconComponent: rawComponent(graphic.iconComponent), typeDisplayName: graphic.typeDisplayName }
   }
 
   getToolList(): ToolDescriptor[] {
@@ -91,7 +95,7 @@ export class GraphicRegistryPlugin extends BasePlugin {
       .filter((g): g is GraphicTypeRegistration & { iconComponent: Component } => !!g.iconComponent)
       .map((g) => ({
         type: g.type,
-        iconComponent: g.iconComponent,
+        iconComponent: rawComponent(g.iconComponent),
         typeDisplayName: g.typeDisplayName ?? g.type,
         createElement: g.createElement,
       }))
@@ -100,7 +104,7 @@ export class GraphicRegistryPlugin extends BasePlugin {
   getToolComponent(type: string): Component {
     const toolData = this.tools.get(type)
     if (toolData) {
-      return toolData.render()
+      return rawComponent(toolData.render())
     }
     throw new Error(`未找到类型为 ${type} 的图形工具组件`)
   }
@@ -118,7 +122,7 @@ export class GraphicRegistryPlugin extends BasePlugin {
     const panels: Component[] = []
     this.propertyPanels.forEach((panel) => {
       if (panel.isPublic || panel.graphicTypes.includes(type)) {
-        panels.push(panel.render())
+        panels.push(rawComponent(panel.render()))
       }
     })
     return panels
@@ -142,7 +146,7 @@ export class GraphicRegistryPlugin extends BasePlugin {
   getCanvasPanels(): Component[] {
     return Array.from(this.propertyPanels.values())
       .filter((p) => p.isCanvas)
-      .map((p) => p.render())
+      .map((p) => rawComponent(p.render()))
   }
 
   addElement(element: IGraphicElement): void {

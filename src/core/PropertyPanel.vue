@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { markRaw, onMounted, ref, type Component } from 'vue'
+import { onMounted, ref, shallowRef, type Component } from 'vue'
 import type { IGraphicElement } from '@/types'
 import type { GraphicRegistryPlugin } from '@/plugins/graphic-registry'
 import type { EditorHost } from '@/core'
@@ -21,7 +21,7 @@ const propertyPanelsPlugin = host.getPlugin('graphic-registry-plugin') as Graphi
 const selectionElement = ref<IGraphicElement[]>([])
 const element = ref<IGraphicElement>()
 
-const panels = ref<Component[]>()
+const panels = shallowRef<Component[]>()
 
 const updatePanels = (selection: IGraphicElement[]) => {
   selectionElement.value = selection
@@ -34,7 +34,7 @@ const updatePanels = (selection: IGraphicElement[]) => {
   } else {
     currentPanels = propertyPanelsPlugin.getCanvasPanels() || []
   }
-  panels.value = currentPanels.map((p) => markRaw(p))
+  panels.value = currentPanels
 }
 
 const initPanel = () => {

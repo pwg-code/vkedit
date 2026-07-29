@@ -1,13 +1,12 @@
 <template>
-  <v-rect v-bind="$attrs" :config="element.config" @click="handleClick" />
+  <v-rect :config="element.config" @click="handleClick" />
 </template>
 
 <script setup lang="ts">
+import type { ShapeProps } from '@/types/shape-props'
 import type { RectElement } from './rect'
 
-export interface Props {
-  element: RectElement
-}
+export interface Props extends ShapeProps<RectElement> {}
 
 const { element } = defineProps<Props>()
 

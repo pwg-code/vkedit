@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, shallowRef } from 'vue'
 import type { EditorHost } from '@/core'
 import type { GraphicRegistryPlugin, ToolDescriptor } from '@/plugins/graphic-registry'
 import GraphicToolRenderer from './GraphicToolRenderer.vue'
@@ -39,7 +39,7 @@ defineSlots<{
 }>()
 
 const graphicRegistryPlugin = host.getPlugin('graphic-registry-plugin') as GraphicRegistryPlugin | undefined
-const tools = ref<ToolDescriptor[]>([])
+const tools = shallowRef<ToolDescriptor[]>([])
 
 const initTools = () => {
   if (graphicRegistryPlugin?.getToolList) {

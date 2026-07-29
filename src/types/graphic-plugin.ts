@@ -1,4 +1,4 @@
-import type { Component } from 'vue'
+import { markRaw, type Component } from 'vue'
 import type { EditorHost } from '@/core'
 import { BasePlugin } from './base-plugin'
 import type { IGraphicElement } from './base'
@@ -58,10 +58,12 @@ export abstract class GraphicPlugin<T extends IGraphicElement> extends BasePlugi
     if (!this.host) return
 
     if (this.shapeComponent) {
+      const shape = markRaw(this.shapeComponent)
+      const icon = this.iconComponent ? markRaw(this.iconComponent) : undefined
       this.host.emit('graphic:registered', {
         type: this.graphicType,
-        render: () => this.shapeComponent,
-        iconComponent: this.iconComponent,
+        render: () => shape,
+        iconComponent: icon,
         typeDisplayName: this.typeDisplayName,
         source: 'graphic-plugin',
         timestamp: Date.now(),
@@ -69,9 +71,10 @@ export abstract class GraphicPlugin<T extends IGraphicElement> extends BasePlugi
     }
 
     if (this.propertyPanel) {
+      const panel = markRaw(this.propertyPanel)
       this.host.emit('property-panel:registered', {
         graphicTypes: [this.graphicType],
-        render: () => this.propertyPanel as Component,
+        render: () => panel,
         isCanvas: false,
         isPublic: false,
         source: 'graphic-plugin',

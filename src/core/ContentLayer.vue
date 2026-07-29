@@ -10,9 +10,6 @@
         :is="host.getPlugin('graphic-registry-plugin')?.getElementComponent(element.type)"
         :element="element"
         :host="host"
-        @dragstart="handleDragStart($event, element)"
-        @dragmove="handleDragMove($event, element)"
-        @dragend="handleDragEnd($event, element)"
       />
     </v-group>
     <slot></slot>
@@ -34,9 +31,6 @@ const {
   contentLayerRef,
   contentGroupConfig,
   elements,
-  handleDragStart,
-  handleDragMove,
-  handleDragEnd,
   initElements,
   updateCanvas,
 } = useContentLayer(host)

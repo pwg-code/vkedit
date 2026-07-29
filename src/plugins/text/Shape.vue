@@ -1,13 +1,12 @@
 <template>
-  <v-text v-bind="$attrs" :config="element.config" @click="handleClick" />
+  <v-text :config="element.config" @click="handleClick" />
 </template>
 
 <script setup lang="ts">
+import type { ShapeProps } from '@/types/shape-props'
 import type { TextElement } from './text'
 
-export interface Props {
-  element: TextElement
-}
+export interface Props extends ShapeProps<TextElement> {}
 
 const props = defineProps<Props>()
 

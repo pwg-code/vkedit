@@ -10,12 +10,10 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue'
+import type { ShapeProps } from '@/types/shape-props'
 import type { QrcodeElement } from './qrcode'
-import type { EditorHost } from '@/core'
-export interface Props {
-  host: EditorHost
-  element: QrcodeElement
-}
+
+export interface Props extends ShapeProps<QrcodeElement> {}
 
 const { host, element } = defineProps<Props>()
 const image = ref<HTMLCanvasElement>()
