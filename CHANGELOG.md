@@ -1,5 +1,33 @@
 # Changelog
 
+## [4.0.2] - 2026-07-29
+
+### Features
+
+- **Event system enhancements** — Editor emits `editor:ready` on mount, `editor:destroy` on unmount, `editor:reset` before `loadJSON` rebuilds canvas and history; host emits `plugin:loaded` after install/activate and `history:changed` for Toolbar undo/redo state wiring; selection emits `selection:cleared` when transitioning from selected to empty.
+- **Canvas property undo/redo** — `UpdateCanvasPropertyCommand` supports undo/redo for dpm, width, height changes.
+- **Zoom auto-fit** — Canvas auto-fits to half viewport on `loadJSON` completion.
+- **TransformOverlay unified drag** — All element dragging unified through `TransformOverlay`; Shape native drag handlers retired.
+- **Export filename prefix** — Exported PNG/JPEG/PDF filenames are prefixed with `vkedit`.
+- **Pin icon enhancement** — Lock icon changed to solid fill style for stronger lock/unlock visual distinction.
+- **Favicon update** — Updated `favicon.svg` with new brand design and gradients.
+
+### Improvements
+
+- **Icons migrated to Phosphor** — Icon set switched from `material-symbols-light` to Phosphor for better consistency and smaller bundle.
+- **Snap decoupled from DOM** — Snap calculation logic extracted from DOM dependency; `resolveDragSnap` exposed for overlay integration.
+- **Line element reworked** — Line element switched to `v-rect` fill with transparent hit layer for zoom-robust selection.
+- **Layer event names unified** — Layer events renamed to `layer:order-changed` and `layer:visibility-change` for consistency.
+
+### Fixed
+
+- **Hidden elements rendering** — Elements with `visible: false` no longer render on canvas.
+- **Box-select start logic** — Box-select now correctly starts from an unselected element instead of triggering single-select.
+- **Align sync** — Konva node is synced after model update in align command; distribute icons swapped for correct ordering.
+- **Build export** — `Props` interface exported to unblock plugin type chain for host consumption.
+- **Keyboard move canvas update** — `TransformElementCommand` syncs Konva node to fix canvas not updating on keyboard arrow move.
+- **Command coalescing** — Compatible commands are coalesced in `executeCommand`; merged command side effects applied on each execution.
+
 ## [4.0.0] - 2026-07-21
 
 ### BREAKING CHANGE (styles)
