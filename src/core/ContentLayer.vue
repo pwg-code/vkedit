@@ -4,13 +4,14 @@
     <!-- <v-rect :config="contentBgConfig"></v-rect> -->
     <v-group :config="contentGroupConfig" ref="groupRef">
       <!-- 事件会导致卡顿 考虑优化？  拖拽 变化时 移动到临时图层进行处理 -->
-      <component
-        v-for="element in elements"
-        :key="element.id"
-        :is="host.getPlugin('graphic-registry-plugin')?.getElementComponent(element.type)"
-        :element="element"
-        :host="host"
-      />
+      <template v-for="element in elements" :key="element.id">
+        <component
+          v-if="element.visible"
+          :is="host.getPlugin('graphic-registry-plugin')?.getElementComponent(element.type)"
+          :element="element"
+          :host="host"
+        />
+      </template>
     </v-group>
     <slot></slot>
   </v-layer>
@@ -42,6 +43,7 @@ onMounted(() => {
   host.on('element:added', initElements)
   host.on('element:transformed', initElements)
   host.on('element:updated', updateCanvas)
+  host.on('element:visibility-change', updateCanvas)
   host.on('elements:align', updateCanvas)
   host.on('elements:distribute', updateCanvas)
   // 层级变更事件：单元素上移/下移/置顶/置底 + 拖拽批量重排
