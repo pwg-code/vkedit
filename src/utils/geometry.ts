@@ -139,3 +139,63 @@ export function computeSnap(
 
   return { x: bestX, y: bestY }
 }
+
+export type StickyAxis = SnapMatch | null
+
+export interface StickyState {
+  x: StickyAxis
+  y: StickyAxis
+}
+
+export function snapResultToOffset(result: SnapResult): { offsetX: number; offsetY: number } {
+  return {
+    offsetX: result.x ? result.x.snapTo - result.x.source : 0,
+    offsetY: result.y ? result.y.snapTo - result.y.source : 0,
+  }
+}
+
+function resolveAxis(
+  intentValues: number[],
+  raw: SnapMatch | null,
+  locked: StickyAxis,
+  threshold: number,
+): { match: SnapMatch | null; next: StickyAxis } {
+  if (locked) {
+    let currentSource = intentValues[0]!
+    let best = Math.abs(currentSource - locked.snapTo)
+    for (let i = 1; i < intentValues.length; i++) {
+      const v = intentValues[i]!
+      const d = Math.abs(v - locked.snapTo)
+      if (d < best) {
+        best = d
+        currentSource = v
+      }
+    }
+    if (best > threshold) {
+      return { match: raw, next: raw }
+    }
+    return {
+      match: {
+        snapTo: locked.snapTo,
+        source: currentSource,
+        delta: best,
+      },
+      next: locked,
+    }
+  }
+  return { match: raw, next: raw }
+}
+
+export function applyStickySnap(
+  intent: AABBLineValues,
+  rawSnap: SnapResult,
+  sticky: StickyState,
+  threshold: number,
+): { result: SnapResult; nextSticky: StickyState } {
+  const x = resolveAxis(intent.xValues, rawSnap.x, sticky.x, threshold)
+  const y = resolveAxis(intent.yValues, rawSnap.y, sticky.y, threshold)
+  return {
+    result: { x: x.match, y: y.match },
+    nextSticky: { x: x.next, y: y.next },
+  }
+}

@@ -26,6 +26,7 @@ import {
 } from '@/utils/transform-overlay'
 import type { SelectionPlugin } from '@/plugins/selection'
 import type { ClipboardPlugin } from '@/plugins/clipboard'
+import type { SnapPlugin } from '@/plugins/snap/snap'
 import { BatchCommand, TransformElementCommand } from '@/commands'
 import type { ElementDragEventData } from '@/types/event-data'
 
@@ -475,10 +476,33 @@ export function useTransformOverlay(host: EditorHost) {
       const pc = viewportToContent(pointer.x, pointer.y, vp())
       const dx = pc.x - s.startPointerContent.x
       const dy = pc.y - s.startPointerContent.y
+
+      // 1) 意图位置（未吸附）
+      const intentPositions = new Map<string, { x: number; y: number }>()
       for (const el of s.elements) {
         const start = s.startPositions.get(el.id)!
-        const nx = start.x + dx
-        const ny = start.y + dy
+        intentPositions.set(el.id, { x: start.x + dx, y: start.y + dy })
+      }
+
+      // 2) 吸附偏移（插件只算不写；无插件/关闭时为 0）
+      let offsetX = 0
+      let offsetY = 0
+      try {
+        const snapPlugin = host.getPlugin('snap-plugin') as SnapPlugin | undefined
+        if (snapPlugin && typeof snapPlugin.resolveDragSnap === 'function') {
+          const offset = snapPlugin.resolveDragSnap(s.elements, intentPositions)
+          offsetX = offset.offsetX
+          offsetY = offset.offsetY
+        }
+      } catch {
+        // snap-plugin not installed
+      }
+
+      // 3) 单一写入口：model + node = intent + offset
+      for (const el of s.elements) {
+        const intent = intentPositions.get(el.id)!
+        const nx = intent.x + offsetX
+        const ny = intent.y + offsetY
         el.x = nx
         el.y = ny
         const node = getElementNode(el.id)
@@ -487,7 +511,10 @@ export function useTransformOverlay(host: EditorHost) {
           node.y(ny)
         }
       }
+
+      // 4) 先写位置再刷 Overlay（与吸附同帧）
       refreshOverlay()
+
       const mainEl = s.elements[0]
       const mainNode = getElementNode(mainEl.id)
       host.emit('element:dragmove', {
@@ -658,11 +685,7 @@ export function useTransformOverlay(host: EditorHost) {
       if (clipboard && typeof clipboard.cloneElementsAt === 'function') {
         const releasePositions = new Map<string, { x: number; y: number }>()
         for (const e of session.elements) {
-          const node = getElementNode(e.id)
-          releasePositions.set(e.id, {
-            x: node ? node.x() : e.x,
-            y: node ? node.y() : e.y,
-          })
+          releasePositions.set(e.id, { x: e.x, y: e.y })
         }
         for (const e of session.elements) {
           const start = session.startPositions.get(e.id)!
@@ -686,9 +709,8 @@ export function useTransformOverlay(host: EditorHost) {
     const commands: TransformElementCommand[] = []
     for (const e of session.elements) {
       const start = session.startPositions.get(e.id)!
-      const node = getElementNode(e.id)
-      const nx = node ? node.x() : e.x
-      const ny = node ? node.y() : e.y
+      const nx = e.x
+      const ny = e.y
       if (nx === start.x && ny === start.y) continue
       commands.push(
         new TransformElementCommand(host, e, { x: start.x, y: start.y }, { x: nx, y: ny }),
