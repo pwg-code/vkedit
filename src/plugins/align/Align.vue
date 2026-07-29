@@ -43,8 +43,8 @@ import IconAlignHorizontalLeft from '~icons/ph/align-left-simple-light'
 import IconAlignHorizontalRight from '~icons/ph/align-right-simple-light'
 import IconAlignVerticalTop from '~icons/ph/align-top-simple-light'
 import IconAlignVerticalBottom from '~icons/ph/align-bottom-simple-light'
-import IconHorizontalDistribute from '~icons/ph/rows-light'
-import IconVerticalDistribute from '~icons/ph/columns-light'
+import IconHorizontalDistribute from '~icons/ph/columns-light'
+import IconVerticalDistribute from '~icons/ph/rows-light'
 
 const { host } = defineProps<{ host: EditorHost }>()
 

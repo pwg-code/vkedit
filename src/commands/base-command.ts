@@ -24,4 +24,12 @@ export abstract class BaseCommand implements ICommand {
   protected getCurrentTimestamp(): number {
     return Date.now()
   }
+
+  protected getElementNode(id: string) {
+    try {
+      return this.host.contentLayer?.getNode?.().findOne?.('#' + id) ?? null
+    } catch {
+      return null
+    }
+  }
 }

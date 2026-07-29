@@ -88,6 +88,8 @@ export class DistributeElementsCommand extends BaseCommand {
       for (const box of middle) {
         const offset = currentX - box.aabb.left
         box.element.x += offset
+        const node = this.getElementNode(box.element.id)
+        if (node) node.x(box.element.x)
         currentX += box.aabb.right - box.aabb.left + gap
       }
     } else {
@@ -101,6 +103,8 @@ export class DistributeElementsCommand extends BaseCommand {
       for (const box of middle) {
         const offset = currentY - box.aabb.top
         box.element.y += offset
+        const node = this.getElementNode(box.element.id)
+        if (node) node.y(box.element.y)
         currentY += box.aabb.bottom - box.aabb.top + gap
       }
     }
@@ -113,6 +117,11 @@ export class DistributeElementsCommand extends BaseCommand {
       if (element) {
         element.x = pos.x
         element.y = pos.y
+        const node = this.getElementNode(id)
+        if (node) {
+          node.x(element.x)
+          node.y(element.y)
+        }
       }
     })
   }
