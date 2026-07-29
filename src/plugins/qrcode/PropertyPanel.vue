@@ -59,7 +59,7 @@ import {
 } from '../../components'
 import { useReadabilityWarning } from '@/utils/readability'
 
-interface Props {
+export interface Props {
   host: EditorHost
   element: QrcodeElement
   selection: QrcodeElement[]

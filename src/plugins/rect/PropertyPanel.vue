@@ -34,7 +34,7 @@ import type { RectElement } from './rect'
 import { VkLabel, VkInputNumberMM, VkColorPicker } from '@/components/ui'
 import { usePropertyCommand } from '@/hooks/use-property-command'
 
-interface Props {
+export interface Props {
   host: EditorHost
   element: RectElement
   selection: RectElement[]

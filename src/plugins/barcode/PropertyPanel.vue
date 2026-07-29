@@ -91,7 +91,7 @@ import {
 } from '@/components/ui'
 import { useReadabilityWarning } from '@/utils/readability'
 
-interface Props {
+export interface Props {
   host: EditorHost
   element: BarcodeElement
   selection: BarcodeElement[]

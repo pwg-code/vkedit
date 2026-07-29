@@ -18,7 +18,7 @@ import type { TextElement } from './text'
 import TextProperty from '@/components/TextProperty.vue'
 import { usePropertyCommand } from '@/hooks'
 
-interface Props {
+export interface Props {
   host: EditorHost
   element: TextElement
   selection: TextElement[]

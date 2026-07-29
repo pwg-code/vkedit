@@ -42,7 +42,7 @@ import type { LineElement } from './line'
 import { VkInputNumber, VkInputNumberMM, VkColorPicker } from '@/components/ui'
 import { usePropertyCommand } from '@/hooks'
 
-interface Props {
+export interface Props {
   host: EditorHost
   element: LineElement
   selection: LineElement[]
