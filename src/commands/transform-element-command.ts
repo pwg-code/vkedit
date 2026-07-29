@@ -20,6 +20,7 @@ export class TransformElementCommand extends BaseCommand {
 
   execute(): void {
     this.applyState(this.newState)
+    this.syncKonvaNode(this.newState)
     this.host.emit('element:transformed', {
       element: this.element,
       elementId: this.element.id,
@@ -41,6 +42,7 @@ export class TransformElementCommand extends BaseCommand {
 
   undo(): void {
     this.applyState(this.oldState)
+    this.syncKonvaNode(this.oldState)
     this.host.emit('element:transformed', {
       element: this.element,
       elementId: this.element.id,
@@ -58,6 +60,25 @@ export class TransformElementCommand extends BaseCommand {
       timestamp: this.timestamp,
       source: 'transform-element-command-undo',
     })
+  }
+
+  private syncKonvaNode(state: any): void {
+    const node = this.getElementNode(this.element.id)
+    if (!node) return
+    const props: Record<string, number | undefined> = {
+      x: state.x,
+      y: state.y,
+      rotation: state.rotation,
+      width: state.width,
+      height: state.height,
+      scaleX: state.scaleX,
+      scaleY: state.scaleY,
+    }
+    for (const [key, value] of Object.entries(props)) {
+      if (value !== undefined && typeof node[key] === 'function') {
+        node[key](value)
+      }
+    }
   }
 
   private applyState(state: any): void {
