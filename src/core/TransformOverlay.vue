@@ -1,5 +1,5 @@
 <template>
-  <v-group v-if="overlay.visible" :config="groupConfig" @mousedown="onOverlayPointerDown">
+  <v-group v-if="overlay.visible" :config="groupConfig">
     <v-rect v-if="overlay.border" :config="borderConfig" />
     <v-line v-if="overlay.rotateStem" :config="stemConfig" />
     <v-rect
@@ -9,15 +9,7 @@
     />
     <v-circle v-if="overlay.rotateHandle" :config="rotateConfig" />
   </v-group>
-  <Teleport to="body">
-    <div
-      v-if="angleLabel"
-      class="vkedit-rotate-angle-label"
-      :style="{ left: angleLabel.x + 'px', top: angleLabel.y + 'px' }"
-    >
-      {{ angleLabel.text }}
-    </div>
-  </Teleport>
+  <RotateAngleLabel :angleLabel="angleLabel" />
 </template>
 
 <script setup lang="ts">
@@ -25,6 +17,7 @@ import { computed, watchEffect } from 'vue'
 import { type EditorHost } from '@/core'
 import { useTransformOverlay, type OverlayAnchorView } from '@/hooks/use-transform-overlay'
 import { cssColorVar } from '@/utils/css-var'
+import RotateAngleLabel from './RotateAngleLabel.vue'
 
 const props = defineProps<{ host: EditorHost }>()
 
@@ -34,6 +27,7 @@ const groupConfig = computed(() => ({
   name: 'transform-overlay',
   id: 'transform-overlay',
   listening: true,
+  onMousedown: onOverlayPointerDown,
 }))
 
 watchEffect(() => {
@@ -100,19 +94,3 @@ const rotateConfig = computed(() => {
 })
 </script>
 
-<style>
-.vkedit-rotate-angle-label {
-  position: fixed;
-  pointer-events: none;
-  z-index: 10000;
-  padding: 2px 6px;
-  font-size: 12px;
-  line-height: 1.2;
-  border-radius: 4px;
-  background: var(--vkedit-color-surface-solid, #fff);
-  color: var(--vkedit-color-text, #111);
-  border: 1px solid var(--vkedit-color-border, #ccc);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
-  white-space: nowrap;
-}
-</style>
