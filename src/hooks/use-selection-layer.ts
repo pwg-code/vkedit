@@ -13,6 +13,7 @@ const SELECTION_FILL_OPACITY = 16
 
 export function useSelectionLayer(host: EditorHost) {
   const isSelecting = ref(false)
+  const isMouseDown = ref(false)
   const selectionStart = ref<Point2D>({ x: 0, y: 0 })
   const selectionEnd = ref<Point2D>({ x: 0, y: 0 })
 
@@ -43,14 +44,20 @@ export function useSelectionLayer(host: EditorHost) {
     if (event.evt.button !== 0) return
     if (host.status.currentTool !== 'select') return
     if (isClickOnTransformOverlay(event)) return
-    const point = event.point
-    isSelecting.value = true
+    isMouseDown.value = true
     selectionStart.value = event.point
-    selectionEnd.value = point
+    selectionEnd.value = event.point
   }
 
   const handleMouseMove = (event: any) => {
     const point = event.point
+    if (isMouseDown.value && !isSelecting.value) {
+      const dx = point.x - selectionStart.value.x
+      const dy = point.y - selectionStart.value.y
+      if (Math.sqrt(dx * dx + dy * dy) > 3) {
+        isSelecting.value = true
+      }
+    }
     if (isSelecting.value) {
       selectionEnd.value = point
     }
@@ -58,10 +65,12 @@ export function useSelectionLayer(host: EditorHost) {
 
   const handleMouseUp = () => {
     isSelecting.value = false
+    isMouseDown.value = false
   }
 
   const handleMouseLeave = () => {
     isSelecting.value = false
+    isMouseDown.value = false
   }
 
   return {

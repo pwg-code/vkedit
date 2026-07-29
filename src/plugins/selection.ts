@@ -60,9 +60,7 @@ export class SelectionPlugin extends BasePlugin {
     this.selectionStart = event.point
     this.selectionEnd = event.point
     this.mouseDownId = this.getClickElementId(event)
-    if (!this.mouseDownId) {
-      this.isSelecting = true
-    }
+    this.isSelecting = true
   }
 
   private handleMouseMove = (event: any): void => {
@@ -79,29 +77,35 @@ export class SelectionPlugin extends BasePlugin {
       return
     }
 
+    if (!this.isSelecting) {
+      this.endSelectionDraft()
+      return
+    }
+
     const modifier = this.isModifierPressed(event.evt)
     const dragged = this.isDragged(event)
 
-    if (this.isSelecting) {
+    if (dragged) {
+      // 拖拽 → 框选（P1b/P2b/F3）
       const rectIds = this.findElementsInRect(this.selectionStart, this.selectionEnd)
-      if (modifier && dragged) {
+      if (modifier) {
         // F3: Ctrl/Shift + 拖拽框选 → 累加（并集）
         rectIds.forEach((id) => this.selectionIds.add(id))
       } else {
-        // 普通框选替换 / Ctrl+点击空白清空（dragged=false 时 rectIds 为空集 → 清空）
+        // P1b/P2b: 普通框选 → 替换选区
         this.selectionIds = rectIds
       }
-      this.isSelecting = false
-      this.mouseDownId = null
       this.emitSelectionChanged()
     } else if (this.mouseDownId) {
+      // 无拖拽 + 有按下元素 → 点选（F1/F2/F4/F5/P2a）
       const element = this.elementsPlugin?.elements.get(this.mouseDownId)
       // F6: 锁定/隐藏元素不可选，静默忽略（不清空已有选择）
       if (!element || element.locked || !element.visible) {
+        this.endSelectionDraft()
         return
       }
 
-      if (modifier && !dragged) {
+      if (modifier) {
         // F1/F2: Ctrl/Cmd/Shift + 点击 → toggle 追加 / 减选
         if (this.selectionIds.has(this.mouseDownId)) {
           this.selectionIds.delete(this.mouseDownId)
@@ -109,27 +113,30 @@ export class SelectionPlugin extends BasePlugin {
           this.selectionIds.add(this.mouseDownId)
         }
         this.emitSelectionChanged()
-      } else if (!modifier) {
+      } else {
         if (
           this.selectionIds.size > 1 &&
-          this.selectionIds.has(this.mouseDownId) &&
-          !dragged
+          this.selectionIds.has(this.mouseDownId)
         ) {
           // F4: 多选状态下普通点击已选元素 → 切换为单选
           this.selectionIds.clear()
           this.selectionIds.add(this.mouseDownId)
           this.emitSelectionChanged()
         } else if (!this.selectionIds.has(this.mouseDownId)) {
-          // 现有逻辑：清空后单选该元素
+          // F5/P2a: 点击未选中元素 → 清空后单选
           this.selectionIds.clear()
           this.selectionIds.add(this.mouseDownId)
           this.emitSelectionChanged()
         }
         // else: 单选且已选中 → 保持不变（便于拖动）
       }
-      // else: 修饰键 + 拖动 → 保持选择，拖动交由 Transformer 处理
-      this.mouseDownId = null
+    } else {
+      // 空白处点击无拖拽 → 清空选区
+      this.selectionIds.clear()
+      this.emitSelectionChanged()
     }
+
+    this.endSelectionDraft()
   }
 
   /**
